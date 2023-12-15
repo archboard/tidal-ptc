@@ -1,0 +1,29 @@
+<template>
+  <FormField
+    v-model="localValue"
+    :error="error"
+    :help="helpText"
+    :required="required"
+    component="AppSelect"
+    :options="convertedOptions"
+    :disabled="disabled"
+  >
+    {{ label }}
+  </FormField>
+</template>
+
+<script setup>
+import { fieldProps, fieldEmits } from '@/composition/useFormField.js'
+import FormField from '@/components/forms/FormField.vue'
+import { useVModel } from '@vueuse/core'
+import useConvertedOptions from '@/composition/useConvertedOptions.js'
+
+const props = defineProps({
+  ...fieldProps,
+})
+const emit = defineEmits([
+  ...fieldEmits,
+])
+const localValue = useVModel(props, 'modelValue', emit)
+const convertedOptions = useConvertedOptions(props.options)
+</script>
