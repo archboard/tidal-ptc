@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\School;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class SchoolFactory extends Factory
 {
@@ -27,7 +28,7 @@ class SchoolFactory extends Factory
             'name' => $this->faker->company,
             'high_grade' => 12,
             'low_grade' => $this->faker->numberBetween(-2, 0),
-            'sis_key' => $this->faker->numberBetween(1, 100),
+            'sis_key' => $this->faker->numberBetween(1, 100).Str::random(4),
         ];
     }
 }

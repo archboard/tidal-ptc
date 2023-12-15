@@ -7,6 +7,7 @@ use App\Http\Middleware\Cloud;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\HasSchoolSet;
 use App\Http\Middleware\Installed;
+use App\Http\Middleware\NoDistrictAdmin;
 use App\Http\Middleware\SelfHosted;
 use App\Http\Middleware\SisConfigured;
 use App\Http\Middleware\Uninstalled;
@@ -84,6 +85,8 @@ class Kernel extends HttpKernel
         'allows_pw_auth' => AllowsPasswordLogins::class,
         'sis_configured' => SisConfigured::class,
         'uninstalled' => Uninstalled::class,
+        'installed' => Installed::class,
         'has_school' => HasSchoolSet::class,
+        'no_admin' => NoDistrictAdmin::class,
     ];
 }

@@ -36,6 +36,8 @@ interface SisProvider
 
     public function syncUser(User $user): User;
 
+    public function searchForUser(string $search): Collection;
+
     public function syncSection(Section $section): Section;
 
     public function syncCourse(Course $course): Course;

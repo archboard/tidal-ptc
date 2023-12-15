@@ -31,9 +31,6 @@ class InstallationForm implements AppForm
                     ->withValue($this->tenant->custom_domain)
                     ->rules($this->customDomainRules($this->tenant))]
                 : []),
-            'email' => FormField::make(__('Email'))
-                ->help(__('This is the email address for a system admin and should match your email that is used in your SIS.'))
-                ->rules($this->emailRules()),
             ...$this->tenant->sis_provider?->getConfigFields() ?? collect(),
         ])
             ->map(fn (FormField $field, string $key) => $field

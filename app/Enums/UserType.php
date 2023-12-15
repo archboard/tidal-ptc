@@ -46,4 +46,11 @@ enum UserType: string
 
         return "{$tenant->id}|{$this->value}|{$id}";
     }
+
+    public function getSisKeyFromSisId(string|int $sisId): string
+    {
+        $tenant = Tenant::current();
+
+        return "{$tenant->id}|{$this->value}|{$sisId}";
+    }
 }

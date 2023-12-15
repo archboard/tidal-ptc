@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Role;
 use App\Enums\UserType;
 use App\Models\Contracts\ExistsInSis;
 use App\Traits\BelongsToTenant;
@@ -133,5 +134,10 @@ class User extends Authenticatable implements ExistsInSis
             ->syncUser($this);
 
         return $this;
+    }
+
+    public function assignRole(Role|string $role): static
+    {
+        return $this->assign($role?->value ?? $role);
     }
 }

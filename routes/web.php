@@ -20,11 +20,22 @@ if (app()->environment('local')) {
 /**
  * Self-hosted only routes
  */
-Route::middleware(['self_hosted', 'uninstalled'])
+Route::middleware(['self_hosted'])
     ->group(function () {
-        Route::get('/install', [\App\Http\Controllers\InstallationController::class, 'index']);
-        Route::post('/install', [\App\Http\Controllers\InstallationController::class, 'store'])
-            ->name('install');
+        Route::middleware('uninstalled')
+            ->group(function () {
+                Route::get('/install', [\App\Http\Controllers\InstallationController::class, 'index']);
+                Route::post('/install', [\App\Http\Controllers\InstallationController::class, 'store'])
+                    ->name('install');
+            });
+
+        Route::middleware(['tenant', 'installed', 'no_admin'])
+            ->group(function () {
+                Route::get('/install/user', [\App\Http\Controllers\InstallFirstUserController::class, 'index'])
+                    ->name('install.user');
+                Route::post('/install/user', [\App\Http\Controllers\InstallFirstUserController::class, 'store']);
+                Route::post('/search/sis/user', \App\Http\Controllers\Search\SisUserController::class);
+            });
     });
 
 Route::middleware('tenant')->group(function () {

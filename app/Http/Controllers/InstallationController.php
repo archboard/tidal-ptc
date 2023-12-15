@@ -21,7 +21,6 @@ class InstallationController extends Controller
             'title' => $title,
             'form' => $fields->toInertia(),
             'fields' => $fields->toResource(),
-            'email' => $request->user()?->email,
         ])->withViewData(compact('title'));
     }
 
@@ -38,17 +37,11 @@ class InstallationController extends Controller
             ->save();
         $tenant->makeCurrent();
 
-        // Save the user and give them full privileges
-        /** @var User $user */
-        $user = $tenant->users()->updateOrCreate(Arr::only($data, 'email'));
-        BouncerFacade::allow($user)->everything();
-        auth()->login($user);
-
         // Kick off job to sync schools
         dispatch(new SyncSchools($tenant));
 
         session()->flash('success', __('Installation complete. Sync has been started.'));
 
-        return to_route('settings.tenant.edit');
+        return to_route('install.user');
     }
 }

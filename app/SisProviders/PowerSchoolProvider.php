@@ -380,14 +380,32 @@ class PowerSchoolProvider implements SisProvider
 
     public function syncUser(User $user): User
     {
-        [$tenantId, $type, $sisId] = explode('|', $user->sis_key);
-        $method = 'sync'.ucfirst($type);
+        $method = 'sync'.ucfirst($user->user_type->value);
 
         if (method_exists($this, $method)) {
             $this->$method($user);
         }
 
         return $user;
+    }
+
+    public function searchForUser(string $search): Collection
+    {
+        return $this->builder
+            ->pq('com.archboard.starter_sample.user.search', [
+                'search' => $search,
+            ])
+            ->collect()
+            ->slice(0, 10)
+            ->map(fn (array $user) => new User([
+                'sis_id' => $user['dcid'],
+                'name' => $user['name'] ?? null,
+                'first_name' => $user['first_name'] ?? null,
+                'last_name' => $user['last_name'] ?? null,
+                'email' => $user['email'] ?? null,
+                'sis_key' => UserType::staff->getSisKeyFromSisId($user['dcid']),
+                'user_type' => UserType::staff,
+            ]));
     }
 
     protected function syncStaff(User $user): void
@@ -400,11 +418,14 @@ class PowerSchoolProvider implements SisProvider
             ]);
 
         if ($data->count() === 1) {
-            $user->update([
+            $user->forceFill([
                 'first_name' => $data[0]['first_name'] ?? null,
                 'last_name' => $data[0]['last_name'] ?? null,
-                'email' => $data[0]['email'] ?? null,
+                'email' => $data[0]['email'] ? strtolower($data[0]['email']) : null,
+                'user_type' => UserType::staff,
+                'sis_key' => UserType::staff->getSisKeyFromSisId($user->sis_id),
             ]);
+            $user->save();
         }
     }
 

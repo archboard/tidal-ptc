@@ -12,6 +12,7 @@
         @change="$emit('update:query', $event.target.value)"
         :display-value="handleDisplay"
         :id="id"
+        :placeholder="placeholder"
       />
 
       <ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2">
@@ -34,17 +35,23 @@
           ]"
       >
         <div
-          v-if="options.length === 0 && query !== ''"
+          v-if="options.length === 0 && query && !loading"
           class="relative cursor-default select-none py-2 px-4 text-gray-700 dark:text-gray-400"
         >
           {{ __('Nothing found.') }}
+        </div>
+        <div
+          v-if="options.length === 0 && query && loading"
+          class="relative cursor-default select-none py-2 px-4 text-gray-700 dark:text-gray-400 flex items-center justify-center"
+        >
+          <Spinner class="h-5 w-5 text-gray-500" />
         </div>
 
         <ComboboxOption
           as="template"
           v-slot="{ active, selected }"
           v-for="item in options"
-          :key="item.id"
+          :key="item[optionKey]"
           :value="item"
         >
           <li :class="[`relative cursor-default select-none py-2 pl-10 pr-4`, active ? menuColors.activeMenuItem : menuColors.inactiveMenuItem]">
@@ -53,7 +60,7 @@
               :class="{ 'font-medium': selected, 'font-normal': !selected }"
             >
               <slot name="item" :selected="selected" :active="active" :item="item">
-                {{ item.name || item.title || item.label }}
+                {{ handleDisplay(item) }}
               </slot>
             </span>
             <span
@@ -81,6 +88,7 @@ import {
 import { useVModel } from '@vueuse/core'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/24/solid'
 import useMenuColors from '@/composition/useMenuColors.js'
+import Spinner from '@/components/Spinner.vue'
 
 const props = defineProps({
   modelValue: [Number, String, Object],
@@ -97,6 +105,12 @@ const props = defineProps({
     default: () => false,
   },
   id: String,
+  optionKey: {
+    type: String,
+    default: 'id',
+  },
+  placeholder: String,
+  loading: Boolean,
 })
 const emit = defineEmits(['update:modelValue', 'update:query'])
 const localValue = useVModel(props, 'modelValue', emit)

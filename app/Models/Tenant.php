@@ -196,12 +196,6 @@ class Tenant extends TenantBase
                         Rule::unique('tenants', 'custom_domain')->ignoreModel($this),
                     ])]
                 : []),
-            'email' => FormField::make(__('Email'))
-                ->help(__('This is the email address for a system admin and should match your email that is used in your SIS.'))
-                ->rules([
-                    'required',
-                    'email',
-                ]),
             ...$this->sis_provider?->getConfigFields() ?? collect(),
         ])
             ->map(fn (FormField $field, string $key) => $field

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\Role;
 use App\Jobs\SyncSchools;
 use App\Models\Tenant;
 use App\Models\User;
@@ -39,7 +40,6 @@ class InstallationTest extends TestCase
         return [
             'name' => $this->faker->company(),
             'domain' => env('TESTING_APP_URL'),
-            'email' => $this->faker->email(),
             'sis_config.url' => env('POWERSCHOOL_ADDRESS'),
             'sis_config.client_id' => env('POWERSCHOOL_CLIENT_ID'),
             'sis_config.client_secret' => env('POWERSCHOOL_CLIENT_SECRET'),
@@ -50,13 +50,13 @@ class InstallationTest extends TestCase
     public function test_cant_access_installation_on_cloud()
     {
         $this->asCloud()
-            ->get('/install')
+            ->get(route('install'))
             ->assertNotFound();
     }
 
     public function test_cant_access_installation_when_already_installed()
     {
-        $this->get('/install')
+        $this->get(route('install'))
             ->assertNotFound();
     }
 
@@ -64,7 +64,7 @@ class InstallationTest extends TestCase
     {
         $this->logIn()
             ->removeSisConfig()
-            ->get('/install')
+            ->get(route('install'))
             ->assertNotFound();
     }
 
@@ -73,7 +73,7 @@ class InstallationTest extends TestCase
         $this->asSelfHosted()
             ->removeSisConfig()
             ->get('/login')
-            ->assertRedirect('/install');
+            ->assertRedirect(route('install'));
     }
 
     public function test_can_view_installation_page_when_not_installed_and_authenticated()
@@ -82,21 +82,20 @@ class InstallationTest extends TestCase
             ->logIn()
             ->removeSisConfig()
             ->get('/')
-            ->assertRedirect('/install');
+            ->assertRedirect(route('install'));
     }
 
     public function test_installation_page_unauthenticated()
     {
         $this->removeSisConfig()
             ->asSelfHosted()
-            ->get('/install')
+            ->get(route('install'))
             ->assertViewHas('title')
             ->assertOk()
             ->assertInertia(fn (AssertableInertia $page) => $page
                 ->has('title')
                 ->where('form', $this->tenant->getInstallationFields()->toInertia())
                 ->where('fields', $this->tenant->getInstallationFields()->toResource())
-                ->where('email', null)
                 ->component('Install')
             );
     }
@@ -109,14 +108,13 @@ class InstallationTest extends TestCase
             ->tapUser(function (User $user) {
                 $user->allow()->everything();
             })
-            ->get('/install')
+            ->get(route('install'))
             ->assertViewHas('title')
             ->assertOk()
             ->assertInertia(fn (AssertableInertia $page) => $page
                 ->has('title')
                 ->where('form', $this->tenant->getInstallationFields()->toInertia())
                 ->where('fields', $this->tenant->getInstallationFields()->toResource())
-                ->where('email', $this->user->email)
                 ->component('Install')
             );
     }
@@ -132,9 +130,9 @@ class InstallationTest extends TestCase
 
         $this->fakeLicenseValidation()
             ->asSelfHosted()
-            ->post('/install', $data)
+            ->post(route('install'), $data)
             ->assertSessionHas('success')
-            ->assertRedirect(route('settings.tenant.edit'));
+            ->assertRedirect(route('install.user'));
 
         $this->assertDatabaseHas('tenants', Arr::only($data, ['name', 'domain']));
         $tenant = Tenant::firstWhere('domain', $data['domain']);
@@ -153,9 +151,9 @@ class InstallationTest extends TestCase
         $this->fakeLicenseValidation()
             ->asSelfHosted()
             ->removeSisConfig()
-            ->post('/install', $data)
+            ->post(route('install'), $data)
             ->assertSessionHas('success')
-            ->assertRedirect(route('settings.tenant.edit'));
+            ->assertRedirect(route('install.user'));
 
         $this->assertDatabaseHas('tenants', Arr::only($data, ['name', 'domain']));
         $tenant = Tenant::firstWhere('domain', $data['domain']);
@@ -163,5 +161,35 @@ class InstallationTest extends TestCase
         $this->assertEquals($tenant->sis_config->toArray(), Arr::undot(Arr::only($data, ['sis_config.url', 'sis_config.client_secret', 'sis_config.client_id']))['sis_config']);
 
         Queue::assertPushed(SyncSchools::class);
+    }
+
+    public function test_cant_view_user_selection_when_uninstalled()
+    {
+        $this->asSelfHosted()
+            ->removeSisConfig()
+            ->get(route('install.user'))
+            ->assertRedirect(route('install'));
+    }
+
+    public function test_cant_view_when_admin_user_already_exists()
+    {
+        $admin = $this->seedUser();
+        $admin->assignRole(Role::DISTRICT_ADMIN);
+
+        $this->asSelfHosted()
+            ->get(route('install.user'))
+            ->assertSessionHas('error')
+            ->assertRedirect();
+    }
+
+    public function test_can_view_user_import_page()
+    {
+        $this->asSelfHosted()
+            ->get(route('install.user'))
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('InstallUser')
+                ->where('endpoint', route('install.user'))
+            );
     }
 }
