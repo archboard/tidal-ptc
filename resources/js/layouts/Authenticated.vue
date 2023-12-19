@@ -120,7 +120,7 @@
           </div>
           <div class="ml-4 flex items-center md:ml-6">
             <button @click.prevent="toggleTheme" type="button" class="sr-hidden rounded-full bg-white dark:bg-gray-800 p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
-              <MoonIcon v-if="theme === 'dark'" class="h-6 w-6" aria-hidden="true" />
+              <MoonIcon v-if="isDark" class="h-6 w-6" aria-hidden="true" />
               <SunIcon v-else class="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
@@ -156,10 +156,9 @@
 <script setup>
 import { inject, ref, watch } from 'vue'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
-import { Bars3BottomLeftIcon, SunIcon, MoonIcon, CalendarIcon, ChartBarIcon, FolderIcon, HomeIcon, InboxIcon, UsersIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { Bars3BottomLeftIcon, SunIcon, MoonIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
 import Logo from '@/components/icons/Logo.vue'
-import { useLocalStorage } from '@vueuse/core'
 import Footer from '@/components/Footer.vue'
 import Notifications from '@/components/Notifications.vue'
 import TimezoneBanner from '@/components/banners/TimezoneBanner.vue'
@@ -169,16 +168,12 @@ import { Modal } from 'momentum-modal'
 import useProp from '@/composition/useProp.js'
 import AppSelect from '@/components/forms/AppSelect.vue'
 import Container from '@/components/Container.vue'
+import useColorTheme from '@/composition/useColorTheme.js'
 
 const title = usePageTitle()
 const { props } = usePage()
 const sidebarOpen = ref(false)
-const theme = useLocalStorage('theme', 'light')
-
-const toggleTheme = () => {
-  theme.value = theme.value === 'dark' ? 'light' : 'dark'
-  window.changeTheme(theme.value === 'dark')
-}
+const { isDark, toggleTheme } = useColorTheme()
 const adminSchools = useProp('adminSchools')
 const user = useProp('user')
 const $error = inject('$error')

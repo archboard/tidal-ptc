@@ -2,6 +2,7 @@ export const fieldProps = {
   modelValue: [Object, String, Number],
   label: String,
   type: String,
+  id: String,
   options: [Array, Object],
   error: String,
   placeholder: String,
