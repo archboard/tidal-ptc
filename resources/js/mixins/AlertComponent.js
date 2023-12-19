@@ -12,6 +12,10 @@ export default {
     level: {
       type: String,
       default: 'neutral',
+    },
+    notDismissible: {
+      type: Boolean,
+      default: false,
     }
   },
 
