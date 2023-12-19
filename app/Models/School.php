@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Contracts\ExistsInSis;
 use App\Traits\BelongsToTenant;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -22,11 +23,42 @@ class School extends Model implements ExistsInSis
 
     protected $casts = [
         'active' => 'boolean',
+        'allow_online_meetings' => 'boolean',
+        'allow_translator_requests' => 'boolean',
+        'open_for_contacts_at' => 'datetime',
+        'close_for_contacts_at' => 'datetime',
+        'open_for_teachers_at' => 'datetime',
+        'close_for_teachers_at' => 'datetime',
+        'booking_buffer_hours' => 'integer',
     ];
 
     public function scopeActive(Builder $builder): void
     {
         $builder->where('active', true);
+    }
+
+    public function contactsCanBook(): Attribute
+    {
+        return Attribute::get(function (): bool {
+            if (! $this->open_for_contacts_at && ! $this->close_for_contacts_at) {
+                return false;
+            }
+
+            return (! $this->open_for_contacts_at || now()->gte($this->open_for_contacts_at))
+                && (! $this->close_for_contacts_at || now()->lte($this->close_for_contacts_at));
+        });
+    }
+
+    public function teachersCanCreate(): Attribute
+    {
+        return Attribute::get(function (): bool {
+            if (! $this->open_for_teachers_at && ! $this->close_for_teachers_at) {
+                return false;
+            }
+
+            return (! $this->open_for_teachers_at || now()->gte($this->open_for_teachers_at))
+                && (! $this->close_for_teachers_at || now()->lte($this->close_for_teachers_at));
+        });
     }
 
     public function users(): BelongsToMany
