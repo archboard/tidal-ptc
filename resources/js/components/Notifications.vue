@@ -11,7 +11,7 @@
         move-class="transition-all duration-150 ease-in"
       >
         <notification
-          v-for="notification in state.notifications"
+          v-for="notification in store.state.notifications"
           :key="notification.id"
           :notification="notification"
         />
@@ -20,18 +20,7 @@
   </teleport>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
 import store from '@/stores/notifications'
 import Notification from '@/components/Notification.vue'
-
-export default defineComponent({
-  components: { Notification },
-
-  setup () {
-    return {
-      state: store.state,
-    }
-  },
-})
 </script>
