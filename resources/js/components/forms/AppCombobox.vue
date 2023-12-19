@@ -12,7 +12,7 @@
         @change="$emit('update:query', $event.target.value)"
         :display-value="handleDisplay"
         :id="id"
-        :placeholder="placeholder"
+        :placeholder="placeholder || __('Type for options…')"
       />
 
       <ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2">
