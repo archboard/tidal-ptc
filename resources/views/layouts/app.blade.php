@@ -9,9 +9,6 @@
   @else
     <title>{{ config('app.name') }}</title>
   @endisset
-    <script>
-      window.changeTheme=function(e){e?document.documentElement.classList.add("dark"):document.documentElement.classList.remove("dark"),localStorage.theme=e?"dark":"light"},window.changeTheme("dark"===localStorage.theme||!("theme"in localStorage)&&window.matchMedia("(prefers-color-scheme: dark)").matches);
-    </script>
 
     @vite('resources/js/app.js')
   </head>

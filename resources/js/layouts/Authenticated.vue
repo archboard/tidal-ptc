@@ -119,7 +119,7 @@
             </form>
           </div>
           <div class="ml-4 flex items-center md:ml-6">
-            <button @click.prevent="toggleTheme" type="button" class="sr-hidden rounded-full bg-white dark:bg-gray-800 p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+            <button @click.prevent="toggleTheme()" type="button" class="sr-hidden rounded-full bg-white dark:bg-gray-800 p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
               <MoonIcon v-if="isDark" class="h-6 w-6" aria-hidden="true" />
               <SunIcon v-else class="h-6 w-6" aria-hidden="true" />
             </button>
