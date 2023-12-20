@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Contracts\ExistsInSis;
 use App\Traits\BelongsToTenant;
+use App\Traits\HasTimezone;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,6 +19,7 @@ class School extends Model implements ExistsInSis
 {
     use BelongsToTenant;
     use HasFactory;
+    use HasTimezone;
 
     protected $guarded = [];
 

@@ -19,6 +19,8 @@ abstract class TestCase extends BaseTestCase
 
     protected Tenant $tenant;
 
+    protected School $school;
+
     protected User $user;
 
     protected function setUp(): void
@@ -74,12 +76,12 @@ abstract class TestCase extends BaseTestCase
 
     public function setSchool(): static
     {
-        $school = $this->tenant->schools()->save(
+        $this->school = $this->tenant->schools()->save(
             School::factory()->make()
         );
-        $this->user->schools()->attach($school);
+        $this->user->schools()->attach($this->school);
         $this->user->update([
-            'school_id' => $school->id,
+            'school_id' => $this->school->id,
         ]);
 
         return $this;
