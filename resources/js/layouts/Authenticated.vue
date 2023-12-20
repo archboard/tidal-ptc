@@ -89,7 +89,7 @@
                   :method="item.method"
                   :href="item.url"
                   :as="item.as"
-                  class="group flex items-center w-full rounded-md px-3 py-2 text-sm font-medium text-primary-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-primary-800 hover:text-gray-900 dark:hover:text-gray-100"
+                  :class="[item.current ? 'bg-gray-50 dark:bg-primary-800 text-gray-900 dark:text-gray-100' : 'text-primary-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-primary-800 hover:text-gray-900 dark:hover:text-gray-100', 'group flex items-center w-full rounded-md px-3 py-2 text-sm font-medium']"
                 >
                   <span class="truncate">{{ item.label }}</span>
                 </component>

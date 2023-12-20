@@ -122,12 +122,14 @@ class HandleInertiaRequests extends Middleware
                 $nav = [
                     NavigationItem::make()
                         ->labeled(__('Personal settings'))
+                        ->isCurrent($request->routeIs('settings.personal.edit'))
                         ->to(route('settings.personal.edit')),
                 ];
 
                 if ($user->can('edit school settings') && $request->school()) {
                     $nav[] = NavigationItem::make()
                         ->labeled(__('School settings'))
+                        ->isCurrent($request->routeIs('settings.school.edit'))
                         ->to(route('settings.school.edit'));
                 }
 
