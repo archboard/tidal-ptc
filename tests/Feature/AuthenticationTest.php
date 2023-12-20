@@ -34,6 +34,20 @@ class AuthenticationTest extends TestCase
             );
     }
 
+    public function test_login_screen_can_be_rendered_when_passwords_are_disabled()
+    {
+        $this->tenant->update(['allow_password_auth' => false]);
+
+        $this->get('/login')
+            ->assertOk()
+            ->assertViewHas('title')
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('Auth/Login')
+                ->has('title')
+                ->has('status')
+            );
+    }
+
     public function test_users_can_authenticate_using_the_login_screen()
     {
         $user = $this->seedUser();
