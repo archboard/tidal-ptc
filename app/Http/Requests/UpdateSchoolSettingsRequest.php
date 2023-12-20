@@ -26,9 +26,9 @@ class UpdateSchoolSettingsRequest extends FormRequest
             'allow_online_meetings' => ['required', 'boolean'],
             'allow_translator_requests' => ['required', 'boolean'],
             'booking_buffer_hours' => ['nullable', 'integer', 'min:0'],
-            'open_for_contacts_at' => ['nullable', 'date', 'before:close_for_contacts_at'],
+            'open_for_contacts_at' => ['nullable', 'date'],
             'close_for_contacts_at' => ['nullable', 'date', 'after:open_for_contacts_at'],
-            'open_for_teachers_at' => ['nullable', 'date', 'before:close_for_teachers_at'],
+            'open_for_teachers_at' => ['nullable', 'date'],
             'close_for_teachers_at' => ['nullable', 'date', 'after:open_for_teachers_at'],
         ];
     }

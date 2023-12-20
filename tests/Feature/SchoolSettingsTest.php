@@ -45,7 +45,11 @@ it('can update time slot settings', function (array $data) {
     ];
 
     foreach ($dates as $key) {
-        $this->assertTrue($this->school->$key->isSameAs($this->school->dateToApp($data[$key])));
+        if ($data[$key]) {
+            $this->assertTrue($this->school->$key->isSameAs($this->school->dateToApp($data[$key])));
+        } else {
+            $this->assertNull($this->school->$key);
+        }
     }
 })->with([
     'all options' => fn () => [
@@ -56,6 +60,26 @@ it('can update time slot settings', function (array $data) {
         'open_for_contacts_at' => today()->format('Y-m-d H:i'),
         'close_for_contacts_at' => today()->addWeek()->format('Y-m-d H:i'),
         'open_for_teachers_at' => today()->format('Y-m-d H:i'),
+        'close_for_teachers_at' => today()->addWeek()->format('Y-m-d H:i'),
+    ],
+    'no close date' => fn () => [
+        'timezone' => fake()->timezone(),
+        'allow_online_meetings' => fake()->boolean(),
+        'allow_translator_requests' => fake()->boolean(),
+        'booking_buffer_hours' => fake()->numberBetween(0, 72),
+        'open_for_contacts_at' => today()->format('Y-m-d H:i'),
+        'close_for_contacts_at' => null,
+        'open_for_teachers_at' => today()->format('Y-m-d H:i'),
+        'close_for_teachers_at' => null,
+    ],
+    'no open date' => fn () => [
+        'timezone' => fake()->timezone(),
+        'allow_online_meetings' => fake()->boolean(),
+        'allow_translator_requests' => fake()->boolean(),
+        'booking_buffer_hours' => fake()->numberBetween(0, 72),
+        'open_for_contacts_at' => null,
+        'close_for_contacts_at' => today()->addWeek()->format('Y-m-d H:i'),
+        'open_for_teachers_at' => null,
         'close_for_teachers_at' => today()->addWeek()->format('Y-m-d H:i'),
     ],
 ]);
