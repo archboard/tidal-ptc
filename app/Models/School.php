@@ -63,6 +63,39 @@ class School extends Model implements ExistsInSis
         });
     }
 
+    public function localOpenForContactsAt(): Attribute
+    {
+        return Attribute::get(fn () => $this->open_for_contacts_at
+            ? $this->dateFromApp($this->open_for_contacts_at)
+            : null
+        );
+    }
+
+    public function localCloseForContactsAt(): Attribute
+    {
+        return Attribute::get(fn () => $this->close_for_contacts_at
+            ? $this->dateFromApp($this->close_for_contacts_at)
+            : null
+        );
+    }
+
+    public function localOpenForTeachersAt(): Attribute
+    {
+        return Attribute::get(fn () => $this->open_for_teachers_at
+            ? $this->dateFromApp($this->open_for_teachers_at)
+            : null
+        );
+    }
+
+    public function localCloseForTeachersAt(): Attribute
+    {
+        return Attribute::get(fn () => $this->close_for_teachers_at
+            ? $this->dateFromApp($this->close_for_teachers_at)
+            : null
+        );
+    }
+
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class)
