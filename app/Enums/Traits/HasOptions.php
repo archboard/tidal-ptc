@@ -2,6 +2,8 @@
 
 namespace App\Enums\Traits;
 
+use Illuminate\Support\Collection;
+
 trait HasOptions
 {
     public static function options(): array
@@ -15,6 +17,11 @@ trait HasOptions
             },
             []
         );
+    }
+
+    public static function collect(): Collection
+    {
+        return collect(static::cases());
     }
 
     public static function selectOptions(): array

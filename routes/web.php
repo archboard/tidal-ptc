@@ -99,6 +99,9 @@ Route::middleware('tenant')->group(function () {
                 Route::singleton('/personal', \App\Http\Controllers\Settings\PersonalSettingsController::class)
                     ->only('edit', 'update');
 
+                Route::put('/personal/notifications', \App\Http\Controllers\Settings\NotificationPreferencesController::class)
+                    ->name('personal.notifications');
+
                 Route::put('/timezone', \App\Http\Controllers\UpdateTimezoneController::class)
                     ->name('timezone.update');
 

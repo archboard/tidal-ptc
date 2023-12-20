@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Settings;
 
+use App\Enums\NotificationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\FlashesAndRedirects;
 use Illuminate\Http\Request;
@@ -23,6 +24,13 @@ class PersonalSettingsController extends Controller
         return inertia('settings/Personal', [
             'title' => $title,
             'hasPassword' => (bool) $user->password,
+            'userNotifications' => $user->notification_config ?? collect(),
+            'notificationOptions' => $user->getNotificationOptions()
+                ->map(fn (NotificationEvent $event) => [
+                    'label' => $event->label(),
+                    'key' => $event->value,
+                    'description' => $event->description(),
+                ]),
         ])->withViewData(compact('title'));
     }
 

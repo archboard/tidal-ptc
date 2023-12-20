@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\NotificationEvent;
 use App\Enums\Role;
 use App\Enums\UserType;
 use App\Models\Contracts\ExistsInSis;
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
@@ -52,6 +54,7 @@ class User extends Authenticatable implements ExistsInSis
     protected $casts = [
         'user_type' => UserType::class,
         'is_24h' => 'boolean',
+        'notification_config' => 'collection',
     ];
 
     /**
@@ -140,5 +143,11 @@ class User extends Authenticatable implements ExistsInSis
     public function assignRole(Role|string $role): static
     {
         return $this->assign($role?->value ?? $role);
+    }
+
+    public function getNotificationOptions(): Collection
+    {
+        return NotificationEvent::collect()
+            ->filter(fn (NotificationEvent $event) => in_array($this->user_type, $event->getUserTypes()));
     }
 }
