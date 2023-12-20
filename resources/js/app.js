@@ -10,6 +10,10 @@ import '../css/app.css'
 
 createInertiaApp({
   title: title => title ? `${title} | ${import.meta.env.APP_NAME}` : import.meta.env.APP_NAME,
+  progress: {
+    delay: 0,
+    color: '#14b8a6',
+  },
   resolve: (name) => resolvePageComponent(`./pages/${name}.vue`, import.meta.glob('./pages/**/*.vue')),
   setup({ el, App, props, plugin }) {
     const app = createApp({ render: () => h(App, props) })

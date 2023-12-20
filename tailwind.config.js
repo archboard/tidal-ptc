@@ -21,7 +21,7 @@ export default {
         current: 'currentColor',
         // hard code from the actual color set you want
         primary: {
-          ...colors.cyan,
+          ...colors.teal,
         },
         gray: {
           ...colors.zinc,
