@@ -117,6 +117,12 @@ class School extends Model implements ExistsInSis
         return $this->hasMany(Student::class);
     }
 
+    public function languages(): BelongsToMany
+    {
+        return $this->belongsToMany(Language::class)
+            ->withPivot(['request_max', 'overlap_max']);
+    }
+
     public function syncFromSis(): static
     {
         $provider = $this->tenant->getSisProvider();

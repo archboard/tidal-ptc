@@ -29,6 +29,7 @@ class SchoolResource extends JsonResource
             'close_for_teachers_at' => $this->resource->local_close_for_teachers_at?->format('Y-m-d H:i'),
             'contacts_can_book' => $this->resource->contacts_can_book,
             'teachers_can_create' => $this->resource->teachers_can_create,
+            'languages' => LanguageResource::collection($this->whenLoaded('languages')),
         ];
     }
 }

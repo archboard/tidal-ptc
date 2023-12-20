@@ -10,7 +10,7 @@
   >
     <option v-if="!hideNull" :value="null" disabled>{{ nullOption }}</option>
     <slot>
-      <option v-for="option in options" :value="option.value || option.label">{{ option.label }}</option>
+      <option v-for="option in options" :value="option.value || option.id || option.label">{{ option.label || option.name }}</option>
     </slot>
   </select>
 </template>

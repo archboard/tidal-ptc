@@ -66,6 +66,7 @@ Route::middleware('tenant')->group(function () {
             ->name('csrf-token');
 
         Route::get('/timezones', fn () => timezones());
+        Route::get('/languages', \App\Http\Controllers\GetLanguagesController::class);
 
         Route::get('/', function () {
             return inertia('Index');
@@ -121,6 +122,9 @@ Route::middleware('tenant')->group(function () {
                 Route::middleware(['can:edit school settings', 'has_school'])->group(function () {
                     Route::singleton('/school', \App\Http\Controllers\Settings\SchoolSettingsController::class)
                         ->only('edit', 'update');
+
+                    Route::put('/school/languages', \App\Http\Controllers\Settings\SaveSchoolLanguagesController::class)
+                        ->name('school.languages');
 
                     Route::post('/school/sync/{item}', \App\Http\Controllers\Settings\SyncSchoolItemController::class)
                         ->name('school.item-sync');

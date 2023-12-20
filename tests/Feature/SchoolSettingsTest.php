@@ -1,9 +1,12 @@
 <?php
 
+use App\Models\Language;
 use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
     logIn();
+    setSchool();
+    Artisan::call('db:seed LanguageSeeder');
 });
 
 it("can't be accessed without permission", function () {
@@ -12,7 +15,7 @@ it("can't be accessed without permission", function () {
 });
 
 it('can be accessed with permission', function () {
-    fullPermissions()->setSchool();
+    fullPermissions();
 
     $this->get(route('settings.school.edit'))
         ->assertInertia(fn (AssertableInertia $page) => $page
@@ -23,7 +26,7 @@ it('can be accessed with permission', function () {
 });
 
 it('can update time slot settings', function (array $data) {
-    fullPermissions()->setSchool();
+    fullPermissions();
 
     $this->put(route('settings.school.update'), $data)
         ->assertRedirect()
@@ -82,4 +85,50 @@ it('can update time slot settings', function (array $data) {
         'open_for_teachers_at' => null,
         'close_for_teachers_at' => today()->addWeek()->format('Y-m-d H:i'),
     ],
+]);
+
+it('can save languages', function (array $data) {
+    fullPermissions();
+
+    $this->put(route('settings.school.languages'), ['languages' => $data])
+        ->assertRedirect()
+        ->assertSessionHasNoErrors()
+        ->assertSessionHas('success');
+
+    foreach ($data as $lang) {
+        $this->assertNotNull(
+            $this->school->languages->firstWhere(fn (Language $language) => $language->id === $lang['id']
+                && $language->pivot?->request_max === $lang['request_max']
+                && $language->pivot?->overlap_max === $lang['overlap_max']
+            )
+        );
+    }
+})->with([
+    'no existing languages' => function () {
+        $languages = Language::all();
+
+        return $languages->random(fake()->numberBetween(1, $languages->count()))
+            ->map(fn (Language $language) => [
+                'id' => $language->id,
+                'request_max' => fake()->numberBetween(1, 10),
+                'overlap_max' => fake()->numberBetween(1, 10),
+            ])
+            ->toArray();
+    },
+    'with existing language' => function () {
+        $languages = Language::all();
+        $existing = $languages->random();
+        $this->school->languages()->attach($existing, [
+            'request_max' => fake()->numberBetween(1, 10),
+            'overlap_max' => fake()->numberBetween(1, 10),
+        ]);
+
+        return $languages->filter(fn (Language $language) => $language->id !== $existing->id)
+            ->map(fn (Language $language) => [
+                'id' => $language->id,
+                'request_max' => fake()->numberBetween(1, 10),
+                'overlap_max' => fake()->numberBetween(1, 10),
+            ])
+            ->toArray();
+    },
 ]);

@@ -12,6 +12,7 @@ class SchoolSettingsController extends Controller
     public function edit(Request $request)
     {
         $school = $request->school();
+        $school->load('languages');
 
         return inertia('settings/School', [
             'title' => __('Settings for :school', ['school' => $school->name]),
