@@ -39,20 +39,11 @@ class TenantController extends Controller
             'custom_domain' => ['nullable', 'string', 'unique:tenants'],
             'subscription_started_at' => ['required', 'date'],
             'subscription_expires_at' => ['required', 'date'],
-            'email' => ['required', 'email', 'unique:users'],
         ]);
 
         /** @var Tenant $tenant */
         $tenant = Tenant::create(Arr::except($data, 'email'));
-        ray($tenant);
         $tenant->makeCurrent();
-
-        /** @var User $user */
-        $user = $tenant->users()
-            ->create(Arr::only($data, 'email'));
-        $user->allow()->everything();
-
-        // Send OTP
 
         return new TenantApiResource($tenant);
     }

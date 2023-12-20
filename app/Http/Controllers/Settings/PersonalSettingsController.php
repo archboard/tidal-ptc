@@ -37,6 +37,8 @@ class PersonalSettingsController extends Controller
             'first_name' => ['required'],
             'last_name' => ['required'],
             'email' => ['required', 'email'],
+            'timezone' => ['required', 'timezone'],
+            'is_24h' => ['required', 'boolean'],
         ]);
 
         $request->user()

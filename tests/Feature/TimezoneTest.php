@@ -7,10 +7,7 @@ beforeEach(function () {
 it('can retrieve timezones', function () {
     $this->get('/timezones')
         ->assertOk()
-        ->assertJson(timezones()
-            ->map(fn (string $label, string $value) => compact('label', 'value'))
-            ->values()
-            ->toArray());
+        ->assertJson(timezones()->toArray());
 });
 
 it('can update the timezone', function () {

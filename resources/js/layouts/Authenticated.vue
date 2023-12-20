@@ -72,7 +72,7 @@
                 :method="item.method"
                 :href="item.url"
                 :as="item.as"
-                :class="[item.current ? 'bg-primary-50 dark:bg-primary-800 text-primary-900 dark:text-white' : 'text-primary-800 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-700 hover:text-primary-900 dark:hover:text-gray-100', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']"
+                :class="[item.current ? 'bg-primary-200 dark:bg-primary-800 text-primary-900 dark:text-white' : 'text-primary-800 dark:text-gray-300 hover:bg-primary-200 dark:hover:bg-primary-700 hover:text-primary-900 dark:hover:text-gray-100', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']"
               >
                 <div v-html="item.icon" :class="[item.current ? 'text-primary-500 dark:text-gray-300' : 'text-primary-400 dark:text-gray-300 group-hover:text-primary-500 dark:group-hover:text-gray-300', 'mr-3 flex-shrink-0']" aria-hidden="true" />
                 {{ item.label }}
@@ -89,7 +89,7 @@
                   :method="item.method"
                   :href="item.url"
                   :as="item.as"
-                  :class="[item.current ? 'bg-gray-50 dark:bg-primary-800 text-gray-900 dark:text-gray-100' : 'text-primary-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-primary-800 hover:text-gray-900 dark:hover:text-gray-100', 'group flex items-center w-full rounded-md px-3 py-2 text-sm font-medium']"
+                  :class="[item.current ? 'bg-primary-200 dark:bg-primary-800 text-gray-900 dark:text-gray-100' : 'text-primary-600 dark:text-gray-300 hover:bg-primary-200 dark:hover:bg-primary-800 hover:text-gray-900 dark:hover:text-gray-100', 'group flex items-center w-full rounded-md px-3 py-2 text-sm font-medium']"
                 >
                   <span class="truncate">{{ item.label }}</span>
                 </component>

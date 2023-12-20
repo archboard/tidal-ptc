@@ -51,6 +51,7 @@ class User extends Authenticatable implements ExistsInSis
      */
     protected $casts = [
         'user_type' => UserType::class,
+        'is_24h' => 'boolean',
     ];
 
     /**

@@ -22,7 +22,7 @@ class TenantResource extends JsonResource
             'subscription_started_at' => $this->resource->subscription_started_at,
             'allow_oidc_login' => $this->resource->allow_oidc_login,
             'allow_password_auth' => $this->resource->allow_password_auth,
-            'sis' => $this->resource->sis_provider->label(),
+            'sis' => $this->resource->sis_provider?->label(),
         ];
     }
 }

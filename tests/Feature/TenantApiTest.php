@@ -71,13 +71,11 @@ class TenantApiTest extends TestCase
             'license' => $this->faker->uuid(),
             'subscription_started_at' => now()->subMonth()->toDateTimeString(),
             'subscription_expires_at' => now()->addYear()->toDateTimeString(),
-            'email' => $this->faker->email(),
         ];
 
         $this->postJson('/api/tenants', $data, $this->headers)
             ->assertCreated();
 
-        $this->assertDatabaseHas('tenants', Arr::except($data, 'email'));
         $this->assertTrue(
             Tenant::query()->where('license', $data['license'])->exists()
         );

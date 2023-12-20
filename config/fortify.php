@@ -92,6 +92,7 @@ return [
     'middleware' => [
         'web',
         'tenant',
+        'allows_pw_auth',
     ],
 
     /*
