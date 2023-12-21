@@ -6,6 +6,7 @@ use App\Models\Contracts\ExistsInSis;
 use App\Traits\BelongsToSchool;
 use App\Traits\BelongsToTenant;
 use App\Traits\HasFirstAndLastName;
+use App\Traits\HasHiddenAttribute;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,8 +25,13 @@ class Student extends Model implements ExistsInSis
     use HasFactory;
     use HasFirstAndLastName;
     use SoftDeletes;
+    use HasHiddenAttribute;
 
     protected $guarded = [];
+
+    protected $casts = [
+        'hidden' => 'boolean',
+    ];
 
     public function scopeFilter(Builder $builder, array $filters = []): void
     {

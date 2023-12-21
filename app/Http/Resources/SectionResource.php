@@ -19,6 +19,7 @@ class SectionResource extends JsonResource
         return [
             'id' => $this->resource->id,
             'sis_id' => $this->resource->sis_id,
+            'hidden' => $this->resource->hidden,
             'section_number' => $this->resource->section_number,
             'expression' => $this->resource->expression,
             'external_expression' => $this->resource->external_expression,

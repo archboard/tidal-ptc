@@ -8,6 +8,7 @@ use App\Enums\UserType;
 use App\Models\Contracts\ExistsInSis;
 use App\Traits\BelongsToTenant;
 use App\Traits\HasFirstAndLastName;
+use App\Traits\HasHiddenAttribute;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,6 +29,7 @@ class User extends Authenticatable implements ExistsInSis
     use HasFirstAndLastName;
     use HasRolesAndAbilities;
     use Notifiable;
+    use HasHiddenAttribute;
 
     /**
      * The attributes that are mass assignable.
@@ -54,6 +56,7 @@ class User extends Authenticatable implements ExistsInSis
     protected $casts = [
         'user_type' => UserType::class,
         'is_24h' => 'boolean',
+        'hidden' => 'boolean',
         'notification_config' => 'collection',
     ];
 
