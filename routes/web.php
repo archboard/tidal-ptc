@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Permission;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -78,7 +79,7 @@ Route::middleware('tenant')->group(function () {
         Route::post('/sync/{model}/{id}', \App\Http\Controllers\Settings\SyncModelController::class)
             ->name('model.sync');
 
-        Route::middleware(['has_school'])
+        Route::middleware(['has_school', 'scoped_permissions'])
             ->group(function () {
                 Route::resource('/students', \App\Http\Controllers\StudentController::class)
                     ->only('index', 'show');
@@ -91,6 +92,14 @@ Route::middleware('tenant')->group(function () {
 
                 Route::resource('/users', \App\Http\Controllers\UserController::class)
                     ->only('index', 'show');
+
+                Route::middleware(Permission::editPermissions->toMiddleware())
+                    ->group(function () {
+                        Route::get('/users/{user}/permissions', [\App\Http\Controllers\UserPermissionController::class, 'index'])
+                            ->name('users.permissions.index');
+                        Route::put('/users/{user}/permissions', [\App\Http\Controllers\UserPermissionController::class, 'update'])
+                            ->name('users.permissions.update');
+                    });
             });
 
         Route::prefix('/settings')
@@ -122,7 +131,7 @@ Route::middleware('tenant')->group(function () {
                         ->name('tenant.schools');
                 });
 
-                Route::middleware(['can:edit school settings', 'has_school'])->group(function () {
+                Route::middleware(['has_school', 'scoped_permissions', 'can:edit school settings'])->group(function () {
                     Route::singleton('/school', \App\Http\Controllers\Settings\SchoolSettingsController::class)
                         ->only('edit', 'update');
 

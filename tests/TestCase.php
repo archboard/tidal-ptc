@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Enums\Permission;
 use App\Enums\Role;
 use App\Models\School;
 use App\Models\Tenant;
@@ -45,14 +46,22 @@ abstract class TestCase extends BaseTestCase
         } else {
             $this->asSelfHosted();
         }
+
+        BouncerFacade::scope()->remove();
     }
 
     public function seedUser(array $attributes = []): User
     {
         $tenant = $this->tenant ?? Tenant::factory()->create();
         $mergedAttributes = array_merge(['tenant_id' => $tenant->id], $attributes);
+        $user = User::factory()->create($mergedAttributes);
 
-        return User::factory()->create($mergedAttributes);
+        if (isset($this->school)) {
+            $user->update(['school_id' => $this->school->id]);
+            $user->schools()->attach($this->school->id);
+        }
+
+        return $user;
     }
 
     public function logIn(?User $user = null, array $attributes = [], Role $role = Role::DISTRICT_ADMIN): static
@@ -60,7 +69,7 @@ abstract class TestCase extends BaseTestCase
         /** @var User $user */
         $user = $user ?? $this->seedUser($attributes);
 
-        $user->assign($role->value);
+//        $user->assign($role->value);
         $this->be($user);
         $this->user = $user;
 
@@ -74,12 +83,22 @@ abstract class TestCase extends BaseTestCase
         return $this;
     }
 
+    public function givePermission(Permission $permission): static
+    {
+        $scope = $permission->shouldBeScoped()
+            ? $this->user->school_id
+            : null;
+
+        BouncerFacade::scope()
+            ->onceTo($scope, fn () => BouncerFacade::allow($this->user)->to($permission->value));
+
+        return $this;
+    }
+
     public function setSchool(): static
     {
-        $this->school = $this->tenant->schools()->save(
-            School::factory()->make()
-        );
-        $this->user->schools()->attach($this->school);
+        $this->school = $this->tenant->schools->random();
+        $this->user->schools()->sync($this->school);
         $this->user->update([
             'school_id' => $this->school->id,
         ]);

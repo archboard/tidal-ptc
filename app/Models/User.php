@@ -9,6 +9,7 @@ use App\Models\Contracts\ExistsInSis;
 use App\Traits\BelongsToTenant;
 use App\Traits\HasFirstAndLastName;
 use App\Traits\HasHiddenAttribute;
+use App\Traits\HasPermissions;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,6 +31,7 @@ class User extends Authenticatable implements ExistsInSis
     use HasRolesAndAbilities;
     use Notifiable;
     use HasHiddenAttribute;
+    use HasPermissions;
 
     /**
      * The attributes that are mass assignable.

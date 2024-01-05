@@ -25,9 +25,6 @@ uses(\Illuminate\Foundation\Testing\RefreshDatabase::class)->in('Feature');
 |
 */
 
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
-});
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +45,11 @@ function logIn(array $attributes = [])
 function fullPermissions()
 {
     return test()->fullPermission();
+}
+
+function givePermission(App\Enums\Permission $permission)
+{
+    return test()->givePermission($permission);
 }
 
 function setSchool()
