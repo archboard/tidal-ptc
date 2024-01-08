@@ -7,13 +7,39 @@ use App\Exceptions\InvalidPermissionException;
 use App\Models\Contracts\ExistsInSis;
 use App\Models\School;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Silber\Bouncer\BouncerFacade;
 
 trait HasPermissions
 {
+    public function permissions(): Attribute
+    {
+        return Attribute::get(
+            fn () => Cache::rememberForever(
+                $this->permissionsCacheKey(),
+                fn () => $this->permissionsToFrontend(app(School::class))
+            )
+        );
+    }
+
+    protected function permissionsCacheKey(): string
+    {
+        return $this->sis_key.'|permissions';
+    }
+
+    public function clearPermissionCache(): static
+    {
+        BouncerFacade::refreshFor($this);
+        Cache::forget($this->permissionsCacheKey());
+
+        return $this;
+    }
+
     public function getPermissionSubjectModels(): array
     {
         return [
@@ -24,7 +50,7 @@ trait HasPermissions
         ];
     }
 
-    public function getPermissionMatrix(User $authUser, ?School $school = null): array
+    public function getPermissionMatrix(?User $authUser = null, ?School $school = null): array
     {
         $schools = $school
             ? collect([$school])
@@ -37,7 +63,7 @@ trait HasPermissions
         )->toArray();
         $permissions = BouncerFacade::scope()
             ->removeOnce(function () use ($authUser) {
-                return $authUser->can('*')
+                return (! $authUser || $authUser->can('*'))
                     ? Permission::getNonCrud()
                         ->filter(fn (Permission $permission) => ! $permission->shouldBeScoped())
                         ->map(fn (Permission $permission) => $permission->toEntry($this))
@@ -115,11 +141,34 @@ trait HasPermissions
                     $this->$action($permission->value, $model);
                 }
 
-                BouncerFacade::refreshFor($this);
+                $this->clearPermissionCache();
             });
 
-        ray($this->getAbilities());
-
         return $this;
+    }
+
+    public function permissionsToFrontend(School $school): array
+    {
+        $matrix = $this->getPermissionMatrix(school: $school);
+        $abilities = collect($matrix['permissions'])
+            ->mapWithKeys(fn (array $permission) => [$permission['key'] => $permission['granted']]);
+        $permissions = collect(Arr::get($matrix, 'schools.'.$school->id.'.permissions', []))
+            ->mapWithKeys(fn (array $permission) => [$permission['key'] => $permission['granted']]);
+        $models = collect(Arr::get($matrix, 'schools.'.$school->id.'.models', []))
+            ->mapWithKeys(fn (array $model) => [
+                $model['model'] => collect($model['permissions'])
+                    ->mapWithKeys(fn (array $permission) => [$permission['key'] => $permission['granted']]),
+            ]);
+
+        return $abilities->merge($permissions)
+            ->merge($models)
+            ->toArray();
+    }
+
+    public function hasCachedPermission(string|Permission $model, ?Permission $permission = null): bool
+    {
+        $key = ($model?->value ?? $model).($permission ? '.'.$permission->key() : '');
+
+        return Arr::get($this->permissions, $key, false);
     }
 }
