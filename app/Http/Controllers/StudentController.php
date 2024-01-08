@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\StudentResource;
 use App\Models\School;
 use App\Models\Student;
+use App\Navigation\NavigationItem;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -22,23 +23,13 @@ class StudentController extends Controller
         return inertia('students/Index', [
             'title' => $title,
             'students' => StudentResource::collection($students),
+            'breadcrumbs' => $this->withBreadcrumbs(
+                NavigationItem::make()
+                    ->labeled(__('Students'))
+                    ->to(route('students.index'))
+                    ->isCurrent()
+            ),
         ])->withViewData(compact('title'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
@@ -52,15 +43,24 @@ class StudentController extends Controller
         return inertia('students/Show', [
             'title' => $title,
             'student' => new StudentResource($student),
+            'breadcrumbs' => $this->withBreadcrumbs(
+                NavigationItem::make()
+                    ->labeled(__('Students'))
+                    ->to(route('students.index')),
+                NavigationItem::make()
+                    ->labeled($student->name)
+                    ->to(route('students.show', $student))
+                    ->isCurrent(),
+            ),
         ])->withViewData(compact('title'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Student $student)
     {
-        //
+        $title = __('Edit :name', ['name' => $student->name]);
     }
 
     /**
