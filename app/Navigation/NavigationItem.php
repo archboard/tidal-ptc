@@ -74,7 +74,7 @@ class NavigationItem
         return $this;
     }
 
-    public function isCurrent(bool $current): static
+    public function isCurrent(bool $current = true): static
     {
         $this->current = $current;
 

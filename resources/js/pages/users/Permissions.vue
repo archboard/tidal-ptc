@@ -73,10 +73,10 @@ import { router } from '@inertiajs/vue3'
 const props = defineProps({
   user: Object,
   subject: Object,
-  permissions: Object,
+  userPermissions: Object,
 })
 const emit = defineEmits([])
-const localPermissions = ref(clone(props.permissions))
+const localPermissions = ref(clone(props.userPermissions))
 const $http = inject('$http')
 const updatePermission = async (permission, granted, school = null, model = null, reload = false) => {
   NProgress.start()
@@ -92,7 +92,7 @@ const updatePermission = async (permission, granted, school = null, model = null
     if (reload) {
       return router.reload({
         preserveScroll: true,
-        only: ['permissions']
+        only: ['userPermissions']
       })
     }
   } catch (error) {
@@ -102,7 +102,7 @@ const updatePermission = async (permission, granted, school = null, model = null
   NProgress.done()
 }
 
-watch(() => props.permissions, value => {
+watch(() => props.userPermissions, value => {
   localPermissions.value = clone(value)
 })
 </script>

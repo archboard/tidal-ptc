@@ -7,6 +7,7 @@ use App\Http\Resources\UserResource;
 use App\Models\School;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Navigation\NavigationItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -22,7 +23,19 @@ class UserPermissionController extends Controller
         return inertia('users/Permissions', [
             'title' => $title,
             'subject' => new UserResource($user),
-            'permissions' => $user->getPermissionMatrix($authUser, $authUser->school),
+            'userPermissions' => $user->getPermissionMatrix($authUser, $authUser->school),
+            'breadcrumbs' => $this->withBreadcrumbs(
+                NavigationItem::make()
+                    ->labeled(__('Users'))
+                    ->to(route('users.index')),
+                NavigationItem::make()
+                    ->labeled($user->name)
+                    ->to(route('users.show', $user)),
+                NavigationItem::make()
+                    ->labeled(__('Permissions'))
+                    ->isCurrent()
+                    ->to(route('users.permissions.index', $user))
+            ),
         ])->withViewData(compact('title'));
     }
 

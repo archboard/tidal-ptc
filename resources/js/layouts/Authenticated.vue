@@ -128,6 +128,8 @@
       </div>
 
       <main class="flex-1">
+        <Breadcrumbs />
+
         <div class="py-6">
           <Container>
             <div class="md:flex justify-between items-start">
@@ -169,6 +171,7 @@ import useProp from '@/composition/useProp.js'
 import AppSelect from '@/components/forms/AppSelect.vue'
 import Container from '@/components/Container.vue'
 import useColorTheme from '@/composition/useColorTheme.js'
+import Breadcrumbs from '@/components/Breadcrumbs.vue'
 
 const title = usePageTitle()
 const { props } = usePage()
