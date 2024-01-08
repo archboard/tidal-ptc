@@ -79,6 +79,9 @@ Route::middleware('tenant')->group(function () {
         Route::post('/sync/{model}/{id}', \App\Http\Controllers\Settings\SyncModelController::class)
             ->name('model.sync');
 
+        Route::match(['post', 'delete'], '/selection/{model}', \App\Http\Controllers\ToggleSelectionController::class)
+            ->name('selection.toggle');
+
         Route::middleware(['has_school', 'scoped_permissions'])
             ->group(function () {
                 Route::resource('/students', \App\Http\Controllers\StudentController::class)

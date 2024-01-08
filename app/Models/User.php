@@ -10,14 +10,20 @@ use App\Traits\BelongsToTenant;
 use App\Traits\HasFirstAndLastName;
 use App\Traits\HasHiddenAttribute;
 use App\Traits\HasPermissions;
+use App\Traits\HasTimezone;
+use App\Traits\Selectable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 /**
@@ -28,10 +34,12 @@ class User extends Authenticatable implements ExistsInSis
     use BelongsToTenant;
     use HasFactory;
     use HasFirstAndLastName;
+    use HasPermissions;
     use HasRolesAndAbilities;
+    use HasTimezone;
     use Notifiable;
     use HasHiddenAttribute;
-    use HasPermissions;
+    use Selectable;
 
     /**
      * The attributes that are mass assignable.
@@ -61,6 +69,10 @@ class User extends Authenticatable implements ExistsInSis
         'hidden' => 'boolean',
         'notification_config' => 'collection',
     ];
+
+    //-------------------------------------------------------------------------
+    // Query scopes
+    //-------------------------------------------------------------------------
 
     /**
      * Gets the users who have an ability directly or through a role
@@ -96,10 +108,9 @@ class User extends Authenticatable implements ExistsInSis
         });
     }
 
-    public function getSchoolPermissionsAttribute(): array
-    {
-        return $this->getPermissionsForSchool();
-    }
+    //-------------------------------------------------------------------------
+    // Relationships
+    //-------------------------------------------------------------------------
 
     public function schools(): BelongsToMany
     {
@@ -124,18 +135,14 @@ class User extends Authenticatable implements ExistsInSis
         return $this->belongsTo(School::class);
     }
 
-    public function getPermissionsForSchool(?School $school = null): array
+    public function selectedModels(): HasMany
     {
-        $school = $school ?? $this->school;
-
-        return [
-            [
-                'label' => __('Change school settings'),
-                'permission' => 'change settings',
-                'selected' => $this->can('change settings', $school),
-            ],
-        ];
+        return $this->hasMany(SelectedModel::class);
     }
+
+    //-------------------------------------------------------------------------
+    // Instance functions
+    //-------------------------------------------------------------------------
 
     public function syncFromSis(): static
     {
@@ -145,14 +152,99 @@ class User extends Authenticatable implements ExistsInSis
         return $this;
     }
 
+    public function getNotificationOptions(): Collection
+    {
+        return NotificationEvent::collect()
+            ->filter(fn (NotificationEvent $event) => in_array($this->user_type, $event->getUserTypes()));
+    }
+
     public function assignRole(Role|string $role): static
     {
         return $this->assign($role?->value ?? $role);
     }
 
-    public function getNotificationOptions(): Collection
+    /**
+     * Toggles a model as selected for the user.
+     */
+    public function toggleSelectedModelInstance(Model $model): static
     {
-        return NotificationEvent::collect()
-            ->filter(fn (NotificationEvent $event) => in_array($this->user_type, $event->getUserTypes()));
+        $selection = $this->selectedModels()
+            ->firstOrCreate([
+                'tenant_id' => $this->tenant_id,
+                'school_id' => $this->school_id,
+                'user_id' => $this->id,
+                'selectable_type' => $model->getMorphClass(),
+                'selectable_id' => $model->getKey(),
+            ]);
+
+        if (! $selection->wasRecentlyCreated) {
+            $selection->delete();
+        }
+
+        return $this;
+    }
+
+    public function toggleSelectedModel(string $modelAlias, int $id): static
+    {
+        if (class_exists($modelAlias)) {
+            $modelAlias = (new $modelAlias)->getMorphClass();
+        }
+
+        if ($model = Relation::getMorphedModel($modelAlias)) {
+            return $this->toggleSelectedModelInstance(new $model(['id' => $id]));
+        }
+
+        return $this;
+    }
+
+    public function selectAllModel(string $modelAlias, array $filters = []): static
+    {
+        if (class_exists($modelAlias)) {
+            $modelAlias = (new $modelAlias)->getMorphClass();
+        }
+
+        if (Relation::getMorphedModel($modelAlias)) {
+            $relationship = Str::plural($modelAlias);
+
+            $data = $this->school
+                ->$relationship()
+                ->filter($filters)
+                ->pluck('id')
+                ->map(fn ($id) => [
+                    'tenant_id' => $this->tenant_id,
+                    'school_id' => $this->school_id,
+                    'user_id' => $this->id,
+                    'selectable_type' => $modelAlias,
+                    'selectable_id' => $id,
+                ]);
+
+            $this->deselectAllModel($modelAlias)
+                ->selectedModels()
+                ->insert($data->toArray());
+        }
+
+        return $this;
+    }
+
+    public function deselectAllModel(string $modelAlias): static
+    {
+        $this->selectedModels()
+            ->where('selectable_type', $modelAlias)
+            ->where('school_id', $this->school_id)
+            ->delete();
+
+        return $this;
+    }
+
+    public function getModelSelection(string $model): Collection
+    {
+        $modelAlias = class_exists($model)
+            ? (new $model())->getMorphClass()
+            : $model;
+
+        return $this->selectedModels()
+            ->where('school_id', $this->school_id)
+            ->where('selectable_type', $modelAlias)
+            ->pluck('selectable_id');
     }
 }

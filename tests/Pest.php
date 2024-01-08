@@ -25,7 +25,6 @@ uses(\Illuminate\Foundation\Testing\RefreshDatabase::class)->in('Feature');
 |
 */
 
-
 /*
 |--------------------------------------------------------------------------
 | Functions
@@ -45,6 +44,11 @@ function logIn(array $attributes = [])
 function fullPermissions()
 {
     return test()->fullPermission();
+}
+
+function seedUser(array $attributes = []): App\Models\User
+{
+    return test()->seedUser($attributes);
 }
 
 function givePermission(App\Enums\Permission $permission)

@@ -69,7 +69,7 @@ abstract class TestCase extends BaseTestCase
         /** @var User $user */
         $user = $user ?? $this->seedUser($attributes);
 
-//        $user->assign($role->value);
+        //        $user->assign($role->value);
         $this->be($user);
         $this->user = $user;
 
@@ -98,10 +98,13 @@ abstract class TestCase extends BaseTestCase
     public function setSchool(): static
     {
         $this->school = $this->tenant->schools->random();
-        $this->user->schools()->sync($this->school);
-        $this->user->update([
-            'school_id' => $this->school->id,
-        ]);
+
+        if (isset($this->user)) {
+            $this->user->schools()->sync($this->school);
+            $this->user->update([
+                'school_id' => $this->school->id,
+            ]);
+        }
 
         return $this;
     }
