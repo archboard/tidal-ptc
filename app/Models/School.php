@@ -95,7 +95,6 @@ class School extends Model implements ExistsInSis
         );
     }
 
-
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class)

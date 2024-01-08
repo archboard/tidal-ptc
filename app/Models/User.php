@@ -34,11 +34,11 @@ class User extends Authenticatable implements ExistsInSis
     use BelongsToTenant;
     use HasFactory;
     use HasFirstAndLastName;
+    use HasHiddenAttribute;
     use HasPermissions;
     use HasRolesAndAbilities;
     use HasTimezone;
     use Notifiable;
-    use HasHiddenAttribute;
     use Selectable;
 
     /**

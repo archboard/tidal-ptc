@@ -24,8 +24,8 @@ class Student extends Model implements ExistsInSis
     use BelongsToTenant;
     use HasFactory;
     use HasFirstAndLastName;
-    use SoftDeletes;
     use HasHiddenAttribute;
+    use SoftDeletes;
 
     protected $guarded = [];
 

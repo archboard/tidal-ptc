@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TenantApiResource;
 use App\Models\Tenant;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 

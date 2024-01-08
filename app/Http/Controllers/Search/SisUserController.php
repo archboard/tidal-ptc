@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Search;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
 use App\Models\Tenant;
 use Illuminate\Http\Request;
 

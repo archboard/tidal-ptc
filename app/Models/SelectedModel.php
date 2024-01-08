@@ -10,11 +10,12 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class SelectedModel extends Model
 {
-    use BelongsToTenant;
     use BelongsToSchool;
+    use BelongsToTenant;
     use BelongsToUser;
 
     protected $guarded = [];
+
     public $timestamps = false;
 
     public function selectable(): MorphTo
