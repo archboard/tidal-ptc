@@ -1,5 +1,5 @@
 <template>
-  <nav v-if="pages.length > 0" class="flex border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900" aria-label="Breadcrumb">
+  <nav v-if="pages.length > 0" class="flex bg-white dark:bg-gray-900" aria-label="Breadcrumb">
     <Container class="w-full">
       <ol role="list" class="flex w-full space-x-4 py-4">
         <li class="flex">
