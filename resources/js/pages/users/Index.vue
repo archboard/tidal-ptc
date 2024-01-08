@@ -17,8 +17,11 @@
           <ActionColumn>
             <ContextMenu>
               <div class="p-1">
-                <AppMenuItem :href="`/users/${user.id}`">
+                <AppMenuItem v-if="can('user.view')" is="InertiaLink" :href="`/users/${user.id}`">
                   {{ __('View') }}
+                </AppMenuItem>
+                <AppMenuItem v-if="can('edit_permissions')" is="InertiaLink" :href="`/users/${user.id}/permissions`">
+                  {{ __('Edit permissions') }}
                 </AppMenuItem>
               </div>
             </ContextMenu>
