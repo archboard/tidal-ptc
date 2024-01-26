@@ -245,6 +245,7 @@ class User extends Authenticatable implements ExistsInSis
         return $this->selectedModels()
             ->where('school_id', $this->school_id)
             ->where('selectable_type', $modelAlias)
-            ->pluck('selectable_id');
+            ->pluck('selectable_id')
+            ->values();
     }
 }
