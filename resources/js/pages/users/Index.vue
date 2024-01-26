@@ -6,6 +6,7 @@
       :available-filters="availableFilters"
       @update="updateResults()"
       :loading="updatingResults"
+      :search-placeholder="__('Search by name or email…')"
     />
 
     <div v-if="selection.length > 0" class="px-4 sm:px-5 py-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-600 text-sm">

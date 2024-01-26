@@ -77,7 +77,7 @@
     <div class="px-4 py-3 sm:flex sm:items-center sm:justify-between">
       <div class="relative w-full sm:w-[350px]">
         <label for="search-filter" class="sr-only">Search results</label>
-        <SearchInput v-model="localSearch" id="search-filter" />
+        <SearchInput v-model="localSearch" id="search-filter" :placeholder="searchPlaceholder" />
       </div>
       <div class="flex w-full justify-end space-x-2 mt-4 sm:mt-0">
         <button v-if="Object.keys(localValue).length > 0" @click.prevent="reset">
@@ -116,6 +116,7 @@ const props = defineProps({
     required: true,
   },
   loading: Boolean,
+  searchPlaceholder: String,
 })
 const emit = defineEmits(['update', 'update:modelValue', 'update:search'])
 const localValue = useVModel(props, 'modelValue', emit)
