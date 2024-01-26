@@ -11,6 +11,7 @@
     "php": "^8.2",
     "ext-intl": "*",
     "ext-redis": "*",
+    "grantholle/laravel-model-filters": "^1.0",
     "grantholle/laravel-powerschool-auth": "^3.0",
     "grantholle/laravel-timezone": "^1.0",
     "grantholle/powerschool-api": "^4.0",
