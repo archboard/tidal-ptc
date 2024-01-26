@@ -70,7 +70,6 @@ const syncItem = userType => {
       },
     })
   } catch (err) {
-    console.error(err)
     uiState.value = null
   }
 }
