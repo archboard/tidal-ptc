@@ -17,6 +17,7 @@
     "cross-env": "^7.0",
     "dayjs": "^1.11.5",
     "just-clone": "^6.1.1",
+    "just-is-empty": "^3.4.1",
     "just-omit": "^2.2.0",
     "just-pick": "^4.1.1",
     "just-reduce-object": "^2.3.0",
