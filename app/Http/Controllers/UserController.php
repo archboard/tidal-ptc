@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\UserResource;
 use App\Models\School;
 use App\Models\User;
+use App\Navigation\NavigationItem;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -25,6 +26,12 @@ class UserController extends Controller
             'users' => UserResource::collection($users),
             'availableFilters' => (new User)->availableFiltersToArray(),
             'currentFilters' => (object) $filters,
+            'breadcrumbs' => $this->withBreadcrumbs(
+                NavigationItem::make()
+                    ->labeled(__('Users'))
+                    ->to(route('users.index'))
+                    ->isCurrent()
+            ),
         ])->withViewData(compact('title'));
     }
 
