@@ -81,6 +81,8 @@ Route::middleware('tenant')->group(function () {
 
         Route::match(['post', 'delete'], '/selection/{model}', \App\Http\Controllers\ToggleSelectionController::class)
             ->name('selection.toggle');
+        Route::get('/selection/{model}', \App\Http\Controllers\GetSelectionController::class)
+            ->name('selection.get');
 
         Route::middleware(['has_school', 'scoped_permissions'])
             ->group(function () {
