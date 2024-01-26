@@ -79,7 +79,7 @@ const removeSelection = value => {
 }
 
 watch(localItem, value => {
-  if (value?.value) {
+  if (typeof value?.value !== 'undefined' && value?.value !== null) {
     localValue.value.push(value.value)
     localItem.value = null
     query.value = ''

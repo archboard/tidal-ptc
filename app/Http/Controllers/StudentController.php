@@ -16,8 +16,9 @@ class StudentController extends Controller
     public function index(Request $request, School $school)
     {
         $title = __('Students');
+        $filters = $request->currentFilters();
         $students = $school->students()
-            ->filter($request->all())
+            ->filter($filters)
             ->paginate(25);
 
         return inertia('students/Index', [
@@ -29,6 +30,8 @@ class StudentController extends Controller
                     ->to(route('students.index'))
                     ->isCurrent()
             ),
+            'availableFilters' => (new Student)->availableFiltersToArray(),
+            'currentFilters' => (object) $filters,
         ])->withViewData(compact('title'));
     }
 

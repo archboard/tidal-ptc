@@ -84,7 +84,7 @@
           <span class="sr-only">Reset filters</span>
           <TrashIcon class="h-5 w-5 text-red-500 dark:text-red-400" />
         </button>
-        <button class="relative block" @click.prevent="showFilters = !showFilters">
+        <button v-if="availableFilters.length > 0" class="relative block" @click.prevent="showFilters = !showFilters">
           <span class="absolute -top-2 -right-2 inline-flex items-center rounded-md bg-primary-400/20 px-1 text-xs font-medium text-primary-400 ring-1 ring-inset ring-primary-400/20">{{ Object.keys(localValue).length }}</span>
           <FunnelIcon class="w-5 h-5 text-gray-500 dark:text-gray-300" />
         </button>

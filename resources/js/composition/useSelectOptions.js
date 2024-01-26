@@ -10,9 +10,9 @@ export default function useSelectOptions (reactiveOptions) {
 
     if (Array.isArray(options)) {
       return options.map(option => {
-        if (typeof option === 'string') {
+        if (typeof option !== 'object') {
           return {
-            label: option,
+            label: option.toString(),
             value: option,
           }
         }

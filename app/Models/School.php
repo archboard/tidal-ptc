@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Arr;
 
 /**
  * @mixin IdeHelperSchool
@@ -159,5 +160,15 @@ class School extends Model implements ExistsInSis
         $provider->syncSchoolSections($this);
 
         return $this;
+    }
+
+    public static function current(): static
+    {
+        return request()->school();
+    }
+
+    public function gradeSelectOptions(): array
+    {
+        return range($this->low_grade, $this->high_grade);
     }
 }

@@ -78,6 +78,6 @@ const props = defineProps({
   availableFilters: Array,
   currentFilters: [Array, Object],
 })
-const { selection, selectedAll, toggleSelection, selectNone } = useModelSelection('user')
+const { selection, selectedAll, toggleSelection } = useModelSelection('user')
 const { filters, search, updateResults, updatingResults } = useFilters()
 </script>
