@@ -37,6 +37,7 @@ class User extends Authenticatable implements ExistsInSis
 {
     use BelongsToTenant;
     use HasFactory;
+    use HasFilters;
     use HasFirstAndLastName;
     use HasHiddenAttribute;
     use HasPermissions;
@@ -44,7 +45,6 @@ class User extends Authenticatable implements ExistsInSis
     use HasTimezone;
     use Notifiable;
     use Selectable;
-    use HasFilters;
 
     /**
      * The attributes that are mass assignable.
