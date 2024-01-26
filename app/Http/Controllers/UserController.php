@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
 use App\Models\School;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -14,13 +15,16 @@ class UserController extends Controller
     public function index(Request $request, School $school)
     {
         $title = __('Users');
+        $filters = $request->currentFilters();
         $users = $school->users()
-            ->filter($request->all())
+            ->filter($filters)
             ->paginate(25);
 
         return inertia('users/Index', [
             'title' => $title,
             'users' => UserResource::collection($users),
+            'availableFilters' => (new User)->availableFiltersToArray(),
+            'currentFilters' => (object) $filters,
         ])->withViewData(compact('title'));
     }
 
