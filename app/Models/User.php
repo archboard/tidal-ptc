@@ -71,7 +71,7 @@ class User extends Authenticatable implements ExistsInSis
     protected $casts = [
         'user_type' => UserType::class,
         'is_24h' => 'boolean',
-        'hidden' => 'boolean',
+        'can_book' => 'boolean',
         'notification_config' => 'collection',
     ];
 

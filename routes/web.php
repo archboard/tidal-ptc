@@ -79,13 +79,15 @@ Route::middleware('tenant')->group(function () {
         Route::post('/sync/{model}/{id}', \App\Http\Controllers\Settings\SyncModelController::class)
             ->name('model.sync');
 
-        Route::match(['post', 'delete'], '/selection/{model}', \App\Http\Controllers\ToggleSelectionController::class)
-            ->name('selection.toggle');
-        Route::get('/selection/{model}', \App\Http\Controllers\GetSelectionController::class)
-            ->name('selection.get');
-
         Route::middleware(['has_school', 'scoped_permissions'])
             ->group(function () {
+                Route::match(['post', 'delete'], '/selection/{model}', \App\Http\Controllers\ToggleSelectionController::class)
+                    ->name('selection.toggle');
+                Route::get('/selection/{model}', \App\Http\Controllers\GetSelectionController::class)
+                    ->name('selection.get');
+                Route::put('/toggle-hidden', \App\Http\Controllers\ToggleHiddenController::class)
+                    ->name('toggle-hidden');
+
                 Route::resource('/students', \App\Http\Controllers\StudentController::class)
                     ->only('index', 'show');
 

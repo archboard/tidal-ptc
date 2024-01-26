@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Navigation\NavigationItem;
+use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -15,5 +17,12 @@ class Controller extends BaseController
     protected function withBreadcrumbs(NavigationItem ...$item): array
     {
         return array_map(fn (NavigationItem $item) => $item->toArray(), $item);
+    }
+
+    public function authorize($ability, $arguments = [])
+    {
+        [$ability, $arguments] = $this->parseAbilityAndArguments($ability?->value ?? $ability, $arguments);
+
+        return app(Gate::class)->authorize($ability, $arguments);
     }
 }

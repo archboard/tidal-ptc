@@ -22,7 +22,7 @@ class Course extends Model implements ExistsInSis
     protected $guarded = [];
 
     protected $casts = [
-        'hidden' => 'boolean',
+        'can_book' => 'boolean',
     ];
 
     public function scopeFilter(Builder $builder, array $filters = []): void

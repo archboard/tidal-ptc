@@ -83,14 +83,14 @@ abstract class TestCase extends BaseTestCase
         return $this;
     }
 
-    public function givePermission(Permission $permission): static
+    public function givePermission(Permission $permission, $arguments): static
     {
         $scope = $permission->shouldBeScoped()
             ? $this->user->school_id
             : null;
 
         BouncerFacade::scope()
-            ->onceTo($scope, fn () => BouncerFacade::allow($this->user)->to($permission->value));
+            ->onceTo($scope, fn () => BouncerFacade::allow($this->user)->to($permission->value, $arguments));
 
         return $this;
     }

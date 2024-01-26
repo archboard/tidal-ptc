@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\School;
 use App\Models\Tenant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,11 +20,12 @@ class SectionFactory extends Factory
     {
         return [
             'tenant_id' => Tenant::current()->id,
+            'school_id' => School::current()->id,
             'sis_id' => $this->faker->numberBetween(1, 100),
             'section_number' => $this->faker->numberBetween(1, 100),
             'expression' => $this->faker->word(),
             'external_expression' => $this->faker->word(),
-            'sis_key' => $this->faker->numberBetween(1, 100),
+            'sis_key' => $this->faker->uuid(),
         ];
     }
 }
