@@ -10,13 +10,14 @@
   >
     <option v-if="!hideNull" :value="null" disabled>{{ nullOption }}</option>
     <slot>
-      <option v-for="option in options" :value="option.value || option.id || option.label">{{ option.label || option.name }}</option>
+      <option v-for="option in normalizedOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
     </slot>
   </select>
 </template>
 
 <script setup>
 import { useVModel } from '@vueuse/core'
+import useSelectOptions from '@/composition/useSelectOptions.js'
 
 const props = defineProps({
   modelValue: [Object, String, Number, Boolean],
@@ -39,4 +40,5 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue', 'change'])
 const localValue = useVModel(props, 'modelValue', emit)
+const normalizedOptions = useSelectOptions(props.options)
 </script>

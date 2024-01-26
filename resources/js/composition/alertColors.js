@@ -1,4 +1,4 @@
-import { computed, toValue } from 'vue'
+import { computed } from 'vue'
 
 const bgColors = {
   success: 'bg-green-50 dark:bg-green-900',
@@ -27,9 +27,9 @@ const dismissColors = {
 
 export default (level) => {
   return {
-    iconColor: iconColors[toValue(level)] || iconColors.neutral,
-    bgColor: bgColors[toValue(level)] || bgColors.neutral,
-    textColor: textColors[toValue(level)] || textColors.neutral,
-    dismissColor: dismissColors[toValue(level)] || dismissColors.neutral,
+    iconColor: computed(() => iconColors[level] || iconColors.neutral),
+    bgColor: computed(() => bgColors[level] || bgColors.neutral),
+    textColor: computed(() => textColors[level] || textColors.neutral),
+    dismissColor: computed(() => dismissColors[level] || dismissColors.neutral),
   }
 }

@@ -2,9 +2,9 @@
   <Menu as="div" class="relative inline-block text-left z-10">
     <div>
       <MenuButton class="focus:outline-none">
-        <AppButton :size="size">
+        <AppButton :size="size" :color="color">
           <slot />
-          <ChevronDownIcon class="-mr-1 ml-2" :class="iconSize" aria-hidden="true" />
+          <component :is="icon || ChevronDownIcon" :class="[iconSize, '-mr-1 ml-2']" aria-hidden="true" />
         </AppButton>
       </MenuButton>
     </div>
@@ -27,42 +27,27 @@
   </Menu>
 </template>
 
-<script>
+<script setup>
 import { Menu, MenuButton } from '@headlessui/vue'
 import { ChevronDownIcon } from '@heroicons/vue/24/solid'
 import ScaleIn from '@/components/transitions/ScaleIn.vue'
 import AppButton from '@/components/AppButton.vue'
 import AppMenuItem from '@/components/AppMenuItem.vue'
 import AppMenuItems from '@/components/AppMenuItems.vue'
+import { computed } from 'vue'
 
-export default {
-  components: {
-    AppButton,
-    ScaleIn,
-    AppMenuItem,
-    AppMenuItems,
-    Menu,
-    MenuButton,
-    ChevronDownIcon,
+const props = defineProps({
+  menuItems: Array,
+  size: {
+    type: String,
+    default: 'sm',
   },
-
-  props: {
-    menuItems: Array,
-    size: {
-      type: String,
-      default: 'sm',
-    }
-  },
-
-  setup ({ size }) {
-    const iconSizes = {
-      sm: 'h-4 w-4',
-      base: 'h-5 w-5',
-    }
-
-    return {
-      iconSize: iconSizes[size] || iconSizes.base,
-    }
-  }
+  icon: [Object, Function],
+  color: String,
+})
+const iconSizes = {
+  sm: 'h-4 w-4',
+  base: 'h-5 w-5',
 }
+const iconSize = computed(() => iconSizes[props.size] || iconSizes.base)
 </script>

@@ -2,7 +2,6 @@ export const fieldProps = {
   modelValue: [Object, String, Number],
   label: String,
   type: String,
-  id: String,
   options: [Array, Object],
   error: String,
   placeholder: String,
@@ -18,7 +17,8 @@ export const fieldProps = {
   hasError: {
     type: Boolean,
     default: () => false,
-  }
+  },
+  id: String,
 }
 
 export const fieldEmits = ['update:modelValue']

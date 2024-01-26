@@ -104,7 +104,7 @@ export default {
         green: 'text-white bg-green-600 hover:bg-green-500 focus:border-green-700 focus:ring-green-400 active:bg-green-700 disabled:bg-green-400',
         gray: 'text-white bg-gray-500 hover:bg-gray-600 focus:border-gray-700 focus:ring-gray-400 active:bg-gray-700 disabled:bg-gray-400',
         gray_light: 'text-white bg-gray-300 hover:bg-gray-500 focus:border-gray-500 focus:ring-gray-200 active:bg-gray-500 disabled:bg-gray-200',
-        white: 'text-gray-700 bg-white hover:bg-gray-50 border-gray-300 focus:border-gray-400 focus:ring-gray-400 active:bg-gray-100 disabled:bg-gray-400',
+        white: 'text-gray-700 dark:text-white bg-white dark:bg-gray-800 hover:bg-gray-50 border-gray-300 dark:border-gray-500 focus:border-gray-400 focus:ring-gray-400 active:bg-gray-100 disabled:bg-gray-400',
         purple: 'text-white bg-brand-purple focus:ring-brand-purple active:bg-brand-purple disabled:bg-gray-500'
       }
     }
