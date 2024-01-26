@@ -1,7 +1,9 @@
-import { computed } from 'vue'
+import { computed, toValue } from 'vue'
 
-export default function useSelectOptions (options) {
+export default function useSelectOptions (reactiveOptions) {
   return computed(() => {
+    const options = toValue(reactiveOptions)
+
     if (!options) {
       return []
     }

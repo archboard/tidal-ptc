@@ -18,6 +18,7 @@
 <script setup>
 import { useVModel } from '@vueuse/core'
 import useSelectOptions from '@/composition/useSelectOptions.js'
+import { toRef } from 'vue'
 
 const props = defineProps({
   modelValue: [Object, String, Number, Boolean],
@@ -40,5 +41,6 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue', 'change'])
 const localValue = useVModel(props, 'modelValue', emit)
-const normalizedOptions = useSelectOptions(props.options)
+const refOptions = toRef(props, 'options')
+const normalizedOptions = useSelectOptions(refOptions)
 </script>
