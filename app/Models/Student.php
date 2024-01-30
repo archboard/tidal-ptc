@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -27,10 +26,10 @@ class Student extends Model implements ExistsInSis
     use BelongsToSchool;
     use BelongsToTenant;
     use HasFactory;
+    use HasFilters;
     use HasFirstAndLastName;
     use HasHiddenAttribute;
     use SoftDeletes;
-    use HasFilters;
 
     protected $guarded = [];
 
