@@ -38,20 +38,6 @@ class Student extends Model implements ExistsInSis
         'can_book' => 'boolean',
     ];
 
-//    public function scopeFilter(Builder $builder, array $filters = []): void
-//    {
-//        $sort = $filters['sort'] ?? 'last_name';
-//        $dir = $filters['dir'] ?? 'asc';
-//
-//        $builder->when($filters['search'] ?? null, function (Builder $builder, string $search) {
-//            $builder->search($search);
-//        })->when($filters['grade'] ?? null, function (Builder $builder, $grade) {
-//            $builder->whereIn('grade_level', Arr::wrap($grade));
-//        });
-//
-//        $builder->orderBy($sort, $dir);
-//    }
-
     public function scopeSearch(Builder $builder, string $search): void
     {
         $builder->where(function (Builder $builder) use ($search) {
