@@ -6,6 +6,7 @@ use App\Http\Resources\SectionResource;
 use App\Models\School;
 use App\Models\Section;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class SectionController extends Controller
 {
@@ -15,15 +16,18 @@ class SectionController extends Controller
     public function index(Request $request, School $school)
     {
         $sections = $school->sections()
-            ->filter($request->all())
+            ->filter($request->currentFilters())
             ->with('course')
             ->withCount('students')
+            ->join('courses', 'courses.id', '=', 'sections.course_id')
+            ->orderBy('courses.name')
             ->paginate(25);
         $title = __('Sections');
 
         return inertia('sections/Index', [
             'title' => $title,
             'sections' => SectionResource::collection($sections),
+            'model_alias' => Str::toModelAlias(Section::class),
         ])->withViewData(compact('title'));
     }
 

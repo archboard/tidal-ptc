@@ -9,44 +9,28 @@
       :search-placeholder="__('Search by name or email…')"
     />
 
-    <div v-if="selection.length > 0" class="px-4 sm:px-5 py-3 flex justify-between items-center bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-600 text-sm">
-      <div class="flex items-center space-x-2">
-        <span>{{ __(':count selected', { count: selection.length }) }}</span>
-        <AppLink is="button" @click.prevent="selectNone()">{{ __('Remove selection') }}</AppLink>
+    <SelectionManager :selection="selection" :select-none="selectNone">
+      <div v-if="can('student.update')" class="p-1">
+        <AppMenuItem
+          is="InertiaLink"
+          as="button"
+          method="post"
+          href="/selection/student/hidden"
+          :data="{ can_book: false }"
+        >
+          {{ __('Disable booking') }}
+        </AppMenuItem>
+        <AppMenuItem
+          is="InertiaLink"
+          as="button"
+          method="post"
+          href="/selection/student/hidden"
+          :data="{ can_book: true }"
+        >
+          {{ __('Enable booking') }}
+        </AppMenuItem>
       </div>
-
-      <div>
-        <ContextMenu>
-          <template #icon>
-            <span class="flex items-center gap-1">
-              <AppLink is="span">{{ __('Actions') }}</AppLink>
-              <ChevronDownIcon class="h-4 w-4" />
-            </span>
-          </template>
-
-          <div v-if="can('student.update')" class="p-1">
-            <AppMenuItem
-              is="InertiaLink"
-              as="button"
-              method="post"
-              href="/selection/student/hidden"
-              :data="{ can_book: false }"
-            >
-              {{ __('Disable booking') }}
-            </AppMenuItem>
-            <AppMenuItem
-              is="InertiaLink"
-              as="button"
-              method="post"
-              href="/selection/student/hidden"
-              :data="{ can_book: true }"
-            >
-              {{ __('Enable booking') }}
-            </AppMenuItem>
-          </div>
-        </ContextMenu>
-      </div>
-    </div>
+    </SelectionManager>
 
     <Table no-top-radius>
       <Thead>
@@ -95,10 +79,9 @@ import Checkbox from '@/components/forms/Checkbox.vue'
 import useModelSelection from '@/composition/useModelSelection.js'
 import Filters from '@/components/tables/Filters.vue'
 import useFilters from '@/composition/useFilters.js'
-import AppLink from '@/components/AppLink.vue'
-import { ChevronDownIcon } from '@heroicons/vue/24/solid'
 import Pill from '@/components/Pill.vue'
 import StudentActionMenu from '@/components/actions/StudentActionMenu.vue'
+import SelectionManager from '@/components/tables/SelectionManager.vue'
 
 const props = defineProps({
   students: Object,

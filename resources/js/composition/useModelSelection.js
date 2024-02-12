@@ -1,7 +1,12 @@
 import { inject, ref, watch, toValue } from 'vue'
 import NProgress from 'nprogress'
+import useProp from '@/composition/useProp.js'
 
 export default function useModelSelection (model) {
+  if (!model) {
+    model = toValue(useProp('model_alias'))
+  }
+
   const $http = inject('$http')
   const selection = ref([])
   const selectedAll = ref(false)
