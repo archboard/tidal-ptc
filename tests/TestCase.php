@@ -83,7 +83,7 @@ abstract class TestCase extends BaseTestCase
         return $this;
     }
 
-    public function givePermission(Permission $permission, $arguments): static
+    public function givePermission(Permission $permission, $arguments = null): static
     {
         $scope = $permission->shouldBeScoped()
             ? $this->user->school_id

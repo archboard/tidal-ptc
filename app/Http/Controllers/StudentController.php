@@ -19,6 +19,7 @@ class StudentController extends Controller
         $filters = $request->currentFilters();
         $students = $school->students()
             ->filter($filters)
+            ->orderBy('last_name')
             ->paginate(25);
 
         return inertia('students/Index', [

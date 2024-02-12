@@ -77,6 +77,12 @@ class Student extends Model implements ExistsInSis
             MultipleSelectFilter::make('grade_level', __('Grade level'))
                 ->withComponent(Component::combobox)
                 ->options(School::current()->gradeSelectOptions()),
+            MultipleSelectFilter::make('can_book', __('Booking status'))
+                ->withComponent(Component::combobox)
+                ->options([
+                    true => __('Can book'),
+                    false => __('Cannot book'),
+                ]),
         ];
     }
 }

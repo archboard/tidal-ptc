@@ -195,14 +195,10 @@ class User extends Authenticatable implements ExistsInSis
         return $this;
     }
 
-    public function selectAllModel(string $modelAlias, array $filters = []): static
+    public function selectAllModel(string $modelAlias, array|Collection $filters = []): static
     {
-        if (class_exists($modelAlias)) {
-            $modelAlias = (new $modelAlias)->getMorphClass();
-        }
-
-        if (Relation::getMorphedModel($modelAlias)) {
-            $relationship = Str::plural($modelAlias);
+        if ($alias = Str::toModelAlias($modelAlias)) {
+            $relationship = Str::plural($alias);
 
             $data = $this->school
                 ->$relationship()
@@ -212,11 +208,11 @@ class User extends Authenticatable implements ExistsInSis
                     'tenant_id' => $this->tenant_id,
                     'school_id' => $this->school_id,
                     'user_id' => $this->id,
-                    'selectable_type' => $modelAlias,
+                    'selectable_type' => $alias,
                     'selectable_id' => $id,
                 ]);
 
-            $this->deselectAllModel($modelAlias)
+            $this->deselectAllModel($alias)
                 ->selectedModels()
                 ->insert($data->toArray());
         }
@@ -227,7 +223,7 @@ class User extends Authenticatable implements ExistsInSis
     public function deselectAllModel(string $modelAlias): static
     {
         $this->selectedModels()
-            ->where('selectable_type', $modelAlias)
+            ->where('selectable_type', Str::toModelAlias($modelAlias))
             ->where('school_id', $this->school_id)
             ->delete();
 
@@ -236,15 +232,28 @@ class User extends Authenticatable implements ExistsInSis
 
     public function getModelSelection(string $model): Collection
     {
-        $modelAlias = class_exists($model)
-            ? (new $model())->getMorphClass()
-            : $model;
-
         return $this->selectedModels()
             ->where('school_id', $this->school_id)
-            ->where('selectable_type', $modelAlias)
+            ->where('selectable_type', Str::toModelAlias($model))
             ->pluck('selectable_id')
             ->values();
+    }
+
+    public function updateModelSelectionAttributes(string $model, array $data): static
+    {
+        $modelClass = Str::toModelClass($model);
+
+        $modelClass::query()
+            ->whereIn('id', function ($builder) use ($model) {
+                $builder->select('selectable_id')
+                    ->from('selected_models')
+                    ->where('user_id', $this->id)
+                    ->where('school_id', $this->school_id)
+                    ->where('selectable_type', Str::toModelAlias($model));
+            })
+            ->update($data);
+
+        return $this;
     }
 
     public function filters(): array

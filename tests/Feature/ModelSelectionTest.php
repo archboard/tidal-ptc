@@ -80,8 +80,14 @@ it('can select all models with a filter', function () {
             ->where('school_id', $this->user->school_id)
             ->doesntExist()
     );
+    $filters = [
+        [
+            'key' => 'search',
+            'value' => 'mcduck',
+        ],
+    ];
 
-    $this->post(route('selection.toggle', ['user', 'search' => 'mcduck']))
+    $this->post(route('selection.toggle', ['user']), $filters)
         ->assertRedirect()
         ->assertSessionHas('success');
 

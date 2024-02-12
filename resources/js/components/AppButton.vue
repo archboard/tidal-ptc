@@ -83,7 +83,7 @@ export default {
   data () {
     return {
       sizes: {
-        xs: `px-2.5 py-1.5 text-xs leading-4 rounded-md`,
+        xs: `px-2.5 py-1 text-xs leading-4 rounded-md`,
         sm: `px-3 py-1.5 text-sm leading-4 rounded-md`,
         base: `px-4 py-2 text-sm leading-5 rounded-lg`,
         lg: `px-4 py-2 sm:py-3 leading-6 rounded-xl`,

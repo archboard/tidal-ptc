@@ -46,6 +46,7 @@ const props = defineProps({
   color: String,
 })
 const iconSizes = {
+  xs: 'h-4 w-4',
   sm: 'h-4 w-4',
   base: 'h-5 w-5',
 }

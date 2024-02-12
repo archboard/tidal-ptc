@@ -133,7 +133,10 @@
         <div class="py-6">
           <Container>
             <div class="md:flex justify-between items-start">
-              <h1 v-if="title" class="text-2xl font-semibold">{{ title }}</h1>
+              <div>
+                <h1 v-if="title" class="text-2xl font-semibold">{{ title }}</h1>
+                <slot name="after-title" />
+              </div>
 
               <slot name="actions" />
             </div>

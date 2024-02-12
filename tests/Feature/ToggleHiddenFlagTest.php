@@ -45,3 +45,25 @@ it('can update flag using json', function () {
     $course->refresh();
     $this->assertFalse($course->can_book);
 });
+
+it('can change selection state', function () {
+    $users = [
+        seedUser(['can_book' => true]),
+        seedUser(['can_book' => true]),
+        seedUser(['can_book' => true]),
+    ];
+
+    foreach ($users as $user) {
+        $this->user->toggleSelectedModelInstance($user);
+    }
+
+    $this->givePermission(\App\Enums\Permission::update, \App\Models\User::class)
+        ->post(route('selection.hidden', 'user'), ['can_book' => false])
+        ->assertSessionHas('success')
+        ->assertRedirect();
+
+    foreach ($users as $user) {
+        $user->refresh();
+        $this->assertFalse($user->can_book);
+    }
+});

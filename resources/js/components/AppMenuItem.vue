@@ -27,7 +27,7 @@ export default defineComponent({
   props: {
     is: {
       type: String,
-      default: 'button',
+      default: 'InertiaLink',
     }
   },
 

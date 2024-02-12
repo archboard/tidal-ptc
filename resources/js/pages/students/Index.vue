@@ -9,10 +9,42 @@
       :search-placeholder="__('Search by name or email…')"
     />
 
-    <div v-if="selection.length > 0" class="px-4 sm:px-5 py-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-600 text-sm">
+    <div v-if="selection.length > 0" class="px-4 sm:px-5 py-3 flex justify-between items-center bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-600 text-sm">
       <div class="flex items-center space-x-2">
         <span>{{ __(':count selected', { count: selection.length }) }}</span>
-        <AppLink is="button" @click.prevent="selectedAll = false">{{ __('Remove selection') }}</AppLink>
+        <AppLink is="button" @click.prevent="selectNone()">{{ __('Remove selection') }}</AppLink>
+      </div>
+
+      <div>
+        <ContextMenu>
+          <template #icon>
+            <span class="flex items-center gap-1">
+              <AppLink is="span">{{ __('Actions') }}</AppLink>
+              <ChevronDownIcon class="h-4 w-4" />
+            </span>
+          </template>
+
+          <div v-if="can('student.update')" class="p-1">
+            <AppMenuItem
+              is="InertiaLink"
+              as="button"
+              method="post"
+              href="/selection/student/hidden"
+              :data="{ can_book: false }"
+            >
+              {{ __('Disable booking') }}
+            </AppMenuItem>
+            <AppMenuItem
+              is="InertiaLink"
+              as="button"
+              method="post"
+              href="/selection/student/hidden"
+              :data="{ can_book: true }"
+            >
+              {{ __('Enable booking') }}
+            </AppMenuItem>
+          </div>
+        </ContextMenu>
       </div>
     </div>
 
@@ -23,8 +55,7 @@
           <Th>{{ __('Number') }}</Th>
           <Th>{{ __('Grade') }}</Th>
           <Th>{{ __('Name') }}</Th>
-          <Th>{{ __('Email') }}</Th>
-          <Th></Th>
+          <Th v-if="can('student.update')"></Th>
         </tr>
       </Thead>
       <Tbody>
@@ -34,12 +65,16 @@
           </Td>
           <Td>{{ student.student_number }}</Td>
           <Td>{{ student.grade_level }}</Td>
-          <Td>{{ student.name }}</Td>
-          <Td>{{ student.email }}</Td>
-          <ActionColumn>
-            <AppLink :href="`/students/${student.id}`">
-              {{ __('View') }}
-            </AppLink>
+          <Td>
+            <div class="flex items-center space-x-2">
+              <span>{{ student.name }}</span>
+              <Pill v-if="!student.can_book" color="yellow">{{ __('Booking disabled') }}</Pill>
+            </div>
+          </Td>
+          <ActionColumn v-if="can('student.update')">
+            <ContextMenu>
+              <StudentActionMenu :student="student" />
+            </ContextMenu>
           </ActionColumn>
         </tr>
       </Tbody>
@@ -61,12 +96,15 @@ import useModelSelection from '@/composition/useModelSelection.js'
 import Filters from '@/components/tables/Filters.vue'
 import useFilters from '@/composition/useFilters.js'
 import AppLink from '@/components/AppLink.vue'
+import { ChevronDownIcon } from '@heroicons/vue/24/solid'
+import Pill from '@/components/Pill.vue'
+import StudentActionMenu from '@/components/actions/StudentActionMenu.vue'
 
 const props = defineProps({
   students: Object,
   availableFilters: Array,
   currentFilters: [Array, Object],
 })
-const { selection, selectedAll, toggleSelection } = useModelSelection('student')
+const { selection, selectedAll, selectNone, toggleSelection } = useModelSelection('student')
 const { filters, search, updateResults, updatingResults } = useFilters()
 </script>

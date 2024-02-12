@@ -85,6 +85,8 @@ Route::middleware('tenant')->group(function () {
                     ->name('selection.toggle');
                 Route::get('/selection/{model}', \App\Http\Controllers\GetSelectionController::class)
                     ->name('selection.get');
+                Route::post('/selection/{model}/hidden', \App\Http\Controllers\UpdateSelectionVisibilityController::class)
+                    ->name('selection.hidden');
                 Route::put('/toggle-hidden', \App\Http\Controllers\ToggleHiddenController::class)
                     ->name('toggle-hidden');
 

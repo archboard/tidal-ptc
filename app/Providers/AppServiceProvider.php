@@ -6,6 +6,7 @@ use App\Enums\UserType;
 use App\Models\School;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Services\ModelClassService;
 use Carbon\CarbonImmutable;
 use GrantHolle\PowerSchool\Auth\UserFactory;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -14,6 +15,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -64,6 +66,9 @@ class AppServiceProvider extends ServiceProvider
             'section' => \App\Models\Section::class,
             'course' => \App\Models\Course::class,
         ]);
+
+        Str::macro('toModelAlias', fn (string $string): string => ModelClassService::toAlias($string));
+        Str::macro('toModelClass', fn (string $string): string => ModelClassService::toClassName($string));
 
         // Add the tenant_id to the identifying attributes when looking up a user
         UserFactory::findUserUsing(function (Collection $data, string $model, array $attributes) {

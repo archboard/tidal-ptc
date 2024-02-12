@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Permission;
+use App\Services\ModelClassService;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ToggleHiddenController extends Controller
 {
@@ -17,14 +19,9 @@ class ToggleHiddenController extends Controller
             'model' => ['required'],
             'id' => ['required', 'integer'],
         ]);
-        $alias = $data['model'];
         $response = [];
 
-        if (class_exists($alias)) {
-            $alias = (new $alias)->getMorphClass();
-        }
-
-        if ($model = Relation::getMorphedModel($alias)) {
+        if ($model = Str::toModelClass($data['model'])) {
             $this->authorize(Permission::update, $model);
 
             if ($instance = $model::find($data['id'])) {
