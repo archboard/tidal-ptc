@@ -9,7 +9,28 @@
       :search-placeholder="__('Search by course…')"
     />
 
-    <SelectionManager :selection="selection" :select-none="selectNone" />
+    <SelectionManager :selection="selection" :select-none="selectNone">
+      <div v-if="can('section.update')" class="p-1">
+        <AppMenuItem
+          is="InertiaLink"
+          as="button"
+          method="post"
+          :href="`/selection/${model_alias}/hidden`"
+          :data="{ can_book: false }"
+        >
+          {{ __('Disable booking') }}
+        </AppMenuItem>
+        <AppMenuItem
+          is="InertiaLink"
+          as="button"
+          method="post"
+          :href="`/selection/${model_alias}/hidden`"
+          :data="{ can_book: true }"
+        >
+          {{ __('Enable booking') }}
+        </AppMenuItem>
+      </div>
+    </SelectionManager>
 
     <Table no-top-radius>
       <Thead>
@@ -19,7 +40,7 @@
           <Th>{{ __('Course number') }}</Th>
           <Th>{{ __('Section') }}</Th>
           <Th>{{ __('Enrollment') }}</Th>
-          <Th></Th>
+          <Th v-if="can('section.update')"></Th>
         </tr>
       </Thead>
       <Tbody>
@@ -27,14 +48,24 @@
           <Td class="pr-0 w-4">
             <Checkbox v-model="selection" :value="section.id" @change="toggleSelection(section.id)" />
           </Td>
-          <Td>{{ section.course.name }}</Td>
+          <Td>
+            <div class="flex items-center space-x-2">
+              <AppLink :href="`/courses/${section.course.id}`">{{ section.course.name }}</AppLink>
+              <BookingDisabledPill v-if="!section.course.can_book" />
+            </div>
+          </Td>
           <Td>{{ section.course.course_number }}</Td>
-          <Td>{{ section.section_number }}</Td>
+          <Td>
+            <div class="flex items-center space-x-2">
+              <span>{{ section.section_number }}</span>
+              <BookingDisabledPill v-if="!section.can_book" />
+            </div>
+          </Td>
           <Td>{{ section.students_count }}</Td>
-          <ActionColumn>
-            <AppLink :href="`/sections/${section.id}`">
-              {{ __('View') }}
-            </AppLink>
+          <ActionColumn v-if="can('section.update')">
+            <ContextMenu>
+
+            </ContextMenu>
           </ActionColumn>
         </tr>
       </Tbody>
@@ -56,6 +87,10 @@ import SelectionManager from '@/components/tables/SelectionManager.vue'
 import Checkbox from '@/components/forms/Checkbox.vue'
 import useFilters from '@/composition/useFilters.js'
 import Filters from '@/components/tables/Filters.vue'
+import AppMenuItem from '@/components/AppMenuItem.vue'
+import ContextMenu from '@/components/ContextMenu.vue'
+import Pill from '@/components/Pill.vue'
+import BookingDisabledPill from '@/components/BookingDisabledPill.vue'
 
 const props = defineProps({
   sections: Object,

@@ -20,7 +20,7 @@ class CourseResource extends JsonResource
             'id' => $this->resource->id,
             'sis_id' => $this->resource->sis_id,
             'course_number' => $this->resource->course_number,
-            'hidden' => $this->resource->hidden,
+            'can_book' => $this->resource->can_book,
             'name' => $this->resource->name,
             'sections_count' => $this->resource->sections_count,
             'sections' => SectionResource::collection($this->whenLoaded('sections')),

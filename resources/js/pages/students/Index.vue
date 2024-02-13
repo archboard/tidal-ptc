@@ -52,7 +52,7 @@
           <Td>
             <div class="flex items-center space-x-2">
               <span>{{ student.name }}</span>
-              <Pill v-if="!student.can_book" color="yellow">{{ __('Booking disabled') }}</Pill>
+              <BookingDisabledPill v-if="!student.can_book" />
             </div>
           </Td>
           <ActionColumn v-if="can('student.update')">
@@ -82,6 +82,7 @@ import useFilters from '@/composition/useFilters.js'
 import Pill from '@/components/Pill.vue'
 import StudentActionMenu from '@/components/actions/StudentActionMenu.vue'
 import SelectionManager from '@/components/tables/SelectionManager.vue'
+import BookingDisabledPill from '@/components/BookingDisabledPill.vue'
 
 const props = defineProps({
   students: Object,
