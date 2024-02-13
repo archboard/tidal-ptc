@@ -25,7 +25,7 @@ class UserResource extends JsonResource
             'email' => $this->resource->email,
             'timezone' => $this->resource->timezone,
             'school_id' => $this->resource->school_id,
-            'hidden' => $this->resource->hidden,
+            'can_book' => $this->resource->can_book,
             'is_24h' => $this->resource->is_24h,
             'user_type' => $this->resource->user_type?->value,
             'user_type_display' => $this->resource->user_type?->label(),

@@ -9,12 +9,28 @@
       :search-placeholder="__('Search by name or email…')"
     />
 
-    <div v-if="selection.length > 0" class="px-4 sm:px-5 py-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-600 text-sm">
-      <div class="flex items-center space-x-2">
-        <span>{{ __(':count selected', { count: selection.length }) }}</span>
-        <AppLink is="button" @click.prevent="selectedAll = false">{{ __('Remove selection') }}</AppLink>
+    <SelectionManager :selection="selection" :select-none="selectNone">
+      <div v-if="can('user.update')" class="p-1">
+        <AppMenuItem
+          is="InertiaLink"
+          as="button"
+          method="post"
+          :href="`/selection/${model_alias}/hidden`"
+          :data="{ can_book: false }"
+        >
+          {{ __('Disable booking') }}
+        </AppMenuItem>
+        <AppMenuItem
+          is="InertiaLink"
+          as="button"
+          method="post"
+          :href="`/selection/${model_alias}/hidden`"
+          :data="{ can_book: true }"
+        >
+          {{ __('Enable booking') }}
+        </AppMenuItem>
       </div>
-    </div>
+    </SelectionManager>
 
     <Table no-top-radius>
       <Thead>
@@ -31,7 +47,12 @@
           <Td class="pr-0 w-4">
             <Checkbox v-model="selection" :value="user.id" @change="toggleSelection(user.id)" />
           </Td>
-          <Td>{{ user.name }}</Td>
+          <Td>
+            <div class="flex items-center space-x-2">
+              <span class="whitespace-nowrap">{{ user.name }}</span>
+              <BookingDisabledPill v-if="!user.can_book" />
+            </div>
+          </Td>
           <Td>{{ user.email }}</Td>
           <Td>{{ user.user_type_display }}</Td>
           <ActionColumn>
@@ -72,12 +93,15 @@ import useModelSelection from '@/composition/useModelSelection.js'
 import Filters from '@/components/tables/Filters.vue'
 import useFilters from '@/composition/useFilters.js'
 import AppLink from '@/components/AppLink.vue'
+import SelectionManager from '@/components/tables/SelectionManager.vue'
+import BookingDisabledPill from '@/components/BookingDisabledPill.vue'
 
 const props = defineProps({
   users: Object,
   availableFilters: Array,
   currentFilters: [Array, Object],
+  model_alias: String,
 })
-const { selection, selectedAll, toggleSelection } = useModelSelection('user')
+const { selection, selectedAll, toggleSelection, selectNone } = useModelSelection('user')
 const { filters, search, updateResults, updatingResults } = useFilters()
 </script>

@@ -7,6 +7,7 @@ use App\Models\School;
 use App\Models\User;
 use App\Navigation\NavigationItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -26,6 +27,7 @@ class UserController extends Controller
             'users' => UserResource::collection($users),
             'availableFilters' => (new User)->availableFiltersToArray(),
             'currentFilters' => (object) $filters,
+            'model_alias' => Str::toModelAlias(User::class),
             'breadcrumbs' => $this->withBreadcrumbs(
                 NavigationItem::make()
                     ->labeled(__('Users'))
