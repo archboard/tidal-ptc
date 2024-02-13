@@ -6,7 +6,7 @@
       :available-filters="availableFilters"
       @update="updateResults()"
       :loading="updatingResults"
-      :search-placeholder="__('Search by course…')"
+      :search-placeholder="__('Search by course name…')"
     />
 
     <SelectionManager :selection="selection" :select-none="selectNone">

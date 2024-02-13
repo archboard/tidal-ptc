@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CourseResource;
+use App\Models\Course;
 use App\Models\School;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CourseController extends Controller
 {
@@ -15,13 +17,15 @@ class CourseController extends Controller
     {
         $title = __('Courses');
         $courses = $school->courses()
-            ->filter($request->all())
+            ->filter($request->currentFilters())
             ->withCount('sections')
+            ->orderBy('name')
             ->paginate(25);
 
         return inertia('courses/Index', [
             'title' => $title,
             'courses' => CourseResource::collection($courses),
+            'model_alias' => Str::toModelAlias(Course::class),
         ])->withViewData(compact('title'));
     }
 
