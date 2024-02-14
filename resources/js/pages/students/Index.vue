@@ -51,7 +51,7 @@
           <Td>{{ student.grade_level }}</Td>
           <Td>
             <div class="flex items-center space-x-2">
-              <span>{{ student.name }}</span>
+              <AppLink :href="`/students/${student.id}`">{{ student.name }}</AppLink>
               <BookingDisabledPill v-if="!student.can_book" />
             </div>
           </Td>
@@ -83,6 +83,7 @@ import Pill from '@/components/Pill.vue'
 import StudentActionMenu from '@/components/actions/StudentActionMenu.vue'
 import SelectionManager from '@/components/tables/SelectionManager.vue'
 import BookingDisabledPill from '@/components/BookingDisabledPill.vue'
+import AppLink from '@/components/AppLink.vue'
 
 const props = defineProps({
   students: Object,

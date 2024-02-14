@@ -27,6 +27,7 @@ class StudentResource extends JsonResource
             'email' => $this->resource->email,
             'grade_level' => $this->resource->grade_level,
             'can_book' => $this->resource->can_book,
+            'model_alias' => $this->resource->getMorphClass(),
             'sections' => SectionResource::collection($this->whenLoaded('sections')),
         ];
     }
