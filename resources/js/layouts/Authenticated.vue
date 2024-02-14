@@ -155,7 +155,6 @@
   </div>
 
   <Notifications />
-  <Modal />
 </template>
 
 <script setup>
@@ -169,7 +168,6 @@ import Notifications from '@/components/Notifications.vue'
 import TimezoneBanner from '@/components/banners/TimezoneBanner.vue'
 import usePageTitle from '@/composition/usePageTitle.js'
 import { router, usePage } from '@inertiajs/vue3'
-import { Modal } from 'momentum-modal'
 import useProp from '@/composition/useProp.js'
 import AppSelect from '@/components/forms/AppSelect.vue'
 import Container from '@/components/Container.vue'
