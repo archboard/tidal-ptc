@@ -21,8 +21,8 @@ class Section extends Model implements ExistsInSis
 {
     use BelongsToTenant;
     use HasFactory;
-    use HasHiddenAttribute;
     use HasFilters;
+    use HasHiddenAttribute;
 
     protected $guarded = [];
 

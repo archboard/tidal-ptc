@@ -12,7 +12,7 @@ it("can't see section index page without permission", function () {
         ->assertStatus(403);
 });
 
-it("can show section index page with permission", function () {
+it('can show section index page with permission', function () {
     $this->givePermission(\App\Enums\Permission::viewAny, Section::class)
         ->get(route('sections.index'))
         ->assertOk()
@@ -28,7 +28,7 @@ it("can't show view page without permission", function () {
         ->assertStatus(403);
 });
 
-it("can show view page with permission", function () {
+it('can show view page with permission', function () {
     $this->givePermission(\App\Enums\Permission::view, Section::class)
         ->get(route('sections.show', $this->section))
         ->assertOk()

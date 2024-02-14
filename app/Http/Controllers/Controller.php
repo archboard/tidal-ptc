@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Permission;
 use App\Navigation\NavigationItem;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
