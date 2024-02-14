@@ -30,7 +30,8 @@ class UserResource extends JsonResource
             'user_type' => $this->resource->user_type?->value,
             'user_type_display' => $this->resource->user_type?->label(),
             'schools' => SchoolResource::collection($this->whenLoaded('schools')),
-            'school' => new SchoolResource($this->whenLoaded('schoool')),
+            'school' => new SchoolResource($this->whenLoaded('school')),
+            'model_alias' => $this->resource->getMorphClass(),
             'permissions' => $this->whenLoaded('school', function () {
                 return collect($this->resource->school_permissions)
                     ->mapWithKeys(function ($perm) {
