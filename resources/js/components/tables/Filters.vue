@@ -59,6 +59,7 @@
                 <AppMenuItem
                   v-for="filter in availableFilters"
                   :key="filter.key"
+                  is="button"
                   @click="addFilter(filter)"
                 >
                   {{ filter.label }}
