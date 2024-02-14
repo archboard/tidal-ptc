@@ -4,7 +4,9 @@ namespace Tests;
 
 use App\Enums\Permission;
 use App\Enums\Role;
+use App\Models\Course;
 use App\Models\School;
+use App\Models\Section;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -130,5 +132,20 @@ abstract class TestCase extends BaseTestCase
         $callback($this->user);
 
         return $this;
+    }
+
+    public function seedSection(): Section
+    {
+        $course = Course::factory()->create([
+            'tenant_id' => $this->tenant->id,
+            'school_id' => $this->school->id,
+        ]);
+
+        return $course->sections()
+            ->save(Section::factory()->make([
+                'tenant_id' => $this->tenant->id,
+                'school_id' => $this->school->id,
+                'user_id' => $this->seedUser()->id,
+            ]));
     }
 }
