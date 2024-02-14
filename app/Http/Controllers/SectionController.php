@@ -17,7 +17,7 @@ class SectionController extends Controller
     {
         $sections = $school->sections()
             ->filter($request->currentFilters())
-            ->with('course')
+            ->with('course', 'teacher', 'altTeacher')
             ->withCount('students')
             ->join('courses', 'courses.id', '=', 'sections.course_id')
             ->orderBy('courses.name')

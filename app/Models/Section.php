@@ -49,6 +49,16 @@ class Section extends Model implements ExistsInSis
         return $this->belongsTo(Course::class);
     }
 
+    public function teacher(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function altTeacher(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'alt_user_id');
+    }
+
     public function syncFromSis(): static
     {
         return $this->tenant->getSisProvider()
