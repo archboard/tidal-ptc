@@ -49,7 +49,7 @@
           </Td>
           <Td>
             <div class="flex items-center space-x-2">
-              <span>{{ course.name }}</span>
+              <AppLink :href="`/courses/${course.id}`">{{ course.name }}</AppLink>
               <BookingDisabledPill v-if="!course.can_book" />
             </div>
           </Td>

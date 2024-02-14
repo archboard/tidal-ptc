@@ -40,7 +40,7 @@
           <Th>{{ __('Section') }}</Th>
           <Th>{{ __('Teacher') }}</Th>
           <Th>{{ __('Enrollment') }}</Th>
-          <Th v-if="can('section.update')"></Th>
+          <Th></Th>
         </tr>
       </Thead>
       <Tbody>
@@ -62,12 +62,12 @@
           </Td>
           <Td>
             <div class="flex items-center space-x-2">
-              <span>{{ section.teacher_display }}</span>
-              <BookingDisabledPill v-if="!section.alt_teacher?.can_book || !section.teacher.can_book" />
+              <span class="whitespace-nowrap">{{ section.teacher_display }}</span>
+              <BookingDisabledPill v-if="!section.teacher_can_book" />
             </div>
           </Td>
           <Td>{{ section.students_count }}</Td>
-          <ActionColumn v-if="can('section.update')">
+          <ActionColumn>
             <ContextMenu>
               <SectionActionMenu :section="section" />
             </ContextMenu>

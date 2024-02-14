@@ -24,6 +24,7 @@ class CourseResource extends JsonResource
             'name' => $this->resource->name,
             'sections_count' => $this->resource->sections_count,
             'sections' => SectionResource::collection($this->whenLoaded('sections')),
+            'model_alias' => $this->resource->getMorphClass(),
         ];
     }
 }

@@ -55,6 +55,21 @@ class Section extends Model implements ExistsInSis
         });
     }
 
+    public function teacherCanBook(): Attribute
+    {
+        return Attribute::get(function (): bool {
+            if ($this->relationLoaded('teacher') && $this->relationLoaded('altTeacher')) {
+                if ($this->altTeacher) {
+                    return $this->altTeacher->can_book;
+                }
+
+                return $this->teacher->can_book;
+            }
+
+            return true;
+        });
+    }
+
     public function display(): Attribute
     {
         return Attribute::get(function (): string {

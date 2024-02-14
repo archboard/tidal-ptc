@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\CourseResource;
 use App\Models\Course;
 use App\Models\School;
+use App\Navigation\NavigationItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -26,54 +27,40 @@ class CourseController extends Controller
             'title' => $title,
             'courses' => CourseResource::collection($courses),
             'model_alias' => Str::toModelAlias(Course::class),
+            'breadcrumbs' => $this->withBreadcrumbs(
+                NavigationItem::make()
+                    ->labeled(__('Courses'))
+                    ->to(route('courses.index'))
+                    ->isCurrent()
+            ),
         ])->withViewData(compact('title'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Course $course)
     {
-        //
-    }
+        $course->load([
+            'sections',
+            'sections.students',
+            'sections.teacher',
+            'sections.altTeacher',
+        ]);
+        $title = $course->name;
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return inertia('courses/Show', [
+            'title' => $title,
+            'course' => new CourseResource($course),
+            'breadcrumbs' => $this->withBreadcrumbs(
+                NavigationItem::make()
+                    ->labeled(__('Courses'))
+                    ->to(route('courses.index')),
+                NavigationItem::make()
+                    ->labeled($course->name)
+                    ->to(route('courses.show', $course))
+                    ->isCurrent(),
+            ),
+        ])->withViewData(compact('title'));
     }
 }

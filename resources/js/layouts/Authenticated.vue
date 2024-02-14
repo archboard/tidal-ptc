@@ -141,7 +141,7 @@
               <slot name="actions" />
             </div>
 
-            <div class="py-4">
+            <div class="py-4 mt-4">
               <slot />
             </div>
           </Container>

@@ -1,5 +1,5 @@
 <template>
-  <Menu as="div" class="relative inline-block text-left z-10" v-slot="{ open }">
+  <Menu as="div" class="relative inline-block text-left z-0" v-slot="{ open }">
     <div v-if="open" class="fixed inset-0 opacity-0"></div>
     <Float
       placement="bottom-end"

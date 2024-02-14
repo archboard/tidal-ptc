@@ -25,6 +25,7 @@ class SectionResource extends JsonResource
             'external_expression' => $this->resource->external_expression,
             'students_count' => $this->resource->students_count,
             'teacher_display' => $this->resource->teacher_display,
+            'teacher_can_book' => $this->resource->teacher_can_book,
             'alt_user_id' => $this->resource->alt_user_id,
             'course' => new CourseResource($this->whenLoaded('course')),
             'teacher' => new UserResource($this->whenLoaded('teacher')),
