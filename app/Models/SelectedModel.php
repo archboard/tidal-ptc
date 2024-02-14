@@ -8,6 +8,9 @@ use App\Traits\BelongsToUser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+/**
+ * @mixin IdeHelperSelectedModel
+ */
 class SelectedModel extends Model
 {
     use BelongsToSchool;
