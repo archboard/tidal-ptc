@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Http\Resources\SectionResource;
 use App\Models\School;
 use App\Models\Section;
@@ -15,6 +16,8 @@ class SectionController extends Controller
      */
     public function index(Request $request, School $school)
     {
+        $this->authorize(Permission::viewAny, Section::class);
+
         $sections = $school->sections()
             ->filter($request->currentFilters())
             ->with('course', 'teacher', 'altTeacher')
@@ -32,27 +35,22 @@ class SectionController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      */
     public function show(Section $section)
     {
-        //
+        $this->authorize(Permission::view, $section);
+
+        $section->load('course', 'teacher', 'altTeacher', 'students');
+        $title = __('Section :number of :course_name', [
+            'number' => $section->section_number,
+            'course_name' => $section->course->name,
+        ]);
+
+        return inertia('sections/Show', [
+            'title' => $title,
+            'section' => new SectionResource($section),
+        ])->withViewData(compact('title'));
     }
 
     /**

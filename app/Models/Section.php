@@ -8,6 +8,7 @@ use App\Traits\HasHiddenAttribute;
 use GrantHolle\ModelFilters\Filters\TextFilter;
 use GrantHolle\ModelFilters\Traits\HasFilters;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,6 +37,21 @@ class Section extends Model implements ExistsInSis
                 ->orWhereHas('course', function (Builder $builder) use ($search) {
                     $builder->search($search);
                 });
+        });
+    }
+
+    public function teacherDisplay(): Attribute
+    {
+        return Attribute::get(function (): ?string {
+            if ($this->relationLoaded('teacher') && $this->relationLoaded('altTeacher')) {
+                if ($this->altTeacher) {
+                    return "{$this->altTeacher->name} ({$this->teacher->name})";
+                }
+
+                return $this->teacher->name;
+            }
+
+            return null;
         });
     }
 

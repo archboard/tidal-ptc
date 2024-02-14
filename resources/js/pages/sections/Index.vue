@@ -6,7 +6,7 @@
       :available-filters="availableFilters"
       @update="updateResults()"
       :loading="updatingResults"
-      :search-placeholder="__('Search by course name…')"
+      :search-placeholder="__('Search by course…')"
     />
 
     <SelectionManager :selection="selection" :select-none="selectNone">
@@ -37,8 +37,8 @@
         <tr>
           <Th class="pr-0 w-4"><Checkbox @change="selectedAll = !selectedAll" :checked="selectedAll" /></Th>
           <Th>{{ __('Course') }}</Th>
-          <Th>{{ __('Course number') }}</Th>
           <Th>{{ __('Section') }}</Th>
+          <Th>{{ __('Teacher') }}</Th>
           <Th>{{ __('Enrollment') }}</Th>
           <Th v-if="can('section.update')"></Th>
         </tr>
@@ -50,21 +50,26 @@
           </Td>
           <Td>
             <div class="flex items-center space-x-2">
-              <AppLink :href="`/courses/${section.course.id}`">{{ section.course.name }}</AppLink>
+              <AppLink :href="`/courses/${section.course.id}`">{{ section.course.name }} ({{ section.course.course_number }})</AppLink>
               <BookingDisabledPill v-if="!section.course.can_book" />
             </div>
           </Td>
-          <Td>{{ section.course.course_number }}</Td>
           <Td>
             <div class="flex items-center space-x-2">
               <span>{{ section.section_number }}</span>
               <BookingDisabledPill v-if="!section.can_book" />
             </div>
           </Td>
+          <Td>
+            <div class="flex items-center space-x-2">
+              <span>{{ section.teacher_display }}</span>
+              <BookingDisabledPill v-if="!section.alt_teacher?.can_book || !section.teacher.can_book" />
+            </div>
+          </Td>
           <Td>{{ section.students_count }}</Td>
           <ActionColumn v-if="can('section.update')">
             <ContextMenu>
-
+              <SectionActionMenu :section="section" />
             </ContextMenu>
           </ActionColumn>
         </tr>
@@ -91,6 +96,7 @@ import AppMenuItem from '@/components/AppMenuItem.vue'
 import ContextMenu from '@/components/ContextMenu.vue'
 import Pill from '@/components/Pill.vue'
 import BookingDisabledPill from '@/components/BookingDisabledPill.vue'
+import SectionActionMenu from '@/components/actions/SectionActionMenu.vue'
 
 const props = defineProps({
   sections: Object,

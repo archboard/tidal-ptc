@@ -57,14 +57,7 @@
           <Td>{{ user.user_type_display }}</Td>
           <ActionColumn>
             <ContextMenu>
-              <div class="p-1">
-                <AppMenuItem v-if="can('user.view')" is="InertiaLink" :href="`/users/${user.id}`">
-                  {{ __('View') }}
-                </AppMenuItem>
-                <AppMenuItem v-if="can('edit_permissions')" is="InertiaLink" :href="`/users/${user.id}/permissions`">
-                  {{ __('Edit permissions') }}
-                </AppMenuItem>
-              </div>
+              <UserActionMenu :user="user" />
             </ContextMenu>
           </ActionColumn>
         </tr>
@@ -95,6 +88,7 @@ import useFilters from '@/composition/useFilters.js'
 import AppLink from '@/components/AppLink.vue'
 import SelectionManager from '@/components/tables/SelectionManager.vue'
 import BookingDisabledPill from '@/components/BookingDisabledPill.vue'
+import UserActionMenu from '@/components/actions/UserActionMenu.vue'
 
 const props = defineProps({
   users: Object,
