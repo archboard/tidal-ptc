@@ -56,7 +56,7 @@
           </Td>
           <Td>
             <div class="flex items-center space-x-2">
-              <span>{{ section.section_number }}</span>
+              <AppLink :href="`/sections/${section.id}`">{{ section.section_number }}</AppLink>
               <BookingDisabledPill v-if="!section.can_book" />
             </div>
           </Td>

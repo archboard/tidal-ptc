@@ -78,6 +78,8 @@ Route::middleware('tenant')->group(function () {
         Route::post('/select-school', [\App\Http\Controllers\SchoolSelectionController::class, 'update']);
         Route::post('/sync/{model}/{id}', \App\Http\Controllers\Settings\SyncModelController::class)
             ->name('model.sync');
+        Route::post('/search/{model}', \App\Http\Controllers\SearchModelController::class)
+            ->name('model.search');
 
         Route::middleware(['has_school', 'scoped_permissions'])
             ->group(function () {
@@ -94,7 +96,7 @@ Route::middleware('tenant')->group(function () {
                     ->only('index', 'show');
 
                 Route::resource('/sections', \App\Http\Controllers\SectionController::class)
-                    ->only('index', 'show');
+                    ->only('index', 'show', 'edit', 'update');
 
                 Route::resource('/courses', \App\Http\Controllers\CourseController::class)
                     ->only('index', 'show');

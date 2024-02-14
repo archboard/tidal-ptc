@@ -98,11 +98,15 @@ class User extends Authenticatable implements ExistsInSis
         });
     }
 
-    public function scopeSearch(Builder $builder, string $search): void
+    public function scopeSearch(Builder $builder, string|int $search): void
     {
-        $builder->where(function (Builder $builder) use ($search) {
-            $builder->where(DB::raw("(first_name || ' ' || last_name)"), 'ilike', "%{$search}%")
-                ->orWhere('email', 'ilike', "%{$search}%");
+        $builder->when(is_numeric($search), function (Builder $builder) use ($search) {
+            $builder->where('id', $search);
+        })->unless(is_numeric($search), function (Builder $builder) use ($search) {
+            $builder->where(function (Builder $builder) use ($search) {
+                $builder->where(DB::raw("(first_name || ' ' || last_name)"), 'ilike', "%{$search}%")
+                    ->orWhere('email', 'ilike', "%{$search}%");
+            });
         });
     }
 

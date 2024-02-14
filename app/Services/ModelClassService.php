@@ -23,4 +23,14 @@ class ModelClassService
 
         return $className;
     }
+
+    public static function toApiResourceClass(string $model): string
+    {
+        $className = class_basename(static::toClassName($model));
+        $namespace = 'App\\Http\\Resources\\'.$className.'Resource';
+
+        throw_unless(class_exists($namespace), new \Exception("Resource class not found for model: {$className}"));
+
+        return $namespace;
+    }
 }

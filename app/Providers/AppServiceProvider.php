@@ -39,6 +39,36 @@ class AppServiceProvider extends ServiceProvider
         JsonResource::withoutWrapping();
         Date::use(CarbonImmutable::class);
 
+        $this->addRequestMarcos()
+            ->addStringMacros();
+
+        Relation::morphMap([
+            'user' => \App\Models\User::class,
+            'student' => \App\Models\Student::class,
+            'tenant' => \App\Models\Tenant::class,
+            'school' => \App\Models\School::class,
+            'section' => \App\Models\Section::class,
+            'course' => \App\Models\Course::class,
+        ]);
+
+        // Add the tenant_id to the identifying attributes when looking up a user
+        UserFactory::findUserUsing(function (Collection $data, string $model, array $attributes) {
+            $tenant = Tenant::current();
+            $userType = UserType::fromData($data);
+
+            $user = $model::firstOrNew([
+                ...$attributes,
+                'tenant_id' => $tenant->id,
+                'sis_key' => $userType->getSisKeyFromData($data),
+            ]);
+            $user->user_type = $userType;
+
+            return $user;
+        });
+    }
+
+    protected function addRequestMarcos(): static
+    {
         $currentTenant = fn (): Tenant => Tenant::current() ?? new Tenant();
 
         $currentSchool = function (): School {
@@ -58,31 +88,15 @@ class AppServiceProvider extends ServiceProvider
         Request::macro('tenant', $currentTenant);
         Request::macro('school', $currentSchool);
 
-        Relation::morphMap([
-            'user' => \App\Models\User::class,
-            'student' => \App\Models\Student::class,
-            'tenant' => \App\Models\Tenant::class,
-            'school' => \App\Models\School::class,
-            'section' => \App\Models\Section::class,
-            'course' => \App\Models\Course::class,
-        ]);
+        return $this;
+    }
 
+    protected function addStringMacros(): static
+    {
         Str::macro('toModelAlias', fn (string $string): string => ModelClassService::toAlias($string));
         Str::macro('toModelClass', fn (string $string): string => ModelClassService::toClassName($string));
+        Str::macro('toApiResourceClass', fn (string $string): string => ModelClassService::toApiResourceClass($string));
 
-        // Add the tenant_id to the identifying attributes when looking up a user
-        UserFactory::findUserUsing(function (Collection $data, string $model, array $attributes) {
-            $tenant = Tenant::current();
-            $userType = UserType::fromData($data);
-
-            $user = $model::firstOrNew([
-                ...$attributes,
-                'tenant_id' => $tenant->id,
-                'sis_key' => $userType->getSisKeyFromData($data),
-            ]);
-            $user->user_type = $userType;
-
-            return $user;
-        });
+        return $this;
     }
 }

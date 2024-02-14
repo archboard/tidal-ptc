@@ -38,3 +38,14 @@ it('can show view page with permission', function () {
             ->has('section')
         );
 });
+
+it('can edit section', function () {
+    $this->givePermission(\App\Enums\Permission::update, Section::class)
+        ->get(route('sections.edit', $this->section))
+        ->assertOk()
+        ->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+            ->component('sections/Edit')
+            ->has('title')
+            ->has('section')
+        );
+});

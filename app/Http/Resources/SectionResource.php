@@ -25,9 +25,12 @@ class SectionResource extends JsonResource
             'external_expression' => $this->resource->external_expression,
             'students_count' => $this->resource->students_count,
             'teacher_display' => $this->resource->teacher_display,
+            'alt_user_id' => $this->resource->alt_user_id,
             'course' => new CourseResource($this->whenLoaded('course')),
             'teacher' => new UserResource($this->whenLoaded('teacher')),
             'alt_teacher' => new UserResource($this->whenLoaded('altTeacher')),
+            'students' => StudentResource::collection($this->whenLoaded('students')),
+            'model_alias' => $this->resource->getMorphClass(),
         ];
     }
 }

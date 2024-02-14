@@ -55,6 +55,17 @@ class Section extends Model implements ExistsInSis
         });
     }
 
+    public function display(): Attribute
+    {
+        return Attribute::get(function (): string {
+            if ($this->relationLoaded('course')) {
+                return "{$this->course->name} ({$this->section_number})";
+            }
+
+            return $this->section_number;
+        });
+    }
+
     public function students(): BelongsToMany
     {
         return $this->belongsToMany(Student::class);
