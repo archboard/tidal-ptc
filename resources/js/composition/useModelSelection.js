@@ -2,7 +2,7 @@ import { inject, ref, watch, toValue } from 'vue'
 import NProgress from 'nprogress'
 import useProp from '@/composition/useProp.js'
 
-export default function useModelSelection (model) {
+export default function useModelSelection (model, filters = {}) {
   if (!model) {
     model = toValue(useProp('model_alias'))
   }
@@ -15,11 +15,11 @@ export default function useModelSelection (model) {
       await $http.post(`/selection/${model}`, { selectable_id: id, silent: true })
     } catch (e) { }
   }
-  const selectAll = async (ids = []) => {
+  const selectAll = async (filters = {}) => {
     NProgress.start()
 
     try {
-      await $http.post(`/selection/${model}`, { ids })
+      await $http.post(`/selection/${model}`, filters)
       await fetchSelection()
     } catch (e) { }
 
@@ -46,7 +46,7 @@ export default function useModelSelection (model) {
 
   watch(selectedAll, value => {
     if (value) {
-      selectAll()
+      selectAll(toValue(filters))
     } else {
       selectNone()
     }

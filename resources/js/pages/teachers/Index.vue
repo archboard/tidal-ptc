@@ -38,7 +38,8 @@
           <Th class="pr-0 w-4"><Checkbox @change="selectedAll = !selectedAll" :checked="selectedAll" /></Th>
           <Th>{{ __('Name') }}</Th>
           <Th>{{ __('Email') }}</Th>
-          <Th>{{ __('Type') }}</Th>
+          <Th class="text-right">{{ __('Sections') }}</Th>
+          <Th class="text-right">{{ __('Time slots') }}</Th>
           <Th></Th>
         </tr>
       </Thead>
@@ -49,12 +50,13 @@
           </Td>
           <Td>
             <div class="flex items-center space-x-2">
-              <span class="whitespace-nowrap">{{ user.name }}</span>
+              <AppLink :href="`/users/${user.id}`" class="whitespace-nowrap">{{ user.name }}</AppLink>
               <BookingDisabledPill v-if="!user.can_book" />
             </div>
           </Td>
           <Td>{{ user.email }}</Td>
-          <Td>{{ user.user_type_display }}</Td>
+          <Td class="text-right">{{ user.sections_count + user.alt_sections_count }}</Td>
+          <Td class="text-right">{{ user.time_slots_count }}</Td>
           <ActionColumn>
             <ContextMenu>
               <UserActionMenu :user="user" />
@@ -88,6 +90,8 @@ import useFilters from '@/composition/useFilters.js'
 import SelectionManager from '@/components/tables/SelectionManager.vue'
 import BookingDisabledPill from '@/components/BookingDisabledPill.vue'
 import UserActionMenu from '@/components/actions/UserActionMenu.vue'
+import AppLink from '@/components/AppLink.vue'
+import { computed, toValue } from 'vue'
 
 const props = defineProps({
   users: Object,
@@ -95,6 +99,15 @@ const props = defineProps({
   currentFilters: [Array, Object],
   model_alias: String,
 })
-const { selection, selectedAll, toggleSelection, selectNone } = useModelSelection('user')
-const { filters, search, updateResults, updatingResults } = useFilters()
+const { filters, search, updateResults, updatingResults, preppedFilters } = useFilters()
+const computedFilters = computed(() => {
+  return {
+    ...toValue(preppedFilters),
+    teacher: {
+      key: 'teacher',
+      value: true,
+    }
+  }
+})
+const { selection, selectedAll, toggleSelection, selectNone } = useModelSelection('user', computedFilters)
 </script>

@@ -142,6 +142,26 @@ class User extends Authenticatable implements ExistsInSis
         return $this->hasMany(SelectedModel::class);
     }
 
+    public function sections(): HasMany
+    {
+        return $this->hasMany(Section::class);
+    }
+
+    public function altSections(): HasMany
+    {
+        return $this->hasMany(Section::class, 'alt_user_id');
+    }
+
+    public function timeSlots(): HasMany
+    {
+        return $this->hasMany(TimeSlot::class);
+    }
+
+    public function bookedTimeSlots(): HasMany
+    {
+        return $this->hasMany(TimeSlot::class, 'reserved_by');
+    }
+
     //-------------------------------------------------------------------------
     // Instance functions
     //-------------------------------------------------------------------------
@@ -203,6 +223,8 @@ class User extends Authenticatable implements ExistsInSis
     {
         if ($alias = Str::toModelAlias($modelAlias)) {
             $relationship = Str::plural($alias);
+            $model = Str::toModelClass($modelAlias);
+            ray($filters);
 
             $data = $this->school
                 ->$relationship()
@@ -268,14 +290,13 @@ class User extends Authenticatable implements ExistsInSis
                 ->using(fn (Builder $builder, string $search) => $builder->search($search)),
             TextFilter::make('first_name', __('First name')),
             TextFilter::make('last_name', __('Last name')),
-            MultipleSelectFilter::make('user_type', __('Checkbox group'))
+            MultipleSelectFilter::make('user_type', __('User type'))
                 ->options(UserType::options()),
-            MultipleSelectFilter::make('user_type', __('Combobox'))
-                ->withComponent(Component::combobox)
-                ->options(UserType::options()),
-            MultipleSelectFilter::make('user_type', __('Select'))
-                ->withComponent(Component::combobox)
-                ->options(UserType::options()),
+            MultipleSelectFilter::make('teacher', __('Teachers'))
+                ->hide()
+                ->using(fn (Builder $builder) => $builder
+                    ->whereHas('sections')
+                    ->orWhereHas('altSections')),
         ];
     }
 }

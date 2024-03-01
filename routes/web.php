@@ -92,6 +92,9 @@ Route::middleware('tenant')->group(function () {
                 Route::put('/toggle-hidden', \App\Http\Controllers\ToggleHiddenController::class)
                     ->name('toggle-hidden');
 
+                Route::get('/teachers', \App\Http\Controllers\TeacherController::class)
+                    ->name('teachers.index');
+
                 Route::resource('/students', \App\Http\Controllers\StudentController::class)
                     ->only('index', 'show');
 

@@ -2,22 +2,22 @@ import useProp from '@/composition/useProp.js'
 import { computed, ref, toValue } from 'vue'
 import clone from 'just-clone'
 import isEmpty from 'just-is-empty'
-import { router } from '@inertiajs/vue3'
-import get from 'just-safe-get'
-import { watchDebounced } from '@vueuse/core'
 import omit from 'just-omit'
+import get from 'just-safe-get'
+import { router } from '@inertiajs/vue3'
+import { watchDebounced } from '@vueuse/core'
 
 export default function useFilters (itemsKey = null) {
+  const searchKey = 's'
   const filterKey = toValue(useProp('filterKey'))
   const allFilters = useProp('currentFilters')
   const currentFilters = computed(() => {
     return omit(toValue(allFilters), searchKey)
   })
-  const searchKey = 's'
   const search = ref(get(toValue(allFilters), `${searchKey}.value`))
   const filters = ref(clone(isEmpty(toValue(currentFilters)) ? {} : toValue(currentFilters)))
   const updatingResults = ref(false)
-  const prepFilters = () => {
+  const getCurrentFilters = () => {
     const filterObj = clone(toValue(filters))
     const searchObj = {
       _id: searchKey,
@@ -30,6 +30,7 @@ export default function useFilters (itemsKey = null) {
       ...(search.value ? { [searchKey]: searchObj } : {}),
     }
   }
+  const preppedFilters = computed(getCurrentFilters)
   const updateResults = () => {
     updatingResults.value = true
 
@@ -38,7 +39,7 @@ export default function useFilters (itemsKey = null) {
       preserveState: true,
       only: itemsKey ? [itemsKey] : [],
       data: {
-        [filterKey]: prepFilters(),
+        [filterKey]: toValue(preppedFilters),
       },
       onFinish: () => {
         updatingResults.value = false
@@ -53,5 +54,6 @@ export default function useFilters (itemsKey = null) {
     updateResults,
     updatingResults,
     search,
+    preppedFilters,
   }
 }

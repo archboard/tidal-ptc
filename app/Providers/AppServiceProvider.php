@@ -49,6 +49,7 @@ class AppServiceProvider extends ServiceProvider
             'school' => \App\Models\School::class,
             'section' => \App\Models\Section::class,
             'course' => \App\Models\Course::class,
+            'time_slot' => \App\Models\TimeSlot::class,
         ]);
 
         // Add the tenant_id to the identifying attributes when looking up a user
