@@ -95,6 +95,10 @@ Route::middleware('tenant')->group(function () {
                 Route::get('/teachers', \App\Http\Controllers\TeacherController::class)
                     ->name('teachers.index');
 
+                Route::resource('/batches', \App\Http\Controllers\BatchController::class);
+
+                Route::resource('/time-slots', \App\Http\Controllers\TimeSlotController::class);
+
                 Route::resource('/students', \App\Http\Controllers\StudentController::class)
                     ->only('index', 'show');
 

@@ -60,3 +60,23 @@ function setSchool()
 {
     return test()->setSchool();
 }
+
+function makeTimeSlotRequest(array $attributes = []): array
+{
+    $start = now()->addDay();
+
+    return [
+        'starts_at' => $start->toIso8601ZuluString(),
+        'ends_at' => $start->addMinutes(15)->toIso8601ZuluString(),
+        'batch_id' => null,
+        'teacher_notes' => fake()->sentence(),
+        'location' => fake()->word(),
+        'meeting_url' => fake()->url(),
+        'is_online' => fake()->boolean(),
+        'contact_can_book' => fake()->boolean(),
+        'allow_translator_requests' => fake()->boolean(),
+        'allow_online_meetings' => fake()->boolean(),
+        ...$attributes,
+    ];
+}
+

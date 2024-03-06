@@ -44,11 +44,13 @@ import AppLabel from '@/components/forms/AppLabel.vue'
 import AppInput from '@/components/forms/AppInput.vue'
 import AppSelect from '@/components/forms/AppSelect.vue'
 import { useVModel } from '@vueuse/core'
+import AppTextarea from '@/components/forms/AppTextarea.vue'
 
 const components = {
   AppDatepicker,
   AppInput,
   AppSelect,
+  AppTextarea,
 }
 
 const props = defineProps({

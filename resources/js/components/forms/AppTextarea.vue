@@ -4,9 +4,9 @@
     @input="resize"
     ref="textarea"
     :style="{ height }"
-    class="shadow-sm block w-full focus:ring-2 text-sm rounded-md"
+    class="bg-white dark:bg-gray-900 shadow-sm block w-full rounded-lg text-sm focus:outline-none focus:ring-2"
     :class="{
-      'focus:ring-brand-blue focus:border-brand-blue border-gray-300': !hasError,
+      'border-gray-300 dark:border-gray-600 focus:ring-primary-500 focus:border-primary-500 dark:focus:border-primary-500': !hasError,
       'pr-10 border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500': hasError,
     }"
   ></textarea>

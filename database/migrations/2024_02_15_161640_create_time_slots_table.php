@@ -27,8 +27,13 @@ return new class extends Migration
             $table->text('contact_notes')->nullable();
             $table->string('location')->nullable();
             $table->string('meeting_url')->nullable();
+            $table->boolean('allow_online_meetings')->default(false);
+            $table->boolean('is_online')->default(false);
+            $table->boolean('requested_online')->default(false);
             $table->boolean('contact_can_book')->default(true);
-            $table->jsonb('translator_config')->nullable();
+            $table->boolean('allow_translator_requests')->default(false);
+            $table->string('language_id')->nullable();
+            $table->text('translator_notes')->nullable();
             $table->timestamps();
         });
     }

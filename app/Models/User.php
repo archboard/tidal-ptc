@@ -17,6 +17,7 @@ use GrantHolle\ModelFilters\Filters\MultipleSelectFilter;
 use GrantHolle\ModelFilters\Filters\TextFilter;
 use GrantHolle\ModelFilters\Traits\HasFilters;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -160,6 +161,23 @@ class User extends Authenticatable implements ExistsInSis
     public function bookedTimeSlots(): HasMany
     {
         return $this->hasMany(TimeSlot::class, 'reserved_by');
+    }
+
+    //-------------------------------------------------------------------------
+    // Custom accessors and mutators
+    //-------------------------------------------------------------------------
+
+    public function fullCalendarFormat(): Attribute
+    {
+        return Attribute::get(function (): array {
+            return [
+                'hour' => 'numeric',
+                'minute' => '2-digit',
+                'omitZeroMinute' => false,
+                'meridiem' => $this->is_24h ? false : 'short',
+                'hour12' => ! $this->is_24h,
+            ];
+        });
     }
 
     //-------------------------------------------------------------------------
