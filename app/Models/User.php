@@ -241,8 +241,6 @@ class User extends Authenticatable implements ExistsInSis
     {
         if ($alias = Str::toModelAlias($modelAlias)) {
             $relationship = Str::plural($alias);
-            $model = Str::toModelClass($modelAlias);
-            ray($filters);
 
             $data = $this->school
                 ->$relationship()
