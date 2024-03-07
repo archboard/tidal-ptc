@@ -47,6 +47,7 @@ trait HasPermissions
             \App\Models\Course::class,
             \App\Models\Section::class,
             \App\Models\Student::class,
+            \App\Models\TimeSlot::class,
         ];
     }
 
