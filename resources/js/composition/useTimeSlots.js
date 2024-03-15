@@ -1,15 +1,19 @@
 import useProp from '@/composition/useProp.js'
 import { computed, inject, ref, toValue } from 'vue'
+import reduce from 'just-reduce-object'
 
 export default function useTimeSlots() {
   const $http = inject('$http')
   const school = useProp('school')
   const allowTranslator = computed(() => {
     return toValue(school).allow_translator_requests &&
-      toValue(school).languages.length > 0
+      (toValue(school)?.languages?.length || 0) > 0
   })
   const timeSlotBase = {
+    batch_id: null,
     teacher_notes: null,
+    starts_at: null,
+    ends_at: null,
     location: null,
     meeting_url: null,
     is_online: false,
@@ -17,31 +21,46 @@ export default function useTimeSlots() {
     allow_translator_requests: allowTranslator.value,
     allow_online_meetings: toValue(school).allow_online_meetings,
   }
+  const mergeTimeSlot = (defaults, timeSlot) => {
+    const slot = toValue(timeSlot)
+
+    return reduce(toValue(defaults), (acc, key, val) => {
+      acc[key] = typeof slot[key] === 'undefined'
+        ? val
+        : slot[key]
+
+      return acc
+    }, {})
+  }
   const batch = ref({})
-  const createBatch = async () => {
-    try {
-      const { data } = await $http.post('/batches')
-      batch.value = data
-    } catch (err) {}
+  const setBatch = (value) => {
+    batch.value = value
   }
   const createTimeSlot = async (fcEvent, defaults) => {
-    if (!batch.value.id) {
-      await createBatch()
-    }
-
-    const data = {
+    const slot = {
       ...toValue(defaults),
       starts_at: fcEvent.startStr,
       ends_at: fcEvent.endStr,
-      batch_id: batch.value.id,
+      batch_id: batch.value?.id,
     }
 
-    console.log(data)
+    try {
+      const { data } = await $http.post('/time-slots', slot)
+      return data?.data || {}
+    } catch (err) { }
+  }
+  const updateTimeSlot = async (endpoint, timeSlot) => {
+    try {
+      await $http.put(endpoint, timeSlot)
+    } catch (err) { }
   }
 
   return {
     timeSlotBase,
     allowTranslator,
     createTimeSlot,
+    updateTimeSlot,
+    mergeTimeSlot,
+    setBatch,
   }
 }

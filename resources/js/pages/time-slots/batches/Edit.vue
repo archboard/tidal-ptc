@@ -25,11 +25,15 @@
           {{ __('All times are based on the school timezone, :timezone.', { timezone: school.timezone }) }}
         </SimpleAlert>
 
+        <AlertWithButton class="mb-5" :action-text="__('View list')" @action="uiState = 'users'">
+          {{ __('You are managing time slots for :count people.', { count: batch.users.length }) }}
+        </AlertWithButton>
+
         <CreateTimeSlotCalendar
           ref="calendarRef"
           :time-format="user.fc_time_format"
           :timezone="school.timezone"
-          :events="events"
+          :events="batch.event_source"
           @select="onSelect"
           @event-click="onClick"
         />
@@ -38,26 +42,30 @@
   </Authenticated>
 
   <EditTimeSlotModal
-    v-if="selectedTimeSlot?.id"
-    @close="selectedTimeSlot = {}"
+    v-if="selectedTimeSlot?.starts_at"
+    @close="onClose"
     :school="school"
     :time-slot="selectedTimeSlot"
+    :ui-state="uiState"
+    @save="onUpdate"
+    @delete="onDelete"
+  />
+  <UserListModal
+    v-if="uiState === 'users'"
+    @close="uiState = null"
+    :users="batch.users"
   />
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { inject, ref } from 'vue'
 import Authenticated from '@/layouts/Authenticated.vue'
 import useTimeSlots from '@/composition/useTimeSlots.js'
 import clone from 'just-clone'
-import AppFieldset from '@/components/forms/AppFieldset.vue'
-import FormField from '@/components/forms/FormField.vue'
-import AppTextarea from '@/components/forms/AppTextarea.vue'
 import CardHeader from '@/components/CardHeader.vue'
 import HelpText from '@/components/forms/HelpText.vue'
 import CardWrapper from '@/components/CardWrapper.vue'
 import CardPadding from '@/components/CardPadding.vue'
-import AppCheckbox from '@/components/forms/AppCheckbox.vue'
 import useModelSelection from '@/composition/useModelSelection.js'
 import CreateTimeSlotCalendar from '@/components/CreateTimeSlotCalendar.vue'
 import CardAction from '@/components/CardAction.vue'
@@ -67,6 +75,8 @@ import SimpleAlert from '@/components/alerts/SimpleAlert.vue'
 import { useForm } from '@inertiajs/vue3'
 import AdminTimeSlotForm from '@/components/forms/AdminTimeSlotForm.vue'
 import EditTimeSlotModal from '@/components/modals/EditTimeSlotModal.vue'
+import AlertWithButton from '@/components/alerts/AlertWithButton.vue'
+import UserListModal from '@/components/modals/UserListModal.vue'
 
 const props = defineProps({
   school: Object,
@@ -79,28 +89,47 @@ const props = defineProps({
     type: Object,
     default: () => ({})
   },
-  useBatch: {
-    type: Boolean,
-    default: false,
-  }
 })
 const emit = defineEmits([])
-const { timeSlotBase, createTimeSlot, setBatch } = useTimeSlots(props.useBatch)
+const { timeSlotBase, createTimeSlot, setBatch, updateTimeSlot } = useTimeSlots()
 const form = useForm(clone(timeSlotBase))
+setBatch(props.batch)
 const { selection } = useModelSelection('user')
 const showForm = ref(true)
 const calendarRef = ref()
 const selectedTimeSlot = ref({})
+const uiState = ref()
+const $http = inject('$http')
 const onSelect = fcEvent => {
   createTimeSlot(fcEvent, form).then(ev => {
-    calendarRef.value.calendar.getApi().addEvent(ev)
+    calendarRef.value.calendar.getApi().addEvent(ev, props.batch.id.toString())
   })
 }
 const onClick = fcEvent => {
   selectedTimeSlot.value = fcEvent.event.extendedProps
 }
+const doAction = async (state, action, close) => {
+  uiState.value = state
 
-if (props.useBatch && props.batch.id) {
-  setBatch(props.batch)
+  await action()
+
+  if (typeof close === 'function') {
+    close()
+  }
+
+  uiState.value = null
+}
+const onUpdate = (data, close) => {
+  doAction('saving', () => updateTimeSlot(`/batches/${props.batch.id}`, data), close)
+}
+const onDelete = (close) => {
+  doAction('deleting', () => $http.post(`/batches/${props.batch.id}/delete`, {
+    starts_at: selectedTimeSlot.value.starts_at,
+    ends_at: selectedTimeSlot.value.ends_at,
+  }), close)
+}
+const onClose = () => {
+  calendarRef.value.calendar.getApi().refetchEvents()
+  selectedTimeSlot.value = {}
 }
 </script>

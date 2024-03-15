@@ -2,17 +2,28 @@
 
 namespace App\Http\Requests;
 
-use Carbon\CarbonImmutable;
+use App\Enums\Permission;
+use App\Models\TimeSlot;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateTimeSlotRequest extends FormRequest
+class CreateOrUpdateTimeSlotRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        $user = $this->user();
+        $forUser = $this->input('user_id') &&
+            is_null($this->input('batch_id')) &&
+            $user->id === $this->input('user_id') &&
+            $this->school()->teachers_can_create;
+
+        if ($this->isMethod('post')) {
+            return $user->can(Permission::create->value, TimeSlot::class) || $forUser;
+        }
+
+        return $user->can(Permission::update->value, TimeSlot::class) || $forUser;
     }
 
     /**
@@ -24,6 +35,7 @@ class CreateTimeSlotRequest extends FormRequest
     {
         return [
             'batch_id' => ['nullable'],
+            'user_id' => ['nullable', 'integer'],
             'starts_at' => ['required', 'date', 'after:now'],
             'ends_at' => ['required', 'date', 'after:starts_at'],
             'teacher_notes' => ['nullable'],
@@ -36,19 +48,19 @@ class CreateTimeSlotRequest extends FormRequest
         ];
     }
 
-    public function getTimeSlotAttributes(): array
+    public function getTimeSlotAttributes(bool $shiftTime = true): array
     {
         $school = $this->school();
         $validated = $this->validated();
 
         return [
             ...$validated,
-            'starts_at' => CarbonImmutable::parse($validated['starts_at'], $school->timezone)
-                ->setTimezone(config('app.timezone'))
-                ->toDateTimeString(),
-            'ends_at' => CarbonImmutable::parse($validated['ends_at'], $school->timezone)
-                ->setTimezone(config('app.timezone'))
-                ->toDateTimeString(),
+            'starts_at' => $shiftTime
+                ? $school->dateToApp($validated['starts_at'])->toDateTimeString()
+                : $validated['starts_at'],
+            'ends_at' => $shiftTime
+                ? $school->dateToApp($validated['ends_at'])->toDateTimeString()
+                : $validated['ends_at'],
             'is_online' => $school->allow_online_meetings
                 ? $validated['is_online']
                 : false,

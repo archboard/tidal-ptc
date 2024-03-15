@@ -11,13 +11,16 @@
 
     <SelectionManager :selection="selection" :select-none="selectNone">
       <div v-if="can('time_slot.create')" class="p-1">
-        <AppMenuItem href="/time-slots/create">
+        <AppMenuItem
+          href="/batches"
+          as="button"
+          method="post"
+        >
           {{ __('Create time slots') }}
         </AppMenuItem>
       </div>
       <div v-if="can('user.update')" class="p-1">
         <AppMenuItem
-          is="InertiaLink"
           as="button"
           method="post"
           :href="`/selection/${model_alias}/hidden`"
@@ -26,7 +29,6 @@
           {{ __('Disable booking') }}
         </AppMenuItem>
         <AppMenuItem
-          is="InertiaLink"
           as="button"
           method="post"
           :href="`/selection/${model_alias}/hidden`"

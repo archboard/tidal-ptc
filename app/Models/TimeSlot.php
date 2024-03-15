@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class TimeSlot extends Model
 {
@@ -122,16 +123,34 @@ class TimeSlot extends Model
     public function toFullCalendar(): array
     {
         return [
-            'id' => $this->id,
+            'id' => $this->id ?? Str::random(5),
             'groupId' => $this->batch_id,
             'title' => '',
             'allDay' => false,
-            'start' => $this->starts_at->toIso8601ZuluString(),
-            'end' => $this->ends_at->toIso8601ZuluString(),
+            'start' => $this->starts_at->toIso8601String(),
+            'end' => $this->ends_at->toIso8601String(),
             'overlap' => false,
             'extendedProps' => (new TimeSlotResource($this))
                 ->response()
                 ->getData(true),
         ];
+    }
+
+    public static function createForSelection(Collection $selection, array $attributes): void
+    {
+        // Get the selection of those without overlapping existing time slots
+        $overlapping = static::query()
+            ->whereOverlaps($attributes['starts_at'], $attributes['ends_at'])
+            ->whereIn('user_id', $selection)
+            ->where('batch_id', '!=', $attributes['batch_id'])
+            ->pluck('user_id');
+
+        $sets = $selection->diff($overlapping)
+            ->map(fn (int $id) => [
+                ...$attributes,
+                'user_id' => $id,
+            ]);
+
+        static::insert($sets->toArray());
     }
 }

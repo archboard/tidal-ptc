@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Permission;
-use App\Http\Requests\CreateTimeSlotRequest;
+use App\Http\Requests\CreateOrUpdateTimeSlotRequest;
 use App\Http\Resources\TimeSlotResource;
 use App\Models\School;
 use App\Models\TimeSlot;
@@ -30,26 +30,22 @@ class TimeSlotController extends Controller
         $request->school()->load('languages');
 
         return inertia('time-slots/Create', [
-            'title' => __('Create time slots for selection'),
+            'title' => __('Create time slots'),
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateTimeSlotRequest $request)
+    public function store(CreateOrUpdateTimeSlotRequest $request)
     {
-        $this->authorize(Permission::create, TimeSlot::class);
         $user = $request->user();
         $attributes = $request->getTimeSlotAttributes();
 
-        $sets = $user->getModelSelection(User::class)
-            ->map(fn (int $id) => [
-                ...$attributes,
-                'user_id' => $id,
-            ]);
+        // Create for selection when batch is set
+        TimeSlot::createForSelection($user->getModelSelection(User::class), $attributes);
 
-        TimeSlot::insert($sets->toArray());
+        // Create for individual user
 
         return response()->json([
             'level' => 'success',

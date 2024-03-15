@@ -18,6 +18,7 @@ class TimeSlotResource extends JsonResource
     {
         return [
             'id' => $this->resource->id,
+            'batch_id' => $this->resource->batch_id,
             'starts_at' => $this->resource->starts_at?->toDateTimeString(),
             'ends_at' => $this->resource->ends_at?->toDateTimeString(),
             'reserved_at' => $this->resource->reserved_at?->toDateTimeString(),

@@ -1,26 +1,27 @@
 <template>
   <div>
-    <FullCalendar :options="calendarOptions" />
+    <FullCalendar ref="calendar" :options="calendarOptions" />
   </div>
 </template>
 
 <script setup>
-import { inject } from 'vue'
+import { inject, ref } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
-import useDates from '@/composition/useDates.js'
+import momentTimezonePlugin from '@fullcalendar/moment-timezone';
 
 const props = defineProps({
   timezone: String,
   timeFormat: Object,
+  events: [Array, String, Object],
 })
-const emit = defineEmits(['select'])
+const emit = defineEmits(['select', 'eventClick'])
 const __ = inject('$translate')
-const { dayjs } = useDates()
+const calendar = ref({})
 const calendarOptions = {
-  plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
+  plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, momentTimezonePlugin],
   initialView: 'timeGridThreeDay',
   headerToolbar: {
     left: 'prev,next',
@@ -44,8 +45,15 @@ const calendarOptions = {
   slotDuration: '00:05:00',
   scrollTime: '08:00:00',
   nowIndicator: true,
+  events: props.events,
   select: (event) => {
     emit('select', event)
   },
+  eventClick: (event) => {
+    emit('eventClick', event)
+  },
 }
+defineExpose({
+  calendar,
+})
 </script>

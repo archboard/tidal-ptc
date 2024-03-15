@@ -96,6 +96,9 @@ Route::middleware('tenant')->group(function () {
                     ->name('teachers.index');
 
                 Route::resource('/batches', \App\Http\Controllers\BatchController::class);
+                Route::post('/batches/{batch}/delete', \App\Http\Controllers\DeleteBatchTimeSlotController::class);
+                Route::match(['get', 'post'], '/batches/{batch}/event-source', \App\Http\Controllers\BatchEventSourceController::class)
+                    ->name('batches.event-source');
 
                 Route::resource('/time-slots', \App\Http\Controllers\TimeSlotController::class);
 
