@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\BelongsToSchool;
 use App\Traits\BelongsToTenant;
 use App\Traits\BelongsToUser;
+use App\Traits\ScopedToSchool;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,6 +17,7 @@ class Batch extends Model
     use BelongsToSchool;
     use BelongsToTenant;
     use BelongsToUser;
+    use ScopedToSchool;
 
     protected $guarded = [];
 

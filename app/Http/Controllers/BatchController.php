@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Enums\Permission;
 use App\Http\Requests\CreateOrUpdateTimeSlotRequest;
-use App\Http\Requests\EditBatchTimeSlotRequest;
 use App\Http\Resources\BatchResource;
 use App\Models\Batch;
 use App\Models\School;
 use App\Models\TimeSlot;
 use App\Models\User;
+use App\Navigation\NavigationItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use stdClass;
@@ -21,7 +21,24 @@ class BatchController extends Controller
      */
     public function index()
     {
-        //
+        $this->authorize(Permission::view, TimeSlot::class);
+
+        $batches = Batch::query()
+            ->orderBy('created_at', 'desc')
+            ->withCount('timeSlots', 'users')
+            ->with('user')
+            ->paginate();
+
+        return inertia('time-slots/batches/Index', [
+            'title' => __('Time Slot Batches'),
+            'batches' => BatchResource::collection($batches),
+            'breadcrumbs' => $this->withBreadcrumbs(
+                NavigationItem::make()
+                    ->isCurrent()
+                    ->labeled(__('Time slot batches'))
+                    ->to(route('batches.index'))
+            ),
+        ]);
     }
 
     /**
@@ -84,6 +101,15 @@ class BatchController extends Controller
         return inertia('time-slots/batches/Edit', [
             'title' => __('Edit time slot batch'),
             'batch' => new BatchResource($batch),
+            'breadcrumbs' => $this->withBreadcrumbs(
+                NavigationItem::make()
+                    ->labeled(__('Time slot batches'))
+                    ->to(route('batches.index')),
+                NavigationItem::make()
+                    ->to(route('batches.edit', $batch))
+                    ->labeled(__('Edit batch'))
+                    ->isCurrent()
+            ),
         ]);
     }
 

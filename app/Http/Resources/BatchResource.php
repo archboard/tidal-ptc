@@ -19,9 +19,13 @@ class BatchResource extends JsonResource
         return [
             'id' => $this->resource->id,
             'user_id' => $this->resource->user_id,
+            'time_slots_count' => $this->resource->time_slots_count,
+            'users_count' => $this->resource->users_count,
+            'created_at' => to_local_timezone($this->resource->created_at),
             'event_source' => $this->resource->fullCalendarEventSource(),
             'time_slots' => TimeSlotResource::collection($this->whenLoaded('timeSlots')),
             'users' => UserResource::collection($this->whenLoaded('users')),
+            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }
