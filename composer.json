@@ -16,9 +16,9 @@
     "grantholle/laravel-timezone": "^1.0",
     "grantholle/powerschool-api": "^4.0",
     "guzzlehttp/guzzle": "^7.0.1",
-    "inertiajs/inertia-laravel": "^0.6.0",
+    "inertiajs/inertia-laravel": "^1.0",
     "laravel/fortify": "^1.13",
-    "laravel/framework": "^10.0",
+    "laravel/framework": "^11.0",
     "laravel/tinker": "^2.5",
     "silber/bouncer": "^1.0",
     "spatie/laravel-ignition": "^2.0",
@@ -27,11 +27,10 @@
   },
   "require-dev": {
     "barryvdh/laravel-ide-helper": "^2.9",
-    "fakerphp/faker": "^1.9.1",
     "laravel/pint": "^1.7",
     "mockery/mockery": "^1.4.2",
-    "nunomaduro/collision": "^6.1",
-    "pestphp/pest": "^1.22",
+    "nunomaduro/collision": "^8.1",
+    "pestphp/pest": "^2.0",
     "phpunit/phpunit": "^9.3.3",
     "spatie/laravel-ray": "^1.30"
   },
@@ -46,9 +45,7 @@
   },
   "extra": {
     "laravel": {
-      "dont-discover": [
-        "laravel/telescope"
-      ]
+      "dont-discover": []
     }
   },
   "autoload": {
