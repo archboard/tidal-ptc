@@ -21,7 +21,7 @@ class BatchController extends Controller
      */
     public function index()
     {
-        $this->authorize(Permission::view, TimeSlot::class);
+        $this->authorize(Permission::viewAny, TimeSlot::class);
 
         $batches = Batch::query()
             ->orderBy('created_at', 'desc')
@@ -46,7 +46,11 @@ class BatchController extends Controller
      */
     public function create(Request $request)
     {
-        //
+        $this->authorize(Permission::create, TimeSlot::class);
+
+        session()->flash('error', __('Select teachers to create time slots.'));
+
+        return to_route('teachers.index');
     }
 
     /**
