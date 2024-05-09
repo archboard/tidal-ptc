@@ -49,7 +49,6 @@ class Batch extends Model
 
     public function updateTimeSlots(array $attributes): static
     {
-        ray($attributes);
         $this->timeSlots()
             ->where('starts_at', $attributes['starts_at'])
             ->where('ends_at', $attributes['ends_at'])

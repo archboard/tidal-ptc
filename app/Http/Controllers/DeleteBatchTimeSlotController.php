@@ -16,7 +16,6 @@ class DeleteBatchTimeSlotController extends Controller
             'starts_at' => ['required', 'date'],
             'ends_at' => ['required', 'date'],
         ]);
-        ray($data);
 
         $batch->timeSlots()
             ->where('starts_at', $data['starts_at'])
