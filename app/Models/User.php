@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\NotificationEvent;
+use App\Enums\Permission;
 use App\Enums\Role;
 use App\Enums\UserType;
 use App\Models\Contracts\ExistsInSis;
@@ -10,9 +11,10 @@ use App\Traits\BelongsToTenant;
 use App\Traits\HasFirstAndLastName;
 use App\Traits\HasHiddenAttribute;
 use App\Traits\HasPermissions;
+use App\Traits\HasTimeSlots;
 use App\Traits\HasTimezone;
 use App\Traits\Selectable;
-use GrantHolle\ModelFilters\Enums\Component;
+use Closure;
 use GrantHolle\ModelFilters\Filters\MultipleSelectFilter;
 use GrantHolle\ModelFilters\Filters\TextFilter;
 use GrantHolle\ModelFilters\Traits\HasFilters;
@@ -43,6 +45,7 @@ class User extends Authenticatable implements ExistsInSis
     use HasHiddenAttribute;
     use HasPermissions;
     use HasRolesAndAbilities;
+    use HasTimeSlots;
     use HasTimezone;
     use Notifiable;
     use Selectable;
@@ -151,11 +154,6 @@ class User extends Authenticatable implements ExistsInSis
     public function altSections(): HasMany
     {
         return $this->hasMany(Section::class, 'alt_user_id');
-    }
-
-    public function timeSlots(): HasMany
-    {
-        return $this->hasMany(TimeSlot::class);
     }
 
     public function bookedTimeSlots(): HasMany
@@ -272,11 +270,12 @@ class User extends Authenticatable implements ExistsInSis
         return $this;
     }
 
-    public function getModelSelection(string $model): Collection
+    public function getModelSelection(string $model, ?Closure $where = null): Collection
     {
         return $this->selectedModels()
             ->where('school_id', $this->school_id)
             ->where('selectable_type', Str::toModelAlias($model))
+            ->when($where, $where)
             ->pluck('selectable_id')
             ->values();
     }
@@ -314,5 +313,21 @@ class User extends Authenticatable implements ExistsInSis
                     ->whereHas('sections')
                     ->orWhereHas('altSections')),
         ];
+    }
+
+    public function fullCalendarEventUrl(): string
+    {
+        return route('users.event-source', $this);
+    }
+
+    public function getFullCalendarEventSources(): array
+    {
+        // Get all the students' event sources
+        return $this->students->map(fn (Student $student) => $student->fullCalendarEventSource())
+            ->push($this->fullCalendarEventSource())
+            ->when($this->can(Permission::viewAny->value, TimeSlot::class), function (Collection $sources) {
+                return $sources->push($this->school->fullCalendarEventSource());
+            })
+            ->toArray();
     }
 }

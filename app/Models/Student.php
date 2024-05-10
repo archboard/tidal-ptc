@@ -7,6 +7,7 @@ use App\Traits\BelongsToSchool;
 use App\Traits\BelongsToTenant;
 use App\Traits\HasFirstAndLastName;
 use App\Traits\HasHiddenAttribute;
+use App\Traits\HasTimeSlots;
 use GrantHolle\ModelFilters\Enums\Component;
 use GrantHolle\ModelFilters\Filters\MultipleSelectFilter;
 use GrantHolle\ModelFilters\Filters\TextFilter;
@@ -30,6 +31,7 @@ class Student extends Model implements ExistsInSis
     use HasFirstAndLastName;
     use HasHiddenAttribute;
     use SoftDeletes;
+    use HasTimeSlots;
 
     protected $guarded = [];
 
@@ -84,5 +86,10 @@ class Student extends Model implements ExistsInSis
                     false => __('Cannot book'),
                 ]),
         ];
+    }
+
+    public function fullCalendarEventUrl(): string
+    {
+        return route('students.event-source', $this);
     }
 }

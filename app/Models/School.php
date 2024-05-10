@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Contracts\ExistsInSis;
 use App\Traits\BelongsToTenant;
+use App\Traits\HasTimeSlots;
 use App\Traits\HasTimezone;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -20,6 +21,7 @@ class School extends Model implements ExistsInSis
     use BelongsToTenant;
     use HasFactory;
     use HasTimezone;
+    use HasTimeSlots;
 
     protected $guarded = [];
 
@@ -169,5 +171,10 @@ class School extends Model implements ExistsInSis
     public function gradeSelectOptions(): array
     {
         return range($this->low_grade, $this->high_grade);
+    }
+
+    public function fullCalendarEventUrl(): string
+    {
+        return route('schools.event-source', $this);
     }
 }

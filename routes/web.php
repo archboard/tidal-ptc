@@ -81,6 +81,9 @@ Route::middleware('tenant')->group(function () {
         Route::post('/search/{model}', \App\Http\Controllers\SearchModelController::class)
             ->name('model.search');
 
+        Route::match(['get', 'post'], '/schools/{school}/event-source', \App\Http\Controllers\SchoolEventSourceController::class)
+            ->name('schools.event-source');
+
         Route::middleware(['has_school', 'scoped_permissions'])
             ->group(function () {
                 Route::match(['post', 'delete'], '/selection/{model}', \App\Http\Controllers\ToggleSelectionController::class)
@@ -104,6 +107,8 @@ Route::middleware('tenant')->group(function () {
 
                 Route::resource('/students', \App\Http\Controllers\StudentController::class)
                     ->only('index', 'show');
+                Route::match(['get', 'post'], '/students/{student}/event-source', \App\Http\Controllers\StudentEventSourceController::class)
+                    ->name('students.event-source');
 
                 Route::resource('/sections', \App\Http\Controllers\SectionController::class)
                     ->only('index', 'show', 'edit', 'update');
@@ -113,6 +118,8 @@ Route::middleware('tenant')->group(function () {
 
                 Route::resource('/users', \App\Http\Controllers\UserController::class)
                     ->only('index', 'show');
+                Route::match(['get', 'post'], '/users/{user}/event-source', \App\Http\Controllers\UserEventSourceController::class)
+                    ->name('users.event-source');
 
                 Route::middleware(Permission::editPermissions->toMiddleware())
                     ->group(function () {

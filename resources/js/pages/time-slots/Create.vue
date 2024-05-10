@@ -39,14 +39,16 @@
 
   <EditTimeSlotModal
     v-if="selectedTimeSlot?.id"
-    @close="selectedTimeSlot = {}"
+    @close="onClose"
     :school="school"
     :time-slot="selectedTimeSlot"
+    :ui-state="uiState"
+    @delete="slotDeleted"
   />
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { inject, reactive, ref } from 'vue'
 import Authenticated from '@/layouts/Authenticated.vue'
 import useTimeSlots from '@/composition/useTimeSlots.js'
 import clone from 'just-clone'
@@ -72,35 +74,41 @@ const props = defineProps({
   school: Object,
   user: Object,
   events: {
-    type: Array,
+    type: [Array, String],
     default: () => [],
-  },
-  batch: {
-    type: Object,
-    default: () => ({})
   },
   useBatch: {
     type: Boolean,
     default: false,
   }
 })
-const emit = defineEmits([])
-const { timeSlotBase, createTimeSlot, setBatch } = useTimeSlots(props.useBatch)
+const $http = inject('$http')
+const { timeSlotBase, createTimeSlot } = useTimeSlots(props.useBatch)
 const form = useForm(clone(timeSlotBase))
-const { selection } = useModelSelection('user')
 const showForm = ref(true)
+const uiState = ref()
 const calendarRef = ref()
 const selectedTimeSlot = ref({})
 const onSelect = fcEvent => {
   createTimeSlot(fcEvent, form).then(ev => {
-    calendarRef.value.calendar.getApi().addEvent(ev)
+    calendarRef.value.calendar.getApi().refetchEvents()
   })
 }
 const onClick = fcEvent => {
   selectedTimeSlot.value = fcEvent.event.extendedProps
 }
+const onClose = () => {
+  calendarRef.value.calendar.getApi().refetchEvents()
+  selectedTimeSlot.value = {}
+}
+const slotDeleted = async (close) => {
+  uiState.value = 'deleting'
 
-if (props.useBatch && props.batch.id) {
-  setBatch(props.batch)
+  try {
+    await $http.delete(`/time-slots/${selectedTimeSlot.value.id}`)
+    close()
+  } catch (e) {}
+
+  uiState.value = null
 }
 </script>

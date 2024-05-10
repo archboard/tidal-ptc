@@ -10,7 +10,7 @@ import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
-import momentTimezonePlugin from '@fullcalendar/moment-timezone';
+import momentTimezonePlugin from '@fullcalendar/moment-timezone'
 
 const props = defineProps({
   timezone: String,
@@ -41,6 +41,7 @@ const calendarOptions = {
   selectable: true,
   selectMirror: true,
   slotEventOverlap: false,
+  selectOverlap: false,
   allDaySlot: false,
   slotDuration: '00:05:00',
   scrollTime: '08:00:00',

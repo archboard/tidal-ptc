@@ -8,6 +8,7 @@ use App\Models\Course;
 use App\Models\School;
 use App\Models\Section;
 use App\Models\Tenant;
+use App\Models\TimeSlot;
 use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Silber\Bouncer\BouncerFacade;
@@ -24,7 +25,7 @@ abstract class TestCase extends BaseTestCase
 
     protected School $school;
 
-    protected User $user;
+    protected ?User $user = null;
 
     protected function setUp(): void
     {
@@ -141,11 +142,21 @@ abstract class TestCase extends BaseTestCase
             'school_id' => $this->school->id,
         ]);
 
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $course->sections()
             ->save(Section::factory()->make([
                 'tenant_id' => $this->tenant->id,
                 'school_id' => $this->school->id,
                 'user_id' => $this->seedUser()->id,
             ]));
+    }
+
+    public function seedTimeSlot(array $attributes = [], ?User $user = null): TimeSlot
+    {
+        $user = $user ?? $this->user ?? $this->seedUser();
+
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $user->timeSlots()
+            ->save(TimeSlot::factory()->make($attributes));
     }
 }

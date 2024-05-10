@@ -80,3 +80,7 @@ function makeTimeSlotRequest(array $attributes = []): array
     ];
 }
 
+function seedTimeSlot(array $attributes = []): App\Models\TimeSlot
+{
+    return test()->seedTimeSlot($attributes);
+}
