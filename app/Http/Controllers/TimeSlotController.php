@@ -18,6 +18,12 @@ class TimeSlotController extends Controller
         return inertia('time-slots/Index', [
             'title' => __('Time slots'),
             'eventSources' => $request->user()->getFullCalendarEventSources(),
+            'breadcrumbs' => $this->withBreadcrumbs(
+                NavigationItem::make()
+                    ->to(route('time-slots.index'))
+                    ->isCurrent()
+                    ->labeled(__('Time slots')),
+            ),
         ]);
     }
 
@@ -31,7 +37,7 @@ class TimeSlotController extends Controller
         $request->school()->load('languages');
 
         return inertia('time-slots/Create', [
-            'title' => __('Create time slots'),
+            'title' => __('Manage time slots'),
             'events' => $request->user()->fullCalendarEventUrl(),
             'breadcrumbs' => $this->withBreadcrumbs(
                 NavigationItem::make()
@@ -39,7 +45,8 @@ class TimeSlotController extends Controller
                     ->labeled(__('Time slots')),
                 NavigationItem::make()
                     ->to(route('time-slots.create'))
-                    ->labeled(__('Create')),
+                    ->isCurrent()
+                    ->labeled(__('Manage')),
             ),
         ]);
     }
