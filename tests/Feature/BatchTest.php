@@ -9,7 +9,7 @@ beforeEach(function () {
 });
 
 it('has batch page', function () {
-    $this->givePermission(Permission::view, TimeSlot::class)
+    $this->givePermission(Permission::viewAny, TimeSlot::class)
         ->get(route('batches.index'))
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page

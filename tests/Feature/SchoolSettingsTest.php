@@ -49,7 +49,7 @@ it('can update time slot settings', function (array $data) {
 
     foreach ($dates as $key) {
         if ($data[$key]) {
-            $this->assertTrue($this->school->$key->isSameAs($this->school->dateToApp($data[$key])));
+            $this->assertTrue($this->school->$key->equalTo($this->school->dateToApp($data[$key])));
         } else {
             $this->assertNull($this->school->$key);
         }

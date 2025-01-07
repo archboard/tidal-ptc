@@ -18,7 +18,8 @@ it("can't create without permission", function () {
 });
 
 it('can create slots for selection', function () {
-    $data = makeTimeSlotRequest();
+    $batch = makeBatchForSelection();
+    $data = makeTimeSlotRequest(['batch_id' => $batch->id]);
     $this->givePermission(Permission::create, TimeSlot::class)
         ->postJson(route('time-slots.store'), $data)
         ->assertOk()
