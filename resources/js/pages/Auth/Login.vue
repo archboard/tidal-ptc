@@ -8,7 +8,7 @@
         </a>
       </span>
 
-      <BorderSeparator v-if="tenant.allow_oidc_login && tenant.allow_password_auth" class="my-6">
+      <BorderSeparator v-if="tenant.allow_oidc_login && tenant.allow_password_auth" class="my-6" background="bg-gray-50 dark:bg-black">
         {{ __('Or continue with') }}
       </BorderSeparator>
     </div>
