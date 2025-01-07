@@ -18,3 +18,4 @@ yarn-error.log
 _ide_*
 .phpstorm.meta.php
 .phpactor.json
+.phpunit.cache/test-results
