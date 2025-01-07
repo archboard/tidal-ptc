@@ -29,7 +29,7 @@
           {{ __('You are managing time slots for :count people.', { count: batch.users.length }) }}
         </AlertWithButton>
 
-        <CreateTimeSlotCalendar
+        <TimeSlotCalendar
           ref="calendarRef"
           :time-format="user.fc_time_format"
           :timezone="school.timezone"
@@ -66,8 +66,7 @@ import CardHeader from '@/components/CardHeader.vue'
 import HelpText from '@/components/forms/HelpText.vue'
 import CardWrapper from '@/components/CardWrapper.vue'
 import CardPadding from '@/components/CardPadding.vue'
-import useModelSelection from '@/composition/useModelSelection.js'
-import CreateTimeSlotCalendar from '@/components/CreateTimeSlotCalendar.vue'
+import TimeSlotCalendar from '@/components/TimeSlotCalendar.vue'
 import CardAction from '@/components/CardAction.vue'
 import AppButton from '@/components/AppButton.vue'
 import FadeIn from '@/components/transitions/FadeIn.vue'

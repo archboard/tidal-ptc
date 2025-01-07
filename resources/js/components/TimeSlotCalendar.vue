@@ -16,6 +16,10 @@ const props = defineProps({
   timezone: String,
   timeFormat: Object,
   events: [Array, String, Object],
+  optionsOverride: {
+    type: Object,
+    default: () => ({}),
+  },
 })
 const emit = defineEmits(['select', 'eventClick'])
 const __ = inject('$translate')
@@ -53,6 +57,7 @@ const calendarOptions = {
   eventClick: (event) => {
     emit('eventClick', event)
   },
+  ...props.optionsOverride,
 }
 defineExpose({
   calendar,

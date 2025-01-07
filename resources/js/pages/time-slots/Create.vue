@@ -25,7 +25,7 @@
           {{ __('All times are based on the school timezone, :timezone.', { timezone: school.timezone }) }}
         </SimpleAlert>
 
-        <CreateTimeSlotCalendar
+        <TimeSlotCalendar
           ref="calendarRef"
           :time-format="user.fc_time_format"
           :timezone="school.timezone"
@@ -48,20 +48,15 @@
 </template>
 
 <script setup>
-import { inject, reactive, ref } from 'vue'
+import { inject, ref } from 'vue'
 import Authenticated from '@/layouts/Authenticated.vue'
 import useTimeSlots from '@/composition/useTimeSlots.js'
 import clone from 'just-clone'
-import AppFieldset from '@/components/forms/AppFieldset.vue'
-import FormField from '@/components/forms/FormField.vue'
-import AppTextarea from '@/components/forms/AppTextarea.vue'
 import CardHeader from '@/components/CardHeader.vue'
 import HelpText from '@/components/forms/HelpText.vue'
 import CardWrapper from '@/components/CardWrapper.vue'
 import CardPadding from '@/components/CardPadding.vue'
-import AppCheckbox from '@/components/forms/AppCheckbox.vue'
-import useModelSelection from '@/composition/useModelSelection.js'
-import CreateTimeSlotCalendar from '@/components/CreateTimeSlotCalendar.vue'
+import TimeSlotCalendar from '@/components/TimeSlotCalendar.vue'
 import CardAction from '@/components/CardAction.vue'
 import AppButton from '@/components/AppButton.vue'
 import FadeIn from '@/components/transitions/FadeIn.vue'

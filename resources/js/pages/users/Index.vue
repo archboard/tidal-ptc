@@ -49,7 +49,7 @@
           </Td>
           <Td>
             <div class="flex items-center space-x-2">
-              <span class="whitespace-nowrap">{{ user.name }}</span>
+              <AppLink :href="`/users/${user.id}`" class="whitespace-nowrap">{{ user.name }}</AppLink>
               <BookingDisabledPill v-if="!user.can_book" />
             </div>
           </Td>
@@ -88,6 +88,7 @@ import useFilters from '@/composition/useFilters.js'
 import SelectionManager from '@/components/tables/SelectionManager.vue'
 import BookingDisabledPill from '@/components/BookingDisabledPill.vue'
 import UserActionMenu from '@/components/actions/UserActionMenu.vue'
+import AppLink from '@/components/AppLink.vue'
 
 const props = defineProps({
   users: Object,
