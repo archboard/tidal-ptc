@@ -101,7 +101,7 @@ const uiState = ref()
 const $http = inject('$http')
 const onSelect = fcEvent => {
   createTimeSlot(fcEvent, form).then(ev => {
-    calendarRef.value.calendar.getApi().addEvent(ev, props.batch.id.toString())
+    calendarRef.value.calendar.getApi().addEvent(ev, props.batch.event_source_id)
   })
 }
 const onClick = fcEvent => {

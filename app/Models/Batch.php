@@ -34,6 +34,6 @@ class Batch extends Model
 
     public function fullCalendarEventUrl(): string
     {
-        return route('batches.show', $this);
+        return route('batches.event-source', $this);
     }
 }

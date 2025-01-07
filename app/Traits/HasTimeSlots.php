@@ -52,10 +52,15 @@ trait HasTimeSlots
         return '';
     }
 
+    public function fullCalendarEventSourceId(): string
+    {
+        return $this->getMorphClass().'_'.$this->id;
+    }
+
     public function fullCalendarEventSource(): array
     {
         return [
-            'id' => $this->getMorphClass().'_'.$this->id,
+            'id' => $this->fullCalendarEventSourceId(),
             'url' => $this->fullCalendarEventUrl(),
         ];
     }

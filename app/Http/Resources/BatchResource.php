@@ -9,6 +9,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /** @property-read Batch $resource */
 class BatchResource extends JsonResource
 {
+    use IsEventSource;
+
     /**
      * Transform the resource into an array.
      *
@@ -22,10 +24,10 @@ class BatchResource extends JsonResource
             'time_slots_count' => $this->resource->time_slots_count,
             'users_count' => $this->resource->users_count,
             'created_at' => to_local_timezone($this->resource->created_at),
-            'event_source' => $this->resource->fullCalendarEventSource(),
             'time_slots' => TimeSlotResource::collection($this->whenLoaded('timeSlots')),
             'users' => UserResource::collection($this->whenLoaded('users')),
             'user' => new UserResource($this->whenLoaded('user')),
+            ...$this->getEventSourceAttributes(),
         ];
     }
 }
