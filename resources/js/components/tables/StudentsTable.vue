@@ -25,7 +25,7 @@
         </ActionColumn>
       </tr>
       <tr v-if="students.length === 0">
-        <Td colspan="3" class="text-center">{{ __('No records') }}</Td>
+        <Td colspan="4" class="text-center">{{ __('No records') }}</Td>
       </tr>
     </Tbody>
   </Table>
