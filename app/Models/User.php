@@ -330,4 +330,28 @@ class User extends Authenticatable implements ExistsInSis
             })
             ->toArray();
     }
+
+    public function createBatchFromSelection(string $selectionType = User::class): Batch
+    {
+        $batch = Batch::create([
+            'tenant_id' => $this->tenant_id,
+            'school_id' => $this->school_id,
+            'user_id' => $this->id,
+        ]);
+
+        return $this->associateSelectionWithBatch($batch, $selectionType);
+    }
+
+    public function associateSelectionWithBatch(Batch $batch, string $selectionType = User::class): Batch
+    {
+        $batchUsers = $this->getModelSelection($selectionType)
+            ->map(fn ($id) => [
+                'batch_id' => $batch->id,
+                'user_id' => $id,
+            ]);
+
+        DB::table('batch_users')->insert($batchUsers->toArray());
+
+        return $batch;
+    }
 }

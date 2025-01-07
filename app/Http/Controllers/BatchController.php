@@ -8,10 +8,8 @@ use App\Http\Resources\BatchResource;
 use App\Models\Batch;
 use App\Models\School;
 use App\Models\TimeSlot;
-use App\Models\User;
 use App\Navigation\NavigationItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class BatchController extends Controller
@@ -61,25 +59,14 @@ class BatchController extends Controller
         $this->authorize(Permission::create, TimeSlot::class);
         $user = $request->user();
 
+        // Clean up empty time slots
         Batch::query()
             ->where('user_id', $user->id)
             ->where('school_id', $school->id)
             ->whereDoesntHave('timeSlots')
             ->delete();
 
-        $batch = Batch::create([
-            'tenant_id' => $school->tenant_id,
-            'school_id' => $school->id,
-            'user_id' => $request->user()->id,
-        ]);
-
-        $batchUsers = $user->getModelSelection(User::class)
-            ->map(fn ($id) => [
-                'batch_id' => $batch->id,
-                'user_id' => $id,
-            ]);
-
-        DB::table('batch_users')->insert($batchUsers->toArray());
+        $batch = $user->createBatchFromSelection();
 
         return to_route('batches.edit', $batch);
     }
@@ -128,7 +115,7 @@ class BatchController extends Controller
         return response()->json([
             'level' => 'success',
             'message' => __('Time slot updated successfully.'),
-            'data' => new stdClass(),
+            'data' => new stdClass,
         ]);
     }
 
