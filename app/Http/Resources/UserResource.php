@@ -39,12 +39,7 @@ class UserResource extends JsonResource
             'school' => new SchoolResource($this->whenLoaded('school')),
             'model_alias' => $this->resource->getMorphClass(),
             'fc_time_format' => $this->resource->full_calendar_format,
-            'permissions' => $this->whenLoaded('school', function () {
-                return collect($this->resource->school_permissions)
-                    ->mapWithKeys(function ($perm) {
-                        return [$perm['permission'] => $perm['selected']];
-                    });
-            }, []),
+//            'permissions' => $this->resource->permissions,
             'students' => StudentResource::collection($this->whenLoaded('students')),
             ...$this->getEventSourceAttributes(),
         ];

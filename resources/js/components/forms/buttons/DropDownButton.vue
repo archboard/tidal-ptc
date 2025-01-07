@@ -3,7 +3,9 @@
     <div>
       <MenuButton class="focus:outline-none">
         <AppButton :size="size" :color="color">
-          <slot />
+          <slot>
+            {{ __('Actions') }}
+          </slot>
           <component :is="icon || ChevronDownIcon" :class="[iconSize, '-mr-1 ml-2']" aria-hidden="true" />
         </AppButton>
       </MenuButton>

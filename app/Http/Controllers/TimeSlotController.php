@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Http\Requests\CreateOrUpdateTimeSlotRequest;
+use App\Models\School;
 use App\Models\TimeSlot;
 use App\Models\User;
 use App\Navigation\NavigationItem;
@@ -13,11 +15,16 @@ class TimeSlotController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request, School $school)
     {
+        $user = $request->user();
+        $canCreateTimeSlots = $user->can(Permission::create, TimeSlot::class) ||
+            $school->teachers_can_create;
+
         return inertia('time-slots/Index', [
             'title' => __('Time slots'),
             'eventSources' => $request->user()->getFullCalendarEventSources(),
+            'canCreateTimeSlots' => $canCreateTimeSlots,
             'breadcrumbs' => $this->withBreadcrumbs(
                 NavigationItem::make()
                     ->to(route('time-slots.index'))
@@ -37,7 +44,7 @@ class TimeSlotController extends Controller
         $request->school()->load('languages');
 
         return inertia('time-slots/Create', [
-            'title' => __('Manage time slots'),
+            'title' => __('Manage my time slots'),
             'events' => $request->user()->fullCalendarEventUrl(),
             'breadcrumbs' => $this->withBreadcrumbs(
                 NavigationItem::make()

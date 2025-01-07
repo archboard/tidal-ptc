@@ -39,9 +39,10 @@ class HandleInertiaRequests extends Middleware
      *
      * @see https://inertiajs.com/shared-data
      *
+     * @param Request $request
      * @return array
      */
-    public function share(Request $request)
+    public function share(Request $request): array
     {
         /** @var User|null $user */
         $user = $request->user();
@@ -50,15 +51,15 @@ class HandleInertiaRequests extends Middleware
 
         return array_merge(parent::share($request), [
             'user' => function () use ($user) {
-                if ($user) {
-                    return new UserResource($user);
+                if (! $user) {
+                    return new \stdClass;
                 }
 
-                return new \stdClass();
+                return new UserResource($user);
             },
             'permissions' => fn () => $user && $school
                 ? $user->permissions
-                : new \stdClass(),
+                : new \stdClass,
             'school' => fn () => new SchoolResource($school),
             'breadcrumbs' => [],
             'adminSchools' => function () use ($user, $tenant) {
