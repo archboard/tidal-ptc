@@ -70,7 +70,7 @@ class TimeSlotController extends Controller
             });
 
             TimeSlot::createForSelection($selection, $attributes);
-            $timeSlot = TimeSlot::make($attributes)->toFullCalendar();
+            $timeSlot = TimeSlot::make($attributes);
         } else {
             $timeSlot = $user->timeSlots()
                 ->create($attributes);
