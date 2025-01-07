@@ -10,19 +10,19 @@ class TimeSlotPolicy
 {
     public function createOrForSelf(User $user): bool
     {
-        return $user->can(Permission::create->value, TimeSlot::class)
+        return $user->can(Permission::create, TimeSlot::class)
             || $user->school->teachers_can_create;
     }
 
     public function updateOrForSelf(User $user, TimeSlot $timeSlot): bool
     {
         return $user->id === $timeSlot->user_id
-            || $user->can(Permission::update->value, $timeSlot);
+            || $user->can(Permission::update, $timeSlot);
     }
 
     public function deleteOrForSelf(User $user, TimeSlot $timeSlot): bool
     {
         return $user->id === $timeSlot->user_id
-            || $user->can(Permission::delete->value, $timeSlot);
+            || $user->can(Permission::delete, $timeSlot);
     }
 }

@@ -27,7 +27,7 @@
 
         <TimeSlotCalendar
           ref="calendarRef"
-          :time-format="user.fc_time_format"
+          :time-format="userSubject.fc_time_format"
           :timezone="school.timezone"
           :events="events"
           @select="onSelect"
@@ -51,7 +51,6 @@
 import { inject, ref } from 'vue'
 import Authenticated from '@/layouts/Authenticated.vue'
 import useTimeSlots from '@/composition/useTimeSlots.js'
-import clone from 'just-clone'
 import CardHeader from '@/components/CardHeader.vue'
 import HelpText from '@/components/forms/HelpText.vue'
 import CardWrapper from '@/components/CardWrapper.vue'
@@ -67,7 +66,7 @@ import EditTimeSlotModal from '@/components/modals/EditTimeSlotModal.vue'
 
 const props = defineProps({
   school: Object,
-  user: Object,
+  userSubject: Object,
   events: {
     type: [Array, String],
     default: () => [],
@@ -79,7 +78,10 @@ const props = defineProps({
 })
 const $http = inject('$http')
 const { timeSlotBase, createTimeSlot } = useTimeSlots(props.useBatch)
-const form = useForm(clone(timeSlotBase))
+const form = useForm({
+  ...timeSlotBase,
+  user_id: props.userSubject.id,
+})
 const showForm = ref(true)
 const uiState = ref()
 const calendarRef = ref()

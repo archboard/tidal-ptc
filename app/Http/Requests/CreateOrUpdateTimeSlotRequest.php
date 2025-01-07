@@ -14,16 +14,16 @@ class CreateOrUpdateTimeSlotRequest extends FormRequest
     public function authorize(): bool
     {
         $user = $this->user();
-        $forUser = $this->input('user_id') &&
+        $forSelf = $this->input('user_id') &&
             is_null($this->input('batch_id')) &&
             $user->id === $this->input('user_id') &&
             $this->school()->teachers_can_create;
 
         if ($this->isMethod('post')) {
-            return $user->can(Permission::create->value, TimeSlot::class) || $forUser;
+            return $user->can(Permission::create, TimeSlot::class) || $forSelf;
         }
 
-        return $user->can(Permission::update->value, TimeSlot::class) || $forUser;
+        return $user->can(Permission::update, TimeSlot::class) || $forSelf;
     }
 
     /**
@@ -52,6 +52,10 @@ class CreateOrUpdateTimeSlotRequest extends FormRequest
     {
         $school = $this->school();
         $validated = $this->validated();
+
+        if (! $validated['user_id'] ?? false) {
+            $validated['user_id'] = $this->user()->id;
+        }
 
         return [
             ...$validated,

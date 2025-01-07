@@ -59,7 +59,6 @@ const calendarOptions = {
   },
   ...props.optionsOverride,
 }
-console.log(calendarOptions)
 defineExpose({
   calendar,
 })

@@ -3,6 +3,9 @@
     <AppMenuItem v-if="can('user.view')" :href="`/users/${user.id}`">
       {{ __('View') }}
     </AppMenuItem>
+    <AppMenuItem v-if="can('time_slot.create')" :href="`/users/${user.id}/edit`">
+      {{ __('Edit time slots') }}
+    </AppMenuItem>
   </div>
   <div class="p-1">
     <AppMenuItem

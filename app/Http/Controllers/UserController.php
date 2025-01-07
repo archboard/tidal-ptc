@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Http\Resources\UserResource;
 use App\Models\School;
+use App\Models\TimeSlot;
 use App\Models\User;
 use App\Navigation\NavigationItem;
 use Illuminate\Http\Request;
@@ -70,9 +72,29 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, User $user)
     {
-        //
+        $this->authorize(Permission::create, TimeSlot::class);
+
+        $request->school()->load('languages');
+
+        return inertia('time-slots/Create', [
+            'title' => __('Edit times slots for :name', ['name' => $user->name]),
+            'events' => $user->fullCalendarEventUrl(),
+            'userSubject' => new UserResource($user),
+            'breadcrumbs' => $this->withBreadcrumbs(
+                NavigationItem::make()
+                    ->to(route('users.index'))
+                    ->labeled(__('Users')),
+                NavigationItem::make()
+                    ->to(route('users.show', $user))
+                    ->labeled($user->name),
+                NavigationItem::make()
+                    ->to(route('users.show', $user))
+                    ->isCurrent()
+                    ->labeled(__('Edit time slots')),
+            ),
+        ]);
     }
 
     /**

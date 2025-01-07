@@ -117,7 +117,7 @@ Route::middleware('tenant')->group(function () {
                     ->only('index', 'show');
 
                 Route::resource('/users', \App\Http\Controllers\UserController::class)
-                    ->only('index', 'show');
+                    ->only('index', 'show', 'edit');
                 Route::match(['get', 'post'], '/users/{user}/event-source', \App\Http\Controllers\UserEventSourceController::class)
                     ->name('users.event-source');
 
