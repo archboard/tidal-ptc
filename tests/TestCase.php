@@ -21,11 +21,11 @@ abstract class TestCase extends BaseTestCase
 
     protected bool $cloud = false;
 
-    protected Tenant $tenant;
+    public Tenant $tenant;
 
-    protected School $school;
+    public School $school;
 
-    protected ?User $user = null;
+    public ?User $user = null;
 
     protected function setUp(): void
     {

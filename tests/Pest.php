@@ -11,6 +11,9 @@
 |
 */
 
+use App\Models\Batch;
+use App\Models\User;
+
 uses(Tests\TestCase::class)->in('Feature');
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class)->in('Feature');
 
@@ -78,6 +81,17 @@ function makeTimeSlotRequest(array $attributes = []): array
         'allow_online_meetings' => fake()->boolean(),
         ...$attributes,
     ];
+}
+
+function makeBatchForSelection(?User $user = null): Batch
+{
+    $user ??= test()->user;
+
+    $batch = Batch::factory()
+        ->for($user)
+        ->create();
+
+    return $user->associateSelectionWithBatch($batch);
 }
 
 function seedTimeSlot(array $attributes = []): App\Models\TimeSlot
