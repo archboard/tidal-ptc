@@ -90,7 +90,7 @@ trait HasPermissions
                 );
                 $modelPermissions = array_map(function (string $model) use ($crudPermissions, $sisCrudPermissions) {
                     /** @var Model $instance */
-                    $instance = new $model();
+                    $instance = new $model;
                     $permissions = $instance instanceof ExistsInSis
                         ? $sisCrudPermissions
                         : $crudPermissions;

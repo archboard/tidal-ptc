@@ -66,6 +66,8 @@ class UserController extends Controller
 
         return inertia('users/Show', [
             'title' => $title,
+            'canOwnTimeSlots' => $user->canOwnTimeSlots(),
+            'subjectUser' => new UserResource($user),
         ])->withViewData(compact('title'));
     }
 

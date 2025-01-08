@@ -354,4 +354,10 @@ class User extends Authenticatable implements ExistsInSis
 
         return $batch;
     }
+
+    public function canOwnTimeSlots(): bool
+    {
+        return $this->can(Permission::ownTimeSlots) ||
+            $this->sections()->exists();
+    }
 }

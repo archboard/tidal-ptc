@@ -20,6 +20,7 @@ enum Permission: string
     case editTenantSettings = 'edit tenant settings';
     case editSchoolSettings = 'edit school settings';
     case editPermissions = 'edit permissions';
+    case ownTimeSlots = 'own time slots';
 
     public function label(): string
     {
@@ -29,10 +30,9 @@ enum Permission: string
             self::create => __('Create'),
             self::update => __('Update'),
             self::delete => __('Delete'),
-            self::editTenantSettings => __('Edit tenant settings'),
-            self::editSchoolSettings => __('Edit school settings'),
             self::everything => __('Manages tenancy'),
             self::editPermissions => __('Edit user permissions'),
+            default => ucfirst($this->value),
         };
     }
 
@@ -44,6 +44,7 @@ enum Permission: string
             self::everything => __('Gives the user full access to the entire tenancy with full permissions for everything.'),
             self::editSchoolSettings => __('Allows the user to edit all school settings.'),
             self::editTenantSettings => __('Allows the user to edit all tenant settings.'),
+            self::ownTimeSlots => __('Allows the user to have reservable time slots. By default teachers with assigned sections will have this permission implicitly.'),
             default => null,
         };
     }
