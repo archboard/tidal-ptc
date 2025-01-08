@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Permission;
-use App\Http\Requests\CreateOrUpdateTimeSlotRequest;
+use App\Http\Requests\CreateTimeSlotRequest;
 use App\Http\Resources\UserResource;
 use App\Models\School;
 use App\Models\TimeSlot;
@@ -62,7 +62,7 @@ class TimeSlotController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateOrUpdateTimeSlotRequest $request)
+    public function store(CreateTimeSlotRequest $request)
     {
         $this->authorize('createOrForSelf', TimeSlot::class);
 

@@ -32,7 +32,7 @@ uses(\Illuminate\Foundation\Testing\RefreshDatabase::class)->in('Feature');
 */
 
 expect()->extend('toMatchRequestData', function (array $data) {
-    $morphedData = resolve(\App\Http\Requests\CreateOrUpdateTimeSlotRequest::class)
+    $morphedData = resolve(\App\Http\Requests\CreateTimeSlotRequest::class)
         ->merge($data)
         ->getTimeSlotAttributes();
     $nonDates = \Illuminate\Support\Arr::except($morphedData, ['starts_at', 'ends_at']);

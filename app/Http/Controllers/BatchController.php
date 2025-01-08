@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Permission;
-use App\Http\Requests\CreateOrUpdateTimeSlotRequest;
+use App\Http\Requests\CreateTimeSlotRequest;
 use App\Http\Resources\BatchResource;
 use App\Models\Batch;
 use App\Models\School;
@@ -108,7 +108,7 @@ class BatchController extends Controller
      * Update the specified resource in storage.
      * Authorization handled in the Request class.
      */
-    public function update(CreateOrUpdateTimeSlotRequest $request, Batch $batch)
+    public function update(CreateTimeSlotRequest $request, Batch $batch)
     {
         $batch->updateTimeSlots($request->getTimeSlotAttributes(false));
 

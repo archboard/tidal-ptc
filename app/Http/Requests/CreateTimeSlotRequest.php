@@ -5,8 +5,9 @@ namespace App\Http\Requests;
 use App\Enums\Permission;
 use App\Models\TimeSlot;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class CreateOrUpdateTimeSlotRequest extends FormRequest
+class CreateTimeSlotRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,16 +15,12 @@ class CreateOrUpdateTimeSlotRequest extends FormRequest
     public function authorize(): bool
     {
         $user = $this->user();
-        $forSelf = $this->input('user_id') &&
-            is_null($this->input('batch_id')) &&
-            $user->id === $this->input('user_id') &&
-            $this->school()->teachers_can_create;
 
         if ($this->isMethod('post')) {
-            return $user->can(Permission::create, TimeSlot::class) || $forSelf;
+            return $user->can('createOrForSelf', TimeSlot::class);
         }
 
-        return $user->can(Permission::update, TimeSlot::class) || $forSelf;
+        return $user->can('updateOrForSelf', TimeSlot::class);
     }
 
     /**
@@ -35,7 +32,11 @@ class CreateOrUpdateTimeSlotRequest extends FormRequest
     {
         return [
             'batch_id' => ['nullable'],
-            'user_id' => ['nullable', 'integer'],
+            'user_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('users', 'id')->where('school_id', $this->school()->id),
+            ],
             'starts_at' => ['required', 'date', 'after:now'],
             'ends_at' => ['required', 'date', 'after:starts_at'],
             'teacher_notes' => ['nullable'],
@@ -74,6 +75,9 @@ class CreateOrUpdateTimeSlotRequest extends FormRequest
             'tenant_id' => $school->tenant_id,
             'school_id' => $school->id,
             'created_by' => $this->user()->id,
+            'batch_id' => $this->user()->can(Permission::create, TimeSlot::class)
+                ? $validated['batch_id']
+                : null,
         ];
     }
 }
