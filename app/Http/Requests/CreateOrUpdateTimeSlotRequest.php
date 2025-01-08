@@ -53,7 +53,7 @@ class CreateOrUpdateTimeSlotRequest extends FormRequest
         $school = $this->school();
         $validated = $this->validated();
 
-        if (! $validated['user_id'] ?? false) {
+        if (! ($validated['user_id'] ?? false)) {
             $validated['user_id'] = $this->user()->id;
         }
 
