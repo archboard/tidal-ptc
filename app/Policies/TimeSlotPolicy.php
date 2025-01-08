@@ -11,7 +11,7 @@ class TimeSlotPolicy
     public function createOrForSelf(User $user): bool
     {
         return $user->can(Permission::create, TimeSlot::class)
-            || $user->school->teachers_can_create;
+            || ($user->school->teachers_can_create && $user->canOwnTimeSlots());
     }
 
     public function updateOrForSelf(User $user, TimeSlot $timeSlot): bool

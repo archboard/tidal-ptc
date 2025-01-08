@@ -2,12 +2,16 @@
 
 use App\Enums\Permission;
 use App\Models\TimeSlot;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
     logIn()->setSchool();
 
-    $this->school->update(['timezone' => 'Asia/Shanghai']);
+    $this->school->update([
+        'timezone' => 'Asia/Shanghai',
+        'open_for_teachers_at' => now()->subDay(),
+    ]);
 });
 
 it('has time slots page', function () {
@@ -36,4 +40,46 @@ it('can view the create time slot page', function () {
             ->has('events')
             ->has('breadcrumbs')
         );
+});
+
+it("can't create time slots for others without permission", function () {
+    $data = makeTimeSlotRequest(['user_id' => seedUser()->id]);
+
+    $this->post(route('time-slots.store'), $data)
+        ->assertForbidden();
+});
+
+it('can create time slots with permission', function () {
+    $user = seedUser();
+    $data = makeTimeSlotRequest(['user_id' => $user->id]);
+
+    $this->givePermission(Permission::create, TimeSlot::class)
+        ->post(route('time-slots.store'), $data)
+        ->assertOk()
+        ->assertJson(fn (AssertableJson $json) => $json
+            ->where('level', 'success')
+            ->has('message')
+            ->has('data')
+        );
+
+    expect($this->user->timeSlots()->count())->toBe(0)
+        ->and($user->timeSlots()->first())->toBeInstanceOf(TimeSlot::class);
+
+    // TODO make custom expect for time slot properties
+});
+
+it('can create a time slot for self', function () {
+    seedSection();
+    $data = makeTimeSlotRequest(['user_id' => $this->user->id]);
+
+    $this->post(route('time-slots.store'), $data)
+        ->assertOk()
+        ->assertJson(fn (AssertableJson $json) => $json
+            ->where('level', 'success')
+            ->has('message')
+            ->has('data')
+        );
+
+    expect($this->user->timeSlots()->count())->toBe(1)
+        ->and($this->user->timeSlots()->first())->toMatchRequestData($data);
 });

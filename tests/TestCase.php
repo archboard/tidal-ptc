@@ -142,7 +142,6 @@ abstract class TestCase extends BaseTestCase
             'school_id' => $this->school->id,
         ]);
 
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $course->sections()
             ->save(Section::factory()->make([
                 'tenant_id' => $this->tenant->id,
@@ -155,7 +154,6 @@ abstract class TestCase extends BaseTestCase
     {
         $user = $user ?? $this->user ?? $this->seedUser();
 
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $user->timeSlots()
             ->save(TimeSlot::factory()->make($attributes));
     }

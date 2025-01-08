@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\School;
 use App\Models\Tenant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,10 +20,12 @@ class StudentFactory extends Factory
     {
         return [
             'tenant_id' => Tenant::current()->id,
+            'school_id' => School::current()->id,
             'email' => $this->faker->email(),
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
-            'sis_key' => $this->faker->numberBetween(1, 100),
+            'sis_key' => $this->faker->numberBetween(1, 10000),
+            'sis_id' => $this->faker->numberBetween(1, 10000),
         ];
     }
 }

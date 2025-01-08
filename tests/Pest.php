@@ -12,6 +12,9 @@
 */
 
 use App\Models\Batch;
+use App\Models\Course;
+use App\Models\Section;
+use App\Models\Student;
 use App\Models\User;
 
 uses(Tests\TestCase::class)->in('Feature');
@@ -27,6 +30,21 @@ uses(\Illuminate\Foundation\Testing\RefreshDatabase::class)->in('Feature');
 | to assert different things. Of course, you may extend the Expectation API at any time.
 |
 */
+
+expect()->extend('toMatchRequestData', function (array $data) {
+    $morphedData = resolve(\App\Http\Requests\CreateOrUpdateTimeSlotRequest::class)
+        ->merge($data)
+        ->getTimeSlotAttributes();
+    $nonDates = \Illuminate\Support\Arr::except($morphedData, ['starts_at', 'ends_at']);
+
+    foreach ($nonDates as $key => $value) {
+        $stringValue = (string) $this->value->$key;
+        expect($this->value->$key)->toEqual($value, "Failed asserting {$value} is equal to {$stringValue} for {$key}.");
+    }
+
+    expect($this->value->starts_at->equalTo($data['starts_at']))->toBeTrue()
+        ->and($this->value->ends_at->equalTo($data['ends_at']))->toBeTrue();
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -97,4 +115,17 @@ function makeBatchForSelection(?User $user = null): Batch
 function seedTimeSlot(array $attributes = []): App\Models\TimeSlot
 {
     return test()->seedTimeSlot($attributes);
+}
+
+function seedSection(?User $user = null): Section
+{
+    $user ??= test()->user;
+    $course = Course::factory()->create();
+    $section = Section::factory()
+        ->for($course)
+        ->create(['user_id' => $user->id]);
+    $students = Student::factory(3)->create();
+    $section->students()->attach($students);
+
+    return $section;
 }
