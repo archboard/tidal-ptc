@@ -31,10 +31,12 @@ uses(\Illuminate\Foundation\Testing\RefreshDatabase::class)->in('Feature');
 |
 */
 
-expect()->extend('toMatchRequestData', function (array $data) {
-    $morphedData = resolve(\App\Http\Requests\CreateTimeSlotRequest::class)
-        ->merge($data)
-        ->getTimeSlotAttributes();
+expect()->extend('toMatchRequestData', function (array $data, string $requestClass = \App\Http\Requests\CreateTimeSlotRequest::class) {
+    $request = resolve($requestClass)
+        ->merge($data);
+    $morphedData = method_exists($request, 'getTimeSlotAttributes')
+        ? $request->getTimeSlotAttributes()
+        : $request->validated();
     $nonDates = \Illuminate\Support\Arr::except($morphedData, ['starts_at', 'ends_at']);
 
     foreach ($nonDates as $key => $value) {
@@ -42,8 +44,10 @@ expect()->extend('toMatchRequestData', function (array $data) {
         expect($this->value->$key)->toEqual($value, "Failed asserting {$value} is equal to {$stringValue} for {$key}.");
     }
 
-    expect($this->value->starts_at->equalTo($data['starts_at']))->toBeTrue()
-        ->and($this->value->ends_at->equalTo($data['ends_at']))->toBeTrue();
+    if (isset($data['starts_at']) && isset($data['ends_at'])) {
+        expect($this->value->starts_at->equalTo($data['starts_at']))->toBeTrue()
+            ->and($this->value->ends_at->equalTo($data['ends_at']))->toBeTrue();
+    }
 });
 
 /*

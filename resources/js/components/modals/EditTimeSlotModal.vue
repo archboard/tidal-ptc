@@ -5,6 +5,7 @@
     ref="modal"
     :action-loading="form.processing"
   >
+    <pre>{{ form.data() }}</pre>
     <AdminTimeSlotForm v-model="form" :school="school" />
 
     <template #actions>
@@ -42,7 +43,7 @@ const props = defineProps({
   uiState: String,
 })
 const emit = defineEmits(['close', 'save', 'delete'])
-const { mergeTimeSlot, timeSlotBase } = useTimeSlots()
+const { mergeTimeSlot, timeSlotBase, updateTimeSlot } = useTimeSlots()
 const form = useForm(mergeTimeSlot(timeSlotBase, props.timeSlot))
 const modal = ref()
 </script>

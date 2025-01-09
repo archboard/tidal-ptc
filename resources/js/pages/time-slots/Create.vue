@@ -43,7 +43,7 @@
     :school="school"
     :time-slot="selectedTimeSlot"
     :ui-state="uiState"
-    @delete="slotDeleted"
+    @delete="deleteTimeSlot"
   />
 </template>
 
@@ -77,13 +77,17 @@ const props = defineProps({
   }
 })
 const $http = inject('$http')
-const { timeSlotBase, createTimeSlot } = useTimeSlots(props.useBatch)
+const {
+  timeSlotBase,
+  createTimeSlot,
+  deleteTimeSlot,
+  uiState,
+} = useTimeSlots(props.useBatch)
 const form = useForm({
   ...timeSlotBase,
   user_id: props.userSubject.id,
 })
 const showForm = ref(true)
-const uiState = ref()
 const calendarRef = ref()
 const selectedTimeSlot = ref({})
 const onSelect = fcEvent => {
@@ -97,15 +101,5 @@ const onClick = fcEvent => {
 const onClose = () => {
   calendarRef.value.calendar.getApi().refetchEvents()
   selectedTimeSlot.value = {}
-}
-const slotDeleted = async (close) => {
-  uiState.value = 'deleting'
-
-  try {
-    await $http.delete(`/time-slots/${selectedTimeSlot.value.id}`)
-    close()
-  } catch (e) {}
-
-  uiState.value = null
 }
 </script>

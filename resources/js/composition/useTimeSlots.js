@@ -5,6 +5,7 @@ import reduce from 'just-reduce-object'
 export default function useTimeSlots() {
   const $http = inject('$http')
   const school = useProp('school')
+  const uiState = ref()
   const allowTranslator = computed(() => {
     return toValue(school).allow_translator_requests &&
       (toValue(school)?.languages?.length || 0) > 0
@@ -54,13 +55,25 @@ export default function useTimeSlots() {
       await $http.put(endpoint, timeSlot)
     } catch (err) { }
   }
+  const deleteTimeSlot = async (close) => {
+    uiState.value = 'deleting'
+
+    try {
+      await $http.delete(`/time-slots/${selectedTimeSlot.value.id}`)
+      close()
+    } catch (e) {}
+
+    uiState.value = null
+  }
 
   return {
+    uiState,
     timeSlotBase,
     allowTranslator,
     createTimeSlot,
     updateTimeSlot,
     mergeTimeSlot,
     setBatch,
+    deleteTimeSlot,
   }
 }

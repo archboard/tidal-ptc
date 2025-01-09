@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\Permission;
 use App\Http\Requests\CreateTimeSlotRequest;
+use App\Http\Requests\UpdateTimeSlotRequest;
 use App\Http\Resources\UserResource;
 use App\Models\School;
 use App\Models\TimeSlot;
@@ -109,9 +110,17 @@ class TimeSlotController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateTimeSlotRequest $request, TimeSlot $timeSlot)
     {
-        //
+        // TODO check if there's a batch and a flag is included to update the batch
+
+        $timeSlot->update($request->validated());
+
+        return response()->json([
+            'level' => 'success',
+            'message' => __('Time slot updated successfully.'),
+            'data' => $timeSlot->toFullCalendar(),
+        ]);
     }
 
     /**
