@@ -91,13 +91,25 @@ it("can't update a slot for another user without permission", function () {
         ->assertForbidden();
 });
 
-it("can update a slot for another user with permission", function () {
+it('can update a slot for another user with permission', function () {
     $user = seedUser();
     $data = Arr::except(makeTimeSlotRequest(['user_id' => $user->id]), ['starts_at', 'ends_at']);
     $timeSlot = TimeSlot::factory()->for($user)->create();
 
     $this->givePermission(Permission::update, $timeSlot)
         ->putJson(route('time-slots.update', $timeSlot), $data)
+        ->assertOk()
+        ->assertJsonStructure(['level', 'message', 'data']);
+
+    $timeSlot->refresh();
+    expect($timeSlot)->toMatchRequestData($data, \App\Http\Requests\UpdateTimeSlotRequest::class);
+});
+
+it('can update own slot', function () {
+    $data = Arr::except(makeTimeSlotRequest(['user_id' => $this->user->id]), ['starts_at', 'ends_at']);
+    $timeSlot = TimeSlot::factory()->for($this->user)->create();
+
+    $this->putJson(route('time-slots.update', $timeSlot), $data)
         ->assertOk()
         ->assertJsonStructure(['level', 'message', 'data']);
 
