@@ -50,20 +50,20 @@
           </Td>
           <Td>
             <div class="flex items-center space-x-2">
-              <AppLink :href="`/courses/${section.course.id}`">{{ section.course.name }} ({{ section.course.course_number }})</AppLink>
               <BookingDisabledPill v-if="!section.course.can_book" />
+              <AppLink :href="`/courses/${section.course.id}`">{{ section.course.name }} ({{ section.course.course_number }})</AppLink>
             </div>
           </Td>
           <Td>
             <div class="flex items-center space-x-2">
-              <AppLink :href="`/sections/${section.id}`">{{ section.section_number }}</AppLink>
               <BookingDisabledPill v-if="!section.can_book" />
+              <AppLink :href="`/sections/${section.id}`">{{ section.section_number }}</AppLink>
             </div>
           </Td>
           <Td>
             <div class="flex items-center space-x-2">
-              <span class="whitespace-nowrap">{{ section.teacher_display }}</span>
               <BookingDisabledPill v-if="!section.teacher_can_book" />
+              <span class="whitespace-nowrap">{{ section.teacher_display }}</span>
             </div>
           </Td>
           <Td>{{ section.students_count }}</Td>
