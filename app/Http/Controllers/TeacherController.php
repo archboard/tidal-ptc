@@ -23,7 +23,13 @@ class TeacherController extends Controller
         $filters = $request->currentFilters();
         $teachers = User::query()
             ->filter($filters)
-            ->withCount('sections', 'altSections', 'timeSlots')
+            ->withCount([
+                'sections',
+                'altSections',
+                'timeSlots' => function ($query) {
+                    $query->where('starts_at', '>=', now());
+                },
+            ])
             ->paginate(25);
 
         return inertia('teachers/Index', [
