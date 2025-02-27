@@ -5,9 +5,13 @@ import flashesNotifications from '@/plugins/flashesNotifications'
 import { router } from '@inertiajs/vue3'
 
 const flashMessage = response => {
-  const flash = get(response, 'data.props.flash')
-  const level = get(response, 'data.level')
-  const message = get(response, 'data.message')
+  const data = typeof response?.data === 'string'
+    ? JSON.parse(response.data)
+    : response.data
+
+  const flash = get(data, 'props.flash')
+  const level = get(data, 'level')
+  const message = get(data, 'message')
 
   flashesNotifications(flash)
 
