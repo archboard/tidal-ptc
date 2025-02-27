@@ -22,16 +22,18 @@
     <CardWrapper>
       <CardPadding>
         <SimpleAlert class="mb-5">
-          {{ __('All times are based on the school timezone, :timezone.', { timezone: school.timezone }) }}
+          {{ __('All times are based on your timezone, :timezone.', { timezone }) }}
         </SimpleAlert>
 
         <TimeSlotCalendar
           ref="calendarRef"
           :time-format="userSubject.fc_time_format"
-          :timezone="school.timezone"
+          :timezone="timezone"
           :events="events"
           @select="onSelect"
           @event-click="onClick"
+          @event-drop="onEventChange"
+          @event-resize="onEventChange"
         />
       </CardPadding>
     </CardWrapper>
@@ -44,11 +46,12 @@
     :time-slot="selectedTimeSlot"
     :ui-state="uiState"
     @delete="deleteTimeSlot"
+    @save="onSave"
   />
 </template>
 
 <script setup>
-import { inject, ref } from 'vue'
+import { ref } from 'vue'
 import Authenticated from '@/layouts/Authenticated.vue'
 import useTimeSlots from '@/composition/useTimeSlots.js'
 import CardHeader from '@/components/CardHeader.vue'
@@ -63,6 +66,7 @@ import SimpleAlert from '@/components/alerts/SimpleAlert.vue'
 import { useForm } from '@inertiajs/vue3'
 import AdminTimeSlotForm from '@/components/forms/AdminTimeSlotForm.vue'
 import EditTimeSlotModal from '@/components/modals/EditTimeSlotModal.vue'
+import useDates from '@/composition/useDates.js'
 
 const props = defineProps({
   school: Object,
@@ -76,13 +80,14 @@ const props = defineProps({
     default: false,
   }
 })
-const $http = inject('$http')
 const {
   timeSlotBase,
   createTimeSlot,
+  updateTimeSlot,
   deleteTimeSlot,
   uiState,
-} = useTimeSlots(props.useBatch)
+} = useTimeSlots()
+const { timezone } = useDates()
 const form = useForm({
   ...timeSlotBase,
   user_id: props.userSubject.id,
@@ -101,5 +106,19 @@ const onClick = fcEvent => {
 const onClose = () => {
   calendarRef.value.calendar.getApi().refetchEvents()
   selectedTimeSlot.value = {}
+}
+const onSave = async (timeSlot, callback) => {
+  await updateTimeSlot(`/time-slots/${timeSlot.id}`, timeSlot)
+
+  if (typeof callback === 'function') {
+    callback()
+  }
+}
+const onEventChange = async (fcEvent) => {
+  await updateTimeSlot(`/time-slots/${fcEvent.event.extendedProps.id}`, {
+    ...fcEvent.event.extendedProps,
+    starts_at: fcEvent.event.startStr,
+    ends_at: fcEvent.event.endStr,
+  })
 }
 </script>

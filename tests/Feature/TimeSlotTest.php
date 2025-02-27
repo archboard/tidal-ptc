@@ -35,7 +35,7 @@ it('can view the create time slot page', function () {
         ->get(route('time-slots.create'))
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page
-            ->component('time-slots/Create')
+            ->component('time-slots/Manage')
             ->has('title')
             ->has('events')
             ->has('breadcrumbs')
@@ -93,7 +93,7 @@ it("can't update a slot for another user without permission", function () {
 
 it('can update a slot for another user with permission', function () {
     $user = seedUser();
-    $data = Arr::except(makeTimeSlotRequest(['user_id' => $user->id]), ['starts_at', 'ends_at']);
+    $data = makeTimeSlotRequest(['user_id' => $user->id]);
     $timeSlot = TimeSlot::factory()->for($user)->create();
 
     $this->givePermission(Permission::update, $timeSlot)
@@ -106,10 +106,24 @@ it('can update a slot for another user with permission', function () {
 });
 
 it('can update own slot', function () {
-    $data = Arr::except(makeTimeSlotRequest(['user_id' => $this->user->id]), ['starts_at', 'ends_at']);
+    $data = makeTimeSlotRequest(['user_id' => $this->user->id]);
     $timeSlot = TimeSlot::factory()->for($this->user)->create();
 
     $this->putJson(route('time-slots.update', $timeSlot), $data)
+        ->assertOk()
+        ->assertJsonStructure(['level', 'message', 'data']);
+
+    $timeSlot->refresh();
+    expect($timeSlot)->toMatchRequestData($data, \App\Http\Requests\UpdateTimeSlotRequest::class);
+});
+
+it('can update a time slot batch', function () {
+    $batch = seedBatch();
+    $data = makeTimeSlotRequest(['batch_id' => $batch->id]);
+
+    $timeSlot = $batch->timeSlots()->first();
+    $this->givePermission(Permission::update, TimeSlot::class)
+        ->put(route('time-slots.update', $timeSlot), $data)
         ->assertOk()
         ->assertJsonStructure(['level', 'message', 'data']);
 

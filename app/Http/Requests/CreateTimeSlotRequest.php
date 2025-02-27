@@ -76,7 +76,7 @@ class CreateTimeSlotRequest extends FormRequest
             'school_id' => $school->id,
             'created_by' => $this->user()->id,
             'batch_id' => $this->user()->can(Permission::create, TimeSlot::class)
-                ? $validated['batch_id']
+                ? ($validated['batch_id'] ?? null)
                 : null,
         ];
     }

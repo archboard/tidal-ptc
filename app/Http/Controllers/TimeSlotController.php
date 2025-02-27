@@ -6,6 +6,7 @@ use App\Enums\Permission;
 use App\Http\Requests\CreateTimeSlotRequest;
 use App\Http\Requests\UpdateTimeSlotRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Batch;
 use App\Models\School;
 use App\Models\TimeSlot;
 use App\Models\User;
@@ -44,7 +45,7 @@ class TimeSlotController extends Controller
         $request->school()->load('languages');
         $user = $request->user();
 
-        return inertia('time-slots/Create', [
+        return inertia('time-slots/Manage', [
             'title' => __('Manage my time slots'),
             'events' => $user->fullCalendarEventUrl(),
             'userSubject' => new UserResource($user),
@@ -112,9 +113,16 @@ class TimeSlotController extends Controller
      */
     public function update(UpdateTimeSlotRequest $request, TimeSlot $timeSlot)
     {
-        // TODO check if there's a batch and a flag is included to update the batch
+        $data = $request->validated();
 
-        $timeSlot->update($request->validated());
+        if ($request->updateBatch()) {
+            $data['starts_at'] = $timeSlot->starts_at->toDateTimeString();
+            $data['ends_at'] = $timeSlot->ends_at->toDateTimeString();
+            Batch::findOrFail($data['batch_id'])
+                ->updateTimeSlots($data);
+        } else {
+            $timeSlot->update($data);
+        }
 
         return response()->json([
             'level' => 'success',

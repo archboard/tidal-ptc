@@ -21,7 +21,7 @@ const props = defineProps({
     default: () => ({}),
   },
 })
-const emit = defineEmits(['select', 'eventClick'])
+const emit = defineEmits(['select', 'eventClick', 'eventDrop', 'eventResize'])
 const __ = inject('$translate')
 const calendar = ref({})
 const calendarOptions = {
@@ -46,6 +46,7 @@ const calendarOptions = {
   selectMirror: true,
   slotEventOverlap: false,
   selectOverlap: false,
+  editable: true,
   allDaySlot: false,
   slotDuration: '00:05:00',
   scrollTime: '08:00:00',
@@ -56,6 +57,12 @@ const calendarOptions = {
   },
   eventClick: (event) => {
     emit('eventClick', event)
+  },
+  eventDrop: (event) => {
+    emit('eventDrop', event)
+  },
+  eventResize: (event) => {
+    emit('eventResize', event)
   },
   ...props.optionsOverride,
 }

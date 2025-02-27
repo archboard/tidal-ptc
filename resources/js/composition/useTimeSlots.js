@@ -51,15 +51,19 @@ export default function useTimeSlots() {
     } catch (err) { }
   }
   const updateTimeSlot = async (endpoint, timeSlot) => {
+    uiState.value = 'saving'
+
     try {
       await $http.put(endpoint, timeSlot)
     } catch (err) { }
+
+    uiState.value = null
   }
-  const deleteTimeSlot = async (close) => {
+  const deleteTimeSlot = async (timeSlot, close) => {
     uiState.value = 'deleting'
 
     try {
-      await $http.delete(`/time-slots/${selectedTimeSlot.value.id}`)
+      await $http.delete(`/time-slots/${toValue(timeSlot).id}`)
       close()
     } catch (e) {}
 

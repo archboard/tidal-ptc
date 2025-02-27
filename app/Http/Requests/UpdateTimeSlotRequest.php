@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\Permission;
 use App\Models\TimeSlot;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -16,7 +17,7 @@ class UpdateTimeSlotRequest extends FormRequest
     {
         $timeSlot = $this->route('time_slot');
 
-        if ($this->input('batch_id') && $this->boolean('update_batch')) {
+        if ($this->updateBatch()) {
             return $this->user()->can(Permission::update, $timeSlot);
         }
 
@@ -26,12 +27,21 @@ class UpdateTimeSlotRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $school = $this->school();
+        $user = $this->user();
+        $starts = $this->input('starts_at');
+        $ends = $this->input('ends_at');
 
         $this->merge([
             'is_online' => $school->allow_online_meetings &&
                 $this->boolean('is_online'),
             'allow_online_meetings' => $school->allow_online_meetings &&
                 $this->boolean('allow_online_meetings'),
+            'starts_at' => $this->dateInIsoFormat($starts)
+                ? $user->dateToApp($starts)->toDateTimeString()
+                : $starts,
+            'ends_at' => $this->dateInIsoFormat($ends)
+                ? $user->dateToApp($ends)->toDateTimeString()
+                : $ends,
         ]);
     }
 
@@ -43,7 +53,9 @@ class UpdateTimeSlotRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'batch_id' => ['nullable', Rule::exists('batches', 'id')],
+            'batch_id' => ['nullable', Rule::exists('batches', 'id')->where('school_id', $this->school()->id)],
+            'starts_at' => ['required', 'date', 'after:now'],
+            'ends_at' => ['required', 'date', 'after:starts_at'],
             'teacher_notes' => ['nullable'],
             'location' => ['nullable', 'string', 'max:255'],
             'meeting_url' => [
@@ -65,5 +77,15 @@ class UpdateTimeSlotRequest extends FormRequest
         return [
             'meeting_url.required_if' => __('A meeting URL is required if the time slot is online and you do not have a default meeting URL in your personal settings.'),
         ];
+    }
+
+    public function updateBatch(): bool
+    {
+        return $this->input('batch_id') && $this->boolean('update_batch');
+    }
+
+    protected function dateInIsoFormat(string $date): bool
+    {
+        return CarbonImmutable::hasFormat($date, 'Y-m-d\TH:i:sP');
     }
 }

@@ -80,7 +80,7 @@ class UserController extends Controller
 
         $request->school()->load('languages');
 
-        return inertia('time-slots/Create', [
+        return inertia('time-slots/Manage', [
             'title' => __('Edit times slots for :name', ['name' => $user->name]),
             'events' => $user->fullCalendarEventUrl(),
             'userSubject' => new UserResource($user),

@@ -16,7 +16,7 @@ export default ({ mode }) => {
           'resources/js/app.js',
         ],
         refresh: true,
-        valetTls: domain.split('.').slice(-2).join('.'),
+        detectTls: domain.split('.').slice(-2).join('.'),
       }),
       vue({
         template: {

@@ -15,7 +15,9 @@ use App\Models\Batch;
 use App\Models\Course;
 use App\Models\Section;
 use App\Models\Student;
+use App\Models\TimeSlot;
 use App\Models\User;
+use Database\Factories\BatchFactory;
 
 uses(Tests\TestCase::class)->in('Feature');
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class)->in('Feature');
@@ -132,4 +134,18 @@ function seedSection(?User $user = null): Section
     $section->students()->attach($students);
 
     return $section;
+}
+
+function seedBatch(bool $withTimeSlots = true): Batch
+{
+    return Batch::factory()
+        ->when($withTimeSlots, function (BatchFactory $factory) {
+            return $factory->has(
+                TimeSlot::factory(3)
+                    ->for(User::factory())
+            );
+        })
+        ->create([
+            'user_id' => test()->user->id,
+        ]);
 }
