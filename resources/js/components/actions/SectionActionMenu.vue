@@ -3,7 +3,7 @@
     <AppMenuItem :href="`/sections/${section.id}`">{{ __('View') }}</AppMenuItem>
   </div>
   <div v-if="can('section.update')" class="p-1">
-    <AppMenuItem :href="`/sections/${section.id}/edit`">{{ __('Edit') }}</AppMenuItem>
+    <AppMenuItem :href="`/sections/${section.id}/edit`">{{ __('Edit section') }}</AppMenuItem>
     <AppMenuItem
       v-if="section.alt_user_id"
       as="button"
@@ -19,7 +19,17 @@
       href="/toggle-hidden"
       :data="{ model: 'section', id: section.id }"
     >
-      {{ section.can_book ? __('Disable booking') : __('Enable booking') }}
+      {{ section.can_book ? __('Disable section booking') : __('Enable section booking') }}
+    </AppMenuItem>
+  </div>
+  <div v-if="section.course && can('course.update')" class="p-1">
+    <AppMenuItem
+      as="button"
+      method="put"
+      href="/toggle-hidden"
+      :data="{ model: 'course', id: section.course.id }"
+    >
+      {{ section.course.can_book ? __('Disable course booking') : __('Enable course booking') }}
     </AppMenuItem>
   </div>
   <div v-if="can('section.update')" class="p-1">
