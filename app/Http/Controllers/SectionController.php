@@ -26,6 +26,7 @@ class SectionController extends Controller
             ->withCount('students')
             ->join('courses', 'courses.id', '=', 'sections.course_id')
             ->orderBy('courses.name')
+            ->orderBy('sections.section_number')
             ->paginate(25);
         $title = __('Sections');
 
