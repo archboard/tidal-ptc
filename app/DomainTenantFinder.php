@@ -10,7 +10,8 @@ class DomainTenantFinder extends TenantFinder
 {
     public function findForRequest(Request $request): ?IsTenant
     {
-        $model = $this->getTenantModel();
+        /** @var class-string<\App\Models\Tenant> $model */
+        $model = app(IsTenant::class);
 
         return config('app.cloud')
             ? $model::fromRequest($request)
