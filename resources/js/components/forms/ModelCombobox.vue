@@ -46,7 +46,7 @@ const localValue = computed({
   get: () => isEmpty(props.object) ? toValue(localObject) : props.object,
   set: (value) => {
     localObject.value = value || {}
-    emit('update:modelValue', value?.id)
+    emit('update:modelValue', value?.id || null)
     emit('update:object', value)
   }
 })
