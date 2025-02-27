@@ -325,9 +325,6 @@ class User extends Authenticatable implements ExistsInSis
         // Get all the students' event sources
         return $this->students->map(fn (Student $student) => $student->fullCalendarEventSource())
             ->push($this->fullCalendarEventSource())
-            ->when($this->can(Permission::viewAny, TimeSlot::class), function (Collection $sources) {
-                return $sources->push($this->school->fullCalendarEventSource());
-            })
             ->toArray();
     }
 
