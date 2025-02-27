@@ -15,6 +15,11 @@
         :placeholder="placeholder || __('Type for options…')"
       />
 
+      <button @click.prevent="localValue = null" v-if="!isEmpty(localValue)" type="button" class="absolute inset-y-0 right-8 flex items-center pr-2">
+        <TrashIcon class="h-4 w-4 text-red-400" aria-hidden="true" />
+        <span class="sr-only">Clear selection</span>
+      </button>
+
       <ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2">
         <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
       </ComboboxButton>
@@ -86,9 +91,10 @@ import {
   ComboboxButton,
 } from '@headlessui/vue'
 import { useVModel } from '@vueuse/core'
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/24/solid'
+import { CheckIcon, ChevronUpDownIcon, TrashIcon } from '@heroicons/vue/24/solid'
 import useMenuColors from '@/composition/useMenuColors.js'
 import Spinner from '@/components/Spinner.vue'
+import isEmpty from 'just-is-empty'
 
 const props = defineProps({
   modelValue: [Number, String, Object],
