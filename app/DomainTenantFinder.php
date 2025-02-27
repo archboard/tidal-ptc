@@ -2,16 +2,13 @@
 
 namespace App;
 
-use App\Models\Tenant;
 use Illuminate\Http\Request;
-use Spatie\Multitenancy\Models\Concerns\UsesTenantModel;
+use Spatie\Multitenancy\Contracts\IsTenant;
 use Spatie\Multitenancy\TenantFinder\TenantFinder;
 
 class DomainTenantFinder extends TenantFinder
 {
-    use UsesTenantModel;
-
-    public function findForRequest(Request $request): ?Tenant
+    public function findForRequest(Request $request): ?IsTenant
     {
         $model = $this->getTenantModel();
 

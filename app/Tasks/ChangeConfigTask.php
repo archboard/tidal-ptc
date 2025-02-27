@@ -6,6 +6,7 @@ use App\Http\Resources\TenantResource;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
+use Spatie\Multitenancy\Contracts\IsTenant;
 use Spatie\Multitenancy\Models\Tenant;
 use Spatie\Multitenancy\Tasks\SwitchTenantTask;
 
@@ -13,7 +14,11 @@ class ChangeConfigTask implements SwitchTenantTask
 {
     private string $originalUrl;
 
-    public function makeCurrent(Tenant $tenant): void
+    /**
+     * @param \App\Models\Tenant $tenant
+     * @return void
+     */
+    public function makeCurrent(IsTenant $tenant): void
     {
         $this->originalUrl = config('app.url');
 
@@ -38,6 +43,6 @@ class ChangeConfigTask implements SwitchTenantTask
     {
         Config::set('app.url', $this->originalUrl);
 
-        URL::forceRootUrl($this->originalUrl);
+        URL::useOrigin($this->originalUrl);
     }
 }
