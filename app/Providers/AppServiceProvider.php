@@ -70,7 +70,7 @@ class AppServiceProvider extends ServiceProvider
 
     protected function addRequestMarcos(): static
     {
-        $currentTenant = fn (): Tenant => Tenant::current() ?? new Tenant();
+        $currentTenant = fn (): Tenant => Tenant::current() ?? new Tenant;
 
         $currentSchool = function (): School {
             /** @var User $user */
@@ -80,7 +80,7 @@ class AppServiceProvider extends ServiceProvider
                 return $school;
             }
 
-            return new School();
+            return new School;
         };
 
         $this->app->bind(Tenant::class, $currentTenant);

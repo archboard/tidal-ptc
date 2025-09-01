@@ -33,26 +33,34 @@ class Tenant extends TenantBase
         'allow_password_auth' => 'boolean',
     ];
 
-    protected static function booted()
+    protected function domain(): Attribute
     {
-        static::created(function (Tenant $tenant) {
-            //
-        });
+        return Attribute::make(
+            get: function ($value): string {
+                $domain = $value ?? request()->host();
+
+                return Str::of($domain ?? '')
+                    ->replaceStart('https://', '')
+                    ->replaceStart('http://', '')
+                    ->toString();
+            },
+            set: function ($value): string {
+                return Str::of($value ?? '')
+                    ->replaceStart('https://', '')
+                    ->replaceStart('http://', '')
+                    ->toString();
+            }
+        );
     }
 
-    public function domain(): Attribute
-    {
-        return Attribute::get(fn ($value) => $value ?? request()->host());
-    }
-
-    public function sisConfig(): Attribute
+    protected function sisConfig(): Attribute
     {
         return Attribute::get(
             fn ($value): Collection => $value ? $this->castAttribute('sis_config', $value) : collect()
         );
     }
 
-    public function smtpConfig(): Attribute
+    protected function smtpConfig(): Attribute
     {
         return Attribute::get(function ($value): Collection {
             return $value
@@ -96,13 +104,13 @@ class Tenant extends TenantBase
 
     public static function fromRequest(Request $request): ?Tenant
     {
-        return static::getByHost($request->getHost());
+        return static::getByHost($request->host());
     }
 
     public static function fromRequestAndFallback(Request $request): Tenant
     {
         return static::fromRequest($request) ?? new static([
-            'domain' => $request->getHost(),
+            'domain' => $request->host(),
             'sis_provider' => Sis::PS,
         ]);
     }

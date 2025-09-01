@@ -15,7 +15,6 @@ class UpdateSmtpSettingsController extends Controller
      */
     public function __invoke(Request $request, Tenant $tenant)
     {
-        ray($this->smtpRules());
         $data = $request->validate($this->smtpRules());
 
         $tenant->smtp_config = collect($data);

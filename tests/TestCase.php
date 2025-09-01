@@ -11,6 +11,7 @@ use App\Models\Tenant;
 use App\Models\TimeSlot;
 use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Uri;
 use Silber\Bouncer\BouncerFacade;
 
 abstract class TestCase extends BaseTestCase
@@ -31,14 +32,13 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $domain = env('TESTING_APP_URL');
+        $domain = Uri::of(env('APP_URL'))->host();
 
         $this->tenant = Tenant::factory()->create(compact('domain'));
-        $this->tenant->domain = $domain;
         $this->tenant->makeCurrent();
-        School::factory()
-            ->count(2)
-            ->create(['tenant_id' => $this->tenant->id]);
+        School::factory(2)
+            ->for($this->tenant)
+            ->create();
 
         if ($this->signIn) {
             $this->logIn();

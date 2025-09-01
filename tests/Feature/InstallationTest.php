@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Uri;
 use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
@@ -39,7 +40,7 @@ class InstallationTest extends TestCase
     {
         return [
             'name' => $this->faker->company(),
-            'domain' => env('TESTING_APP_URL'),
+            'domain' => Uri::of(env('APP_URL'))->host(),
             'sis_config.url' => env('POWERSCHOOL_ADDRESS'),
             'sis_config.client_id' => env('POWERSCHOOL_CLIENT_ID'),
             'sis_config.client_secret' => env('POWERSCHOOL_CLIENT_SECRET'),

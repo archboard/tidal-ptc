@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 use Spatie\Multitenancy\Contracts\IsTenant;
-use Spatie\Multitenancy\Models\Tenant;
 use Spatie\Multitenancy\Tasks\SwitchTenantTask;
 
 class ChangeConfigTask implements SwitchTenantTask
@@ -15,15 +14,14 @@ class ChangeConfigTask implements SwitchTenantTask
     private string $originalUrl;
 
     /**
-     * @param \App\Models\Tenant $tenant
-     * @return void
+     * @param  \App\Models\Tenant  $tenant
      */
     public function makeCurrent(IsTenant $tenant): void
     {
         $this->originalUrl = config('app.url');
 
         Config::set('app.url', "https://{$tenant->domain}");
-        URL::forceRootUrl(config('app.url'));
+        URL::useOrigin(config('app.url'));
 
         if (config('app.self_hosted')) {
             Config::set('mail.default', 'smtp');
