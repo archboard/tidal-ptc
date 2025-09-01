@@ -11,13 +11,13 @@
             <DialogPanel class="relative flex w-full max-w-xs flex-1 flex-col bg-white pt-5 pb-4">
               <TransitionChild as="template" enter="ease-in-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in-out duration-300" leave-from="opacity-100" leave-to="opacity-0">
                 <div class="absolute top-0 right-0 -mr-12 pt-2">
-                  <button type="button" class="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" @click="sidebarOpen = false">
+                  <button type="button" class="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white" @click="sidebarOpen = false">
                     <span class="sr-only">Close sidebar</span>
                     <XMarkIcon class="h-6 w-6 text-white" aria-hidden="true" />
                   </button>
                 </div>
               </TransitionChild>
-              <div class="flex flex-shrink-0 items-center px-4">
+              <div class="flex shrink-0 items-center px-4">
                 <Logo class="h-8 w-auto" />
               </div>
               <div class="mt-5 h-0 flex-1 overflow-y-auto">
@@ -32,14 +32,14 @@
                     :as="item.as"
                     :class="[item.current ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']"
                   >
-                    <div v-html="item.icon" :class="[item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-4 flex-shrink-0 h-6 w-6']" aria-hidden="true" />
+                    <div v-html="item.icon" :class="[item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-4 shrink-0 h-6 w-6']" aria-hidden="true" />
                     {{ item.label }}
                   </component>
                 </nav>
               </div>
             </DialogPanel>
           </TransitionChild>
-          <div class="w-14 flex-shrink-0" aria-hidden="true">
+          <div class="w-14 shrink-0" aria-hidden="true">
             <!-- Dummy element to force sidebar to shrink to fit close icon -->
           </div>
         </div>
@@ -49,8 +49,8 @@
     <!-- Static sidebar for desktop -->
     <div class="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
       <!-- Sidebar component, swap this element with another sidebar if you like -->
-      <div class="flex flex-grow flex-col overflow-y-auto border-r border-primary-200 dark:border-transparent bg-primary-100 dark:bg-primary-900 pt-5 pb-4">
-        <div class="flex flex-shrink-0 items-center px-4">
+      <div class="flex grow flex-col overflow-y-auto border-r border-primary-200 dark:border-transparent bg-primary-100 dark:bg-primary-900 pt-5 pb-4">
+        <div class="flex shrink-0 items-center px-4">
           <Logo class="h-10 w-auto" />
         </div>
 
@@ -61,7 +61,7 @@
           </AppSelect>
         </div>
 
-        <div class="mt-5 flex flex-grow flex-col">
+        <div class="mt-5 flex grow flex-col">
           <nav class="flex-1 space-y-8 px-2" aria-label="Sidebar">
             <div class="space-y-1">
               <component
@@ -74,7 +74,7 @@
                 :as="item.as"
                 :class="[item.current ? 'bg-primary-200 dark:bg-primary-800 text-primary-900 dark:text-white' : 'text-primary-800 dark:text-gray-300 hover:bg-primary-200 dark:hover:bg-primary-700 hover:text-primary-900 dark:hover:text-gray-100', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']"
               >
-                <div v-html="item.icon" :class="[item.current ? 'text-primary-500 dark:text-gray-300' : 'text-primary-400 dark:text-gray-300 group-hover:text-primary-500 dark:group-hover:text-gray-300', 'mr-3 flex-shrink-0']" aria-hidden="true" />
+                <div v-html="item.icon" :class="[item.current ? 'text-primary-500 dark:text-gray-300' : 'text-primary-400 dark:text-gray-300 group-hover:text-primary-500 dark:group-hover:text-gray-300', 'mr-3 shrink-0']" aria-hidden="true" />
                 {{ item.label }}
               </component>
             </div>
@@ -101,8 +101,8 @@
     </div>
 
     <div class="flex flex-1 min-h-screen flex-col justify-between md:pl-64">
-      <div class="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white dark:bg-gray-800 shadow">
-        <button type="button" class="border-r border-gray-200 dark:border-gray-600 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 md:hidden" @click="sidebarOpen = true">
+      <div class="sticky top-0 z-10 flex h-16 shrink-0 bg-white dark:bg-gray-800 shadow-sm">
+        <button type="button" class="border-r border-gray-200 dark:border-gray-600 px-4 text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-gray-500 md:hidden" @click="sidebarOpen = true">
           <span class="sr-only">Open sidebar</span>
           <Bars3BottomLeftIcon class="h-6 w-6" aria-hidden="true" />
         </button>
@@ -114,12 +114,12 @@
                 <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center">
                   <MagnifyingGlassIcon class="h-5 w-5" aria-hidden="true" />
                 </div>
-                <input id="search-field" class="block h-full w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-transparent py-2 pl-8 pr-3 placeholder-gray-500 dark:placeholder-gray-300 focus:border-transparent focus:placeholder-gray-400 focus:outline-none focus:ring-0 sm:text-sm" placeholder="Search" type="search" name="search" />
+                <input id="search-field" class="block h-full w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-transparent py-2 pl-8 pr-3 placeholder-gray-500 dark:placeholder-gray-300 focus:border-transparent focus:placeholder-gray-400 focus:outline-hidden focus:ring-0 sm:text-sm" placeholder="Search" type="search" name="search" />
               </div>
             </form>
           </div>
           <div class="ml-4 flex items-center md:ml-6">
-            <button @click.prevent="toggleTheme()" type="button" class="sr-hidden rounded-full bg-white dark:bg-gray-800 p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+            <button @click.prevent="toggleTheme()" type="button" class="sr-hidden rounded-full bg-white dark:bg-gray-800 p-1 text-gray-400 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
               <MoonIcon v-if="isDark" class="h-6 w-6" aria-hidden="true" />
               <SunIcon v-else class="h-6 w-6" aria-hidden="true" />
             </button>

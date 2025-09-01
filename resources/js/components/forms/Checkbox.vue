@@ -4,7 +4,7 @@
     :value="value"
     v-model="localValue"
     @change="$emit('change', localValue)"
-    class="cursor-pointer text-primary-500 focus:ring-primary-500 dark:focus:ring-offset-black border-gray-300 dark:border-gray-600 rounded"
+    class="cursor-pointer text-primary-500 focus:ring-primary-500 dark:focus:ring-offset-black border-gray-300 dark:border-gray-600 rounded-sm"
     :disabled="disabled"
     :checked="checked"
   >

@@ -16,7 +16,7 @@
         </p>
       </div>
       <div>
-        <nav v-if="pageLinks.length > 1" class="relative z-0 inline-flex shadow-sm">
+        <nav v-if="pageLinks.length > 1" class="relative z-0 inline-flex shadow-xs">
           <button @click.prevent="goto(prevPage)" :class="`rounded-l-md ${inactiveClass} ${buttonClass}`" aria-label="Previous">
             <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
@@ -63,7 +63,7 @@ export default defineComponent({
 
   data () {
     return {
-      buttonClass: 'relative inline-flex items-center px-2 py-2 border border-gray-300 dark:border-gray-500 text-sm leading-5 font-medium text-gray-500 dark:text-gray-300 focus:z-10 focus:outline-none focus:ring-primary-500 focus:ring transition ease-in-out duration-150',
+      buttonClass: 'relative inline-flex items-center px-2 py-2 border border-gray-300 dark:border-gray-500 text-sm leading-5 font-medium text-gray-500 dark:text-gray-300 focus:z-10 focus:outline-hidden focus:ring-primary-500 focus:ring-3 transition ease-in-out duration-150',
       inactiveClass: 'bg-white dark:bg-gray-800 dark:hover:bg-gray-500 active:bg-gray-100 active:text-gray-500 hover:text-gray-400',
       activeClass: 'bg-gray-200 hover:bg-gray-200 dark:bg-gray-700',
     }

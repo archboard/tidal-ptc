@@ -5,14 +5,14 @@
         <li class="flex">
           <div class="flex items-center">
             <InertiaLink href="/" class="text-gray-400 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-100">
-              <HomeIcon class="h-5 w-5 flex-shrink-0" aria-hidden="true" />
+              <HomeIcon class="h-5 w-5 shrink-0" aria-hidden="true" />
               <span class="sr-only">Home</span>
             </InertiaLink>
           </div>
         </li>
         <li v-for="page in pages" :key="page.url" class="flex">
           <div class="flex items-center">
-            <svg class="h-5 w-5 flex-shrink-0 text-gray-200 dark:text-gray-700" viewBox="0 0 20 20" preserveAspectRatio="none" fill="currentColor" aria-hidden="true">
+            <svg class="h-5 w-5 shrink-0 text-gray-200 dark:text-gray-700" viewBox="0 0 20 20" preserveAspectRatio="none" fill="currentColor" aria-hidden="true">
               <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
             </svg>
             <component

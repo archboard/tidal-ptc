@@ -10,7 +10,7 @@
           leave-from-class="opacity-100"
           leave-to-class="opacity-0"
         >
-          <div v-if="show" @click="$emit('close')" class="fixed inset-0 transition-opacity backdrop-blur-sm" aria-hidden="true">
+          <div v-if="show" @click="$emit('close')" class="fixed inset-0 transition-opacity backdrop-blur-xs" aria-hidden="true">
             <div class="absolute inset-0 bg-gray-800 opacity-75"></div>
           </div>
         </transition>

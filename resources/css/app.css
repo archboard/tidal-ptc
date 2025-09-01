@@ -1,7 +1,68 @@
 /*@import url('https://rsms.me/inter/inter.css');*/
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/forms';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans:
+    Inter, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --color-primary-50: #f0fdfa;
+  --color-primary-100: #ccfbf1;
+  --color-primary-200: #99f6e4;
+  --color-primary-300: #5eead4;
+  --color-primary-400: #2dd4bf;
+  --color-primary-500: #14b8a6;
+  --color-primary-600: #0d9488;
+  --color-primary-700: #0f766e;
+  --color-primary-800: #115e59;
+  --color-primary-900: #134e4a;
+  --color-primary-950: #042f2e;
+
+  --color-gray-50: #fafafa;
+  --color-gray-100: #f4f4f5;
+  --color-gray-200: #e4e4e7;
+  --color-gray-300: #d4d4d8;
+  --color-gray-400: #a1a1aa;
+  --color-gray-500: #71717a;
+  --color-gray-600: #52525b;
+  --color-gray-700: #3f3f46;
+  --color-gray-800: #27272a;
+  --color-gray-900: #18181b;
+  --color-gray-950: #09090b;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility no-scroll {
+  height: 100vh;
+  width: 100vw;
+  touch-action: none;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
 
 @layer base {
   html {
@@ -9,40 +70,30 @@
   }
 }
 
-@layer utilities {
-  .no-scroll {
-    height: 100vh;
-    width: 100vw;
-    touch-action: none;
-    overflow: hidden;
-    overscroll-behavior: none;
-  }
-}
-
 .vc-primary {
-   --vc-gray-50: theme('colors.gray.50');
-  --vc-gray-100: theme('colors.gray.100');
-  --vc-gray-200: theme('colors.gray.200');
-  --vc-gray-300: theme('colors.gray.300');
-  --vc-gray-400: theme('colors.gray.400');
-  --vc-gray-500: theme('colors.gray.500');
-  --vc-gray-600: theme('colors.gray.600');
-  --vc-gray-700: theme('colors.gray.700');
-  --vc-gray-800: theme('colors.gray.800');
-  --vc-gray-900: theme('colors.gray.900');
+   --vc-gray-50: var(--color-gray-50);
+  --vc-gray-100: var(--color-gray-100);
+  --vc-gray-200: var(--color-gray-200);
+  --vc-gray-300: var(--color-gray-300);
+  --vc-gray-400: var(--color-gray-400);
+  --vc-gray-500: var(--color-gray-500);
+  --vc-gray-600: var(--color-gray-600);
+  --vc-gray-700: var(--color-gray-700);
+  --vc-gray-800: var(--color-gray-800);
+  --vc-gray-900: var(--color-gray-900);
 
-  --vc-font-family: theme('fontFamily.sans');
+  --vc-font-family: var(--font-sans);
 
-  --vc-accent-50: theme('colors.primary.50');
-  --vc-accent-100: theme('colors.primary.100');
-  --vc-accent-200: theme('colors.primary.200');
-  --vc-accent-300: theme('colors.primary.300');
-  --vc-accent-400: theme('colors.primary.400');
-  --vc-accent-500: theme('colors.primary.500');
-  --vc-accent-600: theme('colors.primary.600');
-  --vc-accent-700: theme('colors.primary.700');
-  --vc-accent-800: theme('colors.primary.800');
-  --vc-accent-900: theme('colors.primary.900');
+  --vc-accent-50: var(--color-primary-50);
+  --vc-accent-100: var(--color-primary-100);
+  --vc-accent-200: var(--color-primary-200);
+  --vc-accent-300: var(--color-primary-300);
+  --vc-accent-400: var(--color-primary-400);
+  --vc-accent-500: var(--color-primary-500);
+  --vc-accent-600: var(--color-primary-600);
+  --vc-accent-700: var(--color-primary-700);
+  --vc-accent-800: var(--color-primary-800);
+  --vc-accent-900: var(--color-primary-900);
 }
 
 .fc {
@@ -53,15 +104,15 @@
   --fc-border-color: #ddd;
 
   --fc-button-text-color: #fff;
-  --fc-button-bg-color: theme('colors.primary.500');
-  --fc-button-border-color: theme('colors.primary.500');
-  --fc-button-hover-bg-color: theme('colors.primary.600');
-  --fc-button-hover-border-color: theme('colors.primary.600');
-  --fc-button-active-bg-color: theme('colors.primary.700');
-  --fc-button-active-border-color: theme('colors.primary.700');
+  --fc-button-bg-color: var(--color-primary-500);
+  --fc-button-border-color: var(--color-primary-500);
+  --fc-button-hover-bg-color: var(--color-primary-600);
+  --fc-button-hover-border-color: var(--color-primary-600);
+  --fc-button-active-bg-color: var(--color-primary-700);
+  --fc-button-active-border-color: var(--color-primary-700);
 
-  --fc-event-bg-color: theme('colors.primary.500');
-  --fc-event-border-color: theme('colors.primary.500');
+  --fc-event-bg-color: var(--color-primary-500);
+  --fc-event-border-color: var(--color-primary-500);
   --fc-event-text-color: #fff;
   --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.25);
 

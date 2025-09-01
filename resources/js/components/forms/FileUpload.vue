@@ -12,12 +12,12 @@
       class="pl-3 pr-4 py-3 flex items-center justify-between text-sm"
     >
       <div class="w-0 flex-1 flex items-center">
-        <PaperClipIcon class="flex-shrink-0 h-5 w-5 text-slate-400" aria-hidden="true" />
+        <PaperClipIcon class="shrink-0 h-5 w-5 text-slate-400" aria-hidden="true" />
         <span class="ml-2 flex-1 w-0 flex items-center space-x-2">
           <span class="truncate">{{ file.name }}</span> <Spinner v-if="animateLoading && file.uploading" class="w-5 h-5" />
         </span>
       </div>
-      <div class="ml-4 flex-shrink-0">
+      <div class="ml-4 shrink-0">
         <a @click.prevent="removeFile(file, index)" href="#" class="font-medium text-red-500 hover:text-red-400 transition">
           {{ __('Remove') }}
         </a>
@@ -38,7 +38,7 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
       </svg>
       <div class="flex text-sm text-gray-500">
-        <label :for="id" class="relative cursor-pointer bg-transparent rounded-md font-medium text-primary-500 hover:text-primary-400 focus-within:outline-none transition">
+        <label :for="id" class="relative cursor-pointer bg-transparent rounded-md font-medium text-primary-500 hover:text-primary-400 focus-within:outline-hidden transition">
           <span>{{ multiple ? __('Upload some files') : __('Upload a file') }}</span>
         </label>
         <p class="pl-1">{{ __('or drag and drop') }}</p>

@@ -12,7 +12,7 @@
     <input
       :id="id"
       type="text"
-      class="pl-10 shadow-sm focus:ring-2 block w-full rounded-md transition"
+      class="pl-10 shadow-xs focus:ring-2 block w-full rounded-md transition"
       :class="{
         'focus:ring-primary-500 focus:border-primary-500 border-gray-300': !hasError,
         'pr-10 border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500': hasError,

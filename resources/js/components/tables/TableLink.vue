@@ -1,5 +1,5 @@
 <template>
-  <component :is="is" class="transition font-medium text-gray-900 dark:text-gray-100 font-medium hover:underline focus:outline-none">
+  <component :is="is" class="transition font-medium text-gray-900 dark:text-gray-100 font-medium hover:underline focus:outline-hidden">
     <slot />
   </component>
 </template>

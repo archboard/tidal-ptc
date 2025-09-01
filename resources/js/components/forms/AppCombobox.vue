@@ -4,7 +4,7 @@
       class="relative w-full cursor-default"
     >
       <ComboboxInput
-        class="bg-white dark:bg-gray-900 shadow-sm block w-full rounded-lg text-sm focus:outline-none focus:ring-2"
+        class="bg-white dark:bg-gray-900 shadow-xs block w-full rounded-lg text-sm focus:outline-hidden focus:ring-2"
         :class="{
           'focus:ring-primary-500 focus:border-primary-500 border-gray-300 dark:border-gray-600': !hasError,
           'pr-10 border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500': hasError,
@@ -35,7 +35,7 @@
       <ComboboxOptions
         :class="[
             menuColors.bg,
-            `absolute z-10 mt-1 top-10 max-h-60 w-full min-w-[16rem] overflow-auto rounded-md text-base ring-opacity-5 focus:outline-none sm:text-sm`,
+            `absolute z-10 mt-1 top-10 max-h-60 w-full min-w-[16rem] overflow-auto rounded-md text-base ring-opacity-5 focus:outline-hidden sm:text-sm`,
             !!query ? 'py-1 shadow-lg ring-1 ring-black' : ''
           ]"
       >

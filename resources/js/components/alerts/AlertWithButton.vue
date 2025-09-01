@@ -1,7 +1,7 @@
 <template>
-  <div class="rounded-lg shadow p-4" :class="bgColor">
+  <div class="rounded-lg shadow-sm p-4" :class="bgColor">
     <div class="flex">
-      <div class="flex-shrink-0">
+      <div class="shrink-0">
         <component :is="icon" class="h-5 w-5" :class="iconColor" aria-hidden="true" />
       </div>
       <div class="ml-3">
@@ -15,7 +15,7 @@
         </div>
         <div v-if="actionText" class="mt-4">
           <div class="-mx-2 -my-1.5 flex">
-            <button @click.prevent="$emit('action')" type="button" class="px-2 py-1.5 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2" :class="dismissColor">
+            <button @click.prevent="$emit('action')" type="button" class="px-2 py-1.5 rounded-lg text-sm font-medium focus:outline-hidden focus:ring-2 focus:ring-offset-2" :class="dismissColor">
               {{ actionText }}
             </button>
           </div>

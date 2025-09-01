@@ -1,5 +1,5 @@
 <template>
-  <div class="relative overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-900 px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6">
+  <div class="relative overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-900 px-4 pb-12 pt-5 shadow-sm sm:px-6 sm:pt-6">
     <dt>
       <div class="absolute rounded-md bg-primary-500 p-3">
         <component :is="icon" class="h-6 w-6 text-white" />

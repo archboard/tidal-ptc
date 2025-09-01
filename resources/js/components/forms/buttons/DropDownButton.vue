@@ -1,7 +1,7 @@
 <template>
   <Menu as="div" class="relative inline-block text-left z-10">
     <div>
-      <MenuButton class="focus:outline-none">
+      <MenuButton class="focus:outline-hidden">
         <AppButton :size="size" :color="color">
           <slot>
             {{ __('Actions') }}
