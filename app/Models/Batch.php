@@ -16,9 +16,9 @@ class Batch extends Model
     use BelongsToSchool;
     use BelongsToTenant;
     use BelongsToUser;
-    use ScopedToSchool;
-    use HasTimeSlots;
     use HasFactory;
+    use HasTimeSlots;
+    use ScopedToSchool;
 
     protected $guarded = [];
 

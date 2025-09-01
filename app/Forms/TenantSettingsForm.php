@@ -13,9 +13,7 @@ class TenantSettingsForm extends BaseForm
 {
     use ValidatesTenantFields;
 
-    public function __construct(protected Tenant $tenant)
-    {
-    }
+    public function __construct(protected Tenant $tenant) {}
 
     public function title(): string
     {

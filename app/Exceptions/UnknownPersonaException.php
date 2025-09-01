@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class UnknownPersonaException extends \Exception
-{
-}
+class UnknownPersonaException extends \Exception {}

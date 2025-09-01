@@ -20,8 +20,8 @@ class School extends Model implements ExistsInSis
 {
     use BelongsToTenant;
     use HasFactory;
-    use HasTimezone;
     use HasTimeSlots;
+    use HasTimezone;
 
     protected $guarded = [];
 

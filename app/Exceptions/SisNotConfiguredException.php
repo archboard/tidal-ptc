@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class SisNotConfiguredException extends \Exception
-{
-}
+class SisNotConfiguredException extends \Exception {}

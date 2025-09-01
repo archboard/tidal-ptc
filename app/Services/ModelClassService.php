@@ -9,7 +9,7 @@ class ModelClassService
     public static function toAlias(string $model): string
     {
         return class_exists($model)
-            ? (new $model())->getMorphClass()
+            ? (new $model)->getMorphClass()
             : $model;
     }
 

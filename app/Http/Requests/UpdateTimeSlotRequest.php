@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Enums\Permission;
-use App\Models\TimeSlot;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

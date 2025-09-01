@@ -30,8 +30,8 @@ class Student extends Model implements ExistsInSis
     use HasFilters;
     use HasFirstAndLastName;
     use HasHiddenAttribute;
-    use SoftDeletes;
     use HasTimeSlots;
+    use SoftDeletes;
 
     protected $guarded = [];
 

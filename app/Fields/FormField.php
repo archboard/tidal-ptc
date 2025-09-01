@@ -33,7 +33,7 @@ class FormField
 
     public static function make(?string $label = null): static
     {
-        return (new static())
+        return (new static)
             ->label($label);
     }
 

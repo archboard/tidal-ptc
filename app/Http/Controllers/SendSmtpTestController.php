@@ -16,7 +16,7 @@ class SendSmtpTestController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        $user->notify(new SmtpTest());
+        $user->notify(new SmtpTest);
 
         session()->flash('success', 'SMTP test sent successfully.');
 

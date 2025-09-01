@@ -13,7 +13,7 @@ trait ValidatesTenantFields
         return [
             'required',
             'uuid',
-            new ValidLicense(),
+            new ValidLicense,
             Rule::unique('tenants', 'license')->ignoreModel($tenant),
         ];
     }

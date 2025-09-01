@@ -2,7 +2,6 @@
 
 use App\Enums\Permission;
 use App\Models\TimeSlot;
-use Carbon\CarbonImmutable;
 
 beforeEach(function () {
     logIn()->setSchool();

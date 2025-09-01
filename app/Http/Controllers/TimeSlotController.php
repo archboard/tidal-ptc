@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Permission;
 use App\Http\Requests\CreateTimeSlotRequest;
 use App\Http\Requests\UpdateTimeSlotRequest;
 use App\Http\Resources\UserResource;

@@ -12,9 +12,7 @@ class InstallationForm implements AppForm
 {
     use ValidatesTenantFields;
 
-    public function __construct(protected Tenant $tenant)
-    {
-    }
+    public function __construct(protected Tenant $tenant) {}
 
     public function fields(): FormFieldCollection
     {

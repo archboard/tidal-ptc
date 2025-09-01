@@ -8,6 +8,6 @@ trait ScopedToSchool
 {
     public static function bootScopedToSchool(): void
     {
-        static::addGlobalScope(new SchoolScope());
+        static::addGlobalScope(new SchoolScope);
     }
 }

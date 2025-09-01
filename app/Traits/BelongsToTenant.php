@@ -10,7 +10,7 @@ trait BelongsToTenant
 {
     public static function bootBelongsToTenant()
     {
-        static::addGlobalScope(new TenantScope());
+        static::addGlobalScope(new TenantScope);
     }
 
     public function tenant(): BelongsTo

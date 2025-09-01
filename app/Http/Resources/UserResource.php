@@ -13,9 +13,6 @@ class UserResource extends JsonResource
 
     /**
      * Transform the resource into an array.
-     *
-     * @param Request $request
-     * @return array
      */
     public function toArray(Request $request): array
     {
@@ -39,7 +36,7 @@ class UserResource extends JsonResource
             'school' => new SchoolResource($this->whenLoaded('school')),
             'model_alias' => $this->resource->getMorphClass(),
             'fc_time_format' => $this->resource->full_calendar_format,
-//            'permissions' => $this->resource->permissions,
+            //            'permissions' => $this->resource->permissions,
             'students' => StudentResource::collection($this->whenLoaded('students')),
             ...$this->getEventSourceAttributes(),
         ];
