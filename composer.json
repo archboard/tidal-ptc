@@ -8,7 +8,7 @@
   ],
   "license": "MIT",
   "require": {
-    "php": "^8.3",
+    "php": "^8.4",
     "ext-intl": "*",
     "ext-redis": "*",
     "grantholle/laravel-model-filters": "^1.0",
@@ -31,10 +31,8 @@
     "laravel/pint": "^1.7",
     "mockery/mockery": "^1.4.2",
     "nunomaduro/collision": "^8.1",
-    "pestphp/pest": "^3.0",
-    "pestphp/pest-plugin-laravel": "^3.0",
-    "phpunit/phpunit": "^11.0",
-    "spatie/laravel-ray": "^1.30"
+    "pestphp/pest": "^4.0",
+    "pestphp/pest-plugin-laravel": "^4.0"
   },
   "config": {
     "optimize-autoloader": true,
