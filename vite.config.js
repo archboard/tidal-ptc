@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from 'vite'
 import laravel from 'laravel-vite-plugin'
 import vue from '@vitejs/plugin-vue'
+import tailwind from '@tailwindcss/vite'
 
 export default ({ mode }) => {
   process.env = {
@@ -11,10 +12,9 @@ export default ({ mode }) => {
 
   return defineConfig({
     plugins: [
+      tailwind(),
       laravel({
-        input: [
-          'resources/js/app.js',
-        ],
+        input: ['resources/js/app.js'],
         refresh: true,
         detectTls: domain.split('.').slice(-2).join('.'),
       }),
