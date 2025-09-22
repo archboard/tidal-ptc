@@ -22,7 +22,7 @@ class Uninstalled
         }
 
         if ($tenant = $request->tenant()) {
-            if ($tenant->installed()) {
+            if ($tenant->installed() && $tenant->users()->exists()) {
                 abort(404);
             }
         }
