@@ -35,8 +35,8 @@
       <ComboboxOptions
         :class="[
             menuColors.bg,
-            `absolute z-10 mt-1 top-10 max-h-60 w-full min-w-[16rem] overflow-auto rounded-md text-base ring-opacity-5 focus:outline-hidden sm:text-sm`,
-            !!query ? 'py-1 shadow-lg ring-1 ring-black' : ''
+            `absolute z-10 mt-1 top-10 max-h-60 w-full min-w-[16rem] overflow-auto rounded-md text-base focus:outline-hidden sm:text-sm`,
+            !!query ? 'py-1 shadow-lg ring-1 ring-black/5' : ''
           ]"
       >
         <div

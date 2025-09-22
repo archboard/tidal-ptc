@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full bg-white dark:bg-gray-600 mt-4 shadow-lg rounded-xl pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden">
+  <div class="w-full bg-white dark:bg-gray-600 mt-4 shadow-lg rounded-xl pointer-events-auto ring-1 ring-black/5 overflow-hidden">
     <div class="p-4">
       <div class="flex items-start">
         <div class="shrink-0">
