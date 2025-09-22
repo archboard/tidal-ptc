@@ -72,7 +72,7 @@
         </tr>
 
         <tr v-if="users.data.length === 0">
-          <Td class="text-center" colspan="5">
+          <Td class="text-center" colspan="6">
             {{ __('No results found.') }}
           </Td>
         </tr>
