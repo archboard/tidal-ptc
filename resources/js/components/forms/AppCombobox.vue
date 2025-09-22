@@ -4,7 +4,7 @@
       class="relative w-full cursor-default"
     >
       <ComboboxInput
-        class="bg-white dark:bg-gray-900 shadow-xs block w-full rounded-lg text-sm focus:outline-hidden focus:ring-2"
+        class="pr-14 truncate bg-white dark:bg-gray-900 shadow-xs block w-full rounded-lg text-sm focus:outline-hidden focus:ring-2"
         :class="{
           'focus:ring-primary-500 focus:border-primary-500 border-gray-300 dark:border-gray-600': !hasError,
           'pr-10 border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500': hasError,
@@ -15,7 +15,7 @@
         :placeholder="placeholder || __('Type for options…')"
       />
 
-      <button @click.prevent="localValue = null" v-if="!isEmpty(localValue)" type="button" class="absolute inset-y-0 right-8 flex items-center pr-2">
+      <button @click.prevent="localValue = null" v-if="!isEmpty(localValue)" type="button" class="absolute inset-y-0 right-8 flex items-center cursor-pointer">
         <TrashIcon class="h-4 w-4 text-red-400" aria-hidden="true" />
         <span class="sr-only">Clear selection</span>
       </button>
