@@ -413,7 +413,7 @@ class PowerSchoolProvider implements SisProvider
         // Fetch from custom PQ
         /** @var Response $data */
         $data = $this->builder
-            ->pq('com.archboard.starter_sample.user.get', [
+            ->pq('com.archboard.tidal_ptc.user.get', [
                 'dcid' => $user->sis_id,
             ]);
 
@@ -434,7 +434,7 @@ class PowerSchoolProvider implements SisProvider
         // First get the contact id, then the contact
         /** @var Response $response */
         $response = $this->builder
-            ->pq('com.archboard.starter_sample.guardian.contactid', [
+            ->pq('com.archboard.tidal_ptc.guardian.contactid', [
                 'guardianid' => $user->sis_id,
             ]);
 
