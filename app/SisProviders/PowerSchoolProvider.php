@@ -392,7 +392,7 @@ class PowerSchoolProvider implements SisProvider
     public function searchForUser(string $search): Collection
     {
         return $this->builder
-            ->pq('com.archboard.starter_sample.user.search', [
+            ->pq('com.archboard.tidal_ptc.user.search', [
                 'search' => $search,
             ])
             ->collect()
