@@ -6,6 +6,12 @@
   </div>
 </template>
 
+<script setup>
+import useColorTheme from '@/composition/useColorTheme.js'
+
+useColorTheme()
+</script>
+
 <style scoped>
 .textured-bg {
   background-color: #ecfeff;
