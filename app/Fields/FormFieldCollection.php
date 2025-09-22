@@ -22,8 +22,7 @@ class FormFieldCollection extends Collection
         return $this->reduce(function (array $rules, FormField $field, string $key) {
             // Since the dot notation doesn't mean that it's an array,
             // we have to escape the dot in the validation rule
-            $escapedKey = implode('\.', explode('.', $key));
-            $rules[$escapedKey] = $field->getRules();
+            $rules[$key] = $field->getRules();
 
             return $rules;
         }, []);

@@ -176,8 +176,8 @@ class Tenant extends TenantBase
 
     public function getConfigFieldValue(string $configKey, ?string $key = null): mixed
     {
-        if (! $key && Str::contains($configKey, '.')) {
-            [$configKey, $key] = explode('.', $configKey);
+        if (is_string($key) && Str::contains($key, '.')) {
+            [$configKey, $key] = explode('.', $key);
 
             return $this->getConfigFieldValue($configKey, $key);
         }

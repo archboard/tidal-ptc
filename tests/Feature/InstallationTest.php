@@ -41,9 +41,11 @@ class InstallationTest extends TestCase
         return [
             'name' => $this->faker->company(),
             'domain' => Uri::of(env('APP_URL'))->host(),
-            'sis_config.url' => env('POWERSCHOOL_ADDRESS'),
-            'sis_config.client_id' => env('POWERSCHOOL_CLIENT_ID'),
-            'sis_config.client_secret' => env('POWERSCHOOL_CLIENT_SECRET'),
+            'sis_config' => [
+                'url' => env('POWERSCHOOL_ADDRESS'),
+                'client_id' => env('POWERSCHOOL_CLIENT_ID'),
+                'client_secret' => env('POWERSCHOOL_CLIENT_SECRET'),
+            ],
             ...$attributes,
         ];
     }
@@ -138,7 +140,7 @@ class InstallationTest extends TestCase
         $this->assertDatabaseHas('tenants', Arr::only($data, ['name', 'domain']));
         $tenant = Tenant::firstWhere('domain', $data['domain']);
 
-        $this->assertEquals($tenant->sis_config->toArray(), Arr::undot(Arr::only($data, ['sis_config.url', 'sis_config.client_secret', 'sis_config.client_id']))['sis_config']);
+        $this->assertEquals($tenant->sis_config->toArray(), $data['sis_config']);
 
         Queue::assertPushed(SyncSchools::class);
     }
@@ -159,7 +161,7 @@ class InstallationTest extends TestCase
         $this->assertDatabaseHas('tenants', Arr::only($data, ['name', 'domain']));
         $tenant = Tenant::firstWhere('domain', $data['domain']);
 
-        $this->assertEquals($tenant->sis_config->toArray(), Arr::undot(Arr::only($data, ['sis_config.url', 'sis_config.client_secret', 'sis_config.client_id']))['sis_config']);
+        $this->assertEquals($tenant->sis_config->toArray(), $data['sis_config']);
 
         Queue::assertPushed(SyncSchools::class);
     }
