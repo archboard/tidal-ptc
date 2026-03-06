@@ -15,8 +15,8 @@ it('can be accessed with permission', function () {
     $this->get(route('settings.tenant.edit'))
         ->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
             ->has('title')
-            ->has('tenantForm')
-            ->has('smtpForm')
+            ->has('tenant')
+            ->has('smtp')
             ->has('schools')
         )
         ->assertOk();

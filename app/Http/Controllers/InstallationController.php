@@ -6,6 +6,7 @@ use App\Jobs\SyncSchools;
 use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Validation\Rule;
 
 class InstallationController extends Controller
 {
@@ -13,12 +14,12 @@ class InstallationController extends Controller
     {
         $title = __('Installation');
         $tenant = Tenant::fromRequestAndFallback($request);
-        $fields = $tenant->getInstallationFields();
 
         return inertia('Install', [
             'title' => $title,
-            'form' => $fields->toInertia(),
-            'fields' => $fields->toResource(),
+            'name' => $tenant->name,
+            'domain' => $tenant->domain,
+            'sisConfig' => $tenant->sis_config->toArray(),
         ])->withViewData(compact('title'));
     }
 
@@ -26,10 +27,20 @@ class InstallationController extends Controller
     {
         $tenant = Tenant::fromRequestAndFallback($request);
 
-        $data = $request->validate(
-            $tenant->getInstallationFields()
-                ->toValidationRules()
-        );
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'domain' => ['required', Rule::unique('tenants', 'domain')->ignoreModel($tenant)],
+            ...(config('app.cloud') ? [
+                'custom_domain' => [
+                    'nullable',
+                    Rule::unique('tenants', 'domain')->ignoreModel($tenant),
+                    Rule::unique('tenants', 'custom_domain')->ignoreModel($tenant),
+                ],
+            ] : []),
+            'sis_config.url' => ['required', 'url'],
+            'sis_config.client_id' => ['required', 'uuid'],
+            'sis_config.client_secret' => ['required', 'uuid'],
+        ]);
 
         $tenant->fill(Arr::undot(Arr::except($data, 'email')))
             ->save();

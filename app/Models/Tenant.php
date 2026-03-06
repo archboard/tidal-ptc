@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use App\Enums\Sis;
-use App\Fields\FormField;
-use App\Fields\FormFieldCollection;
 use App\SisProviders\SisProvider;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -14,7 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Spatie\Multitenancy\Models\Tenant as TenantBase;
 
 /**
@@ -183,32 +180,5 @@ class Tenant extends TenantBase
         }
 
         return $this->$configKey->get($key);
-    }
-
-    public function getInstallationFields(): FormFieldCollection
-    {
-        return FormFieldCollection::make([
-            'name' => FormField::make(__('Tenant name'))
-                ->rules(['required', 'string', 'max:255']),
-            'domain' => FormField::make(__('Domain'))
-                ->disabled(config('app.cloud'))
-                ->rules([
-                    'required',
-                    Rule::unique('tenants', 'domain')->ignoreModel($this),
-                ]),
-            ...(config('app.cloud')
-                ? ['custom_domain' => FormField::make(__('Custom domain'))
-                    ->rules([
-                        'nullable',
-                        Rule::unique('tenants', 'domain')->ignoreModel($this),
-                        Rule::unique('tenants', 'custom_domain')->ignoreModel($this),
-                    ])]
-                : []),
-            ...$this->sis_provider?->getConfigFields() ?? collect(),
-        ])
-            ->map(fn (FormField $field, string $key) => $field
-                ->withValue($this->getInstallationFieldValue($key) ?? $this->getAttribute($key))
-                ->keyedBy($key)
-            );
     }
 }
