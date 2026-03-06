@@ -15,6 +15,77 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
+/**
+ * @property int $id
+ * @property int $tenant_id
+ * @property int $school_id
+ * @property int $user_id
+ * @property int|null $student_id
+ * @property int|null $batch_id
+ * @property int|null $reserved_by
+ * @property int|null $created_by
+ * @property \Carbon\CarbonImmutable $starts_at
+ * @property \Carbon\CarbonImmutable $ends_at
+ * @property \Carbon\CarbonImmutable|null $reserved_at
+ * @property string|null $teacher_notes
+ * @property string|null $contact_notes
+ * @property string|null $location
+ * @property string|null $meeting_url
+ * @property bool $allow_online_meetings
+ * @property bool $is_online
+ * @property bool $requested_online
+ * @property bool $contact_can_book
+ * @property bool $allow_translator_requests
+ * @property string|null $language_id
+ * @property string|null $translator_notes
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read \App\Models\Batch|null $batch
+ * @property-read \App\Models\User|null $createdBy
+ * @property-read \App\Models\Language|null $language
+ * @property-read mixed $local_ends_at
+ * @property-read mixed $local_reserved_at
+ * @property-read mixed $local_starts_at
+ * @property-read \App\Models\User|null $reservedBy
+ * @property-read \App\Models\School $school
+ * @property-read \App\Models\Tenant $tenant
+ * @property-read \App\Models\User $user
+ *
+ * @method static Builder<static>|TimeSlot expired()
+ * @method static \Database\Factories\TimeSlotFactory factory($count = null, $state = [])
+ * @method static Builder<static>|TimeSlot newModelQuery()
+ * @method static Builder<static>|TimeSlot newQuery()
+ * @method static Builder<static>|TimeSlot notExpired()
+ * @method static Builder<static>|TimeSlot notReserved()
+ * @method static Builder<static>|TimeSlot query()
+ * @method static Builder<static>|TimeSlot whereAllowOnlineMeetings($value)
+ * @method static Builder<static>|TimeSlot whereAllowTranslatorRequests($value)
+ * @method static Builder<static>|TimeSlot whereBatchId($value)
+ * @method static Builder<static>|TimeSlot whereContactCanBook($value)
+ * @method static Builder<static>|TimeSlot whereContactNotes($value)
+ * @method static Builder<static>|TimeSlot whereCreatedAt($value)
+ * @method static Builder<static>|TimeSlot whereCreatedBy($value)
+ * @method static Builder<static>|TimeSlot whereEndsAt($value)
+ * @method static Builder<static>|TimeSlot whereId($value)
+ * @method static Builder<static>|TimeSlot whereIsOnline($value)
+ * @method static Builder<static>|TimeSlot whereLanguageId($value)
+ * @method static Builder<static>|TimeSlot whereLocation($value)
+ * @method static Builder<static>|TimeSlot whereMeetingUrl($value)
+ * @method static Builder<static>|TimeSlot whereOverlaps(string $start, string $end)
+ * @method static Builder<static>|TimeSlot whereRequestedOnline($value)
+ * @method static Builder<static>|TimeSlot whereReservedAt($value)
+ * @method static Builder<static>|TimeSlot whereReservedBy($value)
+ * @method static Builder<static>|TimeSlot whereSchoolId($value)
+ * @method static Builder<static>|TimeSlot whereStartsAt($value)
+ * @method static Builder<static>|TimeSlot whereStudentId($value)
+ * @method static Builder<static>|TimeSlot whereTeacherNotes($value)
+ * @method static Builder<static>|TimeSlot whereTenantId($value)
+ * @method static Builder<static>|TimeSlot whereTranslatorNotes($value)
+ * @method static Builder<static>|TimeSlot whereUpdatedAt($value)
+ * @method static Builder<static>|TimeSlot whereUserId($value)
+ *
+ * @mixin \Eloquent
+ */
 class TimeSlot extends Model
 {
     use BelongsToSchool;

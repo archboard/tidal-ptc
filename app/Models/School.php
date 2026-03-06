@@ -15,6 +15,72 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @mixin IdeHelperSchool
+ *
+ * @property int $id
+ * @property int $tenant_id
+ * @property int $sis_id
+ * @property int|null $school_number
+ * @property string $name
+ * @property int|null $high_grade
+ * @property int|null $low_grade
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property bool $active
+ * @property string $sis_key
+ * @property string|null $timezone
+ * @property \Carbon\CarbonImmutable|null $open_for_contacts_at
+ * @property \Carbon\CarbonImmutable|null $close_for_contacts_at
+ * @property \Carbon\CarbonImmutable|null $open_for_teachers_at
+ * @property \Carbon\CarbonImmutable|null $close_for_teachers_at
+ * @property bool $allow_online_meetings
+ * @property bool $allow_translator_requests
+ * @property int $booking_buffer_hours
+ * @property-read bool $contacts_can_book
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Course> $courses
+ * @property-read int|null $courses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Language> $languages
+ * @property-read int|null $languages_count
+ * @property-read mixed $local_close_for_contacts_at
+ * @property-read mixed $local_close_for_teachers_at
+ * @property-read mixed $local_open_for_contacts_at
+ * @property-read mixed $local_open_for_teachers_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Section> $sections
+ * @property-read int|null $sections_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Student> $students
+ * @property-read int|null $students_count
+ * @property-read bool $teachers_can_create
+ * @property-read \App\Models\Tenant $tenant
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TimeSlot> $timeSlots
+ * @property-read int|null $time_slots_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+ * @property-read int|null $users_count
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School active()
+ * @method static \Database\Factories\SchoolFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereAllowOnlineMeetings($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereAllowTranslatorRequests($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereBookingBufferHours($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereCloseForContactsAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereCloseForTeachersAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereHighGrade($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereLowGrade($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereOpenForContactsAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereOpenForTeachersAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereSchoolNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereSisId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereSisKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereTenantId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereTimezone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereUpdatedAt($value)
+ *
+ * @mixin \Eloquent
  */
 class School extends Model implements ExistsInSis
 {

@@ -16,6 +16,56 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
 
 /**
  * @mixin IdeHelperTenant
+ *
+ * @property int $id
+ * @property string $name
+ * @property Collection $sis_config
+ * @property string $domain
+ * @property string|null $custom_domain
+ * @property bool $allow_password_auth
+ * @property bool $allow_oidc_login
+ * @property string|null $subscription_started_at
+ * @property string|null $subscription_expires_at
+ * @property string|null $license
+ * @property string|null $timezone
+ * @property Sis $sis_provider
+ * @property Collection $smtp_config
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Course> $courses
+ * @property-read int|null $courses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\School> $schools
+ * @property-read int|null $schools_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Section> $sections
+ * @property-read int|null $sections_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Student> $students
+ * @property-read int|null $students_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+ * @property-read int|null $users_count
+ *
+ * @method static \Spatie\Multitenancy\TenantCollection<int, static> all($columns = ['*'])
+ * @method static \Database\Factories\TenantFactory factory($count = null, $state = [])
+ * @method static \Spatie\Multitenancy\TenantCollection<int, static> get($columns = ['*'])
+ * @method static Builder<static>|Tenant newModelQuery()
+ * @method static Builder<static>|Tenant newQuery()
+ * @method static Builder<static>|Tenant query()
+ * @method static Builder<static>|Tenant whereAllowOidcLogin($value)
+ * @method static Builder<static>|Tenant whereAllowPasswordAuth($value)
+ * @method static Builder<static>|Tenant whereCreatedAt($value)
+ * @method static Builder<static>|Tenant whereCustomDomain($value)
+ * @method static Builder<static>|Tenant whereDomain($value)
+ * @method static Builder<static>|Tenant whereId($value)
+ * @method static Builder<static>|Tenant whereLicense($value)
+ * @method static Builder<static>|Tenant whereName($value)
+ * @method static Builder<static>|Tenant whereSisConfig($value)
+ * @method static Builder<static>|Tenant whereSisProvider($value)
+ * @method static Builder<static>|Tenant whereSmtpConfig($value)
+ * @method static Builder<static>|Tenant whereSubscriptionExpiresAt($value)
+ * @method static Builder<static>|Tenant whereSubscriptionStartedAt($value)
+ * @method static Builder<static>|Tenant whereTimezone($value)
+ * @method static Builder<static>|Tenant whereUpdatedAt($value)
+ *
+ * @mixin \Eloquent
  */
 class Tenant extends TenantBase
 {
