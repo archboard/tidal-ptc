@@ -27,7 +27,14 @@ class TenantSettingsController extends Controller
 
         return inertia('settings/Tenant', [
             'title' => $title,
-            'tenant' => Tenant::current()->toArray(),
+            'tenant' => [
+                'name' => $tenant->name,
+                'domain' => $tenant->domain,
+                'sis_provider' => $tenant->sis_provider,
+                'allow_password_auth' => $tenant->allow_password_auth,
+                'allow_oidc_login' => $tenant->allow_oidc_login,
+            ],
+            'isCloud' => config('app.cloud'),
             'smtp' => config('app.self_hosted') ? $tenant->smtp_config->toArray() : null,
             'sisOptions' => Sis::selectOptions(),
             'schools' => $schools->map(fn (School $school) => [
@@ -48,7 +55,7 @@ class TenantSettingsController extends Controller
     {
         $data = $request->validate([
             'name' => $this->nameRules(),
-            'domain' => $this->domainRules($tenant),
+            ...(config('app.cloud') ? [] : ['domain' => $this->domainRules($tenant)]),
             'sis_provider' => $this->sisProviderRules(),
             'allow_password_auth' => ['boolean'],
             'allow_oidc_login' => ['boolean'],

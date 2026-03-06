@@ -42,7 +42,7 @@ class InstallationController extends Controller
             'sis_config.client_secret' => ['required', 'uuid'],
         ]);
 
-        $tenant->fill(Arr::undot(Arr::except($data, 'email')))
+        $tenant->fill(Arr::undot($data))
             ->save();
         $tenant->makeCurrent();
 

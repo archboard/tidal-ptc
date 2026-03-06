@@ -21,6 +21,7 @@
                   v-model="tenantForm.domain"
                   :error="tenantForm.errors.domain"
                   :label="__('Domain')"
+                  :disabled="isCloud"
                   required
                 />
               </div>
@@ -191,6 +192,7 @@ import { ref } from 'vue'
 
 const props = defineProps({
   tenant: Object,
+  isCloud: Boolean,
   smtp: Object,
   sisOptions: Array,
   schools: Array,
