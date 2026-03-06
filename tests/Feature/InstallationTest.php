@@ -97,8 +97,9 @@ class InstallationTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (AssertableInertia $page) => $page
                 ->has('title')
-                ->where('form', $this->tenant->getInstallationFields()->toInertia())
-                ->where('fields', $this->tenant->getInstallationFields()->toResource())
+                ->has('name')
+                ->has('domain')
+                ->has('sisConfig')
                 ->component('Install')
             );
     }
@@ -116,8 +117,9 @@ class InstallationTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (AssertableInertia $page) => $page
                 ->has('title')
-                ->where('form', $this->tenant->getInstallationFields()->toInertia())
-                ->where('fields', $this->tenant->getInstallationFields()->toResource())
+                ->has('name')
+                ->has('domain')
+                ->has('sisConfig')
                 ->component('Install')
             );
     }

@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Settings;
 
 use App\Enums\Sis;
-use App\Forms\SmtpForm;
-use App\Forms\TenantSettingsForm;
+use App\Forms\Traits\ValidatesTenantFields;
 use App\Http\Controllers\Controller;
 use App\Models\School;
 use App\Models\Tenant;
@@ -12,6 +11,8 @@ use Illuminate\Http\Request;
 
 class TenantSettingsController extends Controller
 {
+    use ValidatesTenantFields;
+
     /**
      * Shows the tenant settings form
      *
@@ -20,19 +21,21 @@ class TenantSettingsController extends Controller
     public function edit(Tenant $tenant)
     {
         $title = __('Tenant Settings');
-        $tenantForm = new TenantSettingsForm($tenant);
-        $smtpForm = config('app.self_hosted')
-            ? new SmtpForm($tenant)
-            : null;
         $schools = $tenant->schools()
             ->orderBy('name')
             ->get();
 
         return inertia('settings/Tenant', [
             'title' => $title,
-            'tenant' => Tenant::current()->toArray(),
-            'smtpForm' => $smtpForm?->toInertia(),
-            'tenantForm' => $tenantForm->toInertia(),
+            'tenant' => [
+                'name' => $tenant->name,
+                'domain' => $tenant->domain,
+                'sis_provider' => $tenant->sis_provider,
+                'allow_password_auth' => $tenant->allow_password_auth,
+                'allow_oidc_login' => $tenant->allow_oidc_login,
+            ],
+            'isCloud' => config('app.cloud'),
+            'smtp' => config('app.self_hosted') ? $tenant->smtp_config->toArray() : null,
             'sisOptions' => Sis::selectOptions(),
             'schools' => $schools->map(fn (School $school) => [
                 'id' => $school->id,
@@ -50,9 +53,13 @@ class TenantSettingsController extends Controller
      */
     public function update(Request $request, Tenant $tenant)
     {
-        $data = $request->validate(
-            (new TenantSettingsForm($tenant))->rules()
-        );
+        $data = $request->validate([
+            'name' => $this->nameRules(),
+            ...(config('app.cloud') ? [] : ['domain' => $this->domainRules($tenant)]),
+            'sis_provider' => $this->sisProviderRules(),
+            'allow_password_auth' => ['boolean'],
+            'allow_oidc_login' => ['boolean'],
+        ]);
 
         $tenant->update($data);
 
