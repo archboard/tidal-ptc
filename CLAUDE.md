@@ -46,6 +46,7 @@ This project has domain-specific skills available. You MUST activate the relevan
 
 - Stick to existing directory structure; don't create new base folders without approval.
 - Do not change the application's dependencies without approval.
+- Never ever put queries in custom attributes. Use the `Attribute` class syntax for them.
 
 ## Frontend Bundling
 
