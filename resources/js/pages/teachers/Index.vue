@@ -51,7 +51,7 @@
         </tr>
       </Thead>
       <Tbody>
-        <tr v-for="user in users.data" :key="user.id">
+        <tr v-for="user in users.data" :key="user.id" :class="[selection.includes(user.id) ? 'bg-gray-100 dark:bg-gray-700' : '']">
           <Td class="pr-0 w-4">
             <Checkbox v-model="selection" :value="user.id" @change="toggleSelection(user.id)" />
           </Td>
