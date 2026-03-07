@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Http\Requests\CreateTimeSlotRequest;
 use App\Http\Requests\UpdateTimeSlotRequest;
 use App\Http\Resources\UserResource;
@@ -26,6 +27,7 @@ class TimeSlotController extends Controller
             'title' => __('Time slots'),
             'eventSources' => $user->getFullCalendarEventSources(),
             'canCreateTimeSlots' => $user->can('createOrForSelf', TimeSlot::class),
+            'canViewBatches' => $user->can(Permission::viewAny, TimeSlot::class),
             'breadcrumbs' => $this->withBreadcrumbs(
                 NavigationItem::make()
                     ->to(route('time-slots.index'))

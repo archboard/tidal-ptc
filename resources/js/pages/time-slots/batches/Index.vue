@@ -5,7 +5,8 @@
         <tr>
           <Th>{{ __('Created') }}</Th>
           <Th>{{ __('Creator') }}</Th>
-          <Th>{{ __('Time slots') }}</Th>
+          <Th>{{ __('Time slots per teacher') }}</Th>
+          <Th>{{ __('Total time slots') }}</Th>
           <Th>{{ __('Teachers') }}</Th>
           <Th></Th>
         </tr>
@@ -14,6 +15,7 @@
         <tr v-for="batch in batches.data" :key="batch.id">
           <Td>{{ batch.created_at }}</Td>
           <Td>{{ batch.user?.name }}</Td>
+          <Td>{{ batch.distinct_times_count }}</Td>
           <Td>{{ batch.time_slots_count }}</Td>
           <Td>{{ batch.users_count }}</Td>
           <ActionColumn>
@@ -21,7 +23,7 @@
           </ActionColumn>
         </tr>
         <tr v-if="batches.data.length === 0">
-          <Td colspan="5">
+          <Td colspan="6">
             {{ __('No batches have been created yet.') }}
           </Td>
         </tr>

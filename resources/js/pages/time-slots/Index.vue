@@ -22,6 +22,7 @@ const props = defineProps({
   user: Object,
   eventSources: Array,
   canCreateTimeSlots: Boolean,
+  canViewBatches: Boolean,
 })
 const calendarOptions = {
   eventSources: props.eventSources,
@@ -29,6 +30,13 @@ const calendarOptions = {
 }
 const menuItems = computed(() => {
   const items = []
+
+  if (props.canViewBatches) {
+    items.push({
+      route: '/batches',
+      label: 'Manage batches',
+    })
+  }
 
   if (props.canCreateTimeSlots) {
     items.push({
