@@ -22,7 +22,7 @@
                 {{ __('Maximum overlaps') }}
               </FormField>
 
-              <div class="col-span-6 flex justify-end">
+              <div class="col-span-6 flex justify-end pb-2">
                 <AppButton size="sm" color="gray" @click.prevent="form.languages.splice(index, 1)">
                   <TrashIcon class="h-4 w-4" />
                   <span>{{ __('Remove') }}</span>
