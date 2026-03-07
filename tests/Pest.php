@@ -19,8 +19,12 @@ use App\Models\TimeSlot;
 use App\Models\User;
 use Database\Factories\BatchFactory;
 
-uses(Tests\TestCase::class)->in('Feature');
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class)->in('Feature');
+uses(Tests\TestCase::class)->in('Feature', 'Browser');
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class)->in('Feature', 'Browser');
+
+pest()->browser()
+    ->inChrome()
+    ->withHost('localhost');
 
 /*
 |--------------------------------------------------------------------------

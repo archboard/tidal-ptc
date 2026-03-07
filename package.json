@@ -41,5 +41,8 @@
     "v-calendar": "^3.1.2",
     "vite": "^7.1.11",
     "vue": "^3.5.0"
+  },
+  "dependencies": {
+    "playwright": "^1.58.2"
   }
 }
