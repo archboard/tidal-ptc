@@ -33,9 +33,9 @@
           </div>
         </div>
 
-        <div class="mt-4 border-t border-gray-200 dark:border-gray-600 divide-y divide-gray-200 dark:divide-gray-600 space-y-4">
-          <div v-for="model in localPermissions.schools[user.school_id].models" :key="model.model">
-            <div class="pt-4">
+        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600 divide-y divide-gray-200 dark:divide-gray-600 space-y-4">
+          <div v-for="model in localPermissions.schools[user.school_id].models" :key="model.model" class="pb-4">
+            <div class="">
               <h3 class="font-medium mb-2">{{ model.label }}</h3>
               <AppCheckbox v-model="model.manages" @change="value => updatePermission('*', value, user.school_id, model.model, true)">
                 {{ __('Full access') }}
