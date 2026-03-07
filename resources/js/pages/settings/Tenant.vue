@@ -22,6 +22,7 @@
                   :error="tenantForm.errors.domain"
                   :label="__('Domain')"
                   :disabled="isCloud"
+                  :help="isCloud ? __('Please contact support to change your domain.') : __('Changing the domain could have unintended consequences. Ensure you have configured DNS properly and have a valid certificate for the new domain.')"
                   required
                 />
               </div>
@@ -31,6 +32,7 @@
                   :error="tenantForm.errors.sis_provider"
                   :label="__('SIS data provider')"
                   :options="sisOptions"
+                  :help="__('Changing your SIS provider requires reconfiguration and a resync. Data will likely be disrupted, become invalid or disappear entirely.')"
                   required
                 />
               </div>
@@ -39,7 +41,7 @@
                   v-model="tenantForm.allow_password_auth"
                   :error="tenantForm.errors.allow_password_auth"
                   :label="__('Allow password authentication')"
-                  :help-text="__('Allow users to login with their email and password.')"
+                  :help-text="__('Allow users to log in with their email and password.')"
                 />
               </div>
               <div class="md:col-span-6">
@@ -47,7 +49,7 @@
                   v-model="tenantForm.allow_oidc_login"
                   :error="tenantForm.errors.allow_oidc_login"
                   :label="__('Allow OpenID Connect login')"
-                  :help-text="__('Allow users to login with OpenID Connect with the SIS.')"
+                  :help-text="__('Allow users to log in with OpenID Connect with the SIS.')"
                 />
               </div>
             </div>
