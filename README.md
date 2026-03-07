@@ -10,7 +10,7 @@ This is a version 2.0 of the original Tidal PTC, and a complete rewrite. This se
 - [x] School settings
 - [x] User preferences
 - [x] User permission management
-- [ ] Time slot management
+- [x] Time slot management
 - [ ] Reservation management
 - [ ] Translator management
 - [ ] Dashboard
