@@ -72,4 +72,33 @@ class AuthenticationTest extends TestCase
 
         $this->assertGuest();
     }
+
+    public function test_users_can_logout()
+    {
+        $user = $this->seedUser();
+
+        $this->actingAs($user)
+            ->post('/logout')
+            ->assertRedirect('/');
+
+        $this->assertGuest();
+    }
+
+    public function test_users_can_logout_when_password_auth_is_disabled()
+    {
+        $user = $this->seedUser();
+        $this->tenant->update(['allow_password_auth' => false]);
+
+        $this->actingAs($user)
+            ->post('/logout')
+            ->assertRedirect('/');
+
+        $this->assertGuest();
+    }
+
+    public function test_guest_cannot_logout()
+    {
+        $this->post('/logout')
+            ->assertRedirect('/login');
+    }
 }

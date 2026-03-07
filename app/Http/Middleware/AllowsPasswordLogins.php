@@ -18,7 +18,7 @@ class AllowsPasswordLogins
         /** @var Tenant $tenant */
         $tenant = Tenant::current();
 
-        if ($tenant->allow_password_auth || $request->routeIs('login')) {
+        if ($tenant->allow_password_auth || $request->routeIs('login') || $request->routeIs('logout')) {
             return $next($request);
         }
 
