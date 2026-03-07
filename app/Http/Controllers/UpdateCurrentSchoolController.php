@@ -12,6 +12,7 @@ class UpdateCurrentSchoolController extends Controller
      */
     public function __invoke(Request $request)
     {
+        /** @var \App\Models\User $user */
         $user = $request->user();
         $data = $request->validate([
             'school_id' => [

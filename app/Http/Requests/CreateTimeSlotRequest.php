@@ -14,13 +14,22 @@ class CreateTimeSlotRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        /** @var \App\Models\User $user */
         $user = $this->user();
 
         if ($this->isMethod('post')) {
             return $user->can('createOrForSelf', TimeSlot::class);
         }
 
-        return $user->can('updateOrForSelf', TimeSlot::class);
+        if ($this->batch_id) {
+            return $user->can(Permission::update, TimeSlot::class);
+        }
+
+        $timeSlot = $this->route('time_slot');
+
+        return $timeSlot
+            ? $user->can('updateOrForSelf', $timeSlot)
+            : $user->can(Permission::update, TimeSlot::class);
     }
 
     /**
@@ -54,8 +63,11 @@ class CreateTimeSlotRequest extends FormRequest
         $school = $this->school();
         $validated = $this->validated();
 
+        /** @var \App\Models\User $user */
+        $user = $this->user();
+
         if (! ($validated['user_id'] ?? false)) {
-            $validated['user_id'] = $this->user()->id;
+            $validated['user_id'] = $user->id;
         }
 
         return [
@@ -74,8 +86,8 @@ class CreateTimeSlotRequest extends FormRequest
                 : false,
             'tenant_id' => $school->tenant_id,
             'school_id' => $school->id,
-            'created_by' => $this->user()->id,
-            'batch_id' => $this->user()->can(Permission::create, TimeSlot::class)
+            'created_by' => $user->id,
+            'batch_id' => $user->can(Permission::create, TimeSlot::class)
                 ? ($validated['batch_id'] ?? null)
                 : null,
         ];

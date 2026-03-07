@@ -18,6 +18,7 @@ class UserPermissionController extends Controller
     public function index(Request $request, User $user)
     {
         $title = __('Permissions for :name', ['name' => $user->name]);
+        /** @var User $authUser */
         $authUser = $request->user();
 
         return inertia('users/Permissions', [
@@ -54,6 +55,7 @@ class UserPermissionController extends Controller
             'model' => ['nullable', Rule::in($validModels)],
         ])->after(function (\Illuminate\Validation\Validator $validator) use ($request) {
             $permission = Permission::from($request->input('permission'));
+            /** @var User $authUser */
             $authUser = $request->user();
             $noSchool = ! $request->input('school');
 

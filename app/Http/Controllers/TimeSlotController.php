@@ -19,11 +19,12 @@ class TimeSlotController extends Controller
      */
     public function index(Request $request, School $school)
     {
+        /** @var User $user */
         $user = $request->user();
 
         return inertia('time-slots/Index', [
             'title' => __('Time slots'),
-            'eventSources' => $request->user()->getFullCalendarEventSources(),
+            'eventSources' => $user->getFullCalendarEventSources(),
             'canCreateTimeSlots' => $user->can('createOrForSelf', TimeSlot::class),
             'breadcrumbs' => $this->withBreadcrumbs(
                 NavigationItem::make()
@@ -42,6 +43,7 @@ class TimeSlotController extends Controller
         $this->authorize('createOrForSelf', TimeSlot::class);
 
         $request->school()->load('languages');
+        /** @var User $user */
         $user = $request->user();
 
         return inertia('time-slots/Manage', [
@@ -67,6 +69,7 @@ class TimeSlotController extends Controller
     {
         $this->authorize('createOrForSelf', TimeSlot::class);
 
+        /** @var User $user */
         $user = $request->user();
         $attributes = $request->getTimeSlotAttributes();
 
@@ -117,8 +120,9 @@ class TimeSlotController extends Controller
         if ($request->updateBatch()) {
             $data['starts_at'] = $timeSlot->starts_at->toDateTimeString();
             $data['ends_at'] = $timeSlot->ends_at->toDateTimeString();
-            Batch::findOrFail($data['batch_id'])
-                ->updateTimeSlots($data);
+            /** @var Batch $batch */
+            $batch = Batch::findOrFail($data['batch_id']);
+            $batch->updateTimeSlots($data);
         } else {
             $timeSlot->update($data);
         }

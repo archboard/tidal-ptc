@@ -44,6 +44,7 @@ class SelectedModel extends Model
 
     public $timestamps = false;
 
+    /** @return MorphTo<\Illuminate\Database\Eloquent\Model, $this> */
     public function selectable(): MorphTo
     {
         return $this->morphTo();

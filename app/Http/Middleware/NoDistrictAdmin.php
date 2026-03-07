@@ -17,7 +17,10 @@ class NoDistrictAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Tenant::current()->users()->whereIs(Role::DISTRICT_ADMIN->value)->doesntExist()) {
+        /** @var Tenant $tenant */
+        $tenant = Tenant::current();
+
+        if ($tenant->users()->whereIs(Role::DISTRICT_ADMIN->value)->doesntExist()) {
             return $next($request);
         }
 

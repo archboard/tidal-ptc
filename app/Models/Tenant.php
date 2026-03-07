@@ -15,8 +15,6 @@ use Illuminate\Support\Str;
 use Spatie\Multitenancy\Models\Tenant as TenantBase;
 
 /**
- * @mixin IdeHelperTenant
- *
  * @property int $id
  * @property string $name
  * @property Collection $sis_config
@@ -124,26 +122,31 @@ class Tenant extends TenantBase
         });
     }
 
+    /** @return HasMany<School, $this> */
     public function schools(): HasMany
     {
         return $this->hasMany(School::class);
     }
 
+    /** @return HasMany<User, $this> */
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }
 
+    /** @return HasMany<Student, $this> */
     public function students(): HasMany
     {
         return $this->hasMany(Student::class);
     }
 
+    /** @return HasMany<Course, $this> */
     public function courses(): HasMany
     {
         return $this->hasMany(Course::class);
     }
 
+    /** @return HasMany<Section, $this> */
     public function sections(): HasMany
     {
         return $this->hasMany(Section::class);

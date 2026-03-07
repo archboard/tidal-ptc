@@ -34,8 +34,6 @@ use Illuminate\Support\Str;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 /**
- * @mixin IdeHelperUser
- *
  * @property int $id
  * @property int $tenant_id
  * @property int|null $sis_id
@@ -204,17 +202,20 @@ class User extends Authenticatable implements ExistsInSis
     // Relationships
     // -------------------------------------------------------------------------
 
+    /** @return BelongsToMany<School, $this> */
     public function schools(): BelongsToMany
     {
         return $this->belongsToMany(School::class);
     }
 
+    /** @return BelongsToMany<Student, $this> */
     public function students(): BelongsToMany
     {
         return $this->belongsToMany(Student::class)
             ->withPivot(['relationship']);
     }
 
+    /** @return BelongsToMany<School, $this> */
     public function adminSchools(): BelongsToMany
     {
         return $this->schools()
@@ -222,26 +223,31 @@ class User extends Authenticatable implements ExistsInSis
             ->orderBy('name');
     }
 
+    /** @return BelongsTo<School, $this> */
     public function school(): BelongsTo
     {
         return $this->belongsTo(School::class);
     }
 
+    /** @return HasMany<SelectedModel, $this> */
     public function selectedModels(): HasMany
     {
         return $this->hasMany(SelectedModel::class);
     }
 
+    /** @return HasMany<Section, $this> */
     public function sections(): HasMany
     {
         return $this->hasMany(Section::class);
     }
 
+    /** @return HasMany<Section, $this> */
     public function altSections(): HasMany
     {
         return $this->hasMany(Section::class, 'alt_user_id');
     }
 
+    /** @return HasMany<TimeSlot, $this> */
     public function bookedTimeSlots(): HasMany
     {
         return $this->hasMany(TimeSlot::class, 'reserved_by');
@@ -270,8 +276,7 @@ class User extends Authenticatable implements ExistsInSis
 
     public function syncFromSis(): static
     {
-        $this->tenant->getSisProvider()
-            ->syncUser($this);
+        $this->tenant->getSisProvider()?->syncUser($this);
 
         return $this;
     }
@@ -284,7 +289,7 @@ class User extends Authenticatable implements ExistsInSis
 
     public function assignRole(Role|string $role): static
     {
-        return $this->assign($role?->value ?? $role);
+        return $this->assign($role instanceof Role ? $role->value : $role);
     }
 
     /**
@@ -311,11 +316,16 @@ class User extends Authenticatable implements ExistsInSis
     public function toggleSelectedModel(string $modelAlias, int $id): static
     {
         if (class_exists($modelAlias)) {
-            $modelAlias = (new $modelAlias)->getMorphClass();
+            $instance = new $modelAlias;
+            assert($instance instanceof Model);
+            $modelAlias = $instance->getMorphClass();
         }
 
         if ($model = Relation::getMorphedModel($modelAlias)) {
-            return $this->toggleSelectedModelInstance(new $model(['id' => $id]));
+            $instance = new $model(['id' => $id]);
+            assert($instance instanceof Model);
+
+            return $this->toggleSelectedModelInstance($instance);
         }
 
         return $this;

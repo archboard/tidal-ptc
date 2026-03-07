@@ -12,6 +12,7 @@ class ToggleSelectionController extends Controller
      */
     public function __invoke(Request $request, School $school, string $model)
     {
+        /** @var \App\Models\User $user */
         $user = $request->user();
 
         if ($request->isMethod('delete')) {

@@ -15,6 +15,7 @@ class NotificationPreferencesController extends Controller
      */
     public function __invoke(Request $request)
     {
+        /** @var \App\Models\User $user */
         $user = $request->user();
         $user->notification_config = $request->collect();
         $user->save();

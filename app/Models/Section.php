@@ -15,8 +15,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * @mixin IdeHelperSection
- *
  * @property int $id
  * @property int $tenant_id
  * @property int $school_id
@@ -129,21 +127,25 @@ class Section extends Model implements ExistsInSis
         });
     }
 
+    /** @return BelongsToMany<Student, $this> */
     public function students(): BelongsToMany
     {
         return $this->belongsToMany(Student::class);
     }
 
+    /** @return BelongsTo<Course, $this> */
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function teacher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function altTeacher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'alt_user_id');
@@ -151,8 +153,9 @@ class Section extends Model implements ExistsInSis
 
     public function syncFromSis(): static
     {
-        return $this->tenant->getSisProvider()
-            ->syncSection($this);
+        $this->tenant->getSisProvider()?->syncSection($this);
+
+        return $this;
     }
 
     public function filters(): array

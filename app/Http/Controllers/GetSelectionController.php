@@ -11,7 +11,9 @@ class GetSelectionController extends Controller
      */
     public function __invoke(Request $request, string $model)
     {
-        return $request->user()
-            ->getModelSelection($model);
+        /** @var \App\Models\User $user */
+        $user = $request->user();
+
+        return $user->getModelSelection($model);
     }
 }

@@ -13,8 +13,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @mixin IdeHelperCourse
- *
  * @property int $id
  * @property int $tenant_id
  * @property int $school_id
@@ -70,6 +68,7 @@ class Course extends Model implements ExistsInSis
         });
     }
 
+    /** @return HasMany<Section, $this> */
     public function sections(): HasMany
     {
         return $this->hasMany(Section::class);
@@ -77,8 +76,9 @@ class Course extends Model implements ExistsInSis
 
     public function syncFromSis(): static
     {
-        return $this->tenant->getSisProvider()
-            ->syncCourse($this);
+        $this->tenant->getSisProvider()?->syncCourse($this);
+
+        return $this;
     }
 
     public function filters(): array

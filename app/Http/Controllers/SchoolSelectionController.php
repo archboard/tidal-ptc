@@ -44,6 +44,7 @@ class SchoolSelectionController extends Controller
             ],
         ]);
 
+        /** @var User $user */
         $user = $request->user();
         $user->update($data);
         $user->schools()->syncWithoutDetaching($data['school_id']);

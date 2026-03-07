@@ -14,19 +14,23 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    /** @return array<int|string, array<string, mixed>> */
     protected function withBreadcrumbs(NavigationItem ...$item): array
     {
         return array_map(fn (NavigationItem $item) => $item->toArray(), $item);
     }
 
-    public function authorize($ability, $arguments = [])
+    public function authorize(\BackedEnum|string $ability, mixed $arguments = []): \Illuminate\Auth\Access\Response
     {
-        [$ability, $arguments] = $this->parseAbilityAndArguments($ability?->value ?? $ability, $arguments);
+        [$ability, $arguments] = $this->parseAbilityAndArguments(
+            $ability instanceof \BackedEnum ? $ability->value : $ability,
+            $arguments
+        );
 
         return app(Gate::class)->authorize($ability, $arguments);
     }
 
-    protected function backToClient(Request $request, string $level, string $message)
+    protected function backToClient(Request $request, string $level, string $message): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
     {
         if ($request->inertia() || ! $request->wantsJson()) {
             session()->flash($level, $message);
@@ -40,7 +44,7 @@ class Controller extends BaseController
         ]);
     }
 
-    protected function toSuccess(Request $request, string $message)
+    protected function toSuccess(Request $request, string $message): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
     {
         return $this->backToClient($request, 'success', $message);
     }

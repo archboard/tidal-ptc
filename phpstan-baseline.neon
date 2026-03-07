@@ -1,0 +1,2527 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method App\\Actions\\Fortify\\CreateNewUser\:\:create\(\) has parameter \$input with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Actions/Fortify/CreateNewUser.php
+
+		-
+			message: '#^Method App\\Actions\\Fortify\\CreateNewUser\:\:passwordRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Actions/Fortify/CreateNewUser.php
+
+		-
+			message: '#^Method App\\Actions\\Fortify\\ResetUserPassword\:\:passwordRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Actions/Fortify/ResetUserPassword.php
+
+		-
+			message: '#^Method App\\Actions\\Fortify\\ResetUserPassword\:\:reset\(\) has parameter \$input with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Actions/Fortify/ResetUserPassword.php
+
+		-
+			message: '#^Method App\\Actions\\Fortify\\UpdateUserPassword\:\:passwordRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Actions/Fortify/UpdateUserPassword.php
+
+		-
+			message: '#^Method App\\Actions\\Fortify\\UpdateUserPassword\:\:update\(\) has parameter \$input with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Actions/Fortify/UpdateUserPassword.php
+
+		-
+			message: '#^Method App\\Actions\\Fortify\\UpdateUserProfileInformation\:\:update\(\) has parameter \$input with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Actions/Fortify/UpdateUserProfileInformation.php
+
+		-
+			message: '#^Method App\\Actions\\Fortify\\UpdateUserProfileInformation\:\:updateVerifiedUser\(\) has parameter \$input with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Actions/Fortify/UpdateUserProfileInformation.php
+
+		-
+			message: '#^Property App\\Console\\Kernel\:\:\$commands type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Console/Kernel.php
+
+		-
+			message: '#^Method App\\Enums\\NotificationEvent\:\:collect\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Enums/NotificationEvent.php
+
+		-
+			message: '#^Method App\\Enums\\NotificationEvent\:\:getUserTypes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Enums/NotificationEvent.php
+
+		-
+			message: '#^Method App\\Enums\\NotificationEvent\:\:options\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Enums/NotificationEvent.php
+
+		-
+			message: '#^Method App\\Enums\\NotificationEvent\:\:selectOptions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Enums/NotificationEvent.php
+
+		-
+			message: '#^Method App\\Enums\\Permission\:\:collect\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Enums/Permission.php
+
+		-
+			message: '#^Method App\\Enums\\Permission\:\:description\(\) should return string\|null but returns array\|string\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Enums/Permission.php
+
+		-
+			message: '#^Method App\\Enums\\Permission\:\:getCrud\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Enums/Permission.php
+
+		-
+			message: '#^Method App\\Enums\\Permission\:\:getNonCrud\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Enums/Permission.php
+
+		-
+			message: '#^Method App\\Enums\\Permission\:\:options\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Enums/Permission.php
+
+		-
+			message: '#^Method App\\Enums\\Permission\:\:selectOptions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Enums/Permission.php
+
+		-
+			message: '#^Method App\\Enums\\Permission\:\:toEntry\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Enums/Permission.php
+
+		-
+			message: '#^Method App\\Enums\\Sis\:\:isConfigured\(\) has parameter \$config with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Enums/Sis.php
+
+		-
+			message: '#^Method App\\Enums\\Sis\:\:options\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Enums/Sis.php
+
+		-
+			message: '#^Method App\\Enums\\Sis\:\:selectOptions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Enums/Sis.php
+
+		-
+			message: '#^Cannot access property \$id on App\\Models\\Tenant\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Enums/UserType.php
+
+		-
+			message: '#^Match expression does not handle remaining value\: mixed$#'
+			identifier: match.unhandled
+			count: 1
+			path: app/Enums/UserType.php
+
+		-
+			message: '#^Method App\\Enums\\UserType\:\:collect\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Enums/UserType.php
+
+		-
+			message: '#^Method App\\Enums\\UserType\:\:fromData\(\) has parameter \$data with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Enums/UserType.php
+
+		-
+			message: '#^Method App\\Enums\\UserType\:\:getSisKeyFromData\(\) has parameter \$data with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Enums/UserType.php
+
+		-
+			message: '#^Method App\\Enums\\UserType\:\:options\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Enums/UserType.php
+
+		-
+			message: '#^Method App\\Enums\\UserType\:\:selectOptions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Enums/UserType.php
+
+		-
+			message: '#^Call to an undefined method Symfony\\Component\\HttpFoundation\\Response\:\:status\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: app/Exceptions/Handler.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Exceptions\\Handler\:\:\$dontFlash is not covariant with PHPDoc type array\<int, string\> of overridden property Illuminate\\Foundation\\Exceptions\\Handler\:\:\$dontFlash\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Exceptions/Handler.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Exceptions\\Handler\:\:\$dontReport is not covariant with PHPDoc type array\<int, class\-string\<Throwable\>\> of overridden property Illuminate\\Foundation\\Exceptions\\Handler\:\:\$dontReport\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Exceptions/Handler.php
+
+		-
+			message: '#^Property App\\Exceptions\\Handler\:\:\$dontFlash type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Exceptions/Handler.php
+
+		-
+			message: '#^Property App\\Exceptions\\Handler\:\:\$dontReport type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Exceptions/Handler.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Api\\TenantController\:\:destroy\(\) should return Illuminate\\Http\\Response but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: app/Http/Controllers/Api/TenantController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Api\\TenantController\:\:show\(\) should return Illuminate\\Http\\Response but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: app/Http/Controllers/Api/TenantController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Api\\TenantController\:\:update\(\) should return Illuminate\\Http\\Response but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: app/Http/Controllers/Api/TenantController.php
+
+		-
+			message: '#^Function ray not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: app/Http/Controllers/Auth/ClassLinkOAuthController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Auth\\ClassLinkOAuthController\:\:authenticate\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Auth/ClassLinkOAuthController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Auth\\ClassLinkOAuthController\:\:login\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Auth/ClassLinkOAuthController.php
+
+		-
+			message: '#^Call to function method_exists\(\) with Illuminate\\Contracts\\Auth\\Authenticatable and ''syncFromSis'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Http/Controllers/Auth/PowerSchoolOidcLoginController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Auth\\PowerSchoolOidcLoginController\:\:authenticated\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Auth/PowerSchoolOidcLoginController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Auth\\PowerSchoolOidcLoginController\:\:authenticated\(\) has parameter \$data with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Http/Controllers/Auth/PowerSchoolOidcLoginController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Auth\\PowerSchoolOpenIdLoginController\:\:authenticated\(\) has parameter \$data with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Http/Controllers/Auth/PowerSchoolOpenIdLoginController.php
+
+		-
+			message: '#^Cannot access property \$id on App\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/BatchController.php
+
+		-
+			message: '#^Cannot call method createBatchFromSelection\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/BatchController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\BatchController\:\:create\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/BatchController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\BatchController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/BatchController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\BatchController\:\:edit\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/BatchController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\BatchController\:\:index\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/BatchController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\BatchController\:\:show\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/BatchController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\BatchController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/BatchController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\BatchController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/BatchController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\BatchEventSourceController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/BatchEventSourceController.php
+
+		-
+			message: '#^Function ray not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: app/Http/Controllers/ClassLinkOAuthController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\ClassLinkOAuthController\:\:authenticate\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/ClassLinkOAuthController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\ClassLinkOAuthController\:\:login\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/ClassLinkOAuthController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Controller\:\:authorize\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Controller.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Controller\:\:authorize\(\) has parameter \$ability with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/Controller.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Controller\:\:authorize\(\) has parameter \$arguments with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/Controller.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Controller\:\:backToClient\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Controller.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Controller\:\:toSuccess\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Controller.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Controller\:\:withBreadcrumbs\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Controller.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>value" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/Controller.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\CourseController\:\:index\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/CourseController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\CourseController\:\:show\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/CourseController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\DeleteBatchTimeSlotController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/DeleteBatchTimeSlotController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\GetLanguagesController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/GetLanguagesController.php
+
+		-
+			message: '#^Cannot call method getModelSelection\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/GetSelectionController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\GetSelectionController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/GetSelectionController.php
+
+		-
+			message: '#^Cannot call method map\(\) on Illuminate\\Support\\Collection\|string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/GetTimezonesController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\GetTimezonesController\:\:__invoke\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Http/Controllers/GetTimezonesController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\InstallFirstUserController\:\:index\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/InstallFirstUserController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\InstallFirstUserController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/InstallFirstUserController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\InstallationController\:\:index\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/InstallationController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\InstallationController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/InstallationController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\SchoolEventSourceController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/SchoolEventSourceController.php
+
+		-
+			message: '#^Cannot call method schools\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/SchoolSelectionController.php
+
+		-
+			message: '#^Cannot call method update\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/SchoolSelectionController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\SchoolSelectionController\:\:index\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/SchoolSelectionController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\SchoolSelectionController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/SchoolSelectionController.php
+
+		-
+			message: '#^Cannot call method searchForUser\(\) on App\\SisProviders\\SisProvider\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Search/SisUserController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Search\\SisUserController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Search/SisUserController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\:\:filter\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/SearchModelController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\SearchModelController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/SearchModelController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\SectionController\:\:edit\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/SectionController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\SectionController\:\:index\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/SectionController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\SectionController\:\:show\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/SectionController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\SectionController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/SectionController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\SendSmtpTestController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/SendSmtpTestController.php
+
+		-
+			message: '#^Cannot access property \$notification_config on App\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/Settings/NotificationPreferencesController.php
+
+		-
+			message: '#^Cannot call method save\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Settings/NotificationPreferencesController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Settings\\NotificationPreferencesController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Settings/NotificationPreferencesController.php
+
+		-
+			message: '#^Cannot access property \$password on App\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/Settings/PersonalSettingsController.php
+
+		-
+			message: '#^Cannot call method getNotificationOptions\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Settings/PersonalSettingsController.php
+
+		-
+			message: '#^Cannot call method update\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Settings/PersonalSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Settings\\SaveSchoolLanguagesController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Settings/SaveSchoolLanguagesController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Settings\\SchoolSettingsController\:\:edit\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Settings/SchoolSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Settings\\SchoolSettingsController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Settings/SchoolSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Settings\\SyncModelController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Settings/SyncModelController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Settings\\SyncSchoolItemController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Settings/SyncSchoolItemController.php
+
+		-
+			message: '#^Parameter \#1 \$object_or_class of function method_exists expects object\|string, App\\SisProviders\\SisProvider\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Settings/SyncSchoolItemController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Settings\\TenantSettingsController\:\:customDomainRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Settings/TenantSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Settings\\TenantSettingsController\:\:domainRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Settings/TenantSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Settings\\TenantSettingsController\:\:emailRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Settings/TenantSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Settings\\TenantSettingsController\:\:licenseRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Settings/TenantSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Settings\\TenantSettingsController\:\:nameRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Settings/TenantSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Settings\\TenantSettingsController\:\:sisProviderRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Settings/TenantSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Settings\\TenantSettingsController\:\:smtpRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Settings/TenantSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\StudentController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/StudentController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\StudentController\:\:edit\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/StudentController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\StudentController\:\:index\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/StudentController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\StudentController\:\:show\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/StudentController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\StudentController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/StudentController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\StudentEventSourceController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/StudentEventSourceController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\SubmitFormController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/SubmitFormController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\TeacherController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/TeacherController.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Batch\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Batch\>\:\:updateTimeSlots\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/TimeSlotController.php
+
+		-
+			message: '#^Called ''Model\:\:make\(\)'' which performs unnecessary work, use ''new Model\(\)''\.$#'
+			identifier: larastan.noModelMake
+			count: 1
+			path: app/Http/Controllers/TimeSlotController.php
+
+		-
+			message: '#^Cannot call method can\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/TimeSlotController.php
+
+		-
+			message: '#^Cannot call method fullCalendarEventUrl\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/TimeSlotController.php
+
+		-
+			message: '#^Cannot call method getFullCalendarEventSources\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/TimeSlotController.php
+
+		-
+			message: '#^Cannot call method getModelSelection\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/TimeSlotController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\TimeSlotController\:\:create\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/TimeSlotController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\TimeSlotController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/TimeSlotController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\TimeSlotController\:\:edit\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/TimeSlotController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\TimeSlotController\:\:index\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/TimeSlotController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\TimeSlotController\:\:show\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/TimeSlotController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\TimeSlotController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/TimeSlotController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\TimeSlotController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/TimeSlotController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\ToggleHiddenController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/ToggleHiddenController.php
+
+		-
+			message: '#^Cannot call method deselectAllModel\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ToggleSelectionController.php
+
+		-
+			message: '#^Cannot call method selectAllModel\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ToggleSelectionController.php
+
+		-
+			message: '#^Cannot call method toggleSelectedModel\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ToggleSelectionController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\ToggleSelectionController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/ToggleSelectionController.php
+
+		-
+			message: '#^Cannot access property \$name on App\\Models\\School\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/UpdateCurrentSchoolController.php
+
+		-
+			message: '#^Cannot access property \$school on App\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/UpdateCurrentSchoolController.php
+
+		-
+			message: '#^Cannot call method adminSchools\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/UpdateCurrentSchoolController.php
+
+		-
+			message: '#^Cannot call method update\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/UpdateCurrentSchoolController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UpdateCurrentSchoolController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/UpdateCurrentSchoolController.php
+
+		-
+			message: '#^Cannot call method updateModelSelectionAttributes\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/UpdateSelectionVisibilityController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UpdateSelectionVisibilityController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/UpdateSelectionVisibilityController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UpdateSmtpSettingsController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/UpdateSmtpSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UpdateSmtpSettingsController\:\:customDomainRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/UpdateSmtpSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UpdateSmtpSettingsController\:\:domainRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/UpdateSmtpSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UpdateSmtpSettingsController\:\:emailRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/UpdateSmtpSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UpdateSmtpSettingsController\:\:licenseRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/UpdateSmtpSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UpdateSmtpSettingsController\:\:nameRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/UpdateSmtpSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UpdateSmtpSettingsController\:\:sisProviderRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/UpdateSmtpSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UpdateSmtpSettingsController\:\:smtpRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/UpdateSmtpSettingsController.php
+
+		-
+			message: '#^Unable to resolve the template type TKey in call to function collect$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Http/Controllers/UpdateSmtpSettingsController.php
+
+		-
+			message: '#^Unable to resolve the template type TValue in call to function collect$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Http/Controllers/UpdateSmtpSettingsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UpdateTenantSchoolsController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/UpdateTenantSchoolsController.php
+
+		-
+			message: '#^Cannot call method keys\(\) on Illuminate\\Support\\Collection\|string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/UpdateTimezoneController.php
+
+		-
+			message: '#^Cannot call method update\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/UpdateTimezoneController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UserController\:\:create\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UserController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UserController\:\:edit\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UserController\:\:index\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UserController\:\:show\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UserController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UserController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UserEventSourceController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/UserEventSourceController.php
+
+		-
+			message: '#^Call to an undefined method object\:\:getMorphClass\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/UserPermissionController.php
+
+		-
+			message: '#^Cannot access property \$school on App\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/UserPermissionController.php
+
+		-
+			message: '#^Cannot call method cant\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/UserPermissionController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UserPermissionController\:\:index\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/UserPermissionController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UserPermissionController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/UserPermissionController.php
+
+		-
+			message: '#^Parameter \#3 \$school of method App\\Models\\User\:\:updateAppPermission\(\) expects App\\Models\\School\|null, App\\Models\\School\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\School\>\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/UserPermissionController.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Http\\Kernel\:\:\$middleware is not covariant with PHPDoc type array\<int, string\> of overridden property Illuminate\\Foundation\\Http\\Kernel\:\:\$middleware\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Http/Kernel.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Http\\Kernel\:\:\$middlewareGroups is not covariant with PHPDoc type array\<string, array\<int, string\>\> of overridden property Illuminate\\Foundation\\Http\\Kernel\:\:\$middlewareGroups\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Http/Kernel.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Http\\Kernel\:\:\$routeMiddleware is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Foundation\\Http\\Kernel\:\:\$routeMiddleware\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Http/Kernel.php
+
+		-
+			message: '#^Property App\\Http\\Kernel\:\:\$middleware type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Kernel.php
+
+		-
+			message: '#^Property App\\Http\\Kernel\:\:\$middlewareGroups type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Kernel.php
+
+		-
+			message: '#^Property App\\Http\\Kernel\:\:\$routeMiddleware type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Kernel.php
+
+		-
+			message: '#^Cannot access property \$allow_password_auth on App\\Models\\Tenant\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Middleware/AllowsPasswordLogins.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\Authenticate\:\:redirectTo\(\) should return string\|null but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: app/Http/Middleware/Authenticate.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Http\\Middleware\\EncryptCookies\:\:\$except is not covariant with PHPDoc type array\<int, string\> of overridden property Illuminate\\Cookie\\Middleware\\EncryptCookies\:\:\$except\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Http/Middleware/EncryptCookies.php
+
+		-
+			message: '#^Property App\\Http\\Middleware\\EncryptCookies\:\:\$except type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Middleware/EncryptCookies.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 2
+			path: app/Http/Middleware/HandleInertiaRequests.php
+
+		-
+			message: '#^Using nullsafe property access on non\-nullable type App\\Models\\School\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Middleware/HasSchoolSet.php
+
+		-
+			message: '#^Cannot call method users\(\) on App\\Models\\Tenant\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Middleware/NoDistrictAdmin.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Http\\Middleware\\PreventRequestsDuringMaintenance\:\:\$except is not covariant with PHPDoc type array\<int, string\> of overridden property Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance\:\:\$except\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Http/Middleware/PreventRequestsDuringMaintenance.php
+
+		-
+			message: '#^Property App\\Http\\Middleware\\PreventRequestsDuringMaintenance\:\:\$except type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Middleware/PreventRequestsDuringMaintenance.php
+
+		-
+			message: '#^Cannot access property \$school_id on App\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Middleware/ScopeBouncerToSchool.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type App\\Enums\\Sis\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Middleware/SisConfigured.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Http\\Middleware\\TrimStrings\:\:\$except is not covariant with PHPDoc type array\<int, string\> of overridden property Illuminate\\Foundation\\Http\\Middleware\\TrimStrings\:\:\$except\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Http/Middleware/TrimStrings.php
+
+		-
+			message: '#^Property App\\Http\\Middleware\\TrimStrings\:\:\$except type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Middleware/TrimStrings.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\TrustHosts\:\:hosts\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Middleware/TrustHosts.php
+
+		-
+			message: '#^PHPDoc type array\|string\|null of property App\\Http\\Middleware\\TrustProxies\:\:\$proxies is not covariant with PHPDoc type array\<int, string\>\|string\|null of overridden property Illuminate\\Http\\Middleware\\TrustProxies\:\:\$proxies\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Http/Middleware/TrustProxies.php
+
+		-
+			message: '#^Property App\\Http\\Middleware\\TrustProxies\:\:\$proxies type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Middleware/TrustProxies.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: app/Http/Middleware/Uninstalled.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Http\\Middleware\\VerifyCsrfToken\:\:\$except is not covariant with PHPDoc type array\<int, string\> of overridden property Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken\:\:\$except\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Http/Middleware/VerifyCsrfToken.php
+
+		-
+			message: '#^Property App\\Http\\Middleware\\VerifyCsrfToken\:\:\$except type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Middleware/VerifyCsrfToken.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Auth\\LoginRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Auth/LoginRequest.php
+
+		-
+			message: '#^Cannot access property \$id on App\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Requests/CreateTimeSlotRequest.php
+
+		-
+			message: '#^Cannot call method can\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: app/Http/Requests/CreateTimeSlotRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\CreateTimeSlotRequest\:\:getTimeSlotAttributes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/CreateTimeSlotRequest.php
+
+		-
+			message: '#^Cannot access property \$meeting_url on App\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Requests/UpdateTimeSlotRequest.php
+
+		-
+			message: '#^Cannot call method can\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Requests/UpdateTimeSlotRequest.php
+
+		-
+			message: '#^Cannot call method dateToApp\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Requests/UpdateTimeSlotRequest.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\BatchResource\:\:getEventSourceAttributes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/BatchResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Language\:\:\$pivot\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Resources/LanguageResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\SchoolResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/SchoolResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\StudentResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/StudentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TenantApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TenantApiResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\TenantApiResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/TenantApiResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\TenantApiResource\:\:toArray\(\) return type with generic interface Illuminate\\Contracts\\Support\\Arrayable does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Http/Resources/TenantApiResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\TenantResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/TenantResource.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type App\\Enums\\Sis\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Resources/TenantResource.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type Carbon\\CarbonImmutable\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: app/Http/Resources/TimeSlotResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\UserResource\:\:getEventSourceAttributes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\UserResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Cannot call method syncSchools\(\) on App\\SisProviders\\SisProvider\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Jobs/SyncSchools.php
+
+		-
+			message: '#^Class App\\Models\\Batch uses generic trait App\\Traits\\BelongsToSchool but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Batch.php
+
+		-
+			message: '#^Class App\\Models\\Batch uses generic trait App\\Traits\\BelongsToTenant but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Batch.php
+
+		-
+			message: '#^Class App\\Models\\Batch uses generic trait App\\Traits\\BelongsToUser but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Batch.php
+
+		-
+			message: '#^Class App\\Models\\Batch uses generic trait App\\Traits\\HasTimeSlots but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Batch.php
+
+		-
+			message: '#^Class App\\Models\\Batch uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Batch.php
+
+		-
+			message: '#^Method App\\Models\\Batch\:\:bootBelongsToTenant\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Batch.php
+
+		-
+			message: '#^Method App\\Models\\Batch\:\:fullCalendarEventSource\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Batch.php
+
+		-
+			message: '#^Method App\\Models\\Batch\:\:fullCalendarEvents\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Batch.php
+
+		-
+			message: '#^Method App\\Models\\Batch\:\:getTimeSlotsFromFullCalendarRequest\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Batch.php
+
+		-
+			message: '#^Method App\\Models\\Batch\:\:updateTimeSlots\(\) has parameter \$attributes with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Batch.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\:\:search\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Models/Course.php
+
+		-
+			message: '#^Cannot call method syncCourse\(\) on App\\SisProviders\\SisProvider\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Course.php
+
+		-
+			message: '#^Class App\\Models\\Course has PHPDoc tag @method for method filter\(\) parameter \#1 \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Course.php
+
+		-
+			message: '#^Class App\\Models\\Course has PHPDoc tag @method for method filter\(\) parameter \#1 \$data with no value type specified in iterable type array\|Illuminate\\Support\\Collection\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Course.php
+
+		-
+			message: '#^Class App\\Models\\Course uses generic trait App\\Traits\\BelongsToTenant but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Course.php
+
+		-
+			message: '#^Class App\\Models\\Course uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Course.php
+
+		-
+			message: '#^Method App\\Models\\Course\:\:bootBelongsToTenant\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Course.php
+
+		-
+			message: '#^Method App\\Models\\Course\:\:filters\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Course.php
+
+		-
+			message: '#^Method App\\Models\\Course\:\:scopeCanBook\(\) has parameter \$builder with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Course.php
+
+		-
+			message: '#^Method App\\Models\\Course\:\:scopeSearch\(\) has parameter \$builder with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Course.php
+
+		-
+			message: '#^Method App\\Models\\Course\:\:syncFromSis\(\) should return static\(App\\Models\\Course\) but returns App\\Models\\Course\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/Course.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Models\\Course\:\:filter\(\) parameter \#1 \$data contains generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Course.php
+
+		-
+			message: '#^PHPDoc tag @mixin contains unknown class App\\Models\\IdeHelperCourse\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Models/Course.php
+
+		-
+			message: '#^PHPDoc tag @mixin contains unknown class App\\Models\\IdeHelperLanguage\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Models/Language.php
+
+		-
+			message: '#^Cannot call method syncSchool\(\) on App\\SisProviders\\SisProvider\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Cannot call method syncSchoolCourses\(\) on App\\SisProviders\\SisProvider\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Cannot call method syncSchoolSections\(\) on App\\SisProviders\\SisProvider\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Cannot call method syncSchoolStaff\(\) on App\\SisProviders\\SisProvider\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Cannot call method syncSchoolStudents\(\) on App\\SisProviders\\SisProvider\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Class App\\Models\\School uses generic trait App\\Traits\\BelongsToTenant but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Class App\\Models\\School uses generic trait App\\Traits\\HasTimeSlots but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Class App\\Models\\School uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:bootBelongsToTenant\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:contactsCanBook\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:current\(\) should return static\(App\\Models\\School\) but returns App\\Models\\School\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:fullCalendarEventSource\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:fullCalendarEvents\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:getCarbonSettings\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:getTimeSlotsFromFullCalendarRequest\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:gradeSelectOptions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:localCloseForContactsAt\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:localCloseForTeachersAt\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:localOpenForContactsAt\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:localOpenForTeachersAt\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:syncFromSis\(\) should return static\(App\\Models\\School\) but returns App\\Models\\School\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:teachersCanCreate\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:updateTimeSlots\(\) has parameter \$attributes with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^PHPDoc tag @mixin contains unknown class App\\Models\\IdeHelperSchool\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Parameter \#1 \$start of function range expects float\|int\|string, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Parameter \#2 \$end of function range expects float\|int\|string, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: app/Models/Scopes/SchoolScope.php
+
+		-
+			message: '#^Anonymous function should return string but returns string\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\:\:search\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:search\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^Cannot call method syncSection\(\) on App\\SisProviders\\SisProvider\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^Class App\\Models\\Section has PHPDoc tag @method for method filter\(\) parameter \#1 \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^Class App\\Models\\Section has PHPDoc tag @method for method filter\(\) parameter \#1 \$data with no value type specified in iterable type array\|Illuminate\\Support\\Collection\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^Class App\\Models\\Section uses generic trait App\\Traits\\BelongsToTenant but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^Class App\\Models\\Section uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^Method App\\Models\\Section\:\:bootBelongsToTenant\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^Method App\\Models\\Section\:\:display\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^Method App\\Models\\Section\:\:filters\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^Method App\\Models\\Section\:\:scopeCanBook\(\) has parameter \$builder with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^Method App\\Models\\Section\:\:scopeSearch\(\) has parameter \$builder with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^Method App\\Models\\Section\:\:syncFromSis\(\) should return static\(App\\Models\\Section\) but returns App\\Models\\Section\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^Method App\\Models\\Section\:\:teacherCanBook\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^Method App\\Models\\Section\:\:teacherDisplay\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Models\\Section\:\:filter\(\) parameter \#1 \$data contains generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^PHPDoc tag @mixin contains unknown class App\\Models\\IdeHelperSection\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Models/Section.php
+
+		-
+			message: '#^Class App\\Models\\SelectedModel uses generic trait App\\Traits\\BelongsToSchool but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/SelectedModel.php
+
+		-
+			message: '#^Class App\\Models\\SelectedModel uses generic trait App\\Traits\\BelongsToTenant but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/SelectedModel.php
+
+		-
+			message: '#^Class App\\Models\\SelectedModel uses generic trait App\\Traits\\BelongsToUser but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/SelectedModel.php
+
+		-
+			message: '#^Method App\\Models\\SelectedModel\:\:bootBelongsToTenant\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/SelectedModel.php
+
+		-
+			message: '#^PHPDoc tag @mixin contains unknown class App\\Models\\IdeHelperSelectedModel\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Models/SelectedModel.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\:\:search\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Cannot call method syncStudent\(\) on App\\SisProviders\\SisProvider\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Class App\\Models\\Student has PHPDoc tag @method for method filter\(\) parameter \#1 \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Class App\\Models\\Student has PHPDoc tag @method for method filter\(\) parameter \#1 \$data with no value type specified in iterable type array\|Illuminate\\Support\\Collection\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Class App\\Models\\Student uses generic trait App\\Traits\\BelongsToSchool but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Class App\\Models\\Student uses generic trait App\\Traits\\BelongsToTenant but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Class App\\Models\\Student uses generic trait App\\Traits\\HasTimeSlots but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Class App\\Models\\Student uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Method App\\Models\\Student\:\:bootBelongsToTenant\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Method App\\Models\\Student\:\:filters\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Method App\\Models\\Student\:\:fullCalendarEventSource\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Method App\\Models\\Student\:\:fullCalendarEvents\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Method App\\Models\\Student\:\:getTimeSlotsFromFullCalendarRequest\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Method App\\Models\\Student\:\:lastFirst\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Method App\\Models\\Student\:\:name\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Method App\\Models\\Student\:\:scopeCanBook\(\) has parameter \$builder with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Method App\\Models\\Student\:\:scopeSearch\(\) has parameter \$builder with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Method App\\Models\\Student\:\:syncFromSis\(\) should return static\(App\\Models\\Student\) but returns App\\Models\\Student\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Method App\\Models\\Student\:\:updateTimeSlots\(\) has parameter \$attributes with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Models\\Student\:\:filter\(\) parameter \#1 \$data contains generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^PHPDoc tag @mixin contains unknown class App\\Models\\IdeHelperStudent\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Models/Student.php
+
+		-
+			message: '#^Class App\\Models\\Tenant uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Method App\\Models\\Tenant\:\:domain\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Method App\\Models\\Tenant\:\:getSchoolFromSisId\(\) has parameter \$sisId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Method App\\Models\\Tenant\:\:sisConfig\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Method App\\Models\\Tenant\:\:smtpConfig\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^PHPDoc tag @mixin contains unknown class App\\Models\\IdeHelperTenant\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^PHPDoc tag @property for property App\\Models\\Tenant\:\:\$sis_config contains generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^PHPDoc tag @property for property App\\Models\\Tenant\:\:\$smtp_config contains generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Parameter \#2 \$key of static method Illuminate\\Support\\Arr\:\:get\(\) expects int\|string\|null, iterable\<string\>\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Parameter \#3 \$subject of static method Illuminate\\Support\\Str\:\:replace\(\) expects iterable\<string\>\|string, string\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Possibly invalid array key type iterable\<string\>\|string\.$#'
+			identifier: array.invalidKey
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Unable to resolve the template type TSubject in call to static method Illuminate\\Support\\Str\:\:replace\(\)$#'
+			identifier: argument.templateType
+			count: 2
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Unsafe usage of new static\(\)\.$#'
+			identifier: new.static
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type App\\Enums\\Sis\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Variable \$domain on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.variable
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Class App\\Models\\TimeSlot uses generic trait App\\Traits\\BelongsToSchool but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TimeSlot.php
+
+		-
+			message: '#^Class App\\Models\\TimeSlot uses generic trait App\\Traits\\BelongsToTenant but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TimeSlot.php
+
+		-
+			message: '#^Class App\\Models\\TimeSlot uses generic trait App\\Traits\\BelongsToUser but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 2
+			path: app/Models/TimeSlot.php
+
+		-
+			message: '#^Class App\\Models\\TimeSlot uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TimeSlot.php
+
+		-
+			message: '#^Method App\\Models\\TimeSlot\:\:bootBelongsToTenant\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/TimeSlot.php
+
+		-
+			message: '#^Method App\\Models\\TimeSlot\:\:createForSelection\(\) has parameter \$attributes with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/TimeSlot.php
+
+		-
+			message: '#^Method App\\Models\\TimeSlot\:\:createForSelection\(\) has parameter \$selection with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TimeSlot.php
+
+		-
+			message: '#^Method App\\Models\\TimeSlot\:\:localEndsAt\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TimeSlot.php
+
+		-
+			message: '#^Method App\\Models\\TimeSlot\:\:localReservedAt\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TimeSlot.php
+
+		-
+			message: '#^Method App\\Models\\TimeSlot\:\:localStartsAt\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TimeSlot.php
+
+		-
+			message: '#^Method App\\Models\\TimeSlot\:\:overlaps\(\) has parameter \$timeSlots with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TimeSlot.php
+
+		-
+			message: '#^Method App\\Models\\TimeSlot\:\:scopeExpired\(\) has parameter \$builder with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TimeSlot.php
+
+		-
+			message: '#^Method App\\Models\\TimeSlot\:\:scopeNotExpired\(\) has parameter \$builder with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TimeSlot.php
+
+		-
+			message: '#^Method App\\Models\\TimeSlot\:\:scopeNotReserved\(\) has parameter \$builder with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TimeSlot.php
+
+		-
+			message: '#^Method App\\Models\\TimeSlot\:\:scopeWhereOverlaps\(\) has parameter \$builder with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TimeSlot.php
+
+		-
+			message: '#^Method App\\Models\\TimeSlot\:\:toFullCalendar\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/TimeSlot.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\:\:search\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:byName\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: app/Models/User.php
+
+		-
+			message: '#^Call to an undefined method object\:\:getMorphClass\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Cannot access property \$value on App\\Enums\\Permission\|string\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Cannot access property \$value on App\\Enums\\Role\|string\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Cannot call method syncUser\(\) on App\\SisProviders\\SisProvider\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Class App\\Models\\User has PHPDoc tag @method for method filter\(\) parameter \#1 \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Class App\\Models\\User has PHPDoc tag @method for method filter\(\) parameter \#1 \$data with no value type specified in iterable type array\|Illuminate\\Support\\Collection\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Class App\\Models\\User has PHPDoc tag @property\-read for property \$full_calendar_format with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Class App\\Models\\User uses generic trait App\\Traits\\BelongsToTenant but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Class App\\Models\\User uses generic trait App\\Traits\\HasTimeSlots but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Class App\\Models\\User uses generic trait App\\Traits\\Selectable but does not specify its types\: TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Class App\\Models\\User uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 2
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:bootBelongsToTenant\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:filters\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:fullCalendarEventSource\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:fullCalendarEvents\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:fullCalendarFormat\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:getCarbonSettings\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:getFullCalendarEventSources\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:getModelSelection\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:getNotificationOptions\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:getPermissionMatrix\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:getPermissionSubjectModels\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:getScopedPermissionMatrix\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:getTimeSlotsFromFullCalendarRequest\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:lastFirst\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:name\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:permissions\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:permissionsToFrontend\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:scopeCanBook\(\) has parameter \$builder with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:scopeSearch\(\) has parameter \$builder with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:scopeWhereCan\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:selectAllModel\(\) has parameter \$filters with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:selectAllModel\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:selectAllModel\(\) has parameter \$filters with no value type specified in iterable type array\|Illuminate\\Support\\Collection\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:updateModelSelectionAttributes\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:updateTimeSlots\(\) has parameter \$attributes with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Models\\User\:\:filter\(\) parameter \#1 \$data contains generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^PHPDoc tag @mixin contains unknown class App\\Models\\IdeHelperUser\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Models\\User\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Models\\User\:\:\$guarded is not covariant with PHPDoc type array\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$guarded\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Models\\User\:\:\$hidden is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$hidden\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Property App\\Models\\User\:\:\$casts type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Property App\\Models\\User\:\:\$guarded type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Property App\\Models\\User\:\:\$hidden type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Unable to resolve the template type TKey in call to function collect$#'
+			identifier: argument.templateType
+			count: 4
+			path: app/Models/User.php
+
+		-
+			message: '#^Unable to resolve the template type TValue in call to function collect$#'
+			identifier: argument.templateType
+			count: 4
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Navigation\\NavigationItem\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Navigation/NavigationItem.php
+
+		-
+			message: '#^Unsafe usage of new static\(\)\.$#'
+			identifier: new.static
+			count: 1
+			path: app/Navigation/NavigationItem.php
+
+		-
+			message: '#^Cannot access property \$teachers_can_create on App\\Models\\School\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Policies/TimeSlotPolicy.php
+
+		-
+			message: '#^Cannot access property \$id on App\\Models\\Tenant\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Providers/AppServiceProvider.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: app/Providers/AppServiceProvider.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Providers\\AuthServiceProvider\:\:\$policies is not covariant with PHPDoc type array\<class\-string, class\-string\> of overridden property Illuminate\\Foundation\\Support\\Providers\\AuthServiceProvider\:\:\$policies\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Providers/AuthServiceProvider.php
+
+		-
+			message: '#^Property App\\Providers\\AuthServiceProvider\:\:\$policies type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Providers/AuthServiceProvider.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Providers\\EventServiceProvider\:\:\$listen is not covariant with PHPDoc type array\<string, array\<int, string\>\> of overridden property Illuminate\\Foundation\\Support\\Providers\\EventServiceProvider\:\:\$listen\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Providers/EventServiceProvider.php
+
+		-
+			message: '#^Property App\\Providers\\EventServiceProvider\:\:\$listen type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Providers/EventServiceProvider.php
+
+		-
+			message: '#^Parameter \#2 \$hashedValue of static method Illuminate\\Support\\Facades\\Hash\:\:check\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Providers/FortifyServiceProvider.php
+
+		-
+			message: '#^PHPDoc tag @var above a method has no effect\.$#'
+			identifier: varTag.misplaced
+			count: 1
+			path: app/Providers/RouteServiceProvider.php
+
+		-
+			message: '#^Method App\\Scopes\\TenantScope\:\:addWithoutTenant\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Scopes/TenantScope.php
+
+		-
+			message: '#^Method App\\Scopes\\TenantScope\:\:addWithoutTenant\(\) has parameter \$builder with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Scopes/TenantScope.php
+
+		-
+			message: '#^Method App\\Scopes\\TenantScope\:\:extend\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Scopes/TenantScope.php
+
+		-
+			message: '#^Method App\\Scopes\\TenantScope\:\:extend\(\) has parameter \$builder with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Scopes/TenantScope.php
+
+		-
+			message: '#^Parameter \#1 \$scope of method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:withoutGlobalScope\(\) expects Illuminate\\Database\\Eloquent\\Scope\|string, Illuminate\\Database\\Eloquent\\Builder given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scopes/TenantScope.php
+
+		-
+			message: '#^Call to an undefined method object\:\:getMorphClass\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Services/ModelClassService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$sis_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/SisProviders/PowerSchoolProvider.php
+
+		-
+			message: '#^Cannot access property \$value on App\\Enums\\UserType\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/SisProviders/PowerSchoolProvider.php
+
+		-
+			message: '#^Function rd not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: app/SisProviders/PowerSchoolProvider.php
+
+		-
+			message: '#^Method App\\SisProviders\\PowerSchoolProvider\:\:getAllSchools\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/SisProviders/PowerSchoolProvider.php
+
+		-
+			message: '#^Method App\\SisProviders\\PowerSchoolProvider\:\:getSchool\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/SisProviders/PowerSchoolProvider.php
+
+		-
+			message: '#^Method App\\SisProviders\\PowerSchoolProvider\:\:makeSisKey\(\) has parameter \$subject with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/SisProviders/PowerSchoolProvider.php
+
+		-
+			message: '#^Method App\\SisProviders\\PowerSchoolProvider\:\:searchForUser\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/SisProviders/PowerSchoolProvider.php
+
+		-
+			message: '#^Parameter \#1 \$sisId of method App\\Enums\\UserType\:\:getSisKeyFromSisId\(\) expects int\|string, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/SisProviders/PowerSchoolProvider.php
+
+		-
+			message: '#^Parameter \#1 \$student of method App\\SisProviders\\PowerSchoolProvider\:\:syncStudent\(\) expects App\\Models\\Student, App\\Models\\User given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/SisProviders/PowerSchoolProvider.php
+
+		-
+			message: '#^Unable to resolve the template type TKey in call to function collect$#'
+			identifier: argument.templateType
+			count: 2
+			path: app/SisProviders/PowerSchoolProvider.php
+
+		-
+			message: '#^Unable to resolve the template type TValue in call to function collect$#'
+			identifier: argument.templateType
+			count: 2
+			path: app/SisProviders/PowerSchoolProvider.php
+
+		-
+			message: '#^Method App\\SisProviders\\SisProvider\:\:getAllSchools\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/SisProviders/SisProvider.php
+
+		-
+			message: '#^Method App\\SisProviders\\SisProvider\:\:searchForUser\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/SisProviders/SisProvider.php
+
+		-
+			message: '#^Trait App\\Traits\\BelongsToStudent is used zero times and is not analysed\.$#'
+			identifier: trait.unused
+			count: 1
+			path: app/Traits/BelongsToStudent.php

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 trait HasTimeSlots
 {
+    /** @return HasMany<TimeSlot, $this> */
     public function timeSlots(): HasMany
     {
         return $this->hasMany(TimeSlot::class);

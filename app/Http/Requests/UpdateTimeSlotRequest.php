@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\Permission;
+use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -14,18 +15,21 @@ class UpdateTimeSlotRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        /** @var User $user */
+        $user = $this->user();
         $timeSlot = $this->route('time_slot');
 
         if ($this->updateBatch()) {
-            return $this->user()->can(Permission::update, $timeSlot);
+            return $user->can(Permission::update, $timeSlot);
         }
 
-        return $this->user()->can('updateOrForSelf', $timeSlot);
+        return $user->can('updateOrForSelf', $timeSlot);
     }
 
     protected function prepareForValidation(): void
     {
         $school = $this->school();
+        /** @var User $user */
         $user = $this->user();
         $starts = $this->input('starts_at');
         $ends = $this->input('ends_at');
@@ -62,7 +66,7 @@ class UpdateTimeSlotRequest extends FormRequest
                 'string',
                 'max:255',
                 'url',
-                Rule::requiredIf($this->boolean('is_online') && ! $this->user()->meeting_url),
+                Rule::requiredIf($this->boolean('is_online') && ! $this->user()?->meeting_url),
             ],
             'is_online' => ['nullable', 'boolean'],
             'contact_can_book' => ['nullable', 'boolean'],

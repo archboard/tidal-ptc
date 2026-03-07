@@ -13,6 +13,7 @@ trait BelongsToTenant
         static::addGlobalScope(new TenantScope);
     }
 
+    /** @return BelongsTo<Tenant, $this> */
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);

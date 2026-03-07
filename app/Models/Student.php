@@ -20,8 +20,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
 /**
- * @mixin IdeHelperStudent
- *
  * @property int $id
  * @property int $tenant_id
  * @property int $school_id
@@ -102,11 +100,13 @@ class Student extends Model implements ExistsInSis
         });
     }
 
+    /** @return BelongsToMany<Section, $this> */
     public function sections(): BelongsToMany
     {
         return $this->belongsToMany(Section::class);
     }
 
+    /** @return BelongsToMany<User, $this> */
     public function contacts(): BelongsToMany
     {
         return $this->belongsToMany(User::class)
@@ -115,8 +115,9 @@ class Student extends Model implements ExistsInSis
 
     public function syncFromSis(): static
     {
-        return $this->tenant->getSisProvider()
-            ->syncStudent($this);
+        $this->tenant->getSisProvider()?->syncStudent($this);
+
+        return $this;
     }
 
     public function filters(): array

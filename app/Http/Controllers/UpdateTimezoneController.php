@@ -21,7 +21,9 @@ class UpdateTimezoneController extends Controller
             'timezone' => ['required', Rule::in(timezones()->keys())],
         ]);
 
-        $request->user()->update($data);
+        /** @var \App\Models\User $user */
+        $user = $request->user();
+        $user->update($data);
 
         return $this->flashAndBack();
     }

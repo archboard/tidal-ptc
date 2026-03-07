@@ -54,6 +54,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Add the tenant_id to the identifying attributes when looking up a user
         UserFactory::findUserUsing(function (Collection $data, string $model, array $attributes) {
+            /** @var \App\Models\Tenant $tenant */
             $tenant = Tenant::current();
             $userType = UserType::fromData($data);
 

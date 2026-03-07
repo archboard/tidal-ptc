@@ -50,6 +50,7 @@ class Batch extends Model
 
     protected $guarded = [];
 
+    /** @return HasManyThrough<User, BatchUser, $this> */
     public function users(): HasManyThrough
     {
         return $this->hasManyThrough(

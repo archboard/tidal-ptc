@@ -19,8 +19,9 @@ class UpdateSelectionVisibilityController extends Controller
             'can_book' => ['required', 'boolean'],
         ]);
 
-        $request->user()
-            ->updateModelSelectionAttributes($model, $data);
+        /** @var \App\Models\User $user */
+        $user = $request->user();
+        $user->updateModelSelectionAttributes($model, $data);
 
         return $this->toSuccess($request, __('Selection updated successfully.'));
     }

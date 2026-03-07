@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 trait Selectable
 {
+    /** @return MorphOne<SelectedModel, $this> */
     public function selectedModel(): MorphOne
     {
         return $this->morphOne(SelectedModel::class, 'selectable');

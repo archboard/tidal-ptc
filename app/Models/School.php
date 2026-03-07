@@ -14,8 +14,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @mixin IdeHelperSchool
- *
  * @property int $id
  * @property int $tenant_id
  * @property int $sis_id
@@ -163,27 +161,32 @@ class School extends Model implements ExistsInSis
         );
     }
 
+    /** @return BelongsToMany<User, $this> */
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class)
             ->withPivot(['staff_id']);
     }
 
+    /** @return HasMany<Course, $this> */
     public function courses(): HasMany
     {
         return $this->hasMany(Course::class);
     }
 
+    /** @return HasMany<Section, $this> */
     public function sections(): HasMany
     {
         return $this->hasMany(Section::class);
     }
 
+    /** @return HasMany<Student, $this> */
     public function students(): HasMany
     {
         return $this->hasMany(Student::class);
     }
 
+    /** @return BelongsToMany<Language, $this> */
     public function languages(): BelongsToMany
     {
         return $this->belongsToMany(Language::class)
@@ -192,39 +195,35 @@ class School extends Model implements ExistsInSis
 
     public function syncFromSis(): static
     {
-        $provider = $this->tenant->getSisProvider();
+        $this->tenant->getSisProvider()?->syncSchool($this);
 
-        return $provider->syncSchool($this);
+        return $this;
     }
 
     public function syncStaff(): static
     {
-        $provider = $this->tenant->getSisProvider();
-        $provider->syncSchoolStaff($this);
+        $this->tenant->getSisProvider()?->syncSchoolStaff($this);
 
         return $this;
     }
 
     public function syncStudents(): static
     {
-        $provider = $this->tenant->getSisProvider();
-        $provider->syncSchoolStudents($this);
+        $this->tenant->getSisProvider()?->syncSchoolStudents($this);
 
         return $this;
     }
 
     public function syncCourses(): static
     {
-        $provider = $this->tenant->getSisProvider();
-        $provider->syncSchoolCourses($this);
+        $this->tenant->getSisProvider()?->syncSchoolCourses($this);
 
         return $this;
     }
 
     public function syncSections(): static
     {
-        $provider = $this->tenant->getSisProvider();
-        $provider->syncSchoolSections($this);
+        $this->tenant->getSisProvider()?->syncSchoolSections($this);
 
         return $this;
     }
@@ -234,9 +233,10 @@ class School extends Model implements ExistsInSis
         return request()->school();
     }
 
+    /** @return array<int, int> */
     public function gradeSelectOptions(): array
     {
-        return range($this->low_grade, $this->high_grade);
+        return range((int) $this->low_grade, (int) $this->high_grade);
     }
 
     public function fullCalendarEventUrl(): string

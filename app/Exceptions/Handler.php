@@ -45,18 +45,18 @@ class Handler extends ExceptionHandler
 
         if (
             app()->environment('production') &&
-            in_array($response->status(), [500, 503, 404, 403]) &&
+            in_array($response->getStatusCode(), [500, 503, 404, 403]) &&
             (! $request->wantsJson() || $request->inertia())
         ) {
             $title = __('Error');
 
             return inertia('Error', [
-                'status' => $response->status(),
+                'status' => $response->getStatusCode(),
                 'title' => $title,
             ])
                 ->withViewData(compact('title'))
                 ->toResponse($request)
-                ->setStatusCode($response->status());
+                ->setStatusCode($response->getStatusCode());
         }
 
         return $response;

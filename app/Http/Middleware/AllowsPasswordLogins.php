@@ -15,7 +15,10 @@ class AllowsPasswordLogins
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Tenant::current()->allow_password_auth || $request->routeIs('login')) {
+        /** @var Tenant $tenant */
+        $tenant = Tenant::current();
+
+        if ($tenant->allow_password_auth || $request->routeIs('login')) {
             return $next($request);
         }
 

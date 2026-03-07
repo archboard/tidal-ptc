@@ -19,6 +19,7 @@ class PersonalSettingsController extends Controller
     public function edit(Request $request)
     {
         $title = __('Personal settings');
+        /** @var \App\Models\User $user */
         $user = $request->user();
 
         return inertia('settings/Personal', [
@@ -49,8 +50,9 @@ class PersonalSettingsController extends Controller
             'is_24h' => ['required', 'boolean'],
         ]);
 
-        $request->user()
-            ->update($data);
+        /** @var \App\Models\User $user */
+        $user = $request->user();
+        $user->update($data);
 
         return $this->flashAndBack();
     }

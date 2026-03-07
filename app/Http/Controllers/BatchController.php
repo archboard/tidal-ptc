@@ -57,6 +57,7 @@ class BatchController extends Controller
     public function store(Request $request, School $school)
     {
         $this->authorize(Permission::create, TimeSlot::class);
+        /** @var \App\Models\User $user */
         $user = $request->user();
 
         // Clean up empty time slots
