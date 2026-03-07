@@ -34,3 +34,15 @@ it('can create slots for selection', function () {
         })
     );
 });
+
+it("can't delete a batch slot without permission", function () {
+    $batch = makeBatchForSelection();
+    $data = makeTimeSlotRequest(['batch_id' => $batch->id]);
+    $this->givePermission(Permission::create, TimeSlot::class)
+        ->postJson(route('time-slots.store'), $data);
+
+    $timeSlot = TimeSlot::first();
+
+    $this->deleteJson(route('time-slots.destroy', $timeSlot))
+        ->assertForbidden();
+});

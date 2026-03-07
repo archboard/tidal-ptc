@@ -130,3 +130,39 @@ it('can update a time slot batch', function () {
     $timeSlot->refresh();
     expect($timeSlot)->toMatchRequestData($data, \App\Http\Requests\UpdateTimeSlotRequest::class);
 });
+
+it("can't delete another user's slot without permission", function () {
+    $user = seedUser();
+    $timeSlot = TimeSlot::factory()->for($user)->create();
+
+    $this->deleteJson(route('time-slots.destroy', $timeSlot))
+        ->assertForbidden();
+});
+
+it('can delete another user slot with permission', function () {
+    $user = seedUser();
+    $timeSlot = TimeSlot::factory()->for($user)->create();
+
+    $this->givePermission(Permission::delete, $timeSlot)
+        ->deleteJson(route('time-slots.destroy', $timeSlot))
+        ->assertOk()
+        ->assertJson(fn (AssertableJson $json) => $json
+            ->where('level', 'success')
+            ->has('message')
+        );
+
+    expect(TimeSlot::find($timeSlot->id))->toBeNull();
+});
+
+it('can delete own slot', function () {
+    $timeSlot = TimeSlot::factory()->for($this->user)->create();
+
+    $this->deleteJson(route('time-slots.destroy', $timeSlot))
+        ->assertOk()
+        ->assertJson(fn (AssertableJson $json) => $json
+            ->where('level', 'success')
+            ->has('message')
+        );
+
+    expect(TimeSlot::find($timeSlot->id))->toBeNull();
+});
