@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
+use App\Enums\Traits\Collectable;
 use App\Enums\Traits\HasOptions;
 use App\Exceptions\UnknownPersonaException;
 use App\Models\Tenant;
@@ -10,6 +11,7 @@ use Illuminate\Support\Collection;
 enum UserType: string
 {
     use HasOptions;
+    use Collectable;
 
     case staff = 'staff';
     case guardian = 'guardian';
@@ -26,15 +28,15 @@ enum UserType: string
 
     public static function fromData(Collection $data): UserType
     {
-        if ($persona = $data->get('persona', $data->get('usertype'))) {
-            return match ($persona) {
-                'student' => self::student,
-                'staff', 'teacher' => self::staff,
-                'guardian', 'parent' => self::guardian,
-            };
-        }
+        /** @var string|null $persona */
+        $persona = $data->get('persona', $data->get('usertype'));
 
-        throw new UnknownPersonaException("Unknown persona type from data: {$data->toJson()}");
+        return match ($persona) {
+            'student' => self::student,
+            'staff', 'teacher' => self::staff,
+            'guardian', 'parent' => self::guardian,
+            default => throw new UnknownPersonaException,
+        };
     }
 
     public function getSisKeyFromData(Collection $data): string

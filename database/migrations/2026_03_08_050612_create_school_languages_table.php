@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('language');
             $table->integer('request_max')->default(0);
             $table->integer('overlap_max')->default(0);
+            $table->unique(['school_id', 'language']);
             $table->timestamps();
         });
     }

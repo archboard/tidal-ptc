@@ -98,7 +98,7 @@ it('can save languages', function (array $data) {
 
     foreach ($data as $lang) {
         $this->assertNotNull(
-            $this->school->languages->firstWhere(fn ($language) => $language->language_code->value === $lang['code']
+            $this->school->languages->firstWhere(fn ($language) => $language->language->value === $lang['code']
                 && $language->request_max === $lang['request_max']
                 && $language->overlap_max === $lang['overlap_max']
             )
@@ -121,7 +121,7 @@ it('can save languages', function (array $data) {
         $existing = collect($languages)->random();
 
         $this->school->languages()->create([
-            'language_code' => $existing->value,
+            'language' => $existing->value,
             'request_max' => fake()->numberBetween(1, 10),
             'overlap_max' => fake()->numberBetween(1, 10),
         ]);

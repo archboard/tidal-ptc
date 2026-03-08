@@ -9,16 +9,6 @@ class SchoolResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $languages = $this->whenLoaded('languages', function () {
-            return $this->resource->languages->map(function ($language) {
-                return new LanguageResource(
-                    $language->language_code,
-                    $language->request_max,
-                    $language->overlap_max,
-                );
-            });
-        });
-
         return [
             'id' => $this->resource->id,
             'name' => $this->resource->name,
@@ -32,7 +22,7 @@ class SchoolResource extends JsonResource
             'close_for_teachers_at' => $this->resource->local_close_for_teachers_at?->format('Y-m-d H:i'),
             'contacts_can_book' => $this->resource->contacts_can_book,
             'teachers_can_create' => $this->resource->teachers_can_create,
-            'languages' => $languages,
+            'languages' => SchoolLanguageResource::collection($this->whenLoaded('languages')),
         ];
     }
 }

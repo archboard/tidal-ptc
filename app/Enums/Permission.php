@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
+use App\Enums\Traits\Collectable;
 use App\Enums\Traits\HasOptions;
 use App\Models\User;
 use Illuminate\Support\Collection;
@@ -10,6 +11,7 @@ use Illuminate\Support\Str;
 enum Permission: string
 {
     use HasOptions;
+    use Collectable;
 
     case everything = '*';
     case viewAny = 'viewAny';
