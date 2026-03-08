@@ -2,20 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Language;
 use App\Http\Resources\LanguageResource;
-use App\Models\Language;
 use Illuminate\Http\Request;
 
 class GetLanguagesController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
     public function __invoke(Request $request)
     {
-        $languages = Language::query()
-            ->orderBy('name')
-            ->get();
+        $languages = Language::collect()->sortBy('name');
 
         return LanguageResource::collection($languages);
     }

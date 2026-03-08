@@ -36,7 +36,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read bool $contacts_can_book
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Course> $courses
  * @property-read int|null $courses_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Language> $languages
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SchoolLanguage> $languages
  * @property-read int|null $languages_count
  * @property-read mixed $local_close_for_contacts_at
  * @property-read mixed $local_close_for_teachers_at
@@ -186,11 +186,10 @@ class School extends Model implements ExistsInSis
         return $this->hasMany(Student::class);
     }
 
-    /** @return BelongsToMany<Language, $this> */
-    public function languages(): BelongsToMany
+    /** @return HasMany<SchoolLanguage, $this> */
+    public function languages(): HasMany
     {
-        return $this->belongsToMany(Language::class)
-            ->withPivot(['request_max', 'overlap_max']);
+        return $this->hasMany(SchoolLanguage::class);
     }
 
     public function syncFromSis(): static

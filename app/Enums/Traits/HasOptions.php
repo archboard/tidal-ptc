@@ -2,7 +2,7 @@
 
 namespace App\Enums\Traits;
 
-use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 trait HasOptions
 {
@@ -19,11 +19,6 @@ trait HasOptions
         );
     }
 
-    public static function collect(): Collection
-    {
-        return collect(static::cases());
-    }
-
     public static function selectOptions(): array
     {
         return array_map(fn ($sis) => [
@@ -34,6 +29,14 @@ trait HasOptions
 
     public function label(): string
     {
-        return 'Default label';
+        if (method_exists($this, 'name')) {
+            return $this->name();
+        }
+
+        return Str::of($this->value)
+            ->replace(['_', '-'], '')
+            ->lower()
+            ->ucfirst()
+            ->toString();
     }
 }

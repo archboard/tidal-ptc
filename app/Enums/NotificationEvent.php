@@ -2,10 +2,12 @@
 
 namespace App\Enums;
 
+use App\Enums\Traits\Collectable;
 use App\Enums\Traits\HasOptions;
 
 enum NotificationEvent: string
 {
+    use Collectable;
     use HasOptions;
 
     case slot_booked = 'slot_booked';
@@ -14,7 +16,7 @@ enum NotificationEvent: string
     case slot_updated = 'slot_updated';
     case slot_reminder = 'slot_reminder';
 
-    public function label(): string
+    public function name(): string
     {
         return match ($this) {
             self::slot_booked => __('Reservation booked'),

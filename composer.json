@@ -82,6 +82,13 @@
       "@php artisan ide-helper:meta"
     ],
     "analyse": "./vendor/bin/phpstan analyse --memory-limit=512M",
-    "format": "./vendor/bin/pint"
+    "format": "./vendor/bin/pint --dirty",
+    "test": "vendor/bin/pest --parallel",
+    "helpers": [
+      "@php artisan ide-helper:generate",
+      "@php artisan ide-helper:meta",
+      "@php artisan ide-helper:models -W",
+      "@format"
+    ]
   }
 }
