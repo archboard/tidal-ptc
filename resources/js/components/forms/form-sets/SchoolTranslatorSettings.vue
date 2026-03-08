@@ -8,9 +8,9 @@
 
       <div class="col-span-6 space-y-3 divide-y divide-gray-200 dark:divide-gray-600">
         <FadeInGroup>
-          <div v-for="(language, index) in form.languages" :key="language.code" class="pt-3">
+          <div v-for="(language, index) in form.languages" :key="language.id" class="pt-3">
             <div class="grid grid-cols-6 gap-6">
-              <FormField v-model="language.id" :error="form.errors[`languages.${index}.code`]" component="AppSelect" :options="getLanguages(language.id)" class="col-span-6 sm:col-span-2">
+              <FormField v-model="language.code" :error="form.errors[`languages.${index}.code`]" component="AppSelect" :options="getLanguages(language.code)" class="col-span-6 sm:col-span-2">
                 {{ __('Language') }}
               </FormField>
 
@@ -71,8 +71,8 @@ const save = () => {
 }
 const addLanguage = () => {
   form.languages.push({
-    id: null,
-    code: nanoid(2),
+    id: nanoid(2),
+    code: null,
     request_max: null,
     overlap_max: null,
   })
