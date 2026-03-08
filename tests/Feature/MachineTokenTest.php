@@ -1,61 +1,40 @@
 <?php
 
-namespace Tests\Feature;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Tests\TestCase;
 
-class MachineTokenTest extends TestCase
-{
-    use RefreshDatabase;
+beforeEach(function () {
+    $this->refreshDatabase();
+    $this->asCloud();
+});
 
-    protected bool $cloud = true;
+it('self hosted cant generate token', function () {
+    $this->asSelfHosted();
 
-    public function test_self_hosted_cant_generate_token()
-    {
-        $this->asSelfHosted();
+    expect(DB::table('machine_api_tokens')->whereNotNull('api_token')->doesntExist())->toBeTrue();
 
-        $this->assertTrue(
-            DB::table('machine_api_tokens')->whereNotNull('api_token')->doesntExist()
-        );
+    $this->artisan('make:token')
+        ->assertOk();
 
-        $this->artisan('make:token')
-            ->assertOk();
+    expect(DB::table('machine_api_tokens')->whereNotNull('api_token')->doesntExist())->toBeTrue();
+});
 
-        $this->assertTrue(
-            DB::table('machine_api_tokens')->whereNotNull('api_token')->doesntExist()
-        );
-    }
+it('can new generate token', function () {
+    expect(DB::table('machine_api_tokens')->whereNotNull('api_token')->doesntExist())->toBeTrue();
 
-    public function test_can_new_generate_token()
-    {
-        $this->assertTrue(
-            DB::table('machine_api_tokens')->whereNotNull('api_token')->doesntExist()
-        );
+    $this->artisan('make:token')
+        ->assertOk();
 
-        $this->artisan('make:token')
-            ->assertOk();
+    expect(DB::table('machine_api_tokens')->whereNotNull('api_token')->exists())->toBeTrue();
+});
 
-        $this->assertTrue(
-            DB::table('machine_api_tokens')->whereNotNull('api_token')->exists()
-        );
-    }
+it('can new generate token over existing tokens', function () {
+    DB::table('machine_api_tokens')->insert(['api_token' => 'existing']);
 
-    public function test_can_new_generate_token_over_existing_tokens()
-    {
-        DB::table('machine_api_tokens')->insert(['api_token' => 'existing']);
+    expect(DB::table('machine_api_tokens')->whereNotNull('api_token')->exists())->toBeTrue();
 
-        $this->assertTrue(
-            DB::table('machine_api_tokens')->whereNotNull('api_token')->exists()
-        );
+    $this->artisan('make:token')
+        ->assertOk();
 
-        $this->artisan('make:token')
-            ->assertOk();
-
-        $this->assertEquals(1, DB::table('machine_api_tokens')->whereNotNull('api_token')->count());
-        $this->assertTrue(
-            DB::table('machine_api_tokens')->where('api_token', 'existing')->doesntExist()
-        );
-    }
-}
+    expect(DB::table('machine_api_tokens')->whereNotNull('api_token')->count())->toBe(1);
+    expect(DB::table('machine_api_tokens')->where('api_token', 'existing')->doesntExist())->toBeTrue();
+});

@@ -1,104 +1,91 @@
 <?php
 
-namespace Tests\Feature;
-
 use App\Providers\RouteServiceProvider;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia;
-use Tests\TestCase;
 
-class AuthenticationTest extends TestCase
-{
-    use RefreshDatabase;
+beforeEach(function () {
+    $this->refreshDatabase();
+});
 
-    public function test_tenant_without_passwords_cant_login()
-    {
-        $user = $this->seedUser();
-        $this->tenant->update(['allow_password_auth' => false]);
+it('tenant without passwords cant login', function () {
+    $user = $this->seedUser();
+    $this->tenant->update(['allow_password_auth' => false]);
 
-        $this->post('/login', [
-            'email' => $user->email,
-            'password' => 'password',
-        ])->assertNotFound();
-    }
+    $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'password',
+    ])->assertNotFound();
+});
 
-    public function test_login_screen_can_be_rendered()
-    {
-        $this->get('/login')
-            ->assertOk()
-            ->assertViewHas('title')
-            ->assertInertia(fn (AssertableInertia $page) => $page
-                ->component('Auth/Login')
-                ->has('title')
-                ->has('status')
-            );
-    }
+it('login screen can be rendered', function () {
+    $this->get('/login')
+        ->assertOk()
+        ->assertViewHas('title')
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('Auth/Login')
+            ->has('title')
+            ->has('status')
+        );
+});
 
-    public function test_login_screen_can_be_rendered_when_passwords_are_disabled()
-    {
-        $this->tenant->update(['allow_password_auth' => false]);
+it('login screen can be rendered when passwords are disabled', function () {
+    $this->tenant->update(['allow_password_auth' => false]);
 
-        $this->get('/login')
-            ->assertOk()
-            ->assertViewHas('title')
-            ->assertInertia(fn (AssertableInertia $page) => $page
-                ->component('Auth/Login')
-                ->has('title')
-                ->has('status')
-            );
-    }
+    $this->get('/login')
+        ->assertOk()
+        ->assertViewHas('title')
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('Auth/Login')
+            ->has('title')
+            ->has('status')
+        );
+});
 
-    public function test_users_can_authenticate_using_the_login_screen()
-    {
-        $user = $this->seedUser();
+it('users can authenticate using the login screen', function () {
+    $user = $this->seedUser();
 
-        $this->post('/login', [
-            'email' => $user->email,
-            'password' => 'password',
-        ])
-            ->assertRedirect(RouteServiceProvider::HOME);
+    $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'password',
+    ])
+        ->assertRedirect(RouteServiceProvider::HOME);
 
-        $this->assertAuthenticatedAs($user);
-    }
+    $this->assertAuthenticatedAs($user);
+});
 
-    public function test_users_can_not_authenticate_with_invalid_password()
-    {
-        $user = $this->seedUser();
+it('users can not authenticate with invalid password', function () {
+    $user = $this->seedUser();
 
-        $this->post('/login', [
-            'email' => $user->email,
-            'password' => 'wrong-password',
-        ]);
+    $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'wrong-password',
+    ]);
 
-        $this->assertGuest();
-    }
+    $this->assertGuest();
+});
 
-    public function test_users_can_logout()
-    {
-        $user = $this->seedUser();
+it('users can logout', function () {
+    $user = $this->seedUser();
 
-        $this->actingAs($user)
-            ->post('/logout')
-            ->assertRedirect('/');
+    $this->actingAs($user)
+        ->post('/logout')
+        ->assertRedirect('/');
 
-        $this->assertGuest();
-    }
+    $this->assertGuest();
+});
 
-    public function test_users_can_logout_when_password_auth_is_disabled()
-    {
-        $user = $this->seedUser();
-        $this->tenant->update(['allow_password_auth' => false]);
+it('users can logout when password auth is disabled', function () {
+    $user = $this->seedUser();
+    $this->tenant->update(['allow_password_auth' => false]);
 
-        $this->actingAs($user)
-            ->post('/logout')
-            ->assertRedirect('/');
+    $this->actingAs($user)
+        ->post('/logout')
+        ->assertRedirect('/');
 
-        $this->assertGuest();
-    }
+    $this->assertGuest();
+});
 
-    public function test_guest_cannot_logout()
-    {
-        $this->post('/logout')
-            ->assertRedirect('/login');
-    }
-}
+it('guest cannot logout', function () {
+    $this->post('/logout')
+        ->assertRedirect('/login');
+});

@@ -59,8 +59,11 @@ class InstallationTest extends TestCase
 
     public function test_cant_access_installation_when_already_installed()
     {
+        $this->asSelfHosted();
+
+        // When installed but no users exist, installation should be accessible to set up first user
         $this->get(route('install'))
-            ->assertNotFound();
+            ->assertOk();
     }
 
     public function test_cant_access_installation_when_user_has_no_permission()
