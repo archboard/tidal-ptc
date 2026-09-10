@@ -3,8 +3,12 @@
 namespace App\Providers;
 
 use App\Enums\UserType;
+use App\Models\Course;
 use App\Models\School;
+use App\Models\Section;
+use App\Models\Student;
 use App\Models\Tenant;
+use App\Models\TimeSlot;
 use App\Models\User;
 use App\Services\ModelClassService;
 use Carbon\CarbonImmutable;
@@ -43,18 +47,18 @@ class AppServiceProvider extends ServiceProvider
             ->addStringMacros();
 
         Relation::morphMap([
-            'user' => \App\Models\User::class,
-            'student' => \App\Models\Student::class,
-            'tenant' => \App\Models\Tenant::class,
-            'school' => \App\Models\School::class,
-            'section' => \App\Models\Section::class,
-            'course' => \App\Models\Course::class,
-            'time_slot' => \App\Models\TimeSlot::class,
+            'user' => User::class,
+            'student' => Student::class,
+            'tenant' => Tenant::class,
+            'school' => School::class,
+            'section' => Section::class,
+            'course' => Course::class,
+            'time_slot' => TimeSlot::class,
         ]);
 
         // Add the tenant_id to the identifying attributes when looking up a user
         UserFactory::findUserUsing(function (Collection $data, string $model, array $attributes) {
-            /** @var \App\Models\Tenant $tenant */
+            /** @var Tenant $tenant */
             $tenant = Tenant::current();
             $userType = UserType::fromData($data);
 
@@ -89,6 +93,28 @@ class AppServiceProvider extends ServiceProvider
 
         Request::macro('tenant', $currentTenant);
         Request::macro('school', $currentSchool);
+
+        Request::macro('currentFilters', function () {
+            /** @var Request $this */
+            return $this->collect('f')
+                ->mapWithKeys(fn (array $filter, $key) => [$key => [
+                    'key' => $filter['key'],
+                    'operator' => $filter['operator'] ?? null,
+                    'value' => $filter['value'] ?? null,
+                ]]);
+        });
+
+        Request::macro('addFilter', function (string $key, mixed $value = null) {
+            /** @var Request $this */
+            $data = $this->all();
+            $data['f'][$key] = [
+                'key' => $key,
+                'value' => $value,
+            ];
+            $this->merge($data);
+
+            return $this;
+        });
 
         return $this;
     }
