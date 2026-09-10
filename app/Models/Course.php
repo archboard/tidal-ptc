@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use App\Models\Contracts\ExistsInSis;
+use App\Services\Filters\TextFilter;
 use App\Traits\BelongsToTenant;
+use App\Traits\HasFilters;
 use App\Traits\HasHiddenAttribute;
-use GrantHolle\ModelFilters\Filters\TextFilter;
-use GrantHolle\ModelFilters\Traits\HasFilters;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,13 +21,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $name
  * @property int $sis_id
  * @property string|null $course_number
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  * @property string $sis_key
  * @property bool $can_book
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Section> $sections
+ * @property-read Collection<int, Section> $sections
  * @property-read int|null $sections_count
- * @property-read \App\Models\Tenant $tenant
+ * @property-read Tenant $tenant
  *
  * @method static Builder<static>|Course canBook()
  * @method static \Database\Factories\CourseFactory factory($count = null, $state = [])

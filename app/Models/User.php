@@ -7,17 +7,18 @@ use App\Enums\Permission;
 use App\Enums\Role;
 use App\Enums\UserType;
 use App\Models\Contracts\ExistsInSis;
+use App\Services\Filters\MultipleSelectFilter;
+use App\Services\Filters\TextFilter;
 use App\Traits\BelongsToTenant;
+use App\Traits\HasFilters;
 use App\Traits\HasFirstAndLastName;
 use App\Traits\HasHiddenAttribute;
 use App\Traits\HasPermissions;
 use App\Traits\HasTimeSlots;
 use App\Traits\HasTimezone;
 use App\Traits\Selectable;
+use Carbon\CarbonImmutable;
 use Closure;
-use GrantHolle\ModelFilters\Filters\MultipleSelectFilter;
-use GrantHolle\ModelFilters\Filters\TextFilter;
-use GrantHolle\ModelFilters\Traits\HasFilters;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,10 +28,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Silber\Bouncer\Database\Ability;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 /**
@@ -44,45 +48,45 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
  * @property int|null $school_id
  * @property string|null $timezone
  * @property string|null $remember_token
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  * @property string|null $two_factor_secret
  * @property string|null $two_factor_recovery_codes
  * @property string $sis_key
  * @property UserType|null $user_type
  * @property string $locale
  * @property bool $is_24h
- * @property \Illuminate\Support\Collection<array-key, mixed>|null $notification_config
+ * @property Collection<array-key, mixed>|null $notification_config
  * @property bool $can_book
  * @property string|null $meeting_url
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Silber\Bouncer\Database\Ability> $abilities
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Ability> $abilities
  * @property-read int|null $abilities_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\School> $adminSchools
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, School> $adminSchools
  * @property-read int|null $admin_schools_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Section> $altSections
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Section> $altSections
  * @property-read int|null $alt_sections_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TimeSlot> $bookedTimeSlots
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, TimeSlot> $bookedTimeSlots
  * @property-read int|null $booked_time_slots_count
  * @property-read array $full_calendar_format
  * @property-read mixed $last_first
  * @property-read mixed $name
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read mixed $permissions
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Silber\Bouncer\Database\Role> $roles
  * @property-read int|null $roles_count
- * @property-read \App\Models\School|null $school
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\School> $schools
+ * @property-read School|null $school
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, School> $schools
  * @property-read int|null $schools_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Section> $sections
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Section> $sections
  * @property-read int|null $sections_count
- * @property-read \App\Models\SelectedModel|null $selectedModel
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SelectedModel> $selectedModels
+ * @property-read SelectedModel|null $selectedModel
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, SelectedModel> $selectedModels
  * @property-read int|null $selected_models_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Student> $students
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Student> $students
  * @property-read int|null $students_count
- * @property-read \App\Models\Tenant $tenant
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TimeSlot> $timeSlots
+ * @property-read Tenant $tenant
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, TimeSlot> $timeSlots
  * @property-read int|null $time_slots_count
  *
  * @method static Builder<static>|User canBook()

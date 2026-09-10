@@ -3,16 +3,18 @@
 namespace App\Models;
 
 use App\Models\Contracts\ExistsInSis;
+use App\Services\Filters\Enums\Component;
+use App\Services\Filters\MultipleSelectFilter;
+use App\Services\Filters\TextFilter;
 use App\Traits\BelongsToSchool;
 use App\Traits\BelongsToTenant;
+use App\Traits\HasFilters;
 use App\Traits\HasFirstAndLastName;
 use App\Traits\HasHiddenAttribute;
 use App\Traits\HasTimeSlots;
-use GrantHolle\ModelFilters\Enums\Component;
-use GrantHolle\ModelFilters\Filters\MultipleSelectFilter;
-use GrantHolle\ModelFilters\Filters\TextFilter;
-use GrantHolle\ModelFilters\Traits\HasFilters;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -28,21 +30,21 @@ use Illuminate\Support\Facades\DB;
  * @property string|null $first_name
  * @property string|null $last_name
  * @property string|null $email
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  * @property string $sis_key
- * @property \Carbon\CarbonImmutable|null $deleted_at
+ * @property CarbonImmutable|null $deleted_at
  * @property int|null $grade_level
  * @property bool $can_book
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $contacts
+ * @property-read Collection<int, User> $contacts
  * @property-read int|null $contacts_count
  * @property-read mixed $last_first
  * @property-read mixed $name
- * @property-read \App\Models\School $school
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Section> $sections
+ * @property-read School $school
+ * @property-read Collection<int, Section> $sections
  * @property-read int|null $sections_count
- * @property-read \App\Models\Tenant $tenant
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TimeSlot> $timeSlots
+ * @property-read Tenant $tenant
+ * @property-read Collection<int, TimeSlot> $timeSlots
  * @property-read int|null $time_slots_count
  *
  * @method static Builder<static>|Student canBook()
