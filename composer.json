@@ -10,6 +10,7 @@
   "require": {
     "php": "^8.5",
     "ext-intl": "*",
+    "ext-pdo": "*",
     "ext-redis": "*",
     "grantholle/laravel-powerschool-auth": "^3.0",
     "grantholle/laravel-timezone": "^1.0",
