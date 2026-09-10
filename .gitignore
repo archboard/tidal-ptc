@@ -27,3 +27,4 @@ boost.json
 .claude/settings.local.json
 .ai/
 /tests/Browser/Screenshots
+.phpunit.cache
