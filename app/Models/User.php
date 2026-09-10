@@ -7,6 +7,7 @@ use App\Enums\Permission;
 use App\Enums\Role;
 use App\Enums\UserType;
 use App\Models\Contracts\ExistsInSis;
+use App\Models\Contracts\Filterable;
 use App\Services\Filters\MultipleSelectFilter;
 use App\Services\Filters\TextFilter;
 use App\Traits\BelongsToTenant;
@@ -124,7 +125,7 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
  *
  * @mixin \Eloquent
  */
-class User extends Authenticatable implements ExistsInSis
+class User extends Authenticatable implements ExistsInSis, Filterable
 {
     use BelongsToTenant;
     use HasFactory;
@@ -141,14 +142,14 @@ class User extends Authenticatable implements ExistsInSis
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var array<string>
      */
     protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.
      *
-     * @var array
+     * @var list<string>
      */
     protected $hidden = [
         'password',
@@ -158,7 +159,7 @@ class User extends Authenticatable implements ExistsInSis
     /**
      * The attributes that should be cast to native types.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'user_type' => UserType::class,
@@ -179,12 +180,12 @@ class User extends Authenticatable implements ExistsInSis
         $query->where(function ($query) use ($ability) {
             // direct
             $query->whereHas('abilities', function ($query) use ($ability) {
-                $query->byName($ability);
+                $query->whereIn('name', [$ability, '*']);
             });
             // through roles
             $query->orWhereHas('roles', function ($query) use ($ability) {
                 $query->whereHas('abilities', function ($query) use ($ability) {
-                    $query->byName($ability);
+                    $query->whereIn('name', [$ability, '*']);
                 });
             });
         });
@@ -327,7 +328,6 @@ class User extends Authenticatable implements ExistsInSis
 
         if ($model = Relation::getMorphedModel($modelAlias)) {
             $instance = new $model(['id' => $id]);
-            assert($instance instanceof Model);
 
             return $this->toggleSelectedModelInstance($instance);
         }
@@ -397,12 +397,18 @@ class User extends Authenticatable implements ExistsInSis
         return $this;
     }
 
+    /** @param Builder<User> $builder */
+    protected function applySearchFilter(Builder $builder, string|int $search): void
+    {
+        $builder->search($search);
+    }
+
     public function filters(): array
     {
         return [
             TextFilter::make('search', __('Search'))
                 ->hide()
-                ->using(fn (Builder $builder, string $search) => $builder->search($search)),
+                ->using($this->applySearchFilter(...)),
             TextFilter::make('first_name', __('First name')),
             TextFilter::make('last_name', __('Last name')),
             MultipleSelectFilter::make('user_type', __('User type'))

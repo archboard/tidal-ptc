@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Language;
 use App\Http\Resources\TimeSlotResource;
 use App\Traits\BelongsToSchool;
 use App\Traits\BelongsToTenant;
@@ -37,13 +38,12 @@ use Illuminate\Support\Str;
  * @property bool $requested_online
  * @property bool $contact_can_book
  * @property bool $allow_translator_requests
- * @property string|null $language_id
+ * @property Language|null $language
  * @property string|null $translator_notes
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read Batch|null $batch
  * @property-read User|null $createdBy
- * @property-read Language|null $language
  * @property-read mixed $local_ends_at
  * @property-read mixed $local_reserved_at
  * @property-read mixed $local_starts_at
@@ -69,7 +69,6 @@ use Illuminate\Support\Str;
  * @method static Builder<static>|TimeSlot whereEndsAt($value)
  * @method static Builder<static>|TimeSlot whereId($value)
  * @method static Builder<static>|TimeSlot whereIsOnline($value)
- * @method static Builder<static>|TimeSlot whereLanguageId($value)
  * @method static Builder<static>|TimeSlot whereLocation($value)
  * @method static Builder<static>|TimeSlot whereMeetingUrl($value)
  * @method static Builder<static>|TimeSlot whereOverlaps(string $start, string $end)
@@ -93,7 +92,6 @@ class TimeSlot extends Model
     use BelongsToSchool;
     use BelongsToTenant;
     use BelongsToUser;
-    use BelongsToUser;
     use HasFactory;
 
     protected $guarded = [];
@@ -107,6 +105,7 @@ class TimeSlot extends Model
         'contact_can_book' => 'boolean',
         'allow_translator_requests' => 'boolean',
         'allow_online_meetings' => 'boolean',
+        'language' => Language::class,
     ];
 
     public function scopeExpired(Builder $builder): void
@@ -173,12 +172,6 @@ class TimeSlot extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
-    }
-
-    /** @return BelongsTo<Language, $this> */
-    public function language(): BelongsTo
-    {
-        return $this->belongsTo(Language::class);
     }
 
     public function overlaps(Collection $timeSlots): bool

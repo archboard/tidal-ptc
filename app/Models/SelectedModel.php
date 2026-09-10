@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * @mixin IdeHelperSelectedModel
- *
  * @property int $id
  * @property int $tenant_id
  * @property int $school_id

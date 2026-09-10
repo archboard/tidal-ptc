@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Contracts\ExistsInSis;
+use App\Models\Contracts\Filterable;
 use App\Services\Filters\Enums\Component;
 use App\Services\Filters\MultipleSelectFilter;
 use App\Services\Filters\TextFilter;
@@ -74,7 +75,7 @@ use Illuminate\Support\Facades\DB;
  *
  * @mixin \Eloquent
  */
-class Student extends Model implements ExistsInSis
+class Student extends Model implements ExistsInSis, Filterable
 {
     use BelongsToSchool;
     use BelongsToTenant;
@@ -122,12 +123,18 @@ class Student extends Model implements ExistsInSis
         return $this;
     }
 
+    /** @param Builder<Student> $builder */
+    protected function applySearchFilter(Builder $builder, string $search): void
+    {
+        $builder->search($search);
+    }
+
     public function filters(): array
     {
         return [
             TextFilter::make('search', __('Search'))
                 ->hide()
-                ->using(fn (Builder $builder, string $search) => $builder->search($search)),
+                ->using($this->applySearchFilter(...)),
             TextFilter::make('first_name', __('First name')),
             TextFilter::make('last_name', __('Last name')),
             TextFilter::make('email', __('Email')),

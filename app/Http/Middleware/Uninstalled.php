@@ -3,15 +3,17 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class Uninstalled
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @param  Closure(Request): (Response|RedirectResponse)  $next
+     * @return Response|RedirectResponse
      */
     public function handle(Request $request, Closure $next)
     {
@@ -21,10 +23,10 @@ class Uninstalled
             }
         }
 
-        if ($tenant = $request->tenant()) {
-            if ($tenant->installed() && $tenant->users()->exists()) {
-                abort(404);
-            }
+        $tenant = $request->tenant();
+
+        if ($tenant->installed() && $tenant->users()->exists()) {
+            abort(404);
         }
 
         return $next($request);

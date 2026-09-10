@@ -10,8 +10,8 @@ use Illuminate\Support\Str;
 
 enum Permission: string
 {
-    use HasOptions;
     use Collectable;
+    use HasOptions;
 
     case everything = '*';
     case viewAny = 'viewAny';
@@ -40,7 +40,7 @@ enum Permission: string
 
     public function description(): ?string
     {
-        return match ($this) {
+        $description = match ($this) {
             self::viewAny => __('View resource listing'),
             self::view => __('View individual resource details'),
             self::everything => __('Gives the user full access to the entire tenancy with full permissions for everything.'),
@@ -49,6 +49,8 @@ enum Permission: string
             self::ownTimeSlots => __('Allows the user to have reservable time slots. By default teachers with assigned sections will have this permission implicitly.'),
             default => null,
         };
+
+        return is_string($description) ? $description : null;
     }
 
     public function key(): string

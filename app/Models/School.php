@@ -229,7 +229,7 @@ class School extends Model implements ExistsInSis
         return $this;
     }
 
-    public static function current(): static
+    public static function current(): self
     {
         return request()->school();
     }

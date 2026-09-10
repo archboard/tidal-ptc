@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property-read Tenant $tenant
  * @property-read Collection<int, TimeSlot> $timeSlots
  * @property-read int|null $time_slots_count
+ * @property-read int|null $distinct_times_count
  * @property-read User|null $user
  * @property-read Collection<int, User> $users
  * @property-read int|null $users_count

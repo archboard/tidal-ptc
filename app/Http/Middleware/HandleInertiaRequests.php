@@ -54,7 +54,7 @@ class HandleInertiaRequests extends Middleware
 
                 return new UserResource($user);
             },
-            'permissions' => fn () => $user && $school
+            'permissions' => fn () => $user
                 ? $user->permissions
                 : new \stdClass,
             'school' => fn () => new SchoolResource($school),
@@ -141,7 +141,7 @@ class HandleInertiaRequests extends Middleware
 
                 return array_map(fn (NavigationItem $item) => $item->toArray(), $nav);
             },
-            'secondaryNav' => function () use ($user, $school, $request): array {
+            'secondaryNav' => function () use ($user, $request): array {
                 if (! $user) {
                     return [];
                 }
@@ -153,7 +153,7 @@ class HandleInertiaRequests extends Middleware
                         ->to(route('settings.personal.edit')),
                 ];
 
-                if ($user->can('edit school settings') && $school) {
+                if ($user->can('edit school settings')) {
                     $nav[] = NavigationItem::make()
                         ->labeled(__('School settings'))
                         ->isCurrent($request->routeIs('settings.school.edit'))

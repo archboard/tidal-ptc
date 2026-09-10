@@ -2,10 +2,11 @@
 
 namespace App\Enums;
 
+use App\Enums\Contracts\HasCustomName;
 use App\Enums\Traits\Collectable;
 use App\Enums\Traits\HasOptions;
 
-enum NotificationEvent: string
+enum NotificationEvent: string implements HasCustomName
 {
     use Collectable;
     use HasOptions;

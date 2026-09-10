@@ -25,8 +25,10 @@ class TenantScope implements Scope
 
     protected function addWithoutTenant(Builder $builder)
     {
-        $builder->macro('withoutTenant', function (Builder $builder) {
-            return $builder->withoutGlobalScope($this);
+        $scope = $this;
+
+        $builder->macro('withoutTenant', function (Builder $builder) use ($scope) {
+            return $builder->withoutGlobalScope($scope);
         });
     }
 }

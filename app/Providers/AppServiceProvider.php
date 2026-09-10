@@ -78,10 +78,9 @@ class AppServiceProvider extends ServiceProvider
         $currentTenant = fn (): Tenant => Tenant::current() ?? new Tenant;
 
         $currentSchool = function (): School {
-            /** @var User $user */
             $user = auth()->user();
 
-            if ($user && $school = $user->school) {
+            if ($user instanceof User && $school = $user->school) {
                 return $school;
             }
 

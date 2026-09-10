@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Contracts\ExistsInSis;
+use App\Models\Contracts\Filterable;
 use App\Services\Filters\TextFilter;
 use App\Traits\BelongsToTenant;
 use App\Traits\HasFilters;
@@ -65,7 +66,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *
  * @mixin \Eloquent
  */
-class Section extends Model implements ExistsInSis
+class Section extends Model implements ExistsInSis, Filterable
 {
     use BelongsToTenant;
     use HasFactory;
@@ -82,8 +83,9 @@ class Section extends Model implements ExistsInSis
     {
         $builder->where(function (Builder $builder) use ($search) {
             $builder->where('section_number', 'ilike', "%{$search}%")
-                ->orWhereHas('course', function (Builder $builder) use ($search) {
-                    $builder->search($search);
+                ->orWhereHas('course', function ($builder) use ($search) {
+                    $builder->where('course_number', 'ilike', "%{$search}%")
+                        ->orWhere('name', 'ilike', "%{$search}%");
                 });
         });
     }
@@ -125,7 +127,7 @@ class Section extends Model implements ExistsInSis
                 return "{$this->course->name} ({$this->section_number})";
             }
 
-            return $this->section_number;
+            return $this->section_number ?? '';
         });
     }
 
@@ -165,7 +167,13 @@ class Section extends Model implements ExistsInSis
         return [
             TextFilter::make('search', __('Search'))
                 ->hide()
-                ->using(fn (Builder $builder, string $search) => $builder->search($search)),
+                ->using($this->applySearchFilter(...)),
         ];
+    }
+
+    /** @param Builder<Section> $builder */
+    protected function applySearchFilter(Builder $builder, string $search): void
+    {
+        $builder->search($search);
     }
 }

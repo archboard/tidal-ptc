@@ -53,7 +53,7 @@ class FortifyServiceProvider extends ServiceProvider
             $user = User::where(DB::raw('lower(email)'), strtolower($request->input('email', '')))
                 ->first();
 
-            if ($user && Hash::check($request->input('password'), $user->password)) {
+            if ($user && $user->password && Hash::check((string) $request->input('password'), $user->password)) {
                 return $user;
             }
         });

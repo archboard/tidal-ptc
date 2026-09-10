@@ -16,7 +16,7 @@ class SyncSchoolItemController extends Controller
         $method = 'syncSchool'.ucfirst($item);
         $provider = $school->tenant->getSisProvider();
 
-        if (method_exists($provider, $method)) {
+        if ($provider && method_exists($provider, $method)) {
             $provider->$method($school);
             session()->flash('success', __('Synced successfully'));
         }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contracts\Filterable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -17,8 +18,10 @@ class SearchModelController extends Controller
         $modelClass = Str::toModelClass($model);
 
         $results = $modelClass::query()
-            ->when(method_exists($modelClass, 'scopeFilter'), function (Builder $builder) use ($request) {
-                $builder->filter($request->all());
+            ->when(is_a($modelClass, Filterable::class, true), function (Builder $builder) use ($request, $modelClass) {
+                if (is_a($modelClass, Filterable::class, true)) {
+                    (new $modelClass)->scopeFilter($builder, $request->all());
+                }
             })
             ->with(Arr::wrap($request->input('with', [])))
             ->limit(10)

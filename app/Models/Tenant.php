@@ -27,7 +27,7 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
  * @property string|null $subscription_expires_at
  * @property string|null $license
  * @property string|null $timezone
- * @property Sis $sis_provider
+ * @property Sis|null $sis_provider
  * @property Collection $smtp_config
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
@@ -66,7 +66,7 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
  *
  * @mixin \Eloquent
  */
-class Tenant extends TenantBase
+final class Tenant extends TenantBase
 {
     use HasFactory;
 
@@ -85,7 +85,7 @@ class Tenant extends TenantBase
             get: function ($value): string {
                 $domain = $value ?? request()->host();
 
-                return Str::of($domain ?? '')
+                return Str::of($domain)
                     ->replaceStart('https://', '')
                     ->replaceStart('http://', '')
                     ->toString();
@@ -155,12 +155,12 @@ class Tenant extends TenantBase
 
     public static function fromRequest(Request $request): ?Tenant
     {
-        return static::getByHost($request->host());
+        return self::getByHost($request->host());
     }
 
     public static function fromRequestAndFallback(Request $request): Tenant
     {
-        return static::fromRequest($request) ?? new static([
+        return self::fromRequest($request) ?? new self([
             'domain' => $request->host(),
             'sis_provider' => Sis::PS,
         ]);
@@ -168,7 +168,7 @@ class Tenant extends TenantBase
 
     public static function getByHost(string $host): ?Tenant
     {
-        return static::query()
+        return self::query()
             ->where('domain', $host)
             ->orWhere(function (Builder $builder) use ($host) {
                 $builder->whereNotNull('custom_domain')
@@ -205,7 +205,7 @@ class Tenant extends TenantBase
     {
         return Arr::get(
             $this->$configKey,
-            Str::replace("{$configKey}.", '', $key),
+            $key === null ? null : Str::replace("{$configKey}.", '', $key),
             $defaultValue
         );
     }
@@ -214,7 +214,7 @@ class Tenant extends TenantBase
     {
         $this->$configKey = [
             ...$this->$configKey,
-            Str::replace("{$configKey}.", '', $key) => $value,
+            ($key === null ? '' : Str::replace("{$configKey}.", '', $key)) => $value,
         ];
 
         return $this;

@@ -84,7 +84,7 @@ class TimeSlotController extends Controller
             });
 
             TimeSlot::createForSelection($selection, $attributes);
-            $timeSlot = TimeSlot::make($attributes);
+            $timeSlot = new TimeSlot($attributes);
         } else {
             $timeSlot = TimeSlot::create($attributes);
         }

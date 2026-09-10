@@ -14,8 +14,8 @@ class SchoolScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if ($school = School::current()) {
-            $builder->where($model->getTable().'.school_id', $school->id);
-        }
+        $school = School::current();
+
+        $builder->where($model->getTable().'.school_id', $school->id);
     }
 }

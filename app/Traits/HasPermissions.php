@@ -5,7 +5,11 @@ namespace App\Traits;
 use App\Enums\Permission;
 use App\Exceptions\InvalidPermissionException;
 use App\Models\Contracts\ExistsInSis;
+use App\Models\Course;
 use App\Models\School;
+use App\Models\Section;
+use App\Models\Student;
+use App\Models\TimeSlot;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -40,14 +44,17 @@ trait HasPermissions
         return $this;
     }
 
+    /**
+     * @return array<int, class-string<Model>>
+     */
     public function getPermissionSubjectModels(): array
     {
         return [
-            \App\Models\User::class,
-            \App\Models\Course::class,
-            \App\Models\Section::class,
-            \App\Models\Student::class,
-            \App\Models\TimeSlot::class,
+            User::class,
+            Course::class,
+            Section::class,
+            Student::class,
+            TimeSlot::class,
         ];
     }
 
@@ -168,7 +175,7 @@ trait HasPermissions
 
     public function hasCachedPermission(string|Permission $model, ?Permission $permission = null): bool
     {
-        $key = ($model?->value ?? $model).($permission ? '.'.$permission->key() : '');
+        $key = ($model instanceof Permission ? $model->value : $model).($permission ? '.'.$permission->key() : '');
 
         return Arr::get($this->permissions, $key, false);
     }

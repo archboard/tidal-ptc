@@ -31,7 +31,7 @@ abstract class BaseFilter implements Filter
 
     public function __invoke(Builder $query, mixed $value, string $property): void
     {
-        $callback = isset($this->callback) && is_callable($this->callback)
+        $callback = isset($this->callback)
             ? $this->callback
             : $this->defaultCallback();
 
@@ -162,7 +162,7 @@ abstract class BaseFilter implements Filter
     {
         return [
             'key' => $this->key,
-            'operator' => $this->operator?->value,
+            'operator' => $this->operator->value,
             'value' => $this->currentValue,
         ];
     }

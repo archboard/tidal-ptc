@@ -2,6 +2,7 @@
 
 namespace App\Enums\Traits;
 
+use App\Enums\Contracts\HasCustomName;
 use Illuminate\Support\Str;
 
 trait HasOptions
@@ -29,7 +30,7 @@ trait HasOptions
 
     public function label(): string
     {
-        if (method_exists($this, 'name')) {
+        if ($this instanceof HasCustomName) {
             return $this->name();
         }
 

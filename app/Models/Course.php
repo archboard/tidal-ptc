@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Contracts\ExistsInSis;
+use App\Models\Contracts\Filterable;
 use App\Services\Filters\TextFilter;
 use App\Traits\BelongsToTenant;
 use App\Traits\HasFilters;
@@ -49,7 +50,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @mixin \Eloquent
  */
-class Course extends Model implements ExistsInSis
+class Course extends Model implements ExistsInSis, Filterable
 {
     use BelongsToTenant;
     use HasFactory;
@@ -88,7 +89,13 @@ class Course extends Model implements ExistsInSis
         return [
             TextFilter::make('search', __('Search'))
                 ->hide()
-                ->using(fn (Builder $builder, string $search) => $builder->search($search)),
+                ->using($this->applySearchFilter(...)),
         ];
+    }
+
+    /** @param Builder<Course> $builder */
+    protected function applySearchFilter(Builder $builder, string $search): void
+    {
+        $builder->search($search);
     }
 }

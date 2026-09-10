@@ -10,8 +10,8 @@ use Illuminate\Support\Collection;
 
 enum UserType: string
 {
-    use HasOptions;
     use Collectable;
+    use HasOptions;
 
     case staff = 'staff';
     case guardian = 'guardian';
@@ -41,7 +41,7 @@ enum UserType: string
 
     public function getSisKeyFromData(Collection $data): string
     {
-        $tenant = Tenant::current();
+        $tenant = Tenant::current() ?? new Tenant;
         $id = $data->get('usersDCID') ??
             $data->get('ps_dcid') ??
             $data->get('dcid');
@@ -51,7 +51,7 @@ enum UserType: string
 
     public function getSisKeyFromSisId(string|int $sisId): string
     {
-        $tenant = Tenant::current();
+        $tenant = Tenant::current() ?? new Tenant;
 
         return "{$tenant->id}|{$this->value}|{$sisId}";
     }
