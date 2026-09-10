@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import Layout from '@/layouts/Authenticated'
+import Layout from '@/layouts/Authenticated.vue'
 
 export default {
   components: {

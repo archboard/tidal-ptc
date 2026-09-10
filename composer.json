@@ -15,7 +15,7 @@
     "grantholle/laravel-timezone": "^1.0",
     "grantholle/powerschool-api": "^4.0",
     "guzzlehttp/guzzle": "^7.0.1",
-    "inertiajs/inertia-laravel": "^2.0",
+    "inertiajs/inertia-laravel": "^3.0",
     "laravel/fortify": "^1.13",
     "laravel/framework": "^13.0",
     "laravel/tinker": "^3.0",
