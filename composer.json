@@ -81,9 +81,13 @@
       "@php artisan ide-helper:generate",
       "@php artisan ide-helper:meta"
     ],
-    "analyse": "./vendor/bin/phpstan analyse --memory-limit=512M",
+    "analyze": "./vendor/bin/phpstan analyse --memory-limit=512M",
     "format": "./vendor/bin/pint --dirty",
     "test": "vendor/bin/pest --parallel",
+    "lint": [
+      "@helpers",
+      "@analyze"
+    ],
     "helpers": [
       "@php artisan ide-helper:generate",
       "@php artisan ide-helper:meta",
