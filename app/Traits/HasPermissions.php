@@ -21,6 +21,7 @@ use Silber\Bouncer\BouncerFacade;
 
 trait HasPermissions
 {
+    /** @return Attribute<mixed, never> */
     public function permissions(): Attribute
     {
         return Attribute::get(
@@ -58,6 +59,9 @@ trait HasPermissions
         ];
     }
 
+    /**
+     * @return array{permissions: array<int, array<string, mixed>>, schools: array<int, array{manages: bool, permissions: array<int, array<string, mixed>>, models: array<int, array{model: string, label: string, manages: bool, permissions: array<int, array<string, mixed>>}>}>}
+     */
     public function getPermissionMatrix(?User $authUser = null, ?School $school = null): array
     {
         $schools = $school
@@ -86,6 +90,9 @@ trait HasPermissions
         ];
     }
 
+    /**
+     * @return array{manages: bool, permissions: array<int, array<string, mixed>>, models: array<int, array{model: string, label: string, manages: bool, permissions: array<int, array<string, mixed>>}>}
+     */
     public function getScopedPermissionMatrix(School $school): array
     {
         return BouncerFacade::scope()
@@ -155,15 +162,17 @@ trait HasPermissions
         return $this;
     }
 
+    /** @return array<string, mixed> */
     public function permissionsToFrontend(School $school): array
     {
         $matrix = $this->getPermissionMatrix(school: $school);
+        $schoolMatrix = $matrix['schools'][$school->id] ?? [];
         $abilities = collect($matrix['permissions'])
             ->mapWithKeys(fn (array $permission) => [$permission['key'] => $permission['granted']]);
-        $permissions = collect(Arr::get($matrix, 'schools.'.$school->id.'.permissions', []))
+        $permissions = collect($schoolMatrix['permissions'] ?? [])
             ->mapWithKeys(fn (array $permission) => [$permission['key'] => $permission['granted']]);
-        $models = collect(Arr::get($matrix, 'schools.'.$school->id.'.models', []))
-            ->mapWithKeys(fn (array $model) => [
+        $models = collect($schoolMatrix['models'] ?? [])
+            ->mapWithKeys(fn ($model) => [
                 $model['model'] => collect($model['permissions'])
                     ->mapWithKeys(fn (array $permission) => [$permission['key'] => $permission['granted']]),
             ]);

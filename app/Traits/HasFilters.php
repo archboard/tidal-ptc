@@ -11,6 +11,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 trait HasFilters
 {
+    /** @param Collection<array-key, mixed>|array<array-key, mixed> $data */
     public function scopeFilter(Builder $builder, Collection|array $data): Builder
     {
         $activeFilters = $this->getActiveFilters($data);
@@ -33,6 +34,10 @@ trait HasFilters
         return $builder;
     }
 
+    /**
+     * @param  Collection<array-key, mixed>|array<array-key, mixed>  $data
+     * @return array<int, BaseFilter>
+     */
     public function getActiveFilters(Collection|array $data): array
     {
         $filters = $this->filtersByKey();
@@ -67,11 +72,13 @@ trait HasFilters
             ->toArray();
     }
 
+    /** @return array<int, BaseFilter> */
     public function filters(): array
     {
         return [];
     }
 
+    /** @param Collection<array-key, mixed>|array<array-key, mixed> $data */
     public function activeFiltersToArray(Collection|array $data): object
     {
         return (object) collect($this->getActiveFilters($data))
@@ -80,6 +87,7 @@ trait HasFilters
             ->toArray();
     }
 
+    /** @return array<int, array<string, mixed>> */
     public function availableFiltersToArray(): array
     {
         return collect($this->filters())
@@ -89,6 +97,7 @@ trait HasFilters
             ->toArray();
     }
 
+    /** @return Collection<string, BaseFilter> */
     public function filtersByKey(): Collection
     {
         return collect($this->filters())

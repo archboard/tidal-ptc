@@ -7,16 +7,19 @@ use App\Http\Resources\SectionResource;
 use App\Models\School;
 use App\Models\Section;
 use App\Navigation\NavigationItem;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Inertia\Response;
 
 class SectionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, School $school)
+    public function index(Request $request, School $school): Response
     {
         $this->authorize(Permission::viewAny, Section::class);
 
@@ -40,7 +43,7 @@ class SectionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Section $section)
+    public function show(Section $section): Response
     {
         $this->authorize(Permission::view, $section);
 
@@ -68,7 +71,7 @@ class SectionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Section $section)
+    public function edit(Section $section): Response
     {
         $this->authorize(Permission::update, $section);
 
@@ -99,7 +102,7 @@ class SectionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Section $section)
+    public function update(Request $request, Section $section): JsonResponse|RedirectResponse
     {
         $this->authorize(Permission::update, $section);
 

@@ -81,6 +81,7 @@ final class NavigationItem
         return $this;
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

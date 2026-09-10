@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 
 trait HasOptions
 {
+    /** @return array<string, string> */
     public static function options(): array
     {
         return array_reduce(
@@ -20,6 +21,7 @@ trait HasOptions
         );
     }
 
+    /** @return array<int, array<string, string>> */
     public static function selectOptions(): array
     {
         return array_map(fn ($sis) => [

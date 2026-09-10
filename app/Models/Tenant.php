@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\Sis;
 use App\SisProviders\SisProvider;
 use Carbon\CarbonImmutable;
+use Database\Factories\TenantFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,7 +19,7 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
 /**
  * @property int $id
  * @property string $name
- * @property Collection $sis_config
+ * @property Collection<array-key, mixed> $sis_config
  * @property string $domain
  * @property string|null $custom_domain
  * @property bool $allow_password_auth
@@ -28,7 +29,7 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
  * @property string|null $license
  * @property string|null $timezone
  * @property Sis|null $sis_provider
- * @property Collection $smtp_config
+ * @property Collection<array-key, mixed> $smtp_config
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Course> $courses
@@ -68,6 +69,7 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
  */
 final class Tenant extends TenantBase
 {
+    /** @use HasFactory<TenantFactory> */
     use HasFactory;
 
     protected $guarded = [];
@@ -79,6 +81,7 @@ final class Tenant extends TenantBase
         'allow_password_auth' => 'boolean',
     ];
 
+    /** @return Attribute<string, string> */
     protected function domain(): Attribute
     {
         return Attribute::make(
@@ -99,28 +102,38 @@ final class Tenant extends TenantBase
         );
     }
 
+    /** @return Attribute<Collection<array-key, mixed>, Collection<array-key, mixed>|array<array-key, mixed>> */
     protected function sisConfig(): Attribute
     {
-        return Attribute::get(
-            fn ($value): Collection => $value ? $this->castAttribute('sis_config', $value) : collect()
-        );
+        return Attribute::get(fn ($value) => $this->castSisConfig($value));
     }
 
+    /** @return Collection<array-key, mixed> */
+    protected function castSisConfig(mixed $value): Collection
+    {
+        return $value ? $this->castAttribute('sis_config', $value) : collect();
+    }
+
+    /** @return Attribute<Collection<array-key, mixed>, Collection<array-key, mixed>|array<array-key, mixed>> */
     protected function smtpConfig(): Attribute
     {
-        return Attribute::get(function ($value): Collection {
-            return $value
-                ? $this->castAttribute('smtp_config', $value)
-                : collect([
-                    'host' => null,
-                    'port' => null,
-                    'username' => null,
-                    'password' => null,
-                    'from_name' => null,
-                    'from_address' => null,
-                    'encryption' => null,
-                ]);
-        });
+        return Attribute::get(fn ($value) => $this->castSmtpConfig($value));
+    }
+
+    /** @return Collection<array-key, mixed> */
+    protected function castSmtpConfig(mixed $value): Collection
+    {
+        return $value
+            ? $this->castAttribute('smtp_config', $value)
+            : collect([
+                'host' => null,
+                'port' => null,
+                'username' => null,
+                'password' => null,
+                'from_name' => null,
+                'from_address' => null,
+                'encryption' => null,
+            ]);
     }
 
     /** @return HasMany<School, $this> */
@@ -187,7 +200,7 @@ final class Tenant extends TenantBase
         return $this->sis_provider?->getProvider($this);
     }
 
-    public function getSchoolFromSisId($sisId): School
+    public function getSchoolFromSisId(School|int|string $sisId): School
     {
         if ($sisId instanceof School) {
             return $sisId;

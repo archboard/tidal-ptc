@@ -8,12 +8,14 @@ use App\Http\Resources\SchoolResource;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Inertia\Response;
 
 class SchoolSelectionController extends Controller
 {
-    public function index(Request $request, Tenant $tenant)
+    public function index(Request $request, Tenant $tenant): Response
     {
         /** @var User $user */
         $user = $request->user();
@@ -34,7 +36,7 @@ class SchoolSelectionController extends Controller
         ])->withViewData(compact('title'));
     }
 
-    public function update(Request $request, Tenant $tenant)
+    public function update(Request $request, Tenant $tenant): RedirectResponse
     {
         $data = $request->validate([
             'school_id' => [

@@ -77,6 +77,10 @@ enum Operator: string
         };
     }
 
+    /**
+     * @param  array<int, mixed>|string|int  $value
+     * @return array<int, mixed>
+     */
     public function valueToArray(array|string|int $value): array
     {
         if (is_array($value)) {

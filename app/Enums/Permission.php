@@ -83,12 +83,14 @@ enum Permission: string
         };
     }
 
+    /** @return Collection<int, self> */
     public static function getCrud(): Collection
     {
         return self::collect()
             ->filter(fn (Permission $permission) => $permission->isCrud());
     }
 
+    /** @return Collection<int, self> */
     public static function getNonCrud(): Collection
     {
         return self::collect()
@@ -103,6 +105,7 @@ enum Permission: string
         };
     }
 
+    /** @return array<string, mixed> */
     public function toEntry(User $user, ?string $className = null): array
     {
         return [

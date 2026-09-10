@@ -8,6 +8,7 @@ use App\Traits\BelongsToUser;
 use App\Traits\HasTimeSlots;
 use App\Traits\ScopedToSchool;
 use Carbon\CarbonImmutable;
+use Database\Factories\BatchFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -47,7 +48,10 @@ class Batch extends Model
     use BelongsToSchool;
     use BelongsToTenant;
     use BelongsToUser;
+
+    /** @use HasFactory<BatchFactory> */
     use HasFactory;
+
     use HasTimeSlots;
     use ScopedToSchool;
 

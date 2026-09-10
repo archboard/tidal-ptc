@@ -39,6 +39,7 @@ enum NotificationEvent: string implements HasCustomName
         };
     }
 
+    /** @return array<int, UserType> */
     public function getUserTypes(): array
     {
         return match ($this) {

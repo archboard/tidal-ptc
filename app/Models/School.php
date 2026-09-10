@@ -7,6 +7,7 @@ use App\Traits\BelongsToTenant;
 use App\Traits\HasTimeSlots;
 use App\Traits\HasTimezone;
 use Carbon\CarbonImmutable;
+use Database\Factories\SchoolFactory;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
@@ -85,7 +86,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class School extends Model implements ExistsInSis
 {
     use BelongsToTenant;
+
+    /** @use HasFactory<SchoolFactory> */
     use HasFactory;
+
     use HasTimeSlots;
     use HasTimezone;
 
@@ -107,6 +111,7 @@ class School extends Model implements ExistsInSis
         $builder->where('active', true);
     }
 
+    /** @return Attribute<bool, never> */
     public function contactsCanBook(): Attribute
     {
         return Attribute::get(function (): bool {
@@ -119,6 +124,7 @@ class School extends Model implements ExistsInSis
         });
     }
 
+    /** @return Attribute<bool, never> */
     public function teachersCanCreate(): Attribute
     {
         return Attribute::get(function (): bool {
@@ -131,6 +137,7 @@ class School extends Model implements ExistsInSis
         });
     }
 
+    /** @return Attribute<CarbonImmutable|null, never> */
     public function localOpenForContactsAt(): Attribute
     {
         return Attribute::get(fn () => $this->open_for_contacts_at
@@ -139,6 +146,7 @@ class School extends Model implements ExistsInSis
         );
     }
 
+    /** @return Attribute<CarbonImmutable|null, never> */
     public function localCloseForContactsAt(): Attribute
     {
         return Attribute::get(fn () => $this->close_for_contacts_at
@@ -147,6 +155,7 @@ class School extends Model implements ExistsInSis
         );
     }
 
+    /** @return Attribute<CarbonImmutable|null, never> */
     public function localOpenForTeachersAt(): Attribute
     {
         return Attribute::get(fn () => $this->open_for_teachers_at
@@ -155,6 +164,7 @@ class School extends Model implements ExistsInSis
         );
     }
 
+    /** @return Attribute<CarbonImmutable|null, never> */
     public function localCloseForTeachersAt(): Attribute
     {
         return Attribute::get(fn () => $this->close_for_teachers_at

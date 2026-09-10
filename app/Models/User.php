@@ -8,6 +8,7 @@ use App\Enums\Role;
 use App\Enums\UserType;
 use App\Models\Contracts\ExistsInSis;
 use App\Models\Contracts\Filterable;
+use App\Services\Filters\BaseFilter;
 use App\Services\Filters\MultipleSelectFilter;
 use App\Services\Filters\TextFilter;
 use App\Traits\BelongsToTenant;
@@ -20,6 +21,7 @@ use App\Traits\HasTimezone;
 use App\Traits\Selectable;
 use Carbon\CarbonImmutable;
 use Closure;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -68,7 +70,7 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
  * @property-read int|null $alt_sections_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, TimeSlot> $bookedTimeSlots
  * @property-read int|null $booked_time_slots_count
- * @property-read array $full_calendar_format
+ * @property-read array<string, mixed> $full_calendar_format
  * @property-read mixed $last_first
  * @property-read mixed $name
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
@@ -92,7 +94,7 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
  *
  * @method static Builder<static>|User canBook()
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
- * @method static Builder<static>|User filter(\Illuminate\Support\Collection|array $data)
+ * @method static Builder<static>|User filter(\Illuminate\Support\Collection<array-key, mixed>|array<array-key, mixed> $data)
  * @method static Builder<static>|User newModelQuery()
  * @method static Builder<static>|User newQuery()
  * @method static Builder<static>|User query()
@@ -128,7 +130,10 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
 class User extends Authenticatable implements ExistsInSis, Filterable
 {
     use BelongsToTenant;
+
+    /** @use HasFactory<UserFactory> */
     use HasFactory;
+
     use HasFilters;
     use HasFirstAndLastName;
     use HasHiddenAttribute;
@@ -174,6 +179,8 @@ class User extends Authenticatable implements ExistsInSis, Filterable
 
     /**
      * Gets the users who have an ability directly or through a role
+     *
+     * @param  Builder<static>  $query
      */
     public function scopeWhereCan(Builder $query, string $ability): void
     {
@@ -191,6 +198,7 @@ class User extends Authenticatable implements ExistsInSis, Filterable
         });
     }
 
+    /** @param Builder<static> $builder */
     public function scopeSearch(Builder $builder, string|int $search): void
     {
         $builder->when(is_numeric($search), function (Builder $builder) use ($search) {
@@ -262,17 +270,22 @@ class User extends Authenticatable implements ExistsInSis, Filterable
     // Custom accessors and mutators
     // -------------------------------------------------------------------------
 
+    /** @return Attribute<array<string, mixed>, never> */
     public function fullCalendarFormat(): Attribute
     {
-        return Attribute::get(function (): array {
-            return [
-                'hour' => 'numeric',
-                'minute' => '2-digit',
-                'omitZeroMinute' => false,
-                'meridiem' => $this->is_24h ? false : 'short',
-                'hour12' => ! $this->is_24h,
-            ];
-        });
+        return Attribute::get(fn () => $this->buildFullCalendarFormat());
+    }
+
+    /** @return array<string, mixed> */
+    protected function buildFullCalendarFormat(): array
+    {
+        return [
+            'hour' => 'numeric',
+            'minute' => '2-digit',
+            'omitZeroMinute' => false,
+            'meridiem' => $this->is_24h ? false : 'short',
+            'hour12' => ! $this->is_24h,
+        ];
     }
 
     // -------------------------------------------------------------------------
@@ -286,6 +299,7 @@ class User extends Authenticatable implements ExistsInSis, Filterable
         return $this;
     }
 
+    /** @return Collection<int, NotificationEvent> */
     public function getNotificationOptions(): Collection
     {
         return NotificationEvent::collect()
@@ -335,6 +349,7 @@ class User extends Authenticatable implements ExistsInSis, Filterable
         return $this;
     }
 
+    /** @param array<array-key, mixed>|Collection<array-key, mixed> $filters */
     public function selectAllModel(string $modelAlias, array|Collection $filters = []): static
     {
         if ($alias = Str::toModelAlias($modelAlias)) {
@@ -370,6 +385,7 @@ class User extends Authenticatable implements ExistsInSis, Filterable
         return $this;
     }
 
+    /** @return Collection<int, int> */
     public function getModelSelection(string $model, ?Closure $where = null): Collection
     {
         return $this->selectedModels()
@@ -380,6 +396,7 @@ class User extends Authenticatable implements ExistsInSis, Filterable
             ->values();
     }
 
+    /** @param array<string, mixed> $data */
     public function updateModelSelectionAttributes(string $model, array $data): static
     {
         $modelClass = Str::toModelClass($model);
@@ -403,6 +420,7 @@ class User extends Authenticatable implements ExistsInSis, Filterable
         $builder->search($search);
     }
 
+    /** @return array<int, BaseFilter> */
     public function filters(): array
     {
         return [
@@ -426,6 +444,7 @@ class User extends Authenticatable implements ExistsInSis, Filterable
         return route('users.event-source', $this);
     }
 
+    /** @return array<int, array<string, string>> */
     public function getFullCalendarEventSources(): array
     {
         // Get all the students' event sources

@@ -11,7 +11,7 @@ class TenantApiResource extends TenantResource
      * Transform the resource into an array.
      *
      * @param  Request  $request
-     * @return array|Arrayable|\JsonSerializable
+     * @return array<string, mixed>|Arrayable<string, mixed>|\JsonSerializable
      */
     public function toArray($request)
     {

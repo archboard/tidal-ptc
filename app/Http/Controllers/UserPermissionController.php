@@ -9,14 +9,16 @@ use App\Models\Tenant;
 use App\Models\User;
 use App\Navigation\NavigationItem;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
+use Inertia\Response;
 
 class UserPermissionController extends Controller
 {
-    public function index(Request $request, User $user)
+    public function index(Request $request, User $user): Response
     {
         $title = __('Permissions for :name', ['name' => $user->name]);
         /** @var User $authUser */
@@ -41,7 +43,7 @@ class UserPermissionController extends Controller
         ])->withViewData(compact('title'));
     }
 
-    public function update(Request $request, Tenant $tenant, User $user)
+    public function update(Request $request, Tenant $tenant, User $user): JsonResponse
     {
         $validModels = array_reduce(
             $user->getPermissionSubjectModels(),

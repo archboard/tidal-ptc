@@ -31,6 +31,7 @@ class PowerSchoolProvider implements SisProvider
         }
     }
 
+    /** @return Collection<array-key, mixed> */
     public function getAllSchools(): Collection
     {
         $response = $this->builder
@@ -73,6 +74,7 @@ class PowerSchoolProvider implements SisProvider
         return $this;
     }
 
+    /** @return array<array-key, mixed> */
     public function getSchool(School $school): array
     {
         $results = $this->builder
@@ -383,6 +385,7 @@ class PowerSchoolProvider implements SisProvider
         return $user;
     }
 
+    /** @return Collection<int, User> */
     public function searchForUser(string $search): Collection
     {
         return $this->builder
@@ -444,15 +447,19 @@ class PowerSchoolProvider implements SisProvider
         $data = $this->builder
             ->get("/ws/contacts/contact/{$contactId}");
 
+        $emails = is_array($data['emails']) ? $data['emails'] : [];
+
         $user->update([
             'first_name' => $data['firstName'] ?? $user->first_name,
             'last_name' => $data['lastName'] ?? $user->last_name,
-            'email' => collect($data['emails'])
+            'email' => collect($emails)
                 ->firstWhere('primary', true)['address'] ?? $user->email,
         ]);
 
+        $contactStudents = is_array($data['contactStudents']) ? $data['contactStudents'] : [];
+
         // Sync the student relationships
-        $students = collect($data['contactStudents'])
+        $students = collect($contactStudents)
             ->filter(fn (array $student) => $student['deleted'] === false &&
                 $student['canAccessData'] === true &&
                 Arr::get($student, 'studentDetails.0.active') === true

@@ -15,7 +15,8 @@ class CreateNewUser implements CreatesNewUsers
     /**
      * Validate and create a newly registered user.
      *
-     * @return \App\Models\User
+     * @param  array<string, mixed>  $input
+     * @return User
      */
     public function create(array $input)
     {

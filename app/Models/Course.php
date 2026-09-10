@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\Models\Contracts\ExistsInSis;
 use App\Models\Contracts\Filterable;
+use App\Services\Filters\BaseFilter;
 use App\Services\Filters\TextFilter;
 use App\Traits\BelongsToTenant;
 use App\Traits\HasFilters;
 use App\Traits\HasHiddenAttribute;
 use Carbon\CarbonImmutable;
+use Database\Factories\CourseFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -32,7 +34,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @method static Builder<static>|Course canBook()
  * @method static \Database\Factories\CourseFactory factory($count = null, $state = [])
- * @method static Builder<static>|Course filter(\Illuminate\Support\Collection|array $data)
+ * @method static Builder<static>|Course filter(\Illuminate\Support\Collection<array-key, mixed>|array<array-key, mixed> $data)
  * @method static Builder<static>|Course newModelQuery()
  * @method static Builder<static>|Course newQuery()
  * @method static Builder<static>|Course query()
@@ -53,7 +55,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Course extends Model implements ExistsInSis, Filterable
 {
     use BelongsToTenant;
+
+    /** @use HasFactory<CourseFactory> */
     use HasFactory;
+
     use HasFilters;
     use HasHiddenAttribute;
 
@@ -63,6 +68,7 @@ class Course extends Model implements ExistsInSis, Filterable
         'can_book' => 'boolean',
     ];
 
+    /** @param Builder<static> $builder */
     public function scopeSearch(Builder $builder, string $search): void
     {
         $builder->where(function (Builder $builder) use ($search) {
@@ -84,6 +90,7 @@ class Course extends Model implements ExistsInSis, Filterable
         return $this;
     }
 
+    /** @return array<int, BaseFilter> */
     public function filters(): array
     {
         return [

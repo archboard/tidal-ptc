@@ -8,6 +8,7 @@ use App\Traits\BelongsToSchool;
 use App\Traits\BelongsToTenant;
 use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
+use Database\Factories\TimeSlotFactory;
 use GrantHolle\Timezone\Facades\Timezone;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -92,6 +93,8 @@ class TimeSlot extends Model
     use BelongsToSchool;
     use BelongsToTenant;
     use BelongsToUser;
+
+    /** @use HasFactory<TimeSlotFactory> */
     use HasFactory;
 
     protected $guarded = [];
@@ -108,21 +111,25 @@ class TimeSlot extends Model
         'language' => Language::class,
     ];
 
+    /** @param Builder<static> $builder */
     public function scopeExpired(Builder $builder): void
     {
         $builder->where('starts_at', '<', now());
     }
 
+    /** @param Builder<static> $builder */
     public function scopeNotExpired(Builder $builder): void
     {
         $builder->where('starts_at', '>', now());
     }
 
+    /** @param Builder<static> $builder */
     public function scopeNotReserved(Builder $builder): void
     {
         $builder->whereNull('student_id');
     }
 
+    /** @param Builder<static> $builder */
     public function scopeWhereOverlaps(Builder $builder, string $start, string $end): void
     {
         $builder->where(function (Builder $builder) use ($start, $end) {
@@ -139,16 +146,19 @@ class TimeSlot extends Model
         });
     }
 
+    /** @return Attribute<string|CarbonImmutable, never> */
     public function localStartsAt(): Attribute
     {
         return Attribute::get(fn () => Timezone::toLocal($this->starts_at));
     }
 
+    /** @return Attribute<string|CarbonImmutable, never> */
     public function localEndsAt(): Attribute
     {
         return Attribute::get(fn () => Timezone::toLocal($this->ends_at));
     }
 
+    /** @return Attribute<string|CarbonImmutable|null, never> */
     public function localReservedAt(): Attribute
     {
         return Attribute::get(
@@ -174,6 +184,7 @@ class TimeSlot extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    /** @param Collection<int, TimeSlot> $timeSlots */
     public function overlaps(Collection $timeSlots): bool
     {
         return $timeSlots->contains(
@@ -192,6 +203,7 @@ class TimeSlot extends Model
         );
     }
 
+    /** @return array<string, mixed> */
     public function toFullCalendar(): array
     {
         return [
@@ -208,6 +220,10 @@ class TimeSlot extends Model
         ];
     }
 
+    /**
+     * @param  Collection<int, int>  $selection
+     * @param  array<string, mixed>  $attributes
+     */
     public static function createForSelection(Collection $selection, array $attributes): void
     {
         // Get the selection of those without overlapping existing time slots

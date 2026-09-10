@@ -10,9 +10,9 @@ class GetTimezonesController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @return Collection|string
+     * @return Collection<int, array{value: string, label: string}>
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): Collection
     {
         $timezones = timezones();
 

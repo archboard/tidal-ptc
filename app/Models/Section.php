@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\Models\Contracts\ExistsInSis;
 use App\Models\Contracts\Filterable;
+use App\Services\Filters\BaseFilter;
 use App\Services\Filters\TextFilter;
 use App\Traits\BelongsToTenant;
 use App\Traits\HasFilters;
 use App\Traits\HasHiddenAttribute;
 use Carbon\CarbonImmutable;
+use Database\Factories\SectionFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
@@ -44,7 +46,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *
  * @method static Builder<static>|Section canBook()
  * @method static \Database\Factories\SectionFactory factory($count = null, $state = [])
- * @method static Builder<static>|Section filter(\Illuminate\Support\Collection|array $data)
+ * @method static Builder<static>|Section filter(\Illuminate\Support\Collection<array-key, mixed>|array<array-key, mixed> $data)
  * @method static Builder<static>|Section newModelQuery()
  * @method static Builder<static>|Section newQuery()
  * @method static Builder<static>|Section query()
@@ -69,7 +71,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Section extends Model implements ExistsInSis, Filterable
 {
     use BelongsToTenant;
+
+    /** @use HasFactory<SectionFactory> */
     use HasFactory;
+
     use HasFilters;
     use HasHiddenAttribute;
 
@@ -79,6 +84,7 @@ class Section extends Model implements ExistsInSis, Filterable
         'can_book' => 'boolean',
     ];
 
+    /** @param Builder<static> $builder */
     public function scopeSearch(Builder $builder, string $search): void
     {
         $builder->where(function (Builder $builder) use ($search) {
@@ -90,6 +96,7 @@ class Section extends Model implements ExistsInSis, Filterable
         });
     }
 
+    /** @return Attribute<string|null, never> */
     public function teacherDisplay(): Attribute
     {
         return Attribute::get(function (): ?string {
@@ -105,6 +112,7 @@ class Section extends Model implements ExistsInSis, Filterable
         });
     }
 
+    /** @return Attribute<bool, never> */
     public function teacherCanBook(): Attribute
     {
         return Attribute::get(function (): bool {
@@ -120,6 +128,7 @@ class Section extends Model implements ExistsInSis, Filterable
         });
     }
 
+    /** @return Attribute<string, never> */
     public function display(): Attribute
     {
         return Attribute::get(function (): string {
@@ -162,6 +171,7 @@ class Section extends Model implements ExistsInSis, Filterable
         return $this;
     }
 
+    /** @return array<int, BaseFilter> */
     public function filters(): array
     {
         return [

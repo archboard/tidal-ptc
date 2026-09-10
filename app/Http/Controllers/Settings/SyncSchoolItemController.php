@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class SyncSchoolItemController extends Controller
@@ -10,7 +11,7 @@ class SyncSchoolItemController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request, string $item)
+    public function __invoke(Request $request, string $item): RedirectResponse
     {
         $school = $request->school();
         $method = 'syncSchool'.ucfirst($item);

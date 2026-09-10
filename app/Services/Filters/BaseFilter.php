@@ -6,9 +6,11 @@ use App\Services\Filters\Enums\Component;
 use App\Services\Filters\Enums\Operator;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Traits\Conditionable;
 use Spatie\QueryBuilder\Filters\Filter;
 
+/** @implements Filter<Model> */
 abstract class BaseFilter implements Filter
 {
     use Conditionable;
@@ -17,8 +19,10 @@ abstract class BaseFilter implements Filter
 
     public Component $component = Component::text;
 
+    /** @var array<int, Operator> */
     public array $operators = [];
 
+    /** @var array<string, mixed> */
     public array $componentProps = [];
 
     public Closure $callback;
@@ -43,6 +47,7 @@ abstract class BaseFilter implements Filter
         return new static($key, $label);
     }
 
+    /** @return array<string, string> */
     public function getOperators(): array
     {
         return array_reduce($this->operators, function ($carry, Operator $operator) {
@@ -52,6 +57,7 @@ abstract class BaseFilter implements Filter
         }, []);
     }
 
+    /** @param array<int|string, mixed> $options */
     public function options(array $options): static
     {
         $this->componentProps = [
@@ -146,6 +152,7 @@ abstract class BaseFilter implements Filter
         };
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [
@@ -158,6 +165,7 @@ abstract class BaseFilter implements Filter
         ];
     }
 
+    /** @return array<string, mixed> */
     public function toFilterArray(): array
     {
         return [

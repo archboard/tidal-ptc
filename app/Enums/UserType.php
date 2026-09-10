@@ -26,6 +26,7 @@ enum UserType: string
         };
     }
 
+    /** @param Collection<array-key, mixed> $data */
     public static function fromData(Collection $data): UserType
     {
         /** @var string|null $persona */
@@ -39,6 +40,7 @@ enum UserType: string
         };
     }
 
+    /** @param Collection<array-key, mixed> $data */
     public function getSisKeyFromData(Collection $data): string
     {
         $tenant = Tenant::current() ?? new Tenant;

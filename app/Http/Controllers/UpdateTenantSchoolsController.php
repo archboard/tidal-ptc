@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tenant;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -11,7 +12,7 @@ class UpdateTenantSchoolsController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request, Tenant $tenant)
+    public function __invoke(Request $request, Tenant $tenant): RedirectResponse
     {
         $data = $request->validate([
             'schools' => ['required', 'array'],
