@@ -6,6 +6,7 @@ use App\Http\Resources\TimeSlotResource;
 use App\Traits\BelongsToSchool;
 use App\Traits\BelongsToTenant;
 use App\Traits\BelongsToUser;
+use Carbon\CarbonImmutable;
 use GrantHolle\Timezone\Facades\Timezone;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -24,9 +25,9 @@ use Illuminate\Support\Str;
  * @property int|null $batch_id
  * @property int|null $reserved_by
  * @property int|null $created_by
- * @property \Carbon\CarbonImmutable $starts_at
- * @property \Carbon\CarbonImmutable $ends_at
- * @property \Carbon\CarbonImmutable|null $reserved_at
+ * @property CarbonImmutable $starts_at
+ * @property CarbonImmutable $ends_at
+ * @property CarbonImmutable|null $reserved_at
  * @property string|null $teacher_notes
  * @property string|null $contact_notes
  * @property string|null $location
@@ -38,18 +39,18 @@ use Illuminate\Support\Str;
  * @property bool $allow_translator_requests
  * @property string|null $language_id
  * @property string|null $translator_notes
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \App\Models\Batch|null $batch
- * @property-read \App\Models\User|null $createdBy
- * @property-read \App\Models\Language|null $language
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read Batch|null $batch
+ * @property-read User|null $createdBy
+ * @property-read Language|null $language
  * @property-read mixed $local_ends_at
  * @property-read mixed $local_reserved_at
  * @property-read mixed $local_starts_at
- * @property-read \App\Models\User|null $reservedBy
- * @property-read \App\Models\School $school
- * @property-read \App\Models\Tenant $tenant
- * @property-read \App\Models\User $user
+ * @property-read User|null $reservedBy
+ * @property-read School $school
+ * @property-read Tenant $tenant
+ * @property-read User $user
  *
  * @method static Builder<static>|TimeSlot expired()
  * @method static \Database\Factories\TimeSlotFactory factory($count = null, $state = [])
@@ -83,6 +84,7 @@ use Illuminate\Support\Str;
  * @method static Builder<static>|TimeSlot whereTranslatorNotes($value)
  * @method static Builder<static>|TimeSlot whereUpdatedAt($value)
  * @method static Builder<static>|TimeSlot whereUserId($value)
+ * @method static Builder<static>|TimeSlot whereLanguage($value)
  *
  * @mixin \Eloquent
  */
