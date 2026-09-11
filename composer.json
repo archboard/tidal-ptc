@@ -21,10 +21,11 @@
     "laravel/framework": "^13.0",
     "laravel/tinker": "^3.0",
     "silber/bouncer": "^1.0",
+    "spatie/laravel-activitylog": "^5.1",
     "spatie/laravel-ignition": "^2.0",
     "spatie/laravel-model-flags": "^1.2",
-    "spatie/laravel-query-builder": "^7.0",
-    "spatie/laravel-multitenancy": "^4.0"
+    "spatie/laravel-multitenancy": "^4.0",
+    "spatie/laravel-query-builder": "^7.0"
   },
   "require-dev": {
     "barryvdh/laravel-ide-helper": "^3.0",

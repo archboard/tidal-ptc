@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 /**
  * @property int $id
@@ -106,6 +108,8 @@ class TimeSlot extends Model
     /** @use HasFactory<TimeSlotFactory> */
     use HasFactory;
 
+    use LogsActivity;
+
     protected $guarded = [];
 
     protected $casts = [
@@ -138,6 +142,18 @@ class TimeSlot extends Model
     public function scopeNotReserved(Builder $builder): void
     {
         $builder->whereNull('student_id');
+    }
+
+    /**
+     * Reservation columns are excluded here; those changes are logged as explicit
+     * reservation events by the controllers.
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['user_id', 'starts_at', 'ends_at', 'location', 'meeting_url', 'is_online', 'teacher_notes', 'contact_can_book', 'allow_translator_requests', 'allow_online_meetings', 'translator_notes'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges();
     }
 
     /** @param Builder<static> $builder */

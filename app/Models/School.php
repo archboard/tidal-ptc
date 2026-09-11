@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 /**
  * @property int $id
@@ -92,8 +94,18 @@ class School extends Model implements ExistsInSis
 
     use HasTimeSlots;
     use HasTimezone;
+    use LogsActivity;
 
     protected $guarded = [];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logExcept(['updated_at'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges();
+    }
 
     protected $casts = [
         'active' => 'boolean',

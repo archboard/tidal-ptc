@@ -20,6 +20,7 @@ class UpdateSmtpSettingsController extends Controller
 
         $tenant->smtp_config = is_array($data) ? collect($data) : collect();
         $tenant->save();
+        activity()->performedOn($tenant)->event('smtp_updated')->log('smtp_updated');
 
         session()->flash('success', __('SMTP settings updated.'));
 

@@ -91,6 +91,7 @@ class TimeSlotController extends Controller
 
             TimeSlot::createForSelection($selection, $attributes);
             $timeSlot = new TimeSlot($attributes);
+            activity()->event('batch_created')->withProperties([...$attributes, 'user_ids' => $selection->all()])->log('batch_created');
         } else {
             $timeSlot = TimeSlot::create($attributes);
         }
@@ -129,6 +130,7 @@ class TimeSlotController extends Controller
                 ->get()
                 ->filter(fn (TimeSlot $slot) => $slot->fill($data)->isDirty(self::NOTIFIABLE_CHANGES));
             $batch->updateTimeSlots($data);
+            activity()->performedOn($batch)->event('batch_updated')->withProperties($data)->log('batch_updated');
         } else {
             $affected = collect([$timeSlot->fill($data)])
                 ->filter(fn (TimeSlot $slot) => $slot->isReserved() && $slot->isDirty(self::NOTIFIABLE_CHANGES));
@@ -157,6 +159,11 @@ class TimeSlotController extends Controller
         if ($timeSlot->isReserved()) {
             abort_unless((bool) $request->user()?->can(Permission::update, $timeSlot), 403, __('Reserved time slots cannot be deleted.'));
             $timeSlot->notifyReservation(NotificationEvent::slot_cancelled);
+            activity()
+                ->performedOn($timeSlot)
+                ->event('reservation_cancelled')
+                ->withProperties(['student_id' => $timeSlot->student_id, 'student' => $timeSlot->student?->name, 'contact_id' => $timeSlot->reserved_by, 'starts_at' => $timeSlot->starts_at->toDateTimeString()])
+                ->log('reservation_cancelled');
         }
 
         $timeSlot->delete();

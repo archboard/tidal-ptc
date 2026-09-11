@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 use Spatie\Multitenancy\Models\Tenant as TenantBase;
 
 /**
@@ -72,7 +74,18 @@ final class Tenant extends TenantBase
     /** @use HasFactory<TenantFactory> */
     use HasFactory;
 
+    use LogsActivity;
+
     protected $guarded = [];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logExcept(['updated_at', 'sis_config', 'smtp_config'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges();
+    }
 
     protected $casts = [
         'sis_provider' => Sis::class,

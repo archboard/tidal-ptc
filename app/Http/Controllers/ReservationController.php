@@ -34,6 +34,7 @@ class ReservationController extends Controller
         });
 
         $timeSlot->refresh()->notifyReservation(NotificationEvent::slot_booked);
+        $this->logReservation($timeSlot, 'reservation_booked');
 
         return $this->toSuccess($request, __('Conference booked successfully.'));
     }
@@ -56,6 +57,11 @@ class ReservationController extends Controller
         });
 
         $target->refresh()->notifyReservation(NotificationEvent::slot_rescheduled, previous: $timeSlot);
+        $this->logReservation($target, 'reservation_rescheduled', [
+            'from_time_slot_id' => $timeSlot->id,
+            'from_starts_at' => $timeSlot->starts_at->toDateTimeString(),
+            'from_ends_at' => $timeSlot->ends_at->toDateTimeString(),
+        ]);
 
         return $this->toSuccess($request, __('Conference rescheduled successfully.'));
     }
@@ -76,6 +82,7 @@ class ReservationController extends Controller
         );
 
         $timeSlot->notifyReservation(NotificationEvent::slot_cancelled);
+        $this->logReservation($timeSlot, 'reservation_cancelled');
         $timeSlot->update(self::EMPTY_RESERVATION);
 
         return $this->toSuccess($request, __('Conference cancelled.'));
@@ -93,5 +100,25 @@ class ReservationController extends Controller
         abort_if($locked->isReserved(), 409, __('This time slot has already been reserved.'));
 
         $locked->update($attributes);
+    }
+
+    /** @param array<string, mixed> $extra */
+    protected function logReservation(TimeSlot $timeSlot, string $event, array $extra = []): void
+    {
+        activity()
+            ->performedOn($timeSlot)
+            ->event($event)
+            ->withProperties([
+                'student_id' => $timeSlot->student_id,
+                'student' => $timeSlot->student?->name,
+                'contact_id' => $timeSlot->reserved_by,
+                'contact' => $timeSlot->reservedBy?->name,
+                'starts_at' => $timeSlot->starts_at->toDateTimeString(),
+                'ends_at' => $timeSlot->ends_at->toDateTimeString(),
+                'language' => $timeSlot->language?->value,
+                'requested_online' => $timeSlot->requested_online,
+                ...$extra,
+            ])
+            ->log($event);
     }
 }
