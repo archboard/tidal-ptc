@@ -223,3 +223,65 @@ it('titles reserved slots with the student name in the calendar', function () {
         ->title->toBe($student->name)
         ->classNames->toBe(['reserved']);
 });
+
+it("can't move a reserved slot without update permission", function () {
+    $timeSlot = seedTimeSlot(['student_id' => Student::factory()->create()->id]);
+    $moved = makeTimeSlotRequest(['starts_at' => now()->addDays(2)->toIso8601ZuluString(), 'ends_at' => now()->addDays(2)->addMinutes(15)->toIso8601ZuluString()]);
+    $unmoved = [...$moved, 'starts_at' => $timeSlot->starts_at->toIso8601ZuluString(), 'ends_at' => $timeSlot->ends_at->toIso8601ZuluString()];
+
+    $this->putJson(route('time-slots.update', $timeSlot), $moved)
+        ->assertForbidden();
+    $this->putJson(route('time-slots.update', $timeSlot), $unmoved)
+        ->assertOk();
+});
+
+it('can move a reserved slot with update permission', function () {
+    $timeSlot = seedTimeSlot(['student_id' => Student::factory()->create()->id]);
+    $moved = makeTimeSlotRequest(['starts_at' => now()->addDays(2)->toIso8601ZuluString(), 'ends_at' => now()->addDays(2)->addMinutes(15)->toIso8601ZuluString()]);
+
+    $this->givePermission(Permission::update, TimeSlot::class)
+        ->putJson(route('time-slots.update', $timeSlot), $moved)
+        ->assertOk();
+});
+
+it('hides reservation details from users who cannot view them', function () {
+    $owner = seedUser();
+    $student = Student::factory()->create();
+    TimeSlot::factory()->for($owner)->create(['student_id' => $student->id, 'contact_notes' => 'secret']);
+    $range = ['start' => now()->toDateString(), 'end' => now()->addWeek()->toDateString()];
+
+    $this->givePermission(Permission::viewAny, TimeSlot::class)
+        ->getJson(route('users.event-source', [$owner, ...$range]))
+        ->assertOk()
+        ->assertJsonMissingPath('0.extendedProps.contact_notes')
+        ->assertJsonMissingPath('0.extendedProps.student');
+
+    $this->actingAs($owner)
+        ->getJson(route('users.event-source', [$owner, ...$range]))
+        ->assertOk()
+        ->assertJsonPath('0.extendedProps.contact_notes', 'secret')
+        ->assertJsonPath('0.extendedProps.student.name', $student->name);
+});
+
+it('authorizes user and student event sources', function () {
+    $other = seedUser();
+    $student = Student::factory()->create();
+    $range = ['start' => now()->toDateString(), 'end' => now()->addWeek()->toDateString()];
+
+    $this->getJson(route('users.event-source', [$other, ...$range]))->assertForbidden();
+    $this->getJson(route('users.event-source', [$this->user, ...$range]))->assertOk();
+    $this->getJson(route('students.event-source', [$student, ...$range]))->assertForbidden();
+
+    $this->user->students()->attach($student);
+    $this->getJson(route('students.event-source', [$student, ...$range]))->assertOk();
+});
+
+it('allows event sources for any user with view permission', function () {
+    $range = ['start' => now()->toDateString(), 'end' => now()->addWeek()->toDateString()];
+
+    $this->givePermission(Permission::viewAny, TimeSlot::class)
+        ->getJson(route('users.event-source', [seedUser(), ...$range]))
+        ->assertOk();
+    $this->getJson(route('students.event-source', [Student::factory()->create(), ...$range]))
+        ->assertOk();
+});

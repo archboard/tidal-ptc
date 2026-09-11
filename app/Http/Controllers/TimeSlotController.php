@@ -99,27 +99,19 @@ class TimeSlotController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id): void
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id): void
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(UpdateTimeSlotRequest $request, TimeSlot $timeSlot): JsonResponse
     {
         $data = $request->validated();
+
+        abort_if(
+            $timeSlot->isReserved()
+                && ! $request->user()?->can(Permission::update, $timeSlot)
+                && (! $timeSlot->starts_at->equalTo($data['starts_at']) || ! $timeSlot->ends_at->equalTo($data['ends_at'])),
+            403,
+            __('Reserved time slots cannot be moved.')
+        );
 
         if ($request->updateBatch()) {
             $data['starts_at'] = $timeSlot->starts_at->toDateTimeString();

@@ -16,15 +16,28 @@ class TimeSlotResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $canViewReservation = (bool) $request->user()?->can('viewReservation', $this->resource);
+
         return [
             'id' => $this->resource->id,
+            'student_id' => $this->resource->student_id,
             'batch_id' => $this->resource->batch_id,
             'starts_at' => $this->resource->starts_at->toDateTimeString(),
             'ends_at' => $this->resource->ends_at->toDateTimeString(),
             'reserved_at' => $this->resource->reserved_at?->toDateTimeString(),
             'teacher_notes' => $this->resource->teacher_notes,
-            'contact_notes' => $this->resource->contact_notes,
-            'translator_notes' => $this->resource->translator_notes,
+            'contact_notes' => $this->when($canViewReservation, $this->resource->contact_notes),
+            'translator_notes' => $this->when($canViewReservation, $this->resource->translator_notes),
+            'student' => $this->when($canViewReservation && $this->resource->student, fn () => [
+                'id' => $this->resource->student?->id,
+                'name' => $this->resource->student?->name,
+            ]),
+            'reserved_by' => $this->when($canViewReservation && $this->resource->reservedBy, fn () => [
+                'id' => $this->resource->reservedBy?->id,
+                'name' => $this->resource->reservedBy?->name,
+                'email' => $this->resource->reservedBy?->email,
+            ]),
+            'language' => $this->resource->language?->value,
             'location' => $this->resource->location,
             'meeting_url' => $this->resource->meeting_url,
             'allow_online_meetings' => $this->resource->allow_online_meetings,
