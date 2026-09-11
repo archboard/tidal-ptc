@@ -6,6 +6,10 @@
         <HelpText>{{ __('Manage when you receive email notifications.') }}</HelpText>
       </template>
 
+      <FormField v-model="form.reminder_hours" :error="form.errors.reminder_hours" type="number" min="1" max="168" :help="__('How many hours before your first conference to send a reminder listing all of your upcoming conferences.')" class="col-span-6 sm:col-span-3">
+        {{ __('Reminder lead time (hours)') }}
+      </FormField>
+
       <template v-for="notification in notificationOptions" :key="notification.key">
         <FormField :error="form.errors[notification.key]" :help="notification.description" class="col-span-6">
           <template #component>
@@ -35,7 +39,7 @@ const emit = defineEmits([])
 const form = useForm(props.notificationOptions.reduce((carry, notification) => {
   carry[notification.key] = props.userNotifications[notification.key] ?? true
   return carry
-}, {}))
+}, { reminder_hours: props.userNotifications.reminder_hours ?? 24 }))
 const save = () => {
   form.put('/settings/personal/notifications', {
     preserveScroll: true,

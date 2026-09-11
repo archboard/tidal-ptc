@@ -34,7 +34,8 @@ use Illuminate\Support\Str;
  * @property CarbonImmutable $starts_at
  * @property CarbonImmutable $ends_at
  * @property CarbonImmutable|null $reserved_at
- * @property CarbonImmutable|null $reminder_sent_at
+ * @property CarbonImmutable|null $contact_reminded_at
+ * @property CarbonImmutable|null $staff_reminded_at
  * @property string|null $teacher_notes
  * @property string|null $contact_notes
  * @property string|null $location
@@ -111,7 +112,8 @@ class TimeSlot extends Model
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
         'reserved_at' => 'datetime',
-        'reminder_sent_at' => 'datetime',
+        'contact_reminded_at' => 'datetime',
+        'staff_reminded_at' => 'datetime',
         'is_online' => 'boolean',
         'requested_online' => 'boolean',
         'contact_can_book' => 'boolean',
@@ -218,6 +220,12 @@ class TimeSlot extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /** Name of the reminder stamp column for the given participant. */
+    public function reminderColumnFor(User $user): string
+    {
+        return $user->id === $this->user_id ? 'staff_reminded_at' : 'contact_reminded_at';
     }
 
     public function isReserved(): bool

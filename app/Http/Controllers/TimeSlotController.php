@@ -135,7 +135,10 @@ class TimeSlotController extends Controller
             $timeSlot->save();
         }
 
-        $affected->each(fn (TimeSlot $slot) => $slot->refresh()->notifyReservation(NotificationEvent::slot_updated));
+        $affected->each(function (TimeSlot $slot) {
+            $slot->refresh()->notifyReservation(NotificationEvent::slot_updated);
+            $slot->update(['contact_reminded_at' => null, 'staff_reminded_at' => null]);
+        });
 
         return response()->json([
             'level' => 'success',

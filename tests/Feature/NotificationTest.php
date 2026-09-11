@@ -1,10 +1,12 @@
 <?php
 
+use App\Console\Commands\SendTimeSlotReminders;
 use App\Data\TimeSlotSnapshot;
 use App\Enums\NotificationEvent;
 use App\Enums\Permission;
 use App\Enums\UserType;
 use App\Models\TimeSlot;
+use App\Notifications\ReminderNotification;
 use App\Notifications\TimeSlotNotification;
 use Illuminate\Support\Facades\Notification;
 
@@ -148,4 +150,88 @@ it('renders times in the recipient timezone', function () {
 
         return str_contains($lines, $starts->isoFormat('HH:mm')) && str_contains($lines, 'Asia/Tokyo');
     });
+});
+
+it('sends each user one digest of upcoming conferences at their lead time', function () {
+    $first = reserve($this->slot->fill(['starts_at' => now()->addHours(24), 'ends_at' => now()->addHours(24)->addMinutes(15)]));
+    $later = reserve(seedBookableSlot($this->teacher, ['starts_at' => now()->addHours(30), 'ends_at' => now()->addHours(30)->addMinutes(15)]));
+    seedBookableSlot($this->teacher, ['starts_at' => now()->addHours(24), 'ends_at' => now()->addHours(24)->addMinutes(15)]);
+
+    $this->artisan(SendTimeSlotReminders::class)->assertSuccessful();
+
+    foreach ([$this->teacher, $this->guardian] as $user) {
+        Notification::assertSentTo($user, ReminderNotification::class, fn (ReminderNotification $n) => collect($n->slots)->pluck('id')->all() === [$first->id, $later->id]);
+    }
+    Notification::assertCount(2);
+    expect($first->refresh()->contact_reminded_at)->not->toBeNull()
+        ->and($first->staff_reminded_at)->not->toBeNull()
+        ->and($later->refresh()->contact_reminded_at)->not->toBeNull();
+
+    $this->artisan(SendTimeSlotReminders::class)->assertSuccessful();
+    Notification::assertCount(2);
+});
+
+it('respects a custom reminder lead time', function () {
+    reserve($this->slot->fill(['starts_at' => now()->addHours(30), 'ends_at' => now()->addHours(30)->addMinutes(15)]));
+    $this->guardian->update(['notification_config' => ['reminder_hours' => 48]]);
+
+    $this->artisan(SendTimeSlotReminders::class)->assertSuccessful();
+
+    Notification::assertSentTo($this->guardian, ReminderNotification::class);
+    Notification::assertNotSentTo($this->teacher, ReminderNotification::class);
+});
+
+it('reminds again when a new reservation is booked after the last reminder', function () {
+    reserve($this->slot->fill(['starts_at' => now()->addHours(20), 'ends_at' => now()->addHours(20)->addMinutes(15)]))
+        ->update(['contact_reminded_at' => now()->subHour(), 'staff_reminded_at' => now()->subHour()]);
+
+    $this->artisan(SendTimeSlotReminders::class)->assertSuccessful();
+    Notification::assertNothingSent();
+
+    reserve(seedBookableSlot($this->teacher, ['starts_at' => now()->addHours(22), 'ends_at' => now()->addHours(22)->addMinutes(15)]));
+
+    $this->artisan(SendTimeSlotReminders::class)->assertSuccessful();
+    Notification::assertSentTo($this->guardian, ReminderNotification::class, fn (ReminderNotification $n) => count($n->slots) === 2);
+});
+
+it('reminds again after a reserved slot changes', function () {
+    reserve($this->slot->fill(['starts_at' => now()->addHours(20), 'ends_at' => now()->addHours(20)->addMinutes(15)]))
+        ->update(['contact_reminded_at' => now()->subHour(), 'staff_reminded_at' => now()->subHour()]);
+    $data = makeTimeSlotRequest([
+        'starts_at' => $this->slot->starts_at->toIso8601ZuluString(),
+        'ends_at' => $this->slot->ends_at->toIso8601ZuluString(),
+        'location' => 'Library',
+    ]);
+
+    $this->actingAs($this->teacher)->putJson(route('time-slots.update', $this->slot), $data)->assertOk();
+
+    expect($this->slot->refresh()->contact_reminded_at)->toBeNull();
+    $this->artisan(SendTimeSlotReminders::class)->assertSuccessful();
+    Notification::assertSentTo($this->guardian, ReminderNotification::class);
+});
+
+it('does not remind again when nothing has changed', function () {
+    reserve($this->slot->fill(['starts_at' => now()->addHours(20), 'ends_at' => now()->addHours(20)->addMinutes(15)]));
+
+    $this->artisan(SendTimeSlotReminders::class)->assertSuccessful();
+    Notification::assertSentToTimes($this->guardian, ReminderNotification::class, 1);
+    Notification::assertSentToTimes($this->teacher, ReminderNotification::class, 1);
+
+    foreach (range(1, 3) as $hour) {
+        $this->travel($hour)->hours();
+        $this->artisan(SendTimeSlotReminders::class)->assertSuccessful();
+    }
+
+    Notification::assertSentToTimes($this->guardian, ReminderNotification::class, 1);
+    Notification::assertSentToTimes($this->teacher, ReminderNotification::class, 1);
+});
+
+it('validates the reminder lead time setting', function () {
+    $this->put('/settings/personal/notifications', ['reminder_hours' => 0])
+        ->assertSessionHasErrors('reminder_hours');
+
+    $this->put('/settings/personal/notifications', ['reminder_hours' => 48])
+        ->assertSessionHasNoErrors();
+
+    expect($this->user->refresh()->reminderHours())->toBe(48);
 });

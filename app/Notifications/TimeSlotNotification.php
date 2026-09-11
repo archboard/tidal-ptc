@@ -6,7 +6,7 @@ use App\Data\TimeSlotSnapshot;
 use App\Enums\NotificationEvent;
 use App\Models\User;
 use App\Notifications\Traits\FormatsSubject;
-use Carbon\CarbonImmutable;
+use App\Notifications\Traits\FormatsTimeSlotRange;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -19,6 +19,7 @@ use Illuminate\Notifications\Notification;
 class TimeSlotNotification extends Notification implements ShouldQueue
 {
     use FormatsSubject;
+    use FormatsTimeSlotRange;
     use Queueable;
 
     public function __construct(public NotificationEvent $event, public TimeSlotSnapshot $slot) {}
@@ -68,17 +69,5 @@ class TimeSlotNotification extends Notification implements ShouldQueue
         }
 
         return $message->action(__('Open dashboard'), route('home'));
-    }
-
-    protected function formatRange(User $notifiable, CarbonImmutable $start, CarbonImmutable $end): string
-    {
-        $timeFormat = $notifiable->is_24h ? 'HH:mm' : 'h:mm A';
-        $starts = $notifiable->dateFromApp($start);
-        $ends = $notifiable->dateFromApp($end);
-
-        return $starts->isoFormat('dddd, LL')
-            .' '.$starts->isoFormat($timeFormat)
-            .' – '.$ends->isoFormat($timeFormat)
-            .' ('.$starts->tzName.')';
     }
 }

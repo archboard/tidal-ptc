@@ -306,6 +306,13 @@ class User extends Authenticatable implements ExistsInSis, Filterable
             ->filter(fn (NotificationEvent $event) => in_array($this->user_type, $event->getUserTypes()));
     }
 
+    public const int DEFAULT_REMINDER_HOURS = 24;
+
+    public function reminderHours(): int
+    {
+        return (int) ($this->notification_config['reminder_hours'] ?? self::DEFAULT_REMINDER_HOURS);
+    }
+
     public function wantsNotification(NotificationEvent $event): bool
     {
         return in_array($this->user_type, $event->getUserTypes())

@@ -23,7 +23,8 @@ class ReservationController extends Controller
         'requested_online' => false,
         'language' => null,
         'translator_notes' => null,
-        'reminder_sent_at' => null,
+        'contact_reminded_at' => null,
+        'staff_reminded_at' => null,
     ];
 
     public function store(ReserveTimeSlotRequest $request, TimeSlot $timeSlot): JsonResponse|RedirectResponse
