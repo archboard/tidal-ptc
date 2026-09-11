@@ -74,14 +74,14 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
-      - name: Build frontend assets
-        run: npm run build
-
       - name: Copy environment file
         run: cp .env.example .env
 
       - name: Generate app key
         run: php artisan key:generate
+
+      - name: Build frontend assets
+        run: npm run build
 
       - name: Run Pest
         run: ./vendor/bin/pest --parallel
