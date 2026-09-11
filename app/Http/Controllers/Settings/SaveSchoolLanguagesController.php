@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateSchoolLanguagesRequest;
 use App\Models\SchoolLanguage;
+use Illuminate\Http\RedirectResponse;
 
 class SaveSchoolLanguagesController extends Controller
 {
-    public function __invoke(UpdateSchoolLanguagesRequest $request)
+    public function __invoke(UpdateSchoolLanguagesRequest $request): RedirectResponse
     {
         $school = $request->school();
         $now = now()->toDateTimeString();

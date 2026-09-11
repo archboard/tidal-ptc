@@ -12,8 +12,10 @@ class SchoolEventSourceController extends Controller
 {
     /**
      * Handle the incoming request.
+     *
+     * @return array<int, array<string, mixed>>
      */
-    public function __invoke(Request $request, School $school)
+    public function __invoke(Request $request, School $school): array
     {
         BouncerFacade::scope()->onceTo($school->id, fn () => $this->authorize(Permission::viewAny, TimeSlot::class));
 

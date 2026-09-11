@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 trait IsEventSource
 {
+    /** @return array<string, mixed> */
     protected function getEventSourceAttributes(): array
     {
         return [

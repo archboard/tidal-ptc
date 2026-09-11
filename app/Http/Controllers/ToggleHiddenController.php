@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Permission;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -11,7 +13,7 @@ class ToggleHiddenController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): JsonResponse|RedirectResponse
     {
         $data = $request->validate([
             'model' => ['required'],

@@ -3,6 +3,7 @@
 /public/css
 /public/js
 /public/storage
+/public/build
 /public/mix-manifest.json
 /storage/*.key
 /vendor
@@ -26,3 +27,4 @@ boost.json
 .claude/settings.local.json
 .ai/
 /tests/Browser/Screenshots
+.phpunit.cache

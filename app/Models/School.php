@@ -6,8 +6,11 @@ use App\Models\Contracts\ExistsInSis;
 use App\Traits\BelongsToTenant;
 use App\Traits\HasTimeSlots;
 use App\Traits\HasTimezone;
+use Carbon\CarbonImmutable;
+use Database\Factories\SchoolFactory;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -21,36 +24,36 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $name
  * @property int|null $high_grade
  * @property int|null $low_grade
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  * @property bool $active
  * @property string $sis_key
  * @property string|null $timezone
- * @property \Carbon\CarbonImmutable|null $open_for_contacts_at
- * @property \Carbon\CarbonImmutable|null $close_for_contacts_at
- * @property \Carbon\CarbonImmutable|null $open_for_teachers_at
- * @property \Carbon\CarbonImmutable|null $close_for_teachers_at
+ * @property CarbonImmutable|null $open_for_contacts_at
+ * @property CarbonImmutable|null $close_for_contacts_at
+ * @property CarbonImmutable|null $open_for_teachers_at
+ * @property CarbonImmutable|null $close_for_teachers_at
  * @property bool $allow_online_meetings
  * @property bool $allow_translator_requests
  * @property int $booking_buffer_hours
  * @property-read bool $contacts_can_book
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Course> $courses
+ * @property-read Collection<int, Course> $courses
  * @property-read int|null $courses_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SchoolLanguage> $languages
+ * @property-read Collection<int, SchoolLanguage> $languages
  * @property-read int|null $languages_count
  * @property-read mixed $local_close_for_contacts_at
  * @property-read mixed $local_close_for_teachers_at
  * @property-read mixed $local_open_for_contacts_at
  * @property-read mixed $local_open_for_teachers_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Section> $sections
+ * @property-read Collection<int, Section> $sections
  * @property-read int|null $sections_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Student> $students
+ * @property-read Collection<int, Student> $students
  * @property-read int|null $students_count
  * @property-read bool $teachers_can_create
- * @property-read \App\Models\Tenant $tenant
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TimeSlot> $timeSlots
+ * @property-read Tenant $tenant
+ * @property-read Collection<int, TimeSlot> $timeSlots
  * @property-read int|null $time_slots_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+ * @property-read Collection<int, User> $users
  * @property-read int|null $users_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|School active()
@@ -83,7 +86,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class School extends Model implements ExistsInSis
 {
     use BelongsToTenant;
+
+    /** @use HasFactory<SchoolFactory> */
     use HasFactory;
+
     use HasTimeSlots;
     use HasTimezone;
 
@@ -105,6 +111,7 @@ class School extends Model implements ExistsInSis
         $builder->where('active', true);
     }
 
+    /** @return Attribute<bool, never> */
     public function contactsCanBook(): Attribute
     {
         return Attribute::get(function (): bool {
@@ -117,6 +124,7 @@ class School extends Model implements ExistsInSis
         });
     }
 
+    /** @return Attribute<bool, never> */
     public function teachersCanCreate(): Attribute
     {
         return Attribute::get(function (): bool {
@@ -129,6 +137,7 @@ class School extends Model implements ExistsInSis
         });
     }
 
+    /** @return Attribute<CarbonImmutable|null, never> */
     public function localOpenForContactsAt(): Attribute
     {
         return Attribute::get(fn () => $this->open_for_contacts_at
@@ -137,6 +146,7 @@ class School extends Model implements ExistsInSis
         );
     }
 
+    /** @return Attribute<CarbonImmutable|null, never> */
     public function localCloseForContactsAt(): Attribute
     {
         return Attribute::get(fn () => $this->close_for_contacts_at
@@ -145,6 +155,7 @@ class School extends Model implements ExistsInSis
         );
     }
 
+    /** @return Attribute<CarbonImmutable|null, never> */
     public function localOpenForTeachersAt(): Attribute
     {
         return Attribute::get(fn () => $this->open_for_teachers_at
@@ -153,6 +164,7 @@ class School extends Model implements ExistsInSis
         );
     }
 
+    /** @return Attribute<CarbonImmutable|null, never> */
     public function localCloseForTeachersAt(): Attribute
     {
         return Attribute::get(fn () => $this->close_for_teachers_at
@@ -227,7 +239,7 @@ class School extends Model implements ExistsInSis
         return $this;
     }
 
-    public static function current(): static
+    public static function current(): self
     {
         return request()->school();
     }

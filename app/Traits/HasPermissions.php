@@ -5,7 +5,11 @@ namespace App\Traits;
 use App\Enums\Permission;
 use App\Exceptions\InvalidPermissionException;
 use App\Models\Contracts\ExistsInSis;
+use App\Models\Course;
 use App\Models\School;
+use App\Models\Section;
+use App\Models\Student;
+use App\Models\TimeSlot;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +21,7 @@ use Silber\Bouncer\BouncerFacade;
 
 trait HasPermissions
 {
+    /** @return Attribute<mixed, never> */
     public function permissions(): Attribute
     {
         return Attribute::get(
@@ -40,17 +45,23 @@ trait HasPermissions
         return $this;
     }
 
+    /**
+     * @return array<int, class-string<Model>>
+     */
     public function getPermissionSubjectModels(): array
     {
         return [
-            \App\Models\User::class,
-            \App\Models\Course::class,
-            \App\Models\Section::class,
-            \App\Models\Student::class,
-            \App\Models\TimeSlot::class,
+            User::class,
+            Course::class,
+            Section::class,
+            Student::class,
+            TimeSlot::class,
         ];
     }
 
+    /**
+     * @return array{permissions: array<int, array<string, mixed>>, schools: array<int, array{manages: bool, permissions: array<int, array<string, mixed>>, models: array<int, array{model: string, label: string, manages: bool, permissions: array<int, array<string, mixed>>}>}>}
+     */
     public function getPermissionMatrix(?User $authUser = null, ?School $school = null): array
     {
         $schools = $school
@@ -79,6 +90,9 @@ trait HasPermissions
         ];
     }
 
+    /**
+     * @return array{manages: bool, permissions: array<int, array<string, mixed>>, models: array<int, array{model: string, label: string, manages: bool, permissions: array<int, array<string, mixed>>}>}
+     */
     public function getScopedPermissionMatrix(School $school): array
     {
         return BouncerFacade::scope()
@@ -148,15 +162,17 @@ trait HasPermissions
         return $this;
     }
 
+    /** @return array<string, mixed> */
     public function permissionsToFrontend(School $school): array
     {
         $matrix = $this->getPermissionMatrix(school: $school);
+        $schoolMatrix = $matrix['schools'][$school->id] ?? [];
         $abilities = collect($matrix['permissions'])
             ->mapWithKeys(fn (array $permission) => [$permission['key'] => $permission['granted']]);
-        $permissions = collect(Arr::get($matrix, 'schools.'.$school->id.'.permissions', []))
+        $permissions = collect($schoolMatrix['permissions'] ?? [])
             ->mapWithKeys(fn (array $permission) => [$permission['key'] => $permission['granted']]);
-        $models = collect(Arr::get($matrix, 'schools.'.$school->id.'.models', []))
-            ->mapWithKeys(fn (array $model) => [
+        $models = collect($schoolMatrix['models'] ?? [])
+            ->mapWithKeys(fn ($model) => [
                 $model['model'] => collect($model['permissions'])
                     ->mapWithKeys(fn (array $permission) => [$permission['key'] => $permission['granted']]),
             ]);
@@ -168,7 +184,7 @@ trait HasPermissions
 
     public function hasCachedPermission(string|Permission $model, ?Permission $permission = null): bool
     {
-        $key = ($model?->value ?? $model).($permission ? '.'.$permission->key() : '');
+        $key = ($model instanceof Permission ? $model->value : $model).($permission ? '.'.$permission->key() : '');
 
         return Arr::get($this->permissions, $key, false);
     }

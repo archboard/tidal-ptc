@@ -28,6 +28,6 @@ class SyncSchools implements ShouldQueue
      */
     public function handle()
     {
-        $this->tenant->getSisProvider()->syncSchools();
+        $this->tenant->getSisProvider()?->syncSchools();
     }
 }

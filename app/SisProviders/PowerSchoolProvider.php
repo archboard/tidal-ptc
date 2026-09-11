@@ -12,7 +12,6 @@ use App\Models\Tenant;
 use App\Models\User;
 use GrantHolle\PowerSchool\Api\RequestBuilder;
 use GrantHolle\PowerSchool\Api\Response;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -32,6 +31,7 @@ class PowerSchoolProvider implements SisProvider
         }
     }
 
+    /** @return Collection<array-key, mixed> */
     public function getAllSchools(): Collection
     {
         $response = $this->builder
@@ -74,6 +74,7 @@ class PowerSchoolProvider implements SisProvider
         return $this;
     }
 
+    /** @return array<array-key, mixed> */
     public function getSchool(School $school): array
     {
         $results = $this->builder
@@ -116,7 +117,6 @@ class PowerSchoolProvider implements SisProvider
             ->to("/ws/v1/school/{$school->sis_id}/staff")
             ->expansions('emails');
         $now = now()->toDateTimeString();
-        $count = 0;
 
         while ($results = $builder->paginate()) {
             $filteredStaff = $results->collect()
@@ -158,10 +158,6 @@ class PowerSchoolProvider implements SisProvider
                 ['school_id', 'user_id'],
                 ['staff_id']
             );
-
-            if (++$count > 5) {
-                rd($results, $builder);
-            }
         }
 
         return $this;
@@ -380,15 +376,16 @@ class PowerSchoolProvider implements SisProvider
 
     public function syncUser(User $user): User
     {
-        $method = 'sync'.ucfirst($user->user_type->value);
-
-        if (method_exists($this, $method)) {
-            $this->$method($user);
-        }
+        match ($user->user_type) {
+            UserType::staff => $this->syncStaff($user),
+            UserType::guardian => $this->syncGuardian($user),
+            default => null,
+        };
 
         return $user;
     }
 
+    /** @return Collection<int, User> */
     public function searchForUser(string $search): Collection
     {
         return $this->builder
@@ -410,6 +407,10 @@ class PowerSchoolProvider implements SisProvider
 
     protected function syncStaff(User $user): void
     {
+        if ($user->sis_id === null) {
+            return;
+        }
+
         // Fetch from custom PQ
         /** @var Response $data */
         $data = $this->builder
@@ -446,15 +447,19 @@ class PowerSchoolProvider implements SisProvider
         $data = $this->builder
             ->get("/ws/contacts/contact/{$contactId}");
 
+        $emails = is_array($data['emails']) ? $data['emails'] : [];
+
         $user->update([
             'first_name' => $data['firstName'] ?? $user->first_name,
             'last_name' => $data['lastName'] ?? $user->last_name,
-            'email' => collect($data['emails'])
+            'email' => collect($emails)
                 ->firstWhere('primary', true)['address'] ?? $user->email,
         ]);
 
+        $contactStudents = is_array($data['contactStudents']) ? $data['contactStudents'] : [];
+
         // Sync the student relationships
-        $students = collect($data['contactStudents'])
+        $students = collect($contactStudents)
             ->filter(fn (array $student) => $student['deleted'] === false &&
                 $student['canAccessData'] === true &&
                 Arr::get($student, 'studentDetails.0.active') === true
@@ -527,13 +532,16 @@ class PowerSchoolProvider implements SisProvider
         return $course;
     }
 
-    protected function makeSisKey($subject): string
+    /**
+     * @param  array<string, mixed>|Course|School|Section|Student|string  $subject
+     */
+    protected function makeSisKey(array|Course|School|Section|Student|string $subject): string
     {
         if (is_array($subject)) {
             return $this->tenant->id.'|'.$subject['id'];
         }
 
-        if ($subject instanceof Model) {
+        if ($subject instanceof Course || $subject instanceof School || $subject instanceof Section || $subject instanceof Student) {
             return $this->tenant->id.'|'.$subject->sis_id;
         }
 

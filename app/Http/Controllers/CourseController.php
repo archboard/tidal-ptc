@@ -8,13 +8,14 @@ use App\Models\School;
 use App\Navigation\NavigationItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Inertia\Response;
 
 class CourseController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, School $school)
+    public function index(Request $request, School $school): Response
     {
         $title = __('Courses');
         $courses = $school->courses()
@@ -39,7 +40,7 @@ class CourseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Course $course)
+    public function show(Course $course): Response
     {
         $course->load([
             'sections',

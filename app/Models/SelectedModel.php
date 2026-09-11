@@ -9,18 +9,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * @mixin IdeHelperSelectedModel
- *
  * @property int $id
  * @property int $tenant_id
  * @property int $school_id
  * @property int $user_id
  * @property string $selectable_type
  * @property int $selectable_id
- * @property-read \App\Models\School $school
+ * @property-read School $school
  * @property-read Model|\Eloquent $selectable
- * @property-read \App\Models\Tenant $tenant
- * @property-read \App\Models\User $user
+ * @property-read Tenant $tenant
+ * @property-read User $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SelectedModel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SelectedModel newQuery()
@@ -44,7 +42,7 @@ class SelectedModel extends Model
 
     public $timestamps = false;
 
-    /** @return MorphTo<\Illuminate\Database\Eloquent\Model, $this> */
+    /** @return MorphTo<Model, $this> */
     public function selectable(): MorphTo
     {
         return $this->morphTo();

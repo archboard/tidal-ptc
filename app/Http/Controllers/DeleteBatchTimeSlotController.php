@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Batch;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class DeleteBatchTimeSlotController extends Controller
@@ -10,7 +12,7 @@ class DeleteBatchTimeSlotController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request, Batch $batch)
+    public function __invoke(Request $request, Batch $batch): JsonResponse|RedirectResponse
     {
         $data = $request->validate([
             'starts_at' => ['required', 'date'],

@@ -8,14 +8,17 @@ use App\Models\School;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Navigation\NavigationItem;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
+use Inertia\Response;
 
 class UserPermissionController extends Controller
 {
-    public function index(Request $request, User $user)
+    public function index(Request $request, User $user): Response
     {
         $title = __('Permissions for :name', ['name' => $user->name]);
         /** @var User $authUser */
@@ -40,13 +43,18 @@ class UserPermissionController extends Controller
         ])->withViewData(compact('title'));
     }
 
-    public function update(Request $request, Tenant $tenant, User $user)
+    public function update(Request $request, Tenant $tenant, User $user): JsonResponse
     {
-        $validModels = array_reduce($user->getPermissionSubjectModels(), function (array $carry, string $model) {
-            $carry[] = (new $model)->getMorphClass();
+        $validModels = array_reduce(
+            $user->getPermissionSubjectModels(),
+            /** @param class-string<Model> $model */
+            function (array $carry, string $model) {
+                $carry[] = (new $model)->getMorphClass();
 
-            return $carry;
-        }, ['*']);
+                return $carry;
+            },
+            ['*']
+        );
 
         $data = Validator::make($request->all(), [
             'permission' => ['required', new Enum(Permission::class)],
@@ -67,7 +75,7 @@ class UserPermissionController extends Controller
         })->validateWithBag('default');
 
         $permission = Permission::from($data['permission']);
-        $school = School::find($data['school']);
+        $school = $data['school'] ? School::query()->findOrFail((int) $data['school']) : null;
 
         $user->updateAppPermission($permission, $data['granted'], $school, $data['model']);
 

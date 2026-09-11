@@ -12,6 +12,7 @@ enum Sis: string
     case PS = 'ps';
     case CLASS_LINK = 'class link';
 
+    /** @return array<string, string> */
     public static function options(): array
     {
         return array_reduce(
@@ -25,6 +26,7 @@ enum Sis: string
         );
     }
 
+    /** @return array<int, array<string, string>> */
     public static function selectOptions(): array
     {
         return array_map(fn (Sis $sis) => [
@@ -49,6 +51,7 @@ enum Sis: string
         };
     }
 
+    /** @param Collection<array-key, mixed> $config */
     public function isConfigured(Collection $config): bool
     {
         return match ($this) {

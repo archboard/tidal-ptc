@@ -33,6 +33,10 @@ class PowerSchoolOidcLoginController extends Controller
         return '/';
     }
 
+    /**
+     * @param  Collection<array-key, mixed>  $data
+     * @return void
+     */
     protected function authenticated(Request $request, Authenticatable $user, Collection $data)
     {
         if (method_exists($user, 'syncFromSis')) {

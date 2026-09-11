@@ -7,6 +7,9 @@ use App\Traits\BelongsToTenant;
 use App\Traits\BelongsToUser;
 use App\Traits\HasTimeSlots;
 use App\Traits\ScopedToSchool;
+use Carbon\CarbonImmutable;
+use Database\Factories\BatchFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -16,14 +19,15 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property int $tenant_id
  * @property int $school_id
  * @property int|null $user_id
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \App\Models\School $school
- * @property-read \App\Models\Tenant $tenant
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TimeSlot> $timeSlots
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read School $school
+ * @property-read Tenant $tenant
+ * @property-read Collection<int, TimeSlot> $timeSlots
  * @property-read int|null $time_slots_count
- * @property-read \App\Models\User|null $user
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+ * @property-read int|null $distinct_times_count
+ * @property-read User|null $user
+ * @property-read Collection<int, User> $users
  * @property-read int|null $users_count
  *
  * @method static \Database\Factories\BatchFactory factory($count = null, $state = [])
@@ -44,7 +48,10 @@ class Batch extends Model
     use BelongsToSchool;
     use BelongsToTenant;
     use BelongsToUser;
+
+    /** @use HasFactory<BatchFactory> */
     use HasFactory;
+
     use HasTimeSlots;
     use ScopedToSchool;
 

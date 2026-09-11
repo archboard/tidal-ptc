@@ -7,10 +7,18 @@ use Illuminate\Support\Collection;
 trait Collectable
 {
     /**
-     * @return Collection<int, self>
+     * @return Collection<int, static>
      */
     public static function collect(): Collection
     {
-        return collect(static::cases());
+        return collect(static::allCases());
+    }
+
+    /**
+     * @return array<int, static>
+     */
+    protected static function allCases(): array
+    {
+        return static::cases();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Navigation;
 
-class NavigationItem
+final class NavigationItem
 {
     public string $component = 'InertiaLink';
 
@@ -22,7 +22,7 @@ class NavigationItem
 
     public static function make(): static
     {
-        return new static;
+        return new self;
     }
 
     public function useComponent(string $component): static
@@ -81,6 +81,7 @@ class NavigationItem
         return $this;
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

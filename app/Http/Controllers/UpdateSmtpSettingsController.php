@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Forms\Traits\ValidatesTenantFields;
 use App\Models\Tenant;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class UpdateSmtpSettingsController extends Controller
@@ -13,11 +14,11 @@ class UpdateSmtpSettingsController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request, Tenant $tenant)
+    public function __invoke(Request $request, Tenant $tenant): RedirectResponse
     {
         $data = $request->validate($this->smtpRules());
 
-        $tenant->smtp_config = collect($data);
+        $tenant->smtp_config = is_array($data) ? collect($data) : collect();
         $tenant->save();
 
         session()->flash('success', __('SMTP settings updated.'));
