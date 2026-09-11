@@ -11,14 +11,16 @@ use App\Models\School;
 use App\Models\TimeSlot;
 use App\Models\User;
 use App\Navigation\NavigationItem;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Inertia\Response;
 
 class TimeSlotController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, School $school)
+    public function index(Request $request, School $school): Response
     {
         /** @var User $user */
         $user = $request->user();
@@ -40,7 +42,7 @@ class TimeSlotController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function create(Request $request): Response
     {
         $this->authorize('createOrForSelf', TimeSlot::class);
 
@@ -67,7 +69,7 @@ class TimeSlotController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateTimeSlotRequest $request)
+    public function store(CreateTimeSlotRequest $request): JsonResponse
     {
         $this->authorize('createOrForSelf', TimeSlot::class);
 
@@ -84,7 +86,7 @@ class TimeSlotController extends Controller
             });
 
             TimeSlot::createForSelection($selection, $attributes);
-            $timeSlot = TimeSlot::make($attributes);
+            $timeSlot = new TimeSlot($attributes);
         } else {
             $timeSlot = TimeSlot::create($attributes);
         }
@@ -99,7 +101,7 @@ class TimeSlotController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): void
     {
         //
     }
@@ -107,7 +109,7 @@ class TimeSlotController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id): void
     {
         //
     }
@@ -115,7 +117,7 @@ class TimeSlotController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTimeSlotRequest $request, TimeSlot $timeSlot)
+    public function update(UpdateTimeSlotRequest $request, TimeSlot $timeSlot): JsonResponse
     {
         $data = $request->validated();
 
@@ -139,7 +141,7 @@ class TimeSlotController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TimeSlot $timeSlot)
+    public function destroy(TimeSlot $timeSlot): JsonResponse
     {
         $this->authorize('deleteOrForSelf', $timeSlot);
 

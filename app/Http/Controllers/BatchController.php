@@ -8,9 +8,13 @@ use App\Http\Resources\BatchResource;
 use App\Models\Batch;
 use App\Models\School;
 use App\Models\TimeSlot;
+use App\Models\User;
 use App\Navigation\NavigationItem;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Inertia\Response;
 use stdClass;
 
 class BatchController extends Controller
@@ -18,7 +22,7 @@ class BatchController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         $this->authorize(Permission::viewAny, TimeSlot::class);
 
@@ -49,7 +53,7 @@ class BatchController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function create(Request $request): RedirectResponse
     {
         $this->authorize(Permission::create, TimeSlot::class);
 
@@ -61,10 +65,10 @@ class BatchController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, School $school)
+    public function store(Request $request, School $school): RedirectResponse
     {
         $this->authorize(Permission::create, TimeSlot::class);
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = $request->user();
 
         // Clean up empty time slots
@@ -82,7 +86,7 @@ class BatchController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): void
     {
         //
     }
@@ -90,7 +94,7 @@ class BatchController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(School $school, Batch $batch)
+    public function edit(School $school, Batch $batch): Response
     {
         $this->authorize(Permission::update, TimeSlot::class);
 
@@ -119,7 +123,7 @@ class BatchController extends Controller
      * Update the specified resource in storage.
      * Authorization handled in the Request class.
      */
-    public function update(CreateTimeSlotRequest $request, Batch $batch)
+    public function update(CreateTimeSlotRequest $request, Batch $batch): JsonResponse
     {
         $batch->updateTimeSlots($request->getTimeSlotAttributes(false));
 
@@ -133,7 +137,7 @@ class BatchController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): void
     {
         //
     }

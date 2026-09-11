@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Jobs\SyncSchools;
 use App\Models\Tenant;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
+use Inertia\Response;
 
 class InstallationController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $title = __('Installation');
         $tenant = Tenant::fromRequestAndFallback($request);
@@ -23,7 +25,7 @@ class InstallationController extends Controller
         ])->withViewData(compact('title'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $tenant = Tenant::fromRequestAndFallback($request);
 

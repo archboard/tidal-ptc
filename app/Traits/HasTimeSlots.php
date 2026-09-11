@@ -16,6 +16,7 @@ trait HasTimeSlots
         return $this->hasMany(TimeSlot::class);
     }
 
+    /** @return array<int, array<string, mixed>> */
     public function fullCalendarEvents(?CarbonImmutable $start = null, ?CarbonImmutable $end = null): array
     {
         return $this->timeSlots()
@@ -27,6 +28,7 @@ trait HasTimeSlots
             ->toArray();
     }
 
+    /** @param array<string, mixed> $attributes */
     public function updateTimeSlots(array $attributes): static
     {
         $this->timeSlots()
@@ -58,6 +60,7 @@ trait HasTimeSlots
         return $this->getMorphClass().'_'.$this->id;
     }
 
+    /** @return array<string, string> */
     public function fullCalendarEventSource(): array
     {
         return [
@@ -66,6 +69,7 @@ trait HasTimeSlots
         ];
     }
 
+    /** @return array<int, array<string, mixed>> */
     public function getTimeSlotsFromFullCalendarRequest(Request $request): array
     {
         $request->validate([

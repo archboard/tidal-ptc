@@ -8,13 +8,14 @@ use App\Models\User;
 use App\Navigation\NavigationItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Inertia\Response;
 
 class TeacherController extends Controller
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): Response
     {
         $this->authorize(Permission::viewAny, User::class);
 

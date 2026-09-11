@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 
 trait ValidatesTenantFields
 {
+    /** @return array<int, mixed> */
     public function licenseRules(Tenant $tenant): array
     {
         return [
@@ -18,16 +19,19 @@ trait ValidatesTenantFields
         ];
     }
 
+    /** @return array<int, mixed> */
     public function sisProviderRules(): array
     {
         return ['required'];
     }
 
+    /** @return array<int, mixed> */
     public function nameRules(): array
     {
         return ['required', 'string', 'max:255'];
     }
 
+    /** @return array<int, mixed> */
     public function domainRules(Tenant $tenant): array
     {
         return [
@@ -36,6 +40,7 @@ trait ValidatesTenantFields
         ];
     }
 
+    /** @return array<int, mixed> */
     public function customDomainRules(Tenant $tenant): array
     {
         return [
@@ -45,6 +50,7 @@ trait ValidatesTenantFields
         ];
     }
 
+    /** @return array<int, mixed> */
     public function emailRules(): array
     {
         return [
@@ -53,6 +59,7 @@ trait ValidatesTenantFields
         ];
     }
 
+    /** @return array<string, mixed> */
     public function smtpRules(): array
     {
         return [

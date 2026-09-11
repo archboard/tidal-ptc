@@ -2,10 +2,12 @@
 
 namespace App\Enums\Traits;
 
+use App\Enums\Contracts\HasCustomName;
 use Illuminate\Support\Str;
 
 trait HasOptions
 {
+    /** @return array<string, string> */
     public static function options(): array
     {
         return array_reduce(
@@ -19,6 +21,7 @@ trait HasOptions
         );
     }
 
+    /** @return array<int, array<string, string>> */
     public static function selectOptions(): array
     {
         return array_map(fn ($sis) => [
@@ -29,7 +32,7 @@ trait HasOptions
 
     public function label(): string
     {
-        if (method_exists($this, 'name')) {
+        if ($this instanceof HasCustomName) {
             return $this->name();
         }
 

@@ -3,12 +3,17 @@
 namespace App\Models;
 
 use App\Models\Contracts\ExistsInSis;
+use App\Models\Contracts\Filterable;
+use App\Services\Filters\BaseFilter;
+use App\Services\Filters\TextFilter;
 use App\Traits\BelongsToTenant;
+use App\Traits\HasFilters;
 use App\Traits\HasHiddenAttribute;
-use GrantHolle\ModelFilters\Filters\TextFilter;
-use GrantHolle\ModelFilters\Traits\HasFilters;
+use Carbon\CarbonImmutable;
+use Database\Factories\SectionFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,24 +29,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string|null $section_number
  * @property string|null $expression
  * @property string|null $external_expression
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  * @property string $sis_key
  * @property bool $can_book
  * @property int|null $alt_user_id
- * @property-read \App\Models\User|null $altTeacher
- * @property-read \App\Models\Course $course
+ * @property-read User|null $altTeacher
+ * @property-read Course $course
  * @property-read string $display
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Student> $students
+ * @property-read Collection<int, Student> $students
  * @property-read int|null $students_count
- * @property-read \App\Models\User $teacher
+ * @property-read User $teacher
  * @property-read bool $teacher_can_book
  * @property-read string|null $teacher_display
- * @property-read \App\Models\Tenant $tenant
+ * @property-read Tenant $tenant
  *
  * @method static Builder<static>|Section canBook()
  * @method static \Database\Factories\SectionFactory factory($count = null, $state = [])
- * @method static Builder<static>|Section filter(\Illuminate\Support\Collection|array $data)
+ * @method static Builder<static>|Section filter(\Illuminate\Support\Collection<array-key, mixed>|array<array-key, mixed> $data)
  * @method static Builder<static>|Section newModelQuery()
  * @method static Builder<static>|Section newQuery()
  * @method static Builder<static>|Section query()
@@ -63,10 +68,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *
  * @mixin \Eloquent
  */
-class Section extends Model implements ExistsInSis
+class Section extends Model implements ExistsInSis, Filterable
 {
     use BelongsToTenant;
+
+    /** @use HasFactory<SectionFactory> */
     use HasFactory;
+
     use HasFilters;
     use HasHiddenAttribute;
 
@@ -76,16 +84,19 @@ class Section extends Model implements ExistsInSis
         'can_book' => 'boolean',
     ];
 
+    /** @param Builder<static> $builder */
     public function scopeSearch(Builder $builder, string $search): void
     {
         $builder->where(function (Builder $builder) use ($search) {
             $builder->where('section_number', 'ilike', "%{$search}%")
-                ->orWhereHas('course', function (Builder $builder) use ($search) {
-                    $builder->search($search);
+                ->orWhereHas('course', function ($builder) use ($search) {
+                    $builder->where('course_number', 'ilike', "%{$search}%")
+                        ->orWhere('name', 'ilike', "%{$search}%");
                 });
         });
     }
 
+    /** @return Attribute<string|null, never> */
     public function teacherDisplay(): Attribute
     {
         return Attribute::get(function (): ?string {
@@ -101,6 +112,7 @@ class Section extends Model implements ExistsInSis
         });
     }
 
+    /** @return Attribute<bool, never> */
     public function teacherCanBook(): Attribute
     {
         return Attribute::get(function (): bool {
@@ -116,6 +128,7 @@ class Section extends Model implements ExistsInSis
         });
     }
 
+    /** @return Attribute<string, never> */
     public function display(): Attribute
     {
         return Attribute::get(function (): string {
@@ -123,7 +136,7 @@ class Section extends Model implements ExistsInSis
                 return "{$this->course->name} ({$this->section_number})";
             }
 
-            return $this->section_number;
+            return $this->section_number ?? '';
         });
     }
 
@@ -158,12 +171,19 @@ class Section extends Model implements ExistsInSis
         return $this;
     }
 
+    /** @return array<int, BaseFilter> */
     public function filters(): array
     {
         return [
             TextFilter::make('search', __('Search'))
                 ->hide()
-                ->using(fn (Builder $builder, string $search) => $builder->search($search)),
+                ->using($this->applySearchFilter(...)),
         ];
+    }
+
+    /** @param Builder<Section> $builder */
+    protected function applySearchFilter(Builder $builder, string $search): void
+    {
+        $builder->search($search);
     }
 }

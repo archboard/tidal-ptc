@@ -8,21 +8,22 @@
   ],
   "license": "MIT",
   "require": {
-    "php": "^8.4",
+    "php": "^8.5",
     "ext-intl": "*",
+    "ext-pdo": "*",
     "ext-redis": "*",
-    "grantholle/laravel-model-filters": "^1.0",
     "grantholle/laravel-powerschool-auth": "^3.0",
     "grantholle/laravel-timezone": "^1.0",
     "grantholle/powerschool-api": "^4.0",
     "guzzlehttp/guzzle": "^7.0.1",
-    "inertiajs/inertia-laravel": "^2.0",
+    "inertiajs/inertia-laravel": "^3.0",
     "laravel/fortify": "^1.13",
-    "laravel/framework": "^12.0",
-    "laravel/tinker": "^2.5",
+    "laravel/framework": "^13.0",
+    "laravel/tinker": "^3.0",
     "silber/bouncer": "^1.0",
     "spatie/laravel-ignition": "^2.0",
     "spatie/laravel-model-flags": "^1.2",
+    "spatie/laravel-query-builder": "^7.0",
     "spatie/laravel-multitenancy": "^4.0"
   },
   "require-dev": {
@@ -33,9 +34,9 @@
     "laravel/pint": "^1.7",
     "mockery/mockery": "^1.4.2",
     "nunomaduro/collision": "^8.1",
-    "pestphp/pest": "^4.0",
-    "pestphp/pest-plugin-browser": "^4.3",
-    "pestphp/pest-plugin-laravel": "^4.0"
+    "pestphp/pest": "^5.0",
+    "pestphp/pest-plugin-browser": "^5.0",
+    "pestphp/pest-plugin-laravel": "^5.0"
   },
   "config": {
     "optimize-autoloader": true,
@@ -81,9 +82,13 @@
       "@php artisan ide-helper:generate",
       "@php artisan ide-helper:meta"
     ],
-    "analyse": "./vendor/bin/phpstan analyse --memory-limit=512M",
+    "analyze": "./vendor/bin/phpstan analyse --memory-limit=512M",
     "format": "./vendor/bin/pint --dirty",
     "test": "vendor/bin/pest --parallel",
+    "lint": [
+      "@helpers",
+      "@analyze"
+    ],
     "helpers": [
       "@php artisan ide-helper:generate",
       "@php artisan ide-helper:meta",

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Notifications\SmtpTest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class SendSmtpTestController extends Controller
@@ -11,7 +12,7 @@ class SendSmtpTestController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): RedirectResponse
     {
         /** @var User $user */
         $user = $request->user();

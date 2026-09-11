@@ -5,19 +5,21 @@ namespace App\Http\Controllers;
 use App\Enums\Role;
 use App\Enums\UserType;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Response;
 use Silber\Bouncer\BouncerFacade;
 
 class InstallFirstUserController extends Controller
 {
-    public function index()
+    public function index(): Response
     {
         return inertia('InstallUser', [
             'endpoint' => route('install.user'),
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
             'user.sis_id' => ['required'],

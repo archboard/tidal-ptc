@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use App\Enums\Permission;
 use App\Models\TimeSlot;
+use App\Models\User;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -14,7 +16,7 @@ class CreateTimeSlotRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = $this->user();
 
         if ($this->isMethod('post')) {
@@ -35,7 +37,7 @@ class CreateTimeSlotRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -58,12 +60,13 @@ class CreateTimeSlotRequest extends FormRequest
         ];
     }
 
+    /** @return array<string, mixed> */
     public function getTimeSlotAttributes(bool $shiftTime = true): array
     {
         $school = $this->school();
         $validated = $this->validated();
 
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = $this->user();
 
         if (! ($validated['user_id'] ?? false)) {

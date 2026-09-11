@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
 class ModelClassService
 {
     public static function toAlias(string $model): string
     {
-        return class_exists($model)
+        return is_a($model, Model::class, true)
             ? (new $model)->getMorphClass()
             : $model;
     }

@@ -4,11 +4,10 @@ import vue from '@vitejs/plugin-vue'
 import tailwind from '@tailwindcss/vite'
 
 export default ({ mode }) => {
-  process.env = {
-    ...process.env,
-    ...loadEnv(mode, process.cwd(), 'APP_'),
-  }
-  const domain = (new URL(process.env.APP_URL)).hostname
+  // process.env = {
+  //   ...process.env,
+  //   ...loadEnv(mode, process.cwd(), 'APP_'),
+  // }
 
   return defineConfig({
     plugins: [
@@ -16,7 +15,6 @@ export default ({ mode }) => {
       laravel({
         input: ['resources/js/app.js'],
         refresh: true,
-        detectTls: domain.split('.').slice(-2).join('.'),
       }),
       vue({
         template: {

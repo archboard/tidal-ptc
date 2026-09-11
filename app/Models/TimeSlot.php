@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Enums\Language;
 use App\Http\Resources\TimeSlotResource;
 use App\Traits\BelongsToSchool;
 use App\Traits\BelongsToTenant;
 use App\Traits\BelongsToUser;
+use Carbon\CarbonImmutable;
+use Database\Factories\TimeSlotFactory;
 use GrantHolle\Timezone\Facades\Timezone;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -24,9 +27,9 @@ use Illuminate\Support\Str;
  * @property int|null $batch_id
  * @property int|null $reserved_by
  * @property int|null $created_by
- * @property \Carbon\CarbonImmutable $starts_at
- * @property \Carbon\CarbonImmutable $ends_at
- * @property \Carbon\CarbonImmutable|null $reserved_at
+ * @property CarbonImmutable $starts_at
+ * @property CarbonImmutable $ends_at
+ * @property CarbonImmutable|null $reserved_at
  * @property string|null $teacher_notes
  * @property string|null $contact_notes
  * @property string|null $location
@@ -36,20 +39,19 @@ use Illuminate\Support\Str;
  * @property bool $requested_online
  * @property bool $contact_can_book
  * @property bool $allow_translator_requests
- * @property string|null $language_id
+ * @property Language|null $language
  * @property string|null $translator_notes
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \App\Models\Batch|null $batch
- * @property-read \App\Models\User|null $createdBy
- * @property-read \App\Models\Language|null $language
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read Batch|null $batch
+ * @property-read User|null $createdBy
  * @property-read mixed $local_ends_at
  * @property-read mixed $local_reserved_at
  * @property-read mixed $local_starts_at
- * @property-read \App\Models\User|null $reservedBy
- * @property-read \App\Models\School $school
- * @property-read \App\Models\Tenant $tenant
- * @property-read \App\Models\User $user
+ * @property-read User|null $reservedBy
+ * @property-read School $school
+ * @property-read Tenant $tenant
+ * @property-read User $user
  *
  * @method static Builder<static>|TimeSlot expired()
  * @method static \Database\Factories\TimeSlotFactory factory($count = null, $state = [])
@@ -68,7 +70,6 @@ use Illuminate\Support\Str;
  * @method static Builder<static>|TimeSlot whereEndsAt($value)
  * @method static Builder<static>|TimeSlot whereId($value)
  * @method static Builder<static>|TimeSlot whereIsOnline($value)
- * @method static Builder<static>|TimeSlot whereLanguageId($value)
  * @method static Builder<static>|TimeSlot whereLocation($value)
  * @method static Builder<static>|TimeSlot whereMeetingUrl($value)
  * @method static Builder<static>|TimeSlot whereOverlaps(string $start, string $end)
@@ -83,6 +84,7 @@ use Illuminate\Support\Str;
  * @method static Builder<static>|TimeSlot whereTranslatorNotes($value)
  * @method static Builder<static>|TimeSlot whereUpdatedAt($value)
  * @method static Builder<static>|TimeSlot whereUserId($value)
+ * @method static Builder<static>|TimeSlot whereLanguage($value)
  *
  * @mixin \Eloquent
  */
@@ -91,7 +93,8 @@ class TimeSlot extends Model
     use BelongsToSchool;
     use BelongsToTenant;
     use BelongsToUser;
-    use BelongsToUser;
+
+    /** @use HasFactory<TimeSlotFactory> */
     use HasFactory;
 
     protected $guarded = [];
@@ -105,23 +108,28 @@ class TimeSlot extends Model
         'contact_can_book' => 'boolean',
         'allow_translator_requests' => 'boolean',
         'allow_online_meetings' => 'boolean',
+        'language' => Language::class,
     ];
 
+    /** @param Builder<static> $builder */
     public function scopeExpired(Builder $builder): void
     {
         $builder->where('starts_at', '<', now());
     }
 
+    /** @param Builder<static> $builder */
     public function scopeNotExpired(Builder $builder): void
     {
         $builder->where('starts_at', '>', now());
     }
 
+    /** @param Builder<static> $builder */
     public function scopeNotReserved(Builder $builder): void
     {
         $builder->whereNull('student_id');
     }
 
+    /** @param Builder<static> $builder */
     public function scopeWhereOverlaps(Builder $builder, string $start, string $end): void
     {
         $builder->where(function (Builder $builder) use ($start, $end) {
@@ -138,16 +146,19 @@ class TimeSlot extends Model
         });
     }
 
+    /** @return Attribute<string|CarbonImmutable, never> */
     public function localStartsAt(): Attribute
     {
         return Attribute::get(fn () => Timezone::toLocal($this->starts_at));
     }
 
+    /** @return Attribute<string|CarbonImmutable, never> */
     public function localEndsAt(): Attribute
     {
         return Attribute::get(fn () => Timezone::toLocal($this->ends_at));
     }
 
+    /** @return Attribute<string|CarbonImmutable|null, never> */
     public function localReservedAt(): Attribute
     {
         return Attribute::get(
@@ -173,12 +184,7 @@ class TimeSlot extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    /** @return BelongsTo<Language, $this> */
-    public function language(): BelongsTo
-    {
-        return $this->belongsTo(Language::class);
-    }
-
+    /** @param Collection<int, TimeSlot> $timeSlots */
     public function overlaps(Collection $timeSlots): bool
     {
         return $timeSlots->contains(
@@ -197,6 +203,7 @@ class TimeSlot extends Model
         );
     }
 
+    /** @return array<string, mixed> */
     public function toFullCalendar(): array
     {
         return [
@@ -213,6 +220,10 @@ class TimeSlot extends Model
         ];
     }
 
+    /**
+     * @param  Collection<int, int>  $selection
+     * @param  array<string, mixed>  $attributes
+     */
     public static function createForSelection(Collection $selection, array $attributes): void
     {
         // Get the selection of those without overlapping existing time slots

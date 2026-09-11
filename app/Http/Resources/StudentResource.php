@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Student;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /** @property-read Student $resource */
@@ -11,8 +12,8 @@ class StudentResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
+     * @param  Request  $request
+     * @return array<string, mixed>
      */
     public function toArray($request)
     {
