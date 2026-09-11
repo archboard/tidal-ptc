@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\ActivityEvent;
 use App\Notifications\ReminderNotification;
 use App\Notifications\TimeSlotNotification;
 use Illuminate\Notifications\Events\NotificationSent;
@@ -22,10 +23,9 @@ class LogNotificationSent
             return;
         }
 
-        activity()
-            ->performedOn($event->notifiable)
-            ->event('notification_sent')
-            ->withProperties([...$properties, 'channel' => $event->channel])
-            ->log('notification_sent');
+        ActivityEvent::notification_sent->log($event->notifiable, [
+            ...$properties,
+            'channel' => $event->channel,
+        ]);
     }
 }

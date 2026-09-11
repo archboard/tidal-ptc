@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\Permission;
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\Auth\PowerSchoolOidcLoginController;
 use App\Http\Controllers\Auth\PowerSchoolOpenIdLoginController;
 use App\Http\Controllers\BatchController;
@@ -146,6 +147,11 @@ Route::middleware('tenant')->group(function () {
 
                 Route::resource('/time-slots', TimeSlotController::class)
                     ->only('index', 'create', 'store', 'update', 'destroy');
+
+                Route::get('/activity', [ActivityController::class, 'index'])
+                    ->name('activity.index');
+                Route::get('/time-slots/{time_slot}/activity', [ActivityController::class, 'timeSlot'])
+                    ->name('time-slots.activity');
 
                 Route::post('/reservations/{time_slot}', [ReservationController::class, 'store'])
                     ->name('reservations.store');

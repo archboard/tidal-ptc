@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ActivityEvent;
 use App\Models\Contracts\ExistsInSis;
 use App\Traits\BelongsToTenant;
 use App\Traits\HasTimeSlots;
@@ -104,7 +105,8 @@ class School extends Model implements ExistsInSis
             ->logAll()
             ->logExcept(['updated_at'])
             ->logOnlyDirty()
-            ->dontLogEmptyChanges();
+            ->dontLogEmptyChanges()
+            ->setDescriptionForEvent(fn (string $event) => ActivityEvent::from($event)->description());
     }
 
     protected $casts = [

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Data\TimeSlotSnapshot;
+use App\Enums\ActivityEvent;
 use App\Enums\Language;
 use App\Enums\NotificationEvent;
 use App\Http\Resources\TimeSlotResource;
@@ -153,7 +154,8 @@ class TimeSlot extends Model
         return LogOptions::defaults()
             ->logOnly(['user_id', 'starts_at', 'ends_at', 'location', 'meeting_url', 'is_online', 'teacher_notes', 'contact_can_book', 'allow_translator_requests', 'allow_online_meetings', 'translator_notes'])
             ->logOnlyDirty()
-            ->dontLogEmptyChanges();
+            ->dontLogEmptyChanges()
+            ->setDescriptionForEvent(fn (string $event) => ActivityEvent::from($event)->description());
     }
 
     /** @param Builder<static> $builder */

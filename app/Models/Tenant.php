@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ActivityEvent;
 use App\Enums\Sis;
 use App\SisProviders\SisProvider;
 use Carbon\CarbonImmutable;
@@ -84,7 +85,8 @@ final class Tenant extends TenantBase
             ->logAll()
             ->logExcept(['updated_at', 'sis_config', 'smtp_config'])
             ->logOnlyDirty()
-            ->dontLogEmptyChanges();
+            ->dontLogEmptyChanges()
+            ->setDescriptionForEvent(fn (string $event) => ActivityEvent::from($event)->description());
     }
 
     protected $casts = [
