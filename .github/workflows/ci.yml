@@ -52,8 +52,8 @@ jobs:
       DB_USERNAME: laravel
       DB_PASSWORD: laravel
       POWERSCHOOL_ADDRESS: https://powerschool.test
-      POWERSCHOOL_CLIENT_ID: testing-client-id
-      POWERSCHOOL_CLIENT_SECRET: testing-client-secret
+      POWERSCHOOL_CLIENT_ID: 00000000-0000-0000-0000-000000000001
+      POWERSCHOOL_CLIENT_SECRET: 00000000-0000-0000-0000-000000000002
 
     steps:
       - uses: actions/checkout@v4
