@@ -1,0 +1,151 @@
+<?php
+
+use App\Data\TimeSlotSnapshot;
+use App\Enums\NotificationEvent;
+use App\Enums\Permission;
+use App\Enums\UserType;
+use App\Models\TimeSlot;
+use App\Notifications\TimeSlotNotification;
+use Illuminate\Support\Facades\Notification;
+
+beforeEach(function () {
+    Notification::fake();
+    logIn()->setSchool();
+    $this->school->update(['booking_buffer_hours' => 2, 'open_for_teachers_at' => now()->subDay()]);
+
+    $this->teacher = seedUser(['user_type' => UserType::staff]);
+    $this->student = seedSection($this->teacher)->students->first();
+    $this->guardian = seedGuardian($this->student);
+    $this->slot = seedBookableSlot($this->teacher);
+});
+
+function reserve(TimeSlot $slot): TimeSlot
+{
+    $slot->update(['student_id' => test()->student->id, 'reserved_by' => test()->guardian->id, 'reserved_at' => now()]);
+
+    return $slot;
+}
+
+function assertNotified(NotificationEvent $event, ...$users): void
+{
+    foreach ($users as $user) {
+        Notification::assertSentTo($user, TimeSlotNotification::class, fn (TimeSlotNotification $n) => $n->event === $event);
+    }
+}
+
+it('notifies both parties when booked', function () {
+    $this->actingAs($this->guardian)
+        ->postJson(route('reservations.store', $this->slot), ['student_id' => $this->student->id])
+        ->assertOk();
+
+    assertNotified(NotificationEvent::slot_booked, $this->teacher, $this->guardian);
+});
+
+it('notifies both parties when cancelled by the teacher', function () {
+    reserve($this->slot);
+
+    $this->actingAs($this->teacher)
+        ->deleteJson(route('reservations.destroy', $this->slot))
+        ->assertOk();
+
+    assertNotified(NotificationEvent::slot_cancelled, $this->teacher, $this->guardian);
+    Notification::assertSentTo($this->guardian, TimeSlotNotification::class, fn (TimeSlotNotification $n) => $n->slot->student === $this->student->name);
+});
+
+it('notifies when rescheduled with the previous time', function () {
+    reserve($this->slot);
+    $target = seedBookableSlot($this->teacher, ['starts_at' => now()->addDays(2), 'ends_at' => now()->addDays(2)->addMinutes(15)]);
+
+    $this->actingAs($this->guardian)
+        ->putJson(route('reservations.update', $this->slot), ['time_slot_id' => $target->id])
+        ->assertOk();
+
+    Notification::assertSentTo($this->teacher, TimeSlotNotification::class, fn (TimeSlotNotification $n) => $n->event === NotificationEvent::slot_rescheduled
+        && $n->slot->previousStartsAt?->equalTo($this->slot->starts_at)
+        && $n->slot->id === $target->id);
+});
+
+it('notifies when a reserved slot is updated', function () {
+    reserve($this->slot);
+    $data = makeTimeSlotRequest([
+        'starts_at' => $this->slot->starts_at->toIso8601ZuluString(),
+        'ends_at' => $this->slot->ends_at->toIso8601ZuluString(),
+        'location' => 'Room 9',
+    ]);
+
+    $this->actingAs($this->teacher)
+        ->putJson(route('time-slots.update', $this->slot), $data)
+        ->assertOk();
+
+    assertNotified(NotificationEvent::slot_updated, $this->guardian);
+});
+
+it('does not notify when a reserved slot update changes nothing relevant', function () {
+    reserve($this->slot);
+    $data = [
+        ...makeTimeSlotRequest(),
+        'starts_at' => $this->slot->starts_at->toIso8601ZuluString(),
+        'ends_at' => $this->slot->ends_at->toIso8601ZuluString(),
+        'location' => $this->slot->location,
+        'meeting_url' => $this->slot->meeting_url,
+        'is_online' => $this->slot->is_online,
+        'teacher_notes' => $this->slot->teacher_notes,
+        'contact_can_book' => false,
+    ];
+
+    $this->actingAs($this->teacher)
+        ->putJson(route('time-slots.update', $this->slot), $data)
+        ->assertOk();
+
+    Notification::assertNothingSent();
+});
+
+it('notifies reserved slots updated through a batch', function () {
+    $batch = seedBatch();
+    $slot = reserve($batch->timeSlots()->first());
+    $data = makeTimeSlotRequest(['batch_id' => $batch->id, 'update_batch' => true, 'location' => 'Gym']);
+
+    $this->givePermission(Permission::update, TimeSlot::class)
+        ->putJson(route('time-slots.update', $slot), $data)
+        ->assertOk();
+
+    assertNotified(NotificationEvent::slot_updated, $this->guardian);
+});
+
+it('blocks deleting a reserved slot without permission and notifies when an admin deletes', function () {
+    reserve($this->slot);
+
+    $this->actingAs($this->teacher)
+        ->deleteJson(route('time-slots.destroy', $this->slot))
+        ->assertForbidden();
+
+    $this->actingAs($this->user);
+    fullPermissions()
+        ->deleteJson(route('time-slots.destroy', $this->slot))
+        ->assertOk();
+
+    assertNotified(NotificationEvent::slot_cancelled, $this->teacher, $this->guardian);
+    expect(TimeSlot::find($this->slot->id))->toBeNull();
+});
+
+it('respects opted-out preferences', function () {
+    $this->guardian->update(['notification_config' => ['slot_booked' => false]]);
+    $notification = new TimeSlotNotification(NotificationEvent::slot_booked, TimeSlotSnapshot::fromTimeSlot(reserve($this->slot)));
+
+    expect($notification->via($this->guardian))->toBe([])
+        ->and($notification->via($this->teacher))->toBe(['mail']);
+});
+
+it('renders times in the recipient timezone', function () {
+    $this->guardian->update(['timezone' => 'Asia/Tokyo', 'is_24h' => true]);
+    reserve($this->slot)->load('user', 'student', 'reservedBy');
+    $starts = $this->slot->starts_at->setTimezone('Asia/Tokyo');
+
+    $this->slot->notifyReservation(NotificationEvent::slot_booked);
+
+    Notification::assertSentTo($this->guardian, TimeSlotNotification::class, function (TimeSlotNotification $n) use ($starts) {
+        $lines = collect($n->toMail($this->guardian)->introLines)->implode("\n");
+
+        return str_contains($lines, $starts->isoFormat('HH:mm')) && str_contains($lines, 'Asia/Tokyo');
+    });
+});

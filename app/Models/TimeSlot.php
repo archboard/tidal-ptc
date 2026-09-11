@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Data\TimeSlotSnapshot;
 use App\Enums\Language;
+use App\Enums\NotificationEvent;
 use App\Http\Resources\TimeSlotResource;
+use App\Notifications\TimeSlotNotification;
 use App\Traits\BelongsToSchool;
 use App\Traits\BelongsToTenant;
 use App\Traits\BelongsToUser;
@@ -239,6 +242,18 @@ class TimeSlot extends Model
                 $timeSlot->ends_at <= $this->ends_at
             )
         );
+    }
+
+    /**
+     * Notify the reserving contact and the slot's staff member. Call before clearing a reservation.
+     * Pass the previous slot when rescheduling so the old time is included.
+     */
+    public function notifyReservation(NotificationEvent $event, ?TimeSlot $previous = null): void
+    {
+        $notification = new TimeSlotNotification($event, TimeSlotSnapshot::fromTimeSlot($this, $previous));
+
+        $this->user->notify($notification);
+        $this->reservedBy?->notify($notification);
     }
 
     /** @return array<string, mixed> */

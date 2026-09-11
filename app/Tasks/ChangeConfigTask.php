@@ -3,6 +3,7 @@
 namespace App\Tasks;
 
 use App\Http\Resources\TenantResource;
+use App\Models\Tenant;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
@@ -14,7 +15,7 @@ class ChangeConfigTask implements SwitchTenantTask
     private string $originalUrl;
 
     /**
-     * @param  \App\Models\Tenant  $tenant
+     * @param  Tenant  $tenant
      */
     public function makeCurrent(IsTenant $tenant): void
     {
@@ -23,7 +24,7 @@ class ChangeConfigTask implements SwitchTenantTask
         Config::set('app.url', "https://{$tenant->domain}");
         URL::useOrigin(config('app.url'));
 
-        if (config('app.self_hosted')) {
+        if (config('app.self_hosted') && $tenant->getConfigFieldValue('smtp_config', 'host')) {
             Config::set('mail.default', 'smtp');
             Config::set('mail.from.address', $tenant->getConfigFieldValue('smtp_config', 'from_address'));
             Config::set('mail.from.name', $tenant->getConfigFieldValue('smtp_config', 'from_name'));

@@ -13,6 +13,7 @@
     <env name="BCRYPT_ROUNDS" value="4"/>
     <env name="CACHE_DRIVER" value="array"/>
     <env name="MAIL_MAILER" value="array"/>
+    <env name="MAIL_FROM_ADDRESS" value="noreply@example.com"/>
     <env name="QUEUE_CONNECTION" value="sync"/>
     <env name="SESSION_DRIVER" value="array"/>
   </php>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\NotificationEvent;
 use App\Enums\Permission;
 use App\Http\Requests\CreateTimeSlotRequest;
 use App\Http\Requests\UpdateTimeSlotRequest;
@@ -17,6 +18,9 @@ use Inertia\Response;
 
 class TimeSlotController extends Controller
 {
+    /** Changes to a reserved slot that the contact should hear about. */
+    protected const array NOTIFIABLE_CHANGES = ['starts_at', 'ends_at', 'location', 'meeting_url', 'is_online', 'teacher_notes'];
+
     /**
      * Display a listing of the resource.
      */
@@ -118,10 +122,20 @@ class TimeSlotController extends Controller
             $data['ends_at'] = $timeSlot->ends_at->toDateTimeString();
             /** @var Batch $batch */
             $batch = Batch::findOrFail($data['batch_id']);
+            $affected = $batch->timeSlots()
+                ->where('starts_at', $data['starts_at'])
+                ->where('ends_at', $data['ends_at'])
+                ->reserved()
+                ->get()
+                ->filter(fn (TimeSlot $slot) => $slot->fill($data)->isDirty(self::NOTIFIABLE_CHANGES));
             $batch->updateTimeSlots($data);
         } else {
-            $timeSlot->update($data);
+            $affected = collect([$timeSlot->fill($data)])
+                ->filter(fn (TimeSlot $slot) => $slot->isReserved() && $slot->isDirty(self::NOTIFIABLE_CHANGES));
+            $timeSlot->save();
         }
+
+        $affected->each(fn (TimeSlot $slot) => $slot->refresh()->notifyReservation(NotificationEvent::slot_updated));
 
         return response()->json([
             'level' => 'success',
@@ -133,9 +147,14 @@ class TimeSlotController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TimeSlot $timeSlot): JsonResponse
+    public function destroy(Request $request, TimeSlot $timeSlot): JsonResponse
     {
         $this->authorize('deleteOrForSelf', $timeSlot);
+
+        if ($timeSlot->isReserved()) {
+            abort_unless((bool) $request->user()?->can(Permission::update, $timeSlot), 403, __('Reserved time slots cannot be deleted.'));
+            $timeSlot->notifyReservation(NotificationEvent::slot_cancelled);
+        }
 
         $timeSlot->delete();
 

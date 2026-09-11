@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\NotificationEvent;
 use App\Enums\Permission;
 use App\Http\Requests\ReserveTimeSlotRequest;
 use App\Models\TimeSlot;
@@ -31,6 +32,8 @@ class ReservationController extends Controller
             $this->claim($timeSlot, $request->reservationAttributes());
         });
 
+        $timeSlot->refresh()->notifyReservation(NotificationEvent::slot_booked);
+
         return $this->toSuccess($request, __('Conference booked successfully.'));
     }
 
@@ -51,6 +54,8 @@ class ReservationController extends Controller
             $timeSlot->update(self::EMPTY_RESERVATION);
         });
 
+        $target->refresh()->notifyReservation(NotificationEvent::slot_rescheduled, previous: $timeSlot);
+
         return $this->toSuccess($request, __('Conference rescheduled successfully.'));
     }
 
@@ -69,6 +74,7 @@ class ReservationController extends Controller
             __('This reservation can no longer be cancelled online. Please contact the school.')
         );
 
+        $timeSlot->notifyReservation(NotificationEvent::slot_cancelled);
         $timeSlot->update(self::EMPTY_RESERVATION);
 
         return $this->toSuccess($request, __('Conference cancelled.'));
