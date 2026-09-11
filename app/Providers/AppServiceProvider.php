@@ -18,11 +18,13 @@ use App\Models\User;
 use App\Services\ModelClassService;
 use Carbon\CarbonImmutable;
 use GrantHolle\PowerSchool\Auth\UserFactory;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\Support\CauserResolver;
@@ -54,6 +56,8 @@ class AppServiceProvider extends ServiceProvider
 
         $this->addRequestMarcos()
             ->addStringMacros();
+
+        RateLimiter::for('api', fn (Request $request) => Limit::perMinute(60)->by($request->user()?->id ?: $request->ip()));
 
         Relation::morphMap([
             'user' => User::class,
