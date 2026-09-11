@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Permission;
 use App\Models\Contracts\ExistsInSis;
 use App\Models\Contracts\Filterable;
 use App\Services\Filters\BaseFilter;
@@ -127,6 +128,25 @@ class Student extends Model implements ExistsInSis, Filterable
         $this->tenant->getSisProvider()?->syncStudent($this);
 
         return $this;
+    }
+
+    /**
+     * Whether this student may book a conference with the given staff member:
+     * enrolled in a bookable section they teach, or the staff member owns time slots outright.
+     */
+    public function canMeetWith(User $staff): bool
+    {
+        if ($staff->can(Permission::ownTimeSlots)) {
+            return true;
+        }
+
+        return $this->sections()
+            ->where('sections.can_book', true)
+            ->whereHas('course', fn (Builder $builder) => $builder->where('can_book', true))
+            ->where(fn (Builder $builder) => $builder
+                ->where('sections.user_id', $staff->id)
+                ->orWhere('sections.alt_user_id', $staff->id))
+            ->exists();
     }
 
     /** @param Builder<Student> $builder */

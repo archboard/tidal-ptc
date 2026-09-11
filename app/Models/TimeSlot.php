@@ -10,6 +10,7 @@ use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
 use Database\Factories\TimeSlotFactory;
 use GrantHolle\Timezone\Facades\Timezone;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -30,6 +31,7 @@ use Illuminate\Support\Str;
  * @property CarbonImmutable $starts_at
  * @property CarbonImmutable $ends_at
  * @property CarbonImmutable|null $reserved_at
+ * @property CarbonImmutable|null $reminder_sent_at
  * @property string|null $teacher_notes
  * @property string|null $contact_notes
  * @property string|null $location
@@ -50,6 +52,7 @@ use Illuminate\Support\Str;
  * @property-read mixed $local_starts_at
  * @property-read User|null $reservedBy
  * @property-read School $school
+ * @property-read Student|null $student
  * @property-read Tenant $tenant
  * @property-read User $user
  *
@@ -59,6 +62,8 @@ use Illuminate\Support\Str;
  * @method static Builder<static>|TimeSlot newQuery()
  * @method static Builder<static>|TimeSlot notExpired()
  * @method static Builder<static>|TimeSlot notReserved()
+ * @method static Builder<static>|TimeSlot reserved()
+ * @method static Builder<static>|TimeSlot bookable(School $school)
  * @method static Builder<static>|TimeSlot query()
  * @method static Builder<static>|TimeSlot whereAllowOnlineMeetings($value)
  * @method static Builder<static>|TimeSlot whereAllowTranslatorRequests($value)
@@ -103,6 +108,7 @@ class TimeSlot extends Model
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
         'reserved_at' => 'datetime',
+        'reminder_sent_at' => 'datetime',
         'is_online' => 'boolean',
         'requested_online' => 'boolean',
         'contact_can_book' => 'boolean',
@@ -127,6 +133,27 @@ class TimeSlot extends Model
     public function scopeNotReserved(Builder $builder): void
     {
         $builder->whereNull('student_id');
+    }
+
+    /** @param Builder<static> $builder */
+    #[Scope]
+    protected function reserved(Builder $builder): void
+    {
+        $builder->whereNotNull('student_id');
+    }
+
+    /**
+     * Slots a contact could reserve right now: open, flagged bookable, and outside the buffer.
+     *
+     * @param  Builder<static>  $builder
+     */
+    #[Scope]
+    protected function bookable(Builder $builder, School $school): void
+    {
+        $builder->notReserved()
+            ->where('school_id', $school->id)
+            ->where('contact_can_book', true)
+            ->where('starts_at', '>', now()->addHours($school->booking_buffer_hours));
     }
 
     /** @param Builder<static> $builder */
@@ -172,6 +199,12 @@ class TimeSlot extends Model
         return $this->belongsTo(Batch::class);
     }
 
+    /** @return BelongsTo<Student, $this> */
+    public function student(): BelongsTo
+    {
+        return $this->belongsTo(Student::class);
+    }
+
     /** @return BelongsTo<User, $this> */
     public function reservedBy(): BelongsTo
     {
@@ -182,6 +215,11 @@ class TimeSlot extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function isReserved(): bool
+    {
+        return $this->student_id !== null;
     }
 
     /** @param Collection<int, TimeSlot> $timeSlots */
@@ -209,7 +247,8 @@ class TimeSlot extends Model
         return [
             'id' => $this->id ?? Str::random(5),
             'groupId' => $this->batch_id,
-            'title' => '',
+            'title' => $this->isReserved() ? $this->student?->name : '',
+            'classNames' => $this->isReserved() ? ['reserved'] : [],
             'allDay' => false,
             'start' => $this->starts_at->toIso8601String(),
             'end' => $this->ends_at->toIso8601String(),

@@ -1,9 +1,12 @@
 <?php
 
 use App\Enums\Permission;
+use App\Http\Requests\UpdateTimeSlotRequest;
+use App\Models\Student;
 use App\Models\TimeSlot;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
+use Silber\Bouncer\BouncerFacade;
 
 beforeEach(function () {
     logIn()->setSchool();
@@ -102,7 +105,7 @@ it('can update a slot for another user with permission', function () {
         ->assertJsonStructure(['level', 'message', 'data']);
 
     $timeSlot->refresh();
-    expect($timeSlot)->toMatchRequestData($data, \App\Http\Requests\UpdateTimeSlotRequest::class);
+    expect($timeSlot)->toMatchRequestData($data, UpdateTimeSlotRequest::class);
 });
 
 it('can update own slot', function () {
@@ -114,7 +117,7 @@ it('can update own slot', function () {
         ->assertJsonStructure(['level', 'message', 'data']);
 
     $timeSlot->refresh();
-    expect($timeSlot)->toMatchRequestData($data, \App\Http\Requests\UpdateTimeSlotRequest::class);
+    expect($timeSlot)->toMatchRequestData($data, UpdateTimeSlotRequest::class);
 });
 
 it('can update a time slot batch', function () {
@@ -128,7 +131,7 @@ it('can update a time slot batch', function () {
         ->assertJsonStructure(['level', 'message', 'data']);
 
     $timeSlot->refresh();
-    expect($timeSlot)->toMatchRequestData($data, \App\Http\Requests\UpdateTimeSlotRequest::class);
+    expect($timeSlot)->toMatchRequestData($data, UpdateTimeSlotRequest::class);
 });
 
 it("can't delete another user's slot without permission", function () {
@@ -165,4 +168,58 @@ it('can delete own slot', function () {
         );
 
     expect(TimeSlot::find($timeSlot->id))->toBeNull();
+});
+
+it('determines whether a student can meet with staff', function () {
+    $teacher = seedUser();
+    $section = seedSection($teacher);
+    /** @var Student $student */
+    $student = $section->students->first();
+    $stranger = seedUser();
+
+    expect($student->canMeetWith($teacher))->toBeTrue()
+        ->and($student->canMeetWith($stranger))->toBeFalse();
+
+    $section->update(['alt_user_id' => $stranger->id]);
+    expect($student->canMeetWith($stranger))->toBeTrue();
+
+    $section->update(['can_book' => false]);
+    expect($student->canMeetWith($teacher))->toBeFalse();
+
+    $section->update(['can_book' => true]);
+    $section->course->update(['can_book' => false]);
+    expect($student->canMeetWith($teacher))->toBeFalse();
+
+    $this->givePermission(Permission::ownTimeSlots);
+    expect(BouncerFacade::scope()->onceTo($this->school->id, fn () => $student->canMeetWith($this->user)))->toBeTrue();
+});
+
+it('scopes bookable time slots', function () {
+    $this->school->update(['booking_buffer_hours' => 2]);
+    $bookable = seedTimeSlot();
+    seedTimeSlot(['contact_can_book' => false]);
+    seedTimeSlot(['student_id' => Student::factory()->create()->id]);
+    seedTimeSlot(['starts_at' => now()->addHour(), 'ends_at' => now()->addMinutes(75)]);
+    seedTimeSlot(['school_id' => $this->tenant->schools->firstWhere('id', '!=', $this->school->id)->id]);
+
+    expect(TimeSlot::bookable($this->school)->pluck('id')->all())->toBe([$bookable->id])
+        ->and(TimeSlot::reserved()->count())->toBe(1);
+});
+
+it('excludes slots starting exactly at the booking buffer', function () {
+    $this->school->update(['booking_buffer_hours' => 2]);
+    $this->travelTo(now()->startOfMinute());
+    seedTimeSlot(['starts_at' => now()->addHours(2), 'ends_at' => now()->addHours(2)->addMinutes(15)]);
+    $justAfter = seedTimeSlot(['starts_at' => now()->addHours(2)->addSecond(), 'ends_at' => now()->addHours(2)->addMinutes(15)]);
+
+    expect(TimeSlot::bookable($this->school)->pluck('id')->all())->toBe([$justAfter->id]);
+});
+
+it('titles reserved slots with the student name in the calendar', function () {
+    $student = Student::factory()->create();
+    $timeSlot = seedTimeSlot(['student_id' => $student->id]);
+
+    expect($timeSlot->toFullCalendar())
+        ->title->toBe($student->name)
+        ->classNames->toBe(['reserved']);
 });
