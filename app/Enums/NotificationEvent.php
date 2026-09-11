@@ -42,9 +42,6 @@ enum NotificationEvent: string implements HasCustomName
     /** @return array<int, UserType> */
     public function getUserTypes(): array
     {
-        return match ($this) {
-            self::slot_booked => [UserType::staff],
-            default => [UserType::staff, UserType::guardian],
-        };
+        return [UserType::staff, UserType::guardian];
     }
 }

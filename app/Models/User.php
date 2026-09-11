@@ -306,6 +306,12 @@ class User extends Authenticatable implements ExistsInSis, Filterable
             ->filter(fn (NotificationEvent $event) => in_array($this->user_type, $event->getUserTypes()));
     }
 
+    public function wantsNotification(NotificationEvent $event): bool
+    {
+        return in_array($this->user_type, $event->getUserTypes())
+            && (bool) ($this->notification_config[$event->value] ?? true);
+    }
+
     public function assignRole(Role|string $role): static
     {
         return $this->assign($role instanceof Role ? $role->value : $role);

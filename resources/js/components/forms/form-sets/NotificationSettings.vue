@@ -33,7 +33,7 @@ const props = defineProps({
 })
 const emit = defineEmits([])
 const form = useForm(props.notificationOptions.reduce((carry, notification) => {
-  carry[notification.key] = props.userNotifications[notification.key] ?? false
+  carry[notification.key] = props.userNotifications[notification.key] ?? true
   return carry
 }, {}))
 const save = () => {

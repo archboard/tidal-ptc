@@ -1,5 +1,9 @@
 <?php
 
+use App\Enums\NotificationEvent;
+use App\Enums\UserType;
+use Inertia\Testing\AssertableInertia;
+
 beforeEach(function () {
     logIn();
 });
@@ -7,7 +11,7 @@ beforeEach(function () {
 it('has a personal settings page', function () {
     $this->get(route('settings.personal.edit'))
         ->assertOk()
-        ->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+        ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('settings/Personal')
             ->has('hasPassword')
         );
@@ -33,4 +37,21 @@ it('can update personal settings', function () {
     $this->assertEquals($data['email'], $this->user->email);
     $this->assertEquals($data['timezone'], $this->user->timezone);
     $this->assertEquals($data['is_24h'], $this->user->is_24h);
+});
+
+it('defaults notifications to on and honors opt-outs', function () {
+    $this->user->update(['user_type' => UserType::guardian]);
+
+    expect($this->user->wantsNotification(NotificationEvent::slot_booked))->toBeTrue();
+
+    $this->put('/settings/personal/notifications', ['slot_booked' => false, 'slot_reminder' => true])
+        ->assertRedirect();
+
+    $this->user->refresh();
+    expect($this->user->wantsNotification(NotificationEvent::slot_booked))->toBeFalse()
+        ->and($this->user->wantsNotification(NotificationEvent::slot_reminder))->toBeTrue()
+        ->and($this->user->wantsNotification(NotificationEvent::slot_cancelled))->toBeTrue();
+
+    $this->user->update(['user_type' => UserType::student]);
+    expect($this->user->wantsNotification(NotificationEvent::slot_reminder))->toBeFalse();
 });
