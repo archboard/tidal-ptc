@@ -14,6 +14,7 @@ use App\Http\Controllers\GetSelectionController;
 use App\Http\Controllers\InstallationController;
 use App\Http\Controllers\InstallFirstUserController;
 use App\Http\Controllers\RefreshCsrfTokenController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SchoolEventSourceController;
 use App\Http\Controllers\SchoolSelectionController;
 use App\Http\Controllers\Search\SisUserController;
@@ -145,6 +146,13 @@ Route::middleware('tenant')->group(function () {
 
                 Route::resource('/time-slots', TimeSlotController::class)
                     ->only('index', 'create', 'store', 'update', 'destroy');
+
+                Route::post('/reservations/{time_slot}', [ReservationController::class, 'store'])
+                    ->name('reservations.store');
+                Route::put('/reservations/{time_slot}', [ReservationController::class, 'update'])
+                    ->name('reservations.update');
+                Route::delete('/reservations/{time_slot}', [ReservationController::class, 'destroy'])
+                    ->name('reservations.destroy');
 
                 Route::resource('/students', StudentController::class)
                     ->only('index', 'show');

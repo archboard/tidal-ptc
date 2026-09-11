@@ -11,6 +11,9 @@
 |
 */
 
+use App\Enums\Permission;
+use App\Enums\UserType;
+use App\Http\Requests\CreateTimeSlotRequest;
 use App\Models\Batch;
 use App\Models\Course;
 use App\Models\Section;
@@ -18,9 +21,12 @@ use App\Models\Student;
 use App\Models\TimeSlot;
 use App\Models\User;
 use Database\Factories\BatchFactory;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Arr;
+use Tests\TestCase;
 
-uses(Tests\TestCase::class)->in('Feature', 'Browser');
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class)->in('Feature', 'Browser');
+uses(TestCase::class)->in('Feature', 'Browser');
+uses(RefreshDatabase::class)->in('Feature', 'Browser');
 
 pest()->browser()
     ->inChrome()
@@ -37,13 +43,13 @@ pest()->browser()
 |
 */
 
-expect()->extend('toMatchRequestData', function (array $data, string $requestClass = \App\Http\Requests\CreateTimeSlotRequest::class) {
+expect()->extend('toMatchRequestData', function (array $data, string $requestClass = CreateTimeSlotRequest::class) {
     $request = resolve($requestClass)
         ->merge($data);
     $morphedData = method_exists($request, 'getTimeSlotAttributes')
         ? $request->getTimeSlotAttributes()
         : $request->validated();
-    $nonDates = \Illuminate\Support\Arr::except($morphedData, ['starts_at', 'ends_at']);
+    $nonDates = Arr::except($morphedData, ['starts_at', 'ends_at']);
 
     foreach ($nonDates as $key => $value) {
         $stringValue = (string) $this->value->$key;
@@ -77,12 +83,12 @@ function fullPermissions()
     return test()->fullPermission();
 }
 
-function seedUser(array $attributes = []): App\Models\User
+function seedUser(array $attributes = []): User
 {
     return test()->seedUser($attributes);
 }
 
-function givePermission(App\Enums\Permission $permission)
+function givePermission(Permission $permission)
 {
     return test()->givePermission($permission);
 }
@@ -122,7 +128,7 @@ function makeBatchForSelection(?User $user = null): Batch
     return $user->associateSelectionWithBatch($batch);
 }
 
-function seedTimeSlot(array $attributes = []): App\Models\TimeSlot
+function seedTimeSlot(array $attributes = []): TimeSlot
 {
     return test()->seedTimeSlot($attributes);
 }
@@ -152,4 +158,22 @@ function seedBatch(bool $withTimeSlots = true): Batch
         ->create([
             'user_id' => test()->user->id,
         ]);
+}
+
+function seedGuardian(Student ...$students): User
+{
+    $guardian = seedUser(['user_type' => UserType::guardian]);
+    $guardian->students()->attach($students);
+
+    return $guardian;
+}
+
+function seedBookableSlot(User $teacher, array $attributes = []): TimeSlot
+{
+    test()->school->update([
+        'open_for_contacts_at' => now()->subDay(),
+        'close_for_contacts_at' => now()->addWeek(),
+    ]);
+
+    return test()->seedTimeSlot(['contact_can_book' => true, ...$attributes], $teacher);
 }
