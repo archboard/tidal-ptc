@@ -23,10 +23,14 @@ use App\Models\User;
 use Database\Factories\BatchFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Vite;
 use Tests\TestCase;
 
 uses(TestCase::class)->in('Feature', 'Browser');
 uses(RefreshDatabase::class)->in('Feature', 'Browser');
+
+// ponytail: a running `npm run dev` writes public/hot, which the headless browser cannot reach; always serve built assets.
+uses()->beforeEach(fn () => Vite::useHotFile(storage_path('framework/testing/no-hot')))->in('Browser');
 
 pest()->browser()
     ->inChrome()
