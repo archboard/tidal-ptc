@@ -1,5 +1,5 @@
 import { createApp, h } from 'vue'
-import { createInertiaApp } from '@inertiajs/vue3'
+import { createInertiaApp, router } from '@inertiajs/vue3'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
 import * as plugins from '@/plugins'
 import components from '@/components'
@@ -42,5 +42,7 @@ createInertiaApp({
 
     el.removeAttribute('data-page')
     flashesNotifications(get(props, 'initialPage.props.flash'))
+    // Inertia visits don't pass through axios, so surface their flash messages here
+    router.on('success', event => flashesNotifications(get(event, 'detail.page.props.flash')))
   },
 })
