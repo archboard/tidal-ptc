@@ -65,28 +65,4 @@ class StudentController extends Controller
             ),
         ])->withViewData(compact('title'));
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Student $student): void
-    {
-        $title = __('Edit :name', ['name' => $student->name]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id): void
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id): void
-    {
-        //
-    }
 }

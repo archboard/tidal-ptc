@@ -37,8 +37,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->group(function () {
                     Route::get('/tenants', [TenantController::class, 'index']);
                     Route::post('/tenants', [TenantController::class, 'store']);
-                    Route::get('/tenants/{tenant:license}', [TenantController::class, 'show']);
-                    Route::put('/tenants/{tenant:license}', [TenantController::class, 'update']);
                 });
         },
     )

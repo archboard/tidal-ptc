@@ -63,5 +63,4 @@ const clearValue = () => {
   }
 }
 
-watch(isDark, console.log)
 </script>

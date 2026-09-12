@@ -60,10 +60,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-if (app()->environment('local')) {
-    Route::get('scratch', fn () => inertia('Scratch'));
-}
-
 /**
  * Self-hosted only routes
  */

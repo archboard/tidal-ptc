@@ -49,7 +49,6 @@ import { useForm } from '@inertiajs/vue3'
 import Headline3 from '@/components/Headline3.vue'
 import HelpText from '@/components/forms/HelpText.vue'
 import useLanguages from '@/composition/useLanguages.js'
-import clone from 'just-clone'
 import FadeInGroup from '@/components/transitions/FadeInGroup.vue'
 import { nanoid } from 'nanoid'
 import AppButton from '@/components/AppButton.vue'
@@ -61,7 +60,13 @@ const props = defineProps({
 })
 const emit = defineEmits([])
 const form = useForm({
-  languages: clone(props.school.languages) || [],
+  // Flatten the resource shape ({ language: { code } }) to what the save endpoint expects
+  languages: (props.school.languages || []).map(item => ({
+    id: item.id,
+    code: item.code ?? item.language?.code ?? null,
+    request_max: item.request_max,
+    overlap_max: item.overlap_max,
+  })),
 })
 const languages = useLanguages()
 const save = () => {
@@ -77,9 +82,6 @@ const addLanguage = () => {
     overlap_max: null,
   })
 }
-const getLanguages = except => {
-  return languages.value.filter(language => {
-    return !form.languages.find(item => item.id === language.id && item.id !== except)
-  })
-}
+// Options not already chosen on another row
+const getLanguages = except => languages.value.filter(language => language.code === except || !form.languages.some(item => item.code === language.code))
 </script>

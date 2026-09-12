@@ -56,9 +56,13 @@
         <FormField v-model="form.phone" :error="form.errors.phone" class="col-span-6 sm:col-span-3">{{ __('Phone') }}</FormField>
         <FormField :error="form.errors.languages" required class="col-span-6">
           <template #component>
-            <div class="flex flex-wrap gap-3">
+            <div v-if="languages.length" class="flex flex-wrap gap-3">
               <AppCheckbox v-for="language in languages" :key="language.value" v-model="form.languages" :value="language.value">{{ language.label }}</AppCheckbox>
             </div>
+            <HelpText v-else>
+              {{ __('No languages are configured for this school yet.') }}
+              <AppLink href="/settings/school/edit">{{ __('Add languages in school settings') }}</AppLink>
+            </HelpText>
           </template>
           {{ __('Languages') }}
         </FormField>
@@ -84,6 +88,8 @@ import AppCheckbox from '@/components/forms/AppCheckbox.vue'
 import AppButton from '@/components/AppButton.vue'
 import ConfirmButton from '@/components/ConfirmButton.vue'
 import Pill from '@/components/Pill.vue'
+import HelpText from '@/components/forms/HelpText.vue'
+import AppLink from '@/components/AppLink.vue'
 
 const props = defineProps({
   translators: Array,
