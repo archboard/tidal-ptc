@@ -7,6 +7,7 @@ use App\Models\Activity;
 use App\Models\Student;
 use App\Models\TimeSlot;
 use App\Models\Translator;
+use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
     logIn()->setSchool();
@@ -33,15 +34,15 @@ it('creates, updates and removes translators', function () {
     $this->givePermission(Permission::update, TimeSlot::class);
 
     $this->postJson(route('translator-profiles.store'), [
-        'first_name' => 'Yuki', 'last_name' => 'Sato', 'email' => 'yuki@example.com', 'languages' => ['ja'],
+        'name' => 'Yuki Sato', 'email' => 'yuki@example.com', 'languages' => ['ja'],
     ])->assertOk();
 
-    $created = Translator::where('last_name', 'Sato')->sole();
+    $created = Translator::where('name', 'Yuki Sato')->sole();
     expect($created->languages->all())->toEqual([Language::JAPANESE])
         ->and($created->school_id)->toBe($this->school->id);
 
     $this->putJson(route('translator-profiles.update', $created), [
-        'first_name' => 'Yuki', 'last_name' => 'Sato', 'languages' => ['ja', 'ko'], 'active' => false,
+        'name' => 'Yuki Sato', 'languages' => ['ja', 'ko'], 'active' => false,
     ])->assertOk();
     expect($created->refresh()->active)->toBeFalse()
         ->and($created->languages)->toHaveCount(2);
@@ -52,7 +53,7 @@ it('creates, updates and removes translators', function () {
 
 it('rejects languages the school does not offer', function () {
     $this->givePermission(Permission::update, TimeSlot::class)
-        ->postJson(route('translator-profiles.store'), ['first_name' => 'A', 'last_name' => 'B', 'languages' => ['ar']])
+        ->postJson(route('translator-profiles.store'), ['name' => 'A B', 'languages' => ['ar']])
         ->assertUnprocessable()
         ->assertJsonValidationErrors('languages.0');
 });
@@ -115,4 +116,66 @@ it('clears the translator when a reservation is cancelled and does not carry it 
     $target->update(['translator_id' => $this->translator->id]);
     $this->deleteJson(route('reservations.destroy', $target))->assertOk();
     expect($target->refresh()->translator_id)->toBeNull();
+});
+
+it('lists translators for admins', function () {
+    $this->slot->update(['translator_id' => $this->translator->id]);
+
+    $this->givePermission(Permission::viewAny, TimeSlot::class)
+        ->get(route('translator-profiles.index'))
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('translators/Manage')
+            ->has('translators', 1, fn (AssertableInertia $t) => $t
+                ->where('id', $this->translator->id)
+                ->where('languages', ['ja', 'ko'])
+                ->where('upcoming_count', 1)
+                ->etc())
+            ->has('languages', 2));
+
+    $this->getJson(route('translator-profiles.index'))
+        ->assertOk()
+        ->assertJsonPath('0.id', $this->translator->id);
+});
+
+it('shows translators and assignment filters on the request list', function () {
+    $this->slot->update(['translator_id' => $this->translator->id]);
+    $unassigned = seedTimeSlot(['student_id' => Student::factory()->create()->id, 'language' => Language::KOREAN, 'starts_at' => now()->addDays(2), 'ends_at' => now()->addDays(2)->addMinutes(15)]);
+    Translator::factory()->create(['active' => false]);
+
+    $this->givePermission(Permission::viewAny, TimeSlot::class)
+        ->get(route('translators.index'))
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->has('translators', 1)
+            ->has('requests', 2)
+            ->where('requests.0.translator.name', $this->translator->name)
+            ->where('capacity.0.used', 1)
+            ->where('capacity.0.assigned', 1));
+
+    $this->get(route('translators.index', ['translator_id' => 'unassigned']))
+        ->assertInertia(fn (AssertableInertia $page) => $page->has('requests', 1)->where('requests.0.id', $unassigned->id));
+
+    $this->get(route('translators.index', ['translator_id' => $this->translator->id]))
+        ->assertInertia(fn (AssertableInertia $page) => $page->has('requests', 1)->where('requests.0.id', $this->slot->id));
+});
+
+it('exports all assignments or one translator schedule', function () {
+    $this->translator->update(['name' => 'Yuki Sato']);
+    $this->slot->update(['translator_id' => $this->translator->id]);
+    seedTimeSlot(['student_id' => Student::factory()->create()->id, 'language' => Language::KOREAN, 'starts_at' => now()->addDays(2), 'ends_at' => now()->addDays(2)->addMinutes(15)]);
+    $this->givePermission(Permission::viewAny, TimeSlot::class);
+
+    $all = $this->get(route('translators.index', ['export' => 'csv']));
+    $rows = array_map('str_getcsv', array_filter(explode("\n", $all->streamedContent())));
+    expect($rows)->toHaveCount(3)
+        ->and($rows[0][4])->toBe('Translator')
+        ->and($rows[1][4])->toBe('Yuki Sato')
+        ->and($rows[2][4])->toBe('');
+
+    $mine = $this->get(route('translators.index', ['export' => 'csv', 'translator_id' => $this->translator->id]));
+    $mine->assertHeader('content-disposition', 'attachment; filename=translator-schedule-yuki-sato-'.$this->school->today()->toDateString().'.csv');
+    $rows = array_map('str_getcsv', array_filter(explode("\n", $mine->streamedContent())));
+    expect($rows)->toHaveCount(2)
+        ->and($rows[0])->not->toContain('Translator')
+        ->and($rows[1][3])->toBe('Japanese');
 });

@@ -239,7 +239,7 @@ it('validates the reminder lead time setting', function () {
 });
 
 it('names the assigned translator in the email', function () {
-    $translator = Translator::factory()->create(['first_name' => 'Yuki', 'last_name' => 'Sato']);
+    $translator = Translator::factory()->create(['name' => 'Yuki Sato']);
     reserve($this->slot)->update(['language' => Language::JAPANESE, 'translator_id' => $translator->id]);
     $this->slot->refresh()->load('user', 'student', 'reservedBy', 'translator');
 

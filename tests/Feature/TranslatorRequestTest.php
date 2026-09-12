@@ -59,8 +59,8 @@ it('exports a csv', function () {
     expect($rows)->toHaveCount(2)
         ->and($rows[0][0])->toBe('Date')
         ->and($rows[1][3])->toBe('Japanese')
-        ->and($rows[1][7])->toBe($this->guardian->email)
-        ->and($rows[1][10])->toBe('Bring forms');
+        ->and($rows[1][8])->toBe($this->guardian->email)
+        ->and($rows[1][11])->toBe('Bring forms');
 });
 
 it('lets staff save translator notes on a reserved slot', function () {

@@ -16,9 +16,6 @@ class TranslatorResource extends JsonResource
         return [
             'id' => $this->resource->id,
             'name' => $this->resource->name,
-            'last_first' => $this->resource->last_first,
-            'first_name' => $this->resource->first_name,
-            'last_name' => $this->resource->last_name,
             'email' => $this->resource->email,
             'phone' => $this->resource->phone,
             'notes' => $this->resource->notes,

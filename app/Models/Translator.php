@@ -6,7 +6,6 @@ use App\Enums\ActivityEvent;
 use App\Enums\Language;
 use App\Traits\BelongsToSchool;
 use App\Traits\BelongsToTenant;
-use App\Traits\HasFirstAndLastName;
 use App\Traits\ScopedToSchool;
 use Carbon\CarbonImmutable;
 use Database\Factories\TranslatorFactory;
@@ -28,8 +27,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property int $id
  * @property int $tenant_id
  * @property int $school_id
- * @property string $first_name
- * @property string $last_name
+ * @property string $name
  * @property string|null $email
  * @property string|null $phone
  * @property string|null $notes
@@ -38,8 +36,6 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property CarbonImmutable|null $deleted_at
- * @property-read string $name
- * @property-read string $last_first
  * @property-read Collection<int, TimeSlot> $assignments
  * @property-read School $school
  * @property-read Tenant $tenant
@@ -56,7 +52,6 @@ class Translator extends Model
     /** @use HasFactory<TranslatorFactory> */
     use HasFactory;
 
-    use HasFirstAndLastName;
     use LogsActivity;
     use ScopedToSchool;
     use SoftDeletes;

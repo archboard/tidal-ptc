@@ -11,23 +11,29 @@ use App\Navigation\NavigationItem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Inertia\Response;
 
 class TranslatorController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(Request $request): Response|AnonymousResourceCollection
     {
         $this->authorize(Permission::viewAny, TimeSlot::class);
 
+        $translators = TranslatorResource::collection(
+            Translator::query()
+                ->withCount(['assignments as upcoming_count' => fn ($query) => $query->where('starts_at', '>', now())])
+                ->orderBy('name')
+                ->get()
+        );
+
+        if ($request->wantsJson() && ! $request->inertia()) {
+            return $translators;
+        }
+
         return inertia('translators/Manage', [
             'title' => __('Translators'),
-            'translators' => TranslatorResource::collection(
-                Translator::query()
-                    ->withCount(['assignments as upcoming_count' => fn ($query) => $query->where('starts_at', '>', now())])
-                    ->orderBy('last_name')
-                    ->orderBy('first_name')
-                    ->get()
-            ),
+            'translators' => $translators,
             'languages' => $request->school()->languages->map(fn ($language) => ['value' => $language->language->value, 'label' => $language->language->name()])->values(),
             'breadcrumbs' => $this->withBreadcrumbs(
                 NavigationItem::make()->to(route('translators.index'))->labeled(__('Translator requests')),

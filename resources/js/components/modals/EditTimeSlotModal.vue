@@ -29,7 +29,11 @@
         <dd class="col-span-2">{{ timeSlot.requested_online ? __('Yes') : __('No') }}</dd>
         <template v-if="timeSlot.language">
           <dt class="text-gray-500 dark:text-gray-300">{{ __('Translator') }}</dt>
-          <dd class="col-span-2">{{ timeSlot.language }}</dd>
+          <dd class="col-span-2">
+            <span>{{ timeSlot.language }}</span>
+            <TranslatorSelect v-if="can('time_slot.update') && translators" :slot="timeSlot" :translators="translators" class="mt-1" />
+            <span v-else-if="timeSlot.translator"> · {{ timeSlot.translator.name }}</span>
+          </dd>
         </template>
       </dl>
       <FormField v-if="timeSlot.language" v-model="form.translator_notes" component="AppTextarea" :help="__('Visible to staff only, e.g. the assigned translator.')">
@@ -84,6 +88,7 @@ import { TrashIcon } from '@heroicons/vue/24/solid'
 import { inject, ref } from 'vue'
 import ActivityDetails from '@/components/ActivityDetails.vue'
 import ConfirmButton from '@/components/ConfirmButton.vue'
+import TranslatorSelect from '@/components/TranslatorSelect.vue'
 import FormField from '@/components/forms/FormField.vue'
 import useDates from '@/composition/useDates.js'
 
@@ -98,6 +103,7 @@ const { mergeTimeSlot, timeSlotBase } = useTimeSlots()
 const form = useForm(mergeTimeSlot(timeSlotBase, props.timeSlot))
 const modal = ref()
 const $http = inject('$http')
+const can = inject('$can')
 const { displayDate } = useDates()
 const cancelling = ref(false)
 const cancelReservation = async (close) => {
@@ -109,6 +115,15 @@ const cancelReservation = async (close) => {
   } catch (e) {}
   cancelling.value = false
 }
+const translators = ref(null)
+const loadTranslators = async () => {
+  if (!props.timeSlot.language || !can('time_slot.update')) return
+  try {
+    const { data } = await $http.get('/translator-profiles', { headers: { Accept: 'application/json' } })
+    translators.value = data
+  } catch (e) {}
+}
+loadTranslators()
 const history = ref(null)
 const loadHistory = async (e) => {
   if (!e.target.open || history.value !== null) return

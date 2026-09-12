@@ -19,8 +19,7 @@ class TranslatorFactory extends Factory
         return [
             'tenant_id' => Tenant::current()?->id,
             'school_id' => School::current()?->id,
-            'first_name' => $this->faker->firstName(),
-            'last_name' => $this->faker->lastName(),
+            'name' => $this->faker->name(),
             'email' => $this->faker->safeEmail(),
             'languages' => [Language::JAPANESE],
             'active' => true,
