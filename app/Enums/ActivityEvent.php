@@ -3,12 +3,14 @@
 namespace App\Enums;
 
 use Illuminate\Database\Eloquent\Model;
+use Intrfce\LaravelFrontendEnums\Attributes\PublishEnum;
 use Spatie\Activitylog\Support\ActivityLogger;
 
 /**
  * Every activity log entry's `event`. Descriptions are stored in English and translated when
  * displayed (see ActivityResource), so the log stays locale-independent.
  */
+#[PublishEnum]
 enum ActivityEvent: string
 {
     case created = 'created';

@@ -13,6 +13,7 @@
 </template>
 
 <script setup>
+import { trans as __ } from 'laravel-vue-i18n'
 import Authenticated from '@/layouts/Authenticated.vue'
 import TimeSlotCalendar from '@/components/TimeSlotCalendar.vue'
 import DropDownButton from '@/components/forms/buttons/DropDownButton.vue'
@@ -34,14 +35,14 @@ const menuItems = computed(() => {
   if (props.canViewBatches) {
     items.push({
       route: '/batches',
-      label: 'Manage batches',
+      label: __('Manage batches'),
     })
   }
 
   if (props.canCreateTimeSlots) {
     items.push({
       route: '/time-slots/create',
-      label: 'Manage my time slots',
+      label: __('Manage my time slots'),
     })
   }
 

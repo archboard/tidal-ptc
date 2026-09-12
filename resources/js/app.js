@@ -5,6 +5,7 @@ import * as plugins from '@/plugins'
 import components from '@/components'
 import get from 'just-safe-get'
 import flashesNotifications from '@/plugins/flashesNotifications.js'
+import { i18nVue } from 'laravel-vue-i18n'
 import '../css/app.css'
 
 createInertiaApp({
@@ -17,6 +18,16 @@ createInertiaApp({
   setup({ el, App, props, plugin }) {
     const app = createApp({ render: () => h(App, props) })
       .use(plugin)
+      .use(i18nVue, {
+        // Keys fall back to themselves, so English needs no catalogue; other locales load lang/{code}.json on demand
+        fallbackMissingTranslations: true,
+        resolve: async lang => {
+          const langs = import.meta.glob('../../lang/*.json')
+          const file = langs[`../../lang/${lang}.json`] ?? langs['../../lang/en.json']
+
+          return await file()
+        },
+      })
 
     // Register all the plugins
     Object.values(plugins).forEach(app.use)

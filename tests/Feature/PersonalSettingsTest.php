@@ -24,6 +24,7 @@ it('can update personal settings', function () {
         'email' => fake()->email(),
         'timezone' => fake()->timezone(),
         'is_24h' => fake()->boolean(),
+        'locale' => 'ja',
     ];
 
     $this->put(route('settings.personal.update'), $data)
@@ -37,6 +38,7 @@ it('can update personal settings', function () {
     $this->assertEquals($data['email'], $this->user->email);
     $this->assertEquals($data['timezone'], $this->user->timezone);
     $this->assertEquals($data['is_24h'], $this->user->is_24h);
+    $this->assertEquals('ja', $this->user->locale);
 });
 
 it('defaults notifications to on and honors opt-outs', function () {
@@ -54,4 +56,12 @@ it('defaults notifications to on and honors opt-outs', function () {
 
     $this->user->update(['user_type' => UserType::student]);
     expect($this->user->wantsNotification(NotificationEvent::slot_reminder))->toBeFalse();
+});
+
+it('applies the user locale to requests', function () {
+    $this->user->update(['locale' => 'ja']);
+
+    $this->get(route('settings.personal.edit'))->assertOk();
+
+    expect(app()->getLocale())->toBe('ja');
 });

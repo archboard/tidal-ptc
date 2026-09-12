@@ -50,7 +50,7 @@
     </form>
 
     <p v-if="!tenant.allow_password_auth && !tenant.allow_oidc_login">
-      No authentication methods are available.
+      {{ __('No authentication methods are available.') }}
     </p>
   </Layout>
 </template>

@@ -17,6 +17,7 @@
     "grantholle/powerschool-api": "^4.0",
     "guzzlehttp/guzzle": "^7.0.1",
     "inertiajs/inertia-laravel": "^3.0",
+    "intrfce/laravel-frontend-enums": "^1.1",
     "laravel/fortify": "^1.13",
     "laravel/framework": "^13.0",
     "laravel/tinker": "^3.0",

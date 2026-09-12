@@ -1,7 +1,7 @@
 <template>
   <Authenticated>
     <!-- Guardian -->
-    <div v-if="user.user_type === 'guardian'" class="space-y-6">
+    <div v-if="user.user_type === UserType.guardian" class="space-y-6">
       <CardWrapper v-if="!bookingOpen">
         <CardPadding>
           <CardHeader>{{ __('Booking is closed') }}</CardHeader>
@@ -77,7 +77,7 @@
     </div>
 
     <!-- Staff -->
-    <div v-else-if="user.user_type === 'staff'" class="space-y-6">
+    <div v-else-if="user.user_type === UserType.staff" class="space-y-6">
       <dl v-if="schoolStats" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div v-for="stat in stats" :key="stat.label" class="rounded-2xl bg-white dark:bg-gray-800 shadow-sm px-5 py-4">
           <dt class="text-sm text-gray-500 dark:text-gray-300 truncate">{{ stat.label }}</dt>
@@ -143,6 +143,7 @@ import AppLink from '@/components/AppLink.vue'
 import ConfirmButton from '@/components/ConfirmButton.vue'
 import { Table, Thead, Th, Tbody, Td, ActionColumn } from '@/components/tables/index.js'
 import useDates from '@/composition/useDates.js'
+import { UserType } from '@/Enums/UserType.enum.js'
 
 const props = defineProps({
   students: { type: Array, default: () => [] },

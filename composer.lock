@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7f7957ab890607a22547326902bc5e41",
+    "content-hash": "5385e1c9e4147488f0690e2824aab1c5",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1965,6 +1965,70 @@
                 "source": "https://github.com/inertiajs/inertia-laravel/tree/v3.3.3"
             },
             "time": "2026-09-04T13:56:39+00:00"
+        },
+        {
+            "name": "intrfce/laravel-frontend-enums",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/intrfce/laravel-frontend-enums.git",
+                "reference": "0f3cc184e9736dd55007045a49ced01547765825"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/intrfce/laravel-frontend-enums/zipball/0f3cc184e9736dd55007045a49ced01547765825",
+                "reference": "0f3cc184e9736dd55007045a49ced01547765825",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^11.0 || ^12.0 || ^13.0",
+                "laravel/prompts": "v0.*",
+                "php": "^8.4.0",
+                "spatie/php-structure-discoverer": "^2.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^9.5 || ^10.0 || ^11.0",
+                "pestphp/pest": "^2.32 || ^3.7",
+                "tightenco/duster": "^2.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "PublishEnums": "Intrfce\\LaravelFrontendEnums\\Facades\\PublishEnums"
+                    },
+                    "providers": [
+                        "Intrfce\\LaravelFrontendEnums\\LaravelFrontendEnumsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Intrfce\\LaravelFrontendEnums\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dan Matthews",
+                    "email": "dan@danmatthews.me",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Stop using 'magic' strings/numbers in your frontend Javascript and use your actual application enums instead.",
+            "homepage": "https://github.com/intrfce/laravel-frontend-enums",
+            "keywords": [
+                "intrfce",
+                "laravel-frontend-enums"
+            ],
+            "support": {
+                "issues": "https://github.com/intrfce/laravel-frontend-enums/issues",
+                "source": "https://github.com/intrfce/laravel-frontend-enums/tree/v1.1.0"
+            },
+            "time": "2026-06-01T07:58:54+00:00"
         },
         {
             "name": "laravel/fortify",
@@ -5708,6 +5772,85 @@
                 "source": "https://github.com/spatie/macroable/tree/2.1.0"
             },
             "time": "2026-01-30T17:13:34+00:00"
+        },
+        {
+            "name": "spatie/php-structure-discoverer",
+            "version": "2.4.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/php-structure-discoverer.git",
+                "reference": "fa2b7dae8e8a22c0306154c4b052420e054f7e2b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/php-structure-discoverer/zipball/fa2b7dae8e8a22c0306154c4b052420e054f7e2b",
+                "reference": "fa2b7dae8e8a22c0306154c4b052420e054f7e2b",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/collections": "^11.0|^12.0|^13.0",
+                "php": "^8.3",
+                "spatie/laravel-package-tools": "^1.92.7",
+                "symfony/finder": "^6.0|^7.3.5|^8.0"
+            },
+            "require-dev": {
+                "amphp/parallel": "^2.3.2",
+                "illuminate/console": "^11.0|^12.0|^13.0",
+                "nunomaduro/collision": "^7.0|^8.8.3",
+                "orchestra/testbench": "^9.5|^10.8|^11.0",
+                "pestphp/pest": "^3.8|^4.0",
+                "pestphp/pest-plugin-laravel": "^3.2|^4.0",
+                "phpstan/extension-installer": "^1.4.3",
+                "phpstan/phpstan-deprecation-rules": "^1.2.1",
+                "phpstan/phpstan-phpunit": "^1.4.2",
+                "spatie/laravel-ray": "^1.43.1"
+            },
+            "suggest": {
+                "amphp/parallel": "When you want to use the Parallel discover worker"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\StructureDiscoverer\\StructureDiscovererServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\StructureDiscoverer\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ruben Van Assche",
+                    "email": "ruben@spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Automatically discover structures within your PHP application",
+            "homepage": "https://github.com/spatie/php-structure-discoverer",
+            "keywords": [
+                "discover",
+                "laravel",
+                "php",
+                "php-structure-discoverer"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/php-structure-discoverer/issues",
+                "source": "https://github.com/spatie/php-structure-discoverer/tree/2.4.4"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/LaravelAutoDiscoverer",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-06-15T07:14:32+00:00"
         },
         {
             "name": "spatie/url",

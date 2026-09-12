@@ -12,7 +12,7 @@
               <TransitionChild as="template" enter="ease-in-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in-out duration-300" leave-from="opacity-100" leave-to="opacity-0">
                 <div class="absolute top-0 right-0 -mr-12 pt-2">
                   <button type="button" class="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white" @click="sidebarOpen = false">
-                    <span class="sr-only">Close sidebar</span>
+                    <span class="sr-only">{{ __('Close sidebar') }}</span>
                     <XMarkIcon class="h-6 w-6 text-white" aria-hidden="true" />
                   </button>
                 </div>
@@ -55,7 +55,7 @@
         </div>
 
         <div v-if="adminSchools.length > 1" class="mt-5 px-2">
-          <label for="current-school" class="sr-only">Current school</label>
+          <label for="current-school" class="sr-only">{{ __('Current school') }}</label>
           <AppSelect v-model="currentSchool" class="bg-primary-200 dark:bg-primary-800 border-primary-300 dark:border-primary-900">
             <option v-for="school in adminSchools" :id="school.id" :value="school.id">{{ school.name }}</option>
           </AppSelect>
@@ -103,7 +103,7 @@
     <div class="flex flex-1 min-h-screen flex-col justify-between md:pl-64">
       <div class="sticky top-0 z-10 flex h-16 shrink-0 bg-white dark:bg-gray-800 shadow-sm">
         <button type="button" class="border-r border-gray-200 dark:border-gray-600 px-4 text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-gray-500 md:hidden" @click="sidebarOpen = true">
-          <span class="sr-only">Open sidebar</span>
+          <span class="sr-only">{{ __('Open sidebar') }}</span>
           <Bars3BottomLeftIcon class="h-6 w-6" aria-hidden="true" />
         </button>
         <div class="flex flex-1 justify-between px-4">

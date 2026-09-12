@@ -2,6 +2,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "enums": "php artisan publish:enums-to-javascript",
     "build": "vite build",
     "dev": "vite"
   },

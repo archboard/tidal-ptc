@@ -5,7 +5,9 @@ namespace App\Enums;
 use App\Enums\Contracts\HasCustomName;
 use App\Enums\Traits\Collectable;
 use App\Enums\Traits\HasOptions;
+use Intrfce\LaravelFrontendEnums\Attributes\PublishEnum;
 
+#[PublishEnum]
 enum NotificationEvent: string implements HasCustomName
 {
     use Collectable;
