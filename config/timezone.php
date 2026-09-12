@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Auth\Events\Login;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -12,7 +14,7 @@ return [
     */
 
     'events' => [
-        \Illuminate\Auth\Events\Login::class,
+        Login::class,
     ],
 
     /*

@@ -1,5 +1,8 @@
 <?php
 
+use App\Enums\Sis;
+use Inertia\Testing\AssertableInertia;
+
 beforeEach(function () {
     logIn();
 });
@@ -13,7 +16,7 @@ it('can be accessed with permission', function () {
     fullPermissions();
 
     $this->get(route('settings.tenant.edit'))
-        ->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+        ->assertInertia(fn (AssertableInertia $page) => $page
             ->has('title')
             ->has('tenant')
             ->has('smtp')
@@ -49,7 +52,7 @@ it('can update tenant settings', function () {
     $data = [
         'name' => fake()->company(),
         'domain' => fake()->domainName(),
-        'sis_provider' => fake()->randomElement(\App\Enums\Sis::cases())->value,
+        'sis_provider' => fake()->randomElement(Sis::cases())->value,
         'allow_password_auth' => fake()->boolean(),
         'allow_oidc_login' => fake()->boolean(),
     ];

@@ -28,10 +28,6 @@ return Application::configure(basePath: dirname(__DIR__))
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         then: function () {
-            if (app()->environment(['local', 'testing'])) {
-                Route::middleware('web')->group(base_path('routes/testing.php'));
-            }
-
             Route::middleware(['cloud', 'api', 'auth:machine'])
                 ->prefix('api')
                 ->group(function () {
@@ -46,8 +42,6 @@ return Application::configure(basePath: dirname(__DIR__))
             | Request::HEADER_X_FORWARDED_PORT
             | Request::HEADER_X_FORWARDED_PROTO
             | Request::HEADER_X_FORWARDED_AWS_ELB);
-
-        $middleware->preventRequestForgery(except: ['/_testing/*']);
 
         // Inertia must run last so every earlier middleware can still share props
         $middleware->web(append: [SetLocale::class, HandleInertiaRequests::class]);

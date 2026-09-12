@@ -1,7 +1,9 @@
 <?php
 
 use App\Enums\Permission;
+use App\Models\Course;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
     logIn()->setSchool();
@@ -19,7 +21,7 @@ it('can view with permission', function () {
 
     $this->get(route('users.permissions.index', $this->subjectUser))
         ->assertOk()
-        ->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+        ->assertInertia(fn (AssertableInertia $page) => $page
             ->has('title')
             ->has('subject')
         );
@@ -61,7 +63,7 @@ it('can give permissions with the right permission', function (array $data) {
         );
         $this->$assertion(
             Bouncer::scope()
-                ->onceTo($data['school'], fn () => $this->subjectUser->can(Permission::viewAny->value, \App\Models\Course::class))
+                ->onceTo($data['school'], fn () => $this->subjectUser->can(Permission::viewAny->value, Course::class))
         );
 
         if ($data['school']) {

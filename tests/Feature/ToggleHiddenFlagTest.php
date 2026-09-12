@@ -1,11 +1,15 @@
 <?php
 
+use App\Enums\Permission;
+use App\Models\Course;
+use App\Models\User;
+
 beforeEach(function () {
     logIn()->setSchool();
 });
 
 it("can't update flag without permission", function () {
-    $course = \App\Models\Course::factory()->create();
+    $course = Course::factory()->create();
 
     $this->put(route('toggle-hidden'), [
         'model' => 'course',
@@ -14,11 +18,11 @@ it("can't update flag without permission", function () {
 });
 
 it('can update flag not using json', function () {
-    $course = \App\Models\Course::factory()->create(['can_book' => false]);
+    $course = Course::factory()->create(['can_book' => false]);
 
     $this->assertFalse($course->can_book);
 
-    $this->givePermission(\App\Enums\Permission::update, \App\Models\Course::class)
+    $this->givePermission(Permission::update, Course::class)
         ->put(route('toggle-hidden'), [
             'model' => 'course',
             'id' => $course->id,
@@ -31,11 +35,11 @@ it('can update flag not using json', function () {
 });
 
 it('can update flag using json', function () {
-    $course = \App\Models\Course::factory()->create(['can_book' => true]);
+    $course = Course::factory()->create(['can_book' => true]);
 
     $this->assertTrue($course->can_book);
 
-    $this->givePermission(\App\Enums\Permission::update, \App\Models\Course::class)
+    $this->givePermission(Permission::update, Course::class)
         ->putJson(route('toggle-hidden'), [
             'model' => 'course',
             'id' => $course->id,
@@ -57,7 +61,7 @@ it('can change selection state', function () {
         $this->user->toggleSelectedModelInstance($user);
     }
 
-    $this->givePermission(\App\Enums\Permission::update, \App\Models\User::class)
+    $this->givePermission(Permission::update, User::class)
         ->post(route('selection.hidden', 'user'), ['can_book' => false])
         ->assertSessionHas('success')
         ->assertRedirect();

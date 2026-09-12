@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\School;
+use App\Models\User;
+
 beforeEach(function () {
     logIn()->setSchool();
 });
@@ -53,7 +56,7 @@ it('can select all models without a filter', function () {
     seedUser();
     seedUser();
     $otherUser = seedUser();
-    $otherUser->update(['school_id' => App\Models\School::factory()
+    $otherUser->update(['school_id' => School::factory()
         ->create(['tenant_id' => $this->tenant->id])->id]);
 
     $this->post(route('selection.toggle', 'user'))
@@ -104,7 +107,7 @@ it('can select all models with a filter and previous selection', function () {
     seedUser(['last_name' => 'McDuck']);
     seedUser(['last_name' => 'McDuck']);
     seedUser();
-    $this->user->selectAllModel(\App\Models\User::class);
+    $this->user->selectAllModel(User::class);
 
     $this->assertEquals(
         $this->school->users()->count(),
