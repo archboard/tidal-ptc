@@ -65,7 +65,9 @@ class TimeSlotNotification extends Notification implements ShouldQueue
         }
 
         if ($this->slot->language) {
-            $message->line(__('Translator requested: :language', ['language' => $this->slot->language]));
+            $message->line($this->slot->translator
+                ? __('Translator: :language (:name)', ['language' => $this->slot->language, 'name' => $this->slot->translator])
+                : __('Translator requested: :language', ['language' => $this->slot->language]));
         }
 
         return $message->action(__('Open dashboard'), route('home'));

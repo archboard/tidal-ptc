@@ -2,6 +2,7 @@
 
 use App\Enums\Permission;
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\AssignTranslatorController;
 use App\Http\Controllers\Auth\PowerSchoolOidcLoginController;
 use App\Http\Controllers\Auth\PowerSchoolOpenIdLoginController;
 use App\Http\Controllers\BatchController;
@@ -36,6 +37,8 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\TimeSlotController;
 use App\Http\Controllers\ToggleHiddenController;
 use App\Http\Controllers\ToggleSelectionController;
+use App\Http\Controllers\TranslatorController;
+use App\Http\Controllers\TranslatorRequestController;
 use App\Http\Controllers\UpdateCurrentSchoolController;
 use App\Http\Controllers\UpdateSelectionVisibilityController;
 use App\Http\Controllers\UpdateSmtpSettingsController;
@@ -147,6 +150,13 @@ Route::middleware('tenant')->group(function () {
 
                 Route::get('/', DashboardController::class)
                     ->name('home');
+
+                Route::get('/translators', [TranslatorRequestController::class, 'index'])
+                    ->name('translators.index');
+                Route::resource('/translator-profiles', TranslatorController::class)
+                    ->only('index', 'store', 'update', 'destroy');
+                Route::put('/time-slots/{time_slot}/translator', AssignTranslatorController::class)
+                    ->name('time-slots.translator');
 
                 Route::get('/activity', [ActivityController::class, 'index'])
                     ->name('activity.index');

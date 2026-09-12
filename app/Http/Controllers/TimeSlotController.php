@@ -120,6 +120,7 @@ class TimeSlotController extends Controller
         );
 
         if ($request->updateBatch()) {
+            unset($data['translator_notes']);
             $data['starts_at'] = $timeSlot->starts_at->toDateTimeString();
             $data['ends_at'] = $timeSlot->ends_at->toDateTimeString();
             /** @var Batch $batch */

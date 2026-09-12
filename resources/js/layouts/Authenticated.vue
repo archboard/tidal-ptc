@@ -158,7 +158,7 @@
 </template>
 
 <script setup>
-import { inject, ref, watch } from 'vue'
+import { computed, inject, ref, watch } from 'vue'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { Bars3BottomLeftIcon, SunIcon, MoonIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
@@ -175,7 +175,8 @@ import useColorTheme from '@/composition/useColorTheme.js'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
 
 const title = usePageTitle()
-const { props } = usePage()
+const page = usePage()
+const props = computed(() => page.props)
 const sidebarOpen = ref(false)
 const { isDark, toggleTheme } = useColorTheme()
 const adminSchools = useProp('adminSchools')

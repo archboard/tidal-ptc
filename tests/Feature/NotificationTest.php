@@ -2,10 +2,12 @@
 
 use App\Console\Commands\SendTimeSlotReminders;
 use App\Data\TimeSlotSnapshot;
+use App\Enums\Language;
 use App\Enums\NotificationEvent;
 use App\Enums\Permission;
 use App\Enums\UserType;
 use App\Models\TimeSlot;
+use App\Models\Translator;
 use App\Notifications\ReminderNotification;
 use App\Notifications\TimeSlotNotification;
 use Illuminate\Support\Facades\Notification;
@@ -234,4 +236,14 @@ it('validates the reminder lead time setting', function () {
         ->assertSessionHasNoErrors();
 
     expect($this->user->refresh()->reminderHours())->toBe(48);
+});
+
+it('names the assigned translator in the email', function () {
+    $translator = Translator::factory()->create(['first_name' => 'Yuki', 'last_name' => 'Sato']);
+    reserve($this->slot)->update(['language' => Language::JAPANESE, 'translator_id' => $translator->id]);
+    $this->slot->refresh()->load('user', 'student', 'reservedBy', 'translator');
+
+    $lines = collect((new TimeSlotNotification(NotificationEvent::slot_booked, TimeSlotSnapshot::fromTimeSlot($this->slot)))->toMail($this->guardian)->introLines)->implode("\n");
+
+    expect($lines)->toContain('Yuki Sato')->toContain('Japanese');
 });

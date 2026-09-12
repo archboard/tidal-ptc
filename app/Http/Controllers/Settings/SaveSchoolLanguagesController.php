@@ -17,8 +17,8 @@ class SaveSchoolLanguagesController extends Controller
             ->map(fn (array $language) => [
                 'school_id' => $school->id,
                 'language' => $language['code'],
-                'request_max' => $language['request_max'],
-                'overlap_max' => $language['overlap_max'],
+                'request_max' => (int) ($language['request_max'] ?? 0),
+                'overlap_max' => (int) ($language['overlap_max'] ?? 0),
                 'updated_at' => $now,
                 'created_at' => $now,
             ])

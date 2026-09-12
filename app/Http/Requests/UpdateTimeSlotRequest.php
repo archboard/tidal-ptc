@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Enums\Permission;
 use App\Models\User;
 use Carbon\CarbonImmutable;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -51,7 +52,7 @@ class UpdateTimeSlotRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -60,6 +61,7 @@ class UpdateTimeSlotRequest extends FormRequest
             'starts_at' => ['required', 'date', 'after:now'],
             'ends_at' => ['required', 'date', 'after:starts_at'],
             'teacher_notes' => ['nullable'],
+            'translator_notes' => ['nullable', 'string', 'max:1000'],
             'location' => ['nullable', 'string', 'max:255'],
             'meeting_url' => [
                 'nullable',

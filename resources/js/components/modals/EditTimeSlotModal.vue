@@ -5,6 +5,38 @@
     ref="modal"
     :action-loading="uiState === 'saving'"
   >
+    <div v-if="timeSlot.student" class="mb-6 rounded-xl bg-gray-50 dark:bg-gray-700 p-4 space-y-3">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h4 class="font-semibold">{{ __('Reservation') }}</h4>
+          <p class="text-sm">{{ timeSlot.student.name }}</p>
+          <p v-if="timeSlot.reserved_by" class="text-sm text-gray-500 dark:text-gray-300">
+            {{ timeSlot.reserved_by.name }} · {{ timeSlot.reserved_by.email }}
+          </p>
+          <p v-if="timeSlot.reserved_at" class="text-sm text-gray-500 dark:text-gray-300">{{ __('Booked :when', { when: displayDate(timeSlot.reserved_at, 'full', true) }) }}</p>
+        </div>
+        <ConfirmButton color="red" class="text-sm" :loading="cancelling" @confirmed="cancelReservation">
+          {{ __('Cancel reservation') }}
+          <template #actionText>{{ __('Cancel reservation') }}</template>
+        </ConfirmButton>
+      </div>
+      <dl class="text-sm grid grid-cols-3 gap-y-1">
+        <template v-if="timeSlot.contact_notes">
+          <dt class="text-gray-500 dark:text-gray-300">{{ __('Notes') }}</dt>
+          <dd class="col-span-2 whitespace-pre-line">{{ timeSlot.contact_notes }}</dd>
+        </template>
+        <dt class="text-gray-500 dark:text-gray-300">{{ __('Online requested') }}</dt>
+        <dd class="col-span-2">{{ timeSlot.requested_online ? __('Yes') : __('No') }}</dd>
+        <template v-if="timeSlot.language">
+          <dt class="text-gray-500 dark:text-gray-300">{{ __('Translator') }}</dt>
+          <dd class="col-span-2">{{ timeSlot.language }}</dd>
+        </template>
+      </dl>
+      <FormField v-if="timeSlot.language" v-model="form.translator_notes" component="AppTextarea" :help="__('Visible to staff only, e.g. the assigned translator.')">
+        {{ __('Translator notes') }}
+      </FormField>
+    </div>
+
     <AdminTimeSlotForm v-model="form" :school="school" />
 
     <details class="mt-6" @toggle="loadHistory">
@@ -51,6 +83,9 @@ import AppButton from '@/components/AppButton.vue'
 import { TrashIcon } from '@heroicons/vue/24/solid'
 import { inject, ref } from 'vue'
 import ActivityDetails from '@/components/ActivityDetails.vue'
+import ConfirmButton from '@/components/ConfirmButton.vue'
+import FormField from '@/components/forms/FormField.vue'
+import useDates from '@/composition/useDates.js'
 
 const props = defineProps({
   school: Object,
@@ -63,6 +98,17 @@ const { mergeTimeSlot, timeSlotBase } = useTimeSlots()
 const form = useForm(mergeTimeSlot(timeSlotBase, props.timeSlot))
 const modal = ref()
 const $http = inject('$http')
+const { displayDate } = useDates()
+const cancelling = ref(false)
+const cancelReservation = async (close) => {
+  cancelling.value = true
+  try {
+    await $http.delete(`/reservations/${props.timeSlot.id}`)
+    close()
+    modal.value.close()
+  } catch (e) {}
+  cancelling.value = false
+}
 const history = ref(null)
 const loadHistory = async (e) => {
   if (!e.target.open || history.value !== null) return

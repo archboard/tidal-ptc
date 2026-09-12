@@ -13,6 +13,7 @@ export default function useTimeSlots() {
   const timeSlotBase = {
     batch_id: null,
     teacher_notes: null,
+    translator_notes: null,
     starts_at: null,
     ends_at: null,
     location: null,

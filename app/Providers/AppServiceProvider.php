@@ -14,6 +14,7 @@ use App\Models\SelectedModel;
 use App\Models\Student;
 use App\Models\Tenant;
 use App\Models\TimeSlot;
+use App\Models\Translator;
 use App\Models\User;
 use App\Services\ModelClassService;
 use Carbon\CarbonImmutable;
@@ -72,6 +73,7 @@ class AppServiceProvider extends ServiceProvider
             'school_language' => SchoolLanguage::class,
             'selected_model' => SelectedModel::class,
             'activity' => Activity::class,
+            'translator' => Translator::class,
         ]);
 
         // Add the tenant_id to the identifying attributes when looking up a user

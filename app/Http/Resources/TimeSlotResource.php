@@ -38,6 +38,11 @@ class TimeSlotResource extends JsonResource
                 'email' => $this->resource->reservedBy?->email,
             ]),
             'language' => $this->resource->language?->value,
+            'translator_id' => $this->resource->translator_id,
+            'translator' => $this->when($canViewReservation && $this->resource->translator, fn () => [
+                'id' => $this->resource->translator?->id,
+                'name' => $this->resource->translator?->name,
+            ]),
             'user' => new PublicUserResource($this->whenLoaded('user')),
             'location' => $this->resource->location,
             'meeting_url' => $this->resource->meeting_url,

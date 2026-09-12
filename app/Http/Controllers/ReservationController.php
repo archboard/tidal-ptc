@@ -29,6 +29,7 @@ class ReservationController extends Controller
         'requested_online' => false,
         'language' => null,
         'translator_notes' => null,
+        'translator_id' => null,
         'contact_reminded_at' => null,
         'staff_reminded_at' => null,
     ];

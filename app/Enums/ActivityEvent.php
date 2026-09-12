@@ -21,6 +21,8 @@ enum ActivityEvent: string
     case batch_updated = 'batch_updated';
     case smtp_updated = 'smtp_updated';
     case notification_sent = 'notification_sent';
+    case translator_assigned = 'translator_assigned';
+    case translator_unassigned = 'translator_unassigned';
 
     /** English description; placeholders are filled from the activity's properties at display time. */
     public function description(): string
@@ -46,6 +48,10 @@ enum ActivityEvent: string
             self::smtp_updated => 'SMTP settings updated',
             // __(':notification email sent')
             self::notification_sent => ':notification email sent',
+            // __('Translator :translator assigned')
+            self::translator_assigned => 'Translator :translator assigned',
+            // __('Translator :translator unassigned')
+            self::translator_unassigned => 'Translator :translator unassigned',
         };
     }
 

@@ -33,6 +33,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property int|null $student_id
  * @property int|null $batch_id
  * @property int|null $reserved_by
+ * @property int|null $translator_id
  * @property int|null $created_by
  * @property CarbonImmutable $starts_at
  * @property CarbonImmutable $ends_at
@@ -60,6 +61,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property-read User|null $reservedBy
  * @property-read School $school
  * @property-read Student|null $student
+ * @property-read Translator|null $translator
  * @property-read Tenant $tenant
  * @property-read User $user
  *
@@ -226,6 +228,12 @@ class TimeSlot extends Model
     public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
+    }
+
+    /** @return BelongsTo<Translator, $this> */
+    public function translator(): BelongsTo
+    {
+        return $this->belongsTo(Translator::class);
     }
 
     /** @return BelongsTo<User, $this> */

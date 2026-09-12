@@ -22,6 +22,7 @@ final readonly class TimeSlotSnapshot
         public ?string $meetingUrl,
         public bool $isOnline,
         public ?string $language,
+        public ?string $translator,
         public ?CarbonImmutable $previousStartsAt = null,
         public ?CarbonImmutable $previousEndsAt = null,
     ) {}
@@ -39,6 +40,7 @@ final readonly class TimeSlotSnapshot
             meetingUrl: $timeSlot->meeting_url ?: $timeSlot->user->meeting_url,
             isOnline: $timeSlot->is_online || $timeSlot->requested_online,
             language: $timeSlot->language?->name(),
+            translator: $timeSlot->translator?->name,
             previousStartsAt: $previous?->starts_at,
             previousEndsAt: $previous?->ends_at,
         );
