@@ -17,15 +17,15 @@
       <AppFieldset>
         <FormField :error="form.errors.email">
           {{ __('Email') }}
-          <template #component="{ hasError }">
-            <AppInput v-model="form.email" class="text-xl" type="email" :has-error="hasError" />
+          <template #component="{ hasError, id }">
+            <AppInput v-model="form.email" :id="id" class="text-xl" type="email" :has-error="hasError" />
           </template>
         </FormField>
 
         <FormField :error="form.errors.password">
           {{ __('Password') }}
-          <template #component="{ hasError }">
-            <AppInput v-model="form.password" class="text-xl" type="password" :has-error="hasError" />
+          <template #component="{ hasError, id }">
+            <AppInput v-model="form.password" :id="id" class="text-xl" type="password" :has-error="hasError" />
           </template>
         </FormField>
 
