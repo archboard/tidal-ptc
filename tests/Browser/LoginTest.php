@@ -12,6 +12,7 @@ it('logs in with valid credentials', function () {
         ->fill('Email', $user->email)
         ->fill('Password', 'password')
         ->click('Log in')
+        ->waitForEvent('networkidle')
         ->assertPathIs('/')
         ->assertNoJavaScriptErrors();
 
@@ -25,6 +26,7 @@ it('shows an inline error for invalid credentials', function () {
         ->fill('Email', $user->email)
         ->fill('Password', 'wrong-password')
         ->click('Log in')
+        ->waitForEvent('networkidle')
         ->assertPathIs('/login')
         ->assertSee(__('auth.failed'))
         ->assertNoJavaScriptErrors();
