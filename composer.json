@@ -83,7 +83,8 @@
     "post-update-cmd": [
       "Illuminate\\Foundation\\ComposerScripts::postUpdate",
       "@php artisan ide-helper:generate",
-      "@php artisan ide-helper:meta"
+      "@php artisan ide-helper:meta",
+      "@php artisan boost:update --silent --ansi --no-interaction"
     ],
     "analyze": "./vendor/bin/phpstan analyse --memory-limit=512M",
     "format": "./vendor/bin/pint --dirty",
