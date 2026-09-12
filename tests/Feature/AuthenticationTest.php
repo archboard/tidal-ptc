@@ -24,6 +24,7 @@ it('login screen can be rendered', function () {
             ->component('Auth/Login')
             ->has('title')
             ->has('status')
+            ->has('tenant.allow_password_auth')
         );
 });
 
@@ -37,6 +38,7 @@ it('login screen can be rendered when passwords are disabled', function () {
             ->component('Auth/Login')
             ->has('title')
             ->has('status')
+            ->where('tenant.allow_password_auth', false)
         );
 });
 

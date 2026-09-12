@@ -6,6 +6,7 @@ use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -63,6 +64,7 @@ class FortifyServiceProvider extends ServiceProvider
 
             return inertia('Auth/Login', [
                 'title' => $title,
+                'tenant' => Tenant::current()->only(['allow_oidc_login', 'allow_password_auth']),
                 'status' => session('status'),
             ])->withViewData(compact('title'));
         });
