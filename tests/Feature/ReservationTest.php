@@ -5,6 +5,7 @@ use App\Enums\Permission;
 use App\Enums\UserType;
 use App\Models\Student;
 use App\Models\TimeSlot;
+use Inertia\Testing\AssertableInertia;
 use Silber\Bouncer\BouncerFacade;
 
 beforeEach(function () {
@@ -242,4 +243,46 @@ it('rejects a second booking of the same slot', function () {
     $this->actingAs($otherGuardian);
     book($this->slot, ['student_id' => $other->id])->assertUnprocessable();
     expect($this->slot->refresh()->student_id)->toBe($this->student->id);
+});
+
+it('shows the booking page to contacts and admins only', function () {
+    $stranger = seedGuardian(Student::factory()->create());
+
+    $this->actingAs($stranger)->get(route('reservations.create', [$this->student, $this->teacher]))->assertForbidden();
+    $this->actingAs($this->guardian)->get(route('reservations.create', [$this->student, seedUser()]))->assertForbidden();
+
+    $this->actingAs($this->guardian)
+        ->get(route('reservations.create', [$this->student, $this->teacher]))
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('reservations/Create')
+            ->where('student.id', $this->student->id)
+            ->where('staff.id', $this->teacher->id)
+            ->has('slots', 1)
+            ->where('existingReservation', null));
+
+    $this->actingAs($this->user);
+    $this->givePermission(Permission::update, TimeSlot::class)
+        ->get(route('reservations.create', [$this->student, $this->teacher]))
+        ->assertOk();
+});
+
+it('lists only bookable slots on the booking page', function () {
+    seedBookableSlot($this->teacher, ['contact_can_book' => false]);
+    seedBookableSlot($this->teacher, ['student_id' => Student::factory()->create()->id]);
+    seedBookableSlot($this->teacher, ['starts_at' => now()->addHour(), 'ends_at' => now()->addMinutes(75)]);
+    seedBookableSlot($this->teacher, ['starts_at' => now()->subDay(), 'ends_at' => now()->subDay()->addMinutes(15)]);
+    $existing = seedBookableSlot($this->teacher, ['student_id' => $this->student->id, 'reserved_by' => $this->guardian->id, 'starts_at' => now()->addDays(3), 'ends_at' => now()->addDays(3)->addMinutes(15)]);
+
+    $this->get(route('reservations.create', [$this->student, $this->teacher]))
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->has('slots', 1)
+            ->where('slots.0.id', $this->slot->id)
+            ->where('existingReservation.id', $existing->id));
+});
+
+it('redirects inertia bookings to the dashboard', function () {
+    $this->post(route('reservations.store', $this->slot), ['student_id' => $this->student->id], ['X-Inertia' => 'true'])
+        ->assertRedirect(route('home'))
+        ->assertSessionHas('success');
 });

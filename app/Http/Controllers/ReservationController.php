@@ -6,12 +6,17 @@ use App\Enums\ActivityEvent;
 use App\Enums\NotificationEvent;
 use App\Enums\Permission;
 use App\Http\Requests\ReserveTimeSlotRequest;
+use App\Http\Resources\PublicUserResource;
+use App\Http\Resources\StudentResource;
+use App\Http\Resources\TimeSlotResource;
+use App\Models\Student;
 use App\Models\TimeSlot;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Inertia\Response;
 
 class ReservationController extends Controller
 {
@@ -28,6 +33,43 @@ class ReservationController extends Controller
         'staff_reminded_at' => null,
     ];
 
+    /** Booking page for one student with one staff member. */
+    public function create(Request $request, Student $student, User $user): Response
+    {
+        /** @var User $actor */
+        $actor = $request->user();
+        $school = $request->school();
+
+        abort_unless(
+            $actor->can(Permission::update, TimeSlot::class) || $actor->students()->whereKey($student->id)->exists(),
+            403
+        );
+        abort_unless($student->canMeetWith($user), 403, __('This student cannot book a conference with this staff member.'));
+
+        $existing = $student->timeSlots()->notExpired()->where('user_id', $user->id)->first();
+        $slots = TimeSlot::query()
+            ->when(
+                $actor->can(Permission::update, TimeSlot::class),
+                fn ($query) => $query->notReserved()->where('school_id', $school->id)->notExpired(),
+                fn ($query) => $query->bookable($school),
+            )
+            ->where('user_id', $user->id)
+            ->orderBy('starts_at')
+            ->get();
+
+        return inertia('reservations/Create', [
+            'title' => __('Book a conference'),
+            'student' => new StudentResource($student),
+            'staff' => new PublicUserResource($user),
+            'slots' => TimeSlotResource::collection($slots),
+            'existingReservation' => $existing ? new TimeSlotResource($existing) : null,
+            'languages' => $school->allow_translator_requests
+                ? $school->languages->map(fn ($language) => ['value' => $language->language->value, 'label' => $language->language->name()])->values()
+                : [],
+            'allowOnline' => $school->allow_online_meetings,
+        ]);
+    }
+
     public function store(ReserveTimeSlotRequest $request, TimeSlot $timeSlot): JsonResponse|RedirectResponse
     {
         DB::transaction(function () use ($request, $timeSlot) {
@@ -37,7 +79,7 @@ class ReservationController extends Controller
         $timeSlot->refresh()->notifyReservation(NotificationEvent::slot_booked);
         $this->logReservation(ActivityEvent::reservation_booked, $timeSlot);
 
-        return $this->toSuccess($request, __('Conference booked successfully.'));
+        return $this->toDashboard($request, __('Conference booked successfully.'));
     }
 
     /**
@@ -64,7 +106,7 @@ class ReservationController extends Controller
             'from_ends_at' => $timeSlot->ends_at->toDateTimeString(),
         ]);
 
-        return $this->toSuccess($request, __('Conference rescheduled successfully.'));
+        return $this->toDashboard($request, __('Conference rescheduled successfully.'));
     }
 
     public function destroy(Request $request, TimeSlot $timeSlot): JsonResponse|RedirectResponse
@@ -87,6 +129,18 @@ class ReservationController extends Controller
         $timeSlot->update(self::EMPTY_RESERVATION);
 
         return $this->toSuccess($request, __('Conference cancelled.'));
+    }
+
+    /** Inertia bookings come from the booking page; send them home rather than back to it. */
+    protected function toDashboard(Request $request, string $message): JsonResponse|RedirectResponse
+    {
+        if ($request->inertia()) {
+            session()->flash('success', $message);
+
+            return to_route('home');
+        }
+
+        return $this->toSuccess($request, $message);
     }
 
     /**

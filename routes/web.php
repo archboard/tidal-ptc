@@ -9,6 +9,7 @@ use App\Http\Controllers\BatchEventSourceController;
 use App\Http\Controllers\CheckAuthStatusController;
 use App\Http\Controllers\ClassLinkOAuthController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeleteBatchTimeSlotController;
 use App\Http\Controllers\GetLanguagesController;
 use App\Http\Controllers\GetSelectionController;
@@ -111,10 +112,6 @@ Route::middleware('tenant')->group(function () {
         Route::get('/timezones', fn () => timezones());
         Route::get('/languages', GetLanguagesController::class);
 
-        Route::get('/', function () {
-            return inertia('Index');
-        })->name('home');
-
         Route::get('/select-school', [SchoolSelectionController::class, 'index'])
             ->name('select-school');
         Route::post('/select-school', [SchoolSelectionController::class, 'update']);
@@ -148,11 +145,16 @@ Route::middleware('tenant')->group(function () {
                 Route::resource('/time-slots', TimeSlotController::class)
                     ->only('index', 'create', 'store', 'update', 'destroy');
 
+                Route::get('/', DashboardController::class)
+                    ->name('home');
+
                 Route::get('/activity', [ActivityController::class, 'index'])
                     ->name('activity.index');
                 Route::get('/time-slots/{time_slot}/activity', [ActivityController::class, 'timeSlot'])
                     ->name('time-slots.activity');
 
+                Route::get('/reservations/create/{student}/{user}', [ReservationController::class, 'create'])
+                    ->name('reservations.create');
                 Route::post('/reservations/{time_slot}', [ReservationController::class, 'store'])
                     ->name('reservations.store');
                 Route::put('/reservations/{time_slot}', [ReservationController::class, 'update'])
