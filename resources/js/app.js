@@ -5,6 +5,7 @@ import * as plugins from '@/plugins'
 import components from '@/components'
 import get from 'just-safe-get'
 import flashesNotifications from '@/plugins/flashesNotifications.js'
+import echo from '@/plugins/echo.js'
 import { i18nVue } from 'laravel-vue-i18n'
 import '../css/app.css'
 
@@ -31,6 +32,8 @@ createInertiaApp({
 
     // Register all the plugins
     Object.values(plugins).forEach(app.use)
+    // Echo needs the signed-in user to subscribe to their notification channel
+    app.use(echo, { userId: get(props, 'initialPage.props.user.id') })
 
     // Register global components
     Object.keys(components).forEach(componentName => {
