@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use App\Enums\Permission;
-use App\Enums\Role;
 use App\Http\Resources\SchoolResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -59,21 +58,9 @@ class HandleInertiaRequests extends Middleware
                 : new \stdClass,
             'school' => fn () => new SchoolResource($school),
             'breadcrumbs' => [],
-            'adminSchools' => function () use ($user, $tenant) {
-                if (! $user) {
-                    return [];
-                }
-
-                $schools = $user->isA(Role::DISTRICT_ADMIN->value)
-                    ? $tenant->schools()
-                        ->active()
-                        ->orderBy('name')
-                        ->get()
-                    : $user->adminSchools()
-                        ->get();
-
-                return SchoolResource::collection($schools);
-            },
+            'adminSchools' => fn () => $user
+                ? SchoolResource::collection($user->adminSchools()->get())
+                : [],
             'flash' => [
                 'success' => session('success'),
                 'error' => session('error'),

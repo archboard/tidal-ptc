@@ -228,10 +228,18 @@ class User extends Authenticatable implements ExistsInSis, Filterable
             ->withPivot(['relationship']);
     }
 
-    /** @return BelongsToMany<School, $this> */
-    public function adminSchools(): BelongsToMany
+    /**
+     * District admins can access every active school in the tenant; everyone else only their assigned schools.
+     *
+     * @return Builder<School>
+     */
+    public function adminSchools(): Builder
     {
-        return $this->schools()
+        $query = $this->isA(Role::DISTRICT_ADMIN->value)
+            ? $this->tenant->schools()->getQuery()
+            : $this->schools()->getQuery();
+
+        return $query
             ->active()
             ->orderBy('name');
     }
