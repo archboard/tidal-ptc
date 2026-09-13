@@ -1,5 +1,11 @@
 <template>
   <Authenticated>
+    <template #actions>
+      <ActionWrapper>
+        <SyncSchoolItemButton item="courses" />
+      </ActionWrapper>
+    </template>
+
     <Filters
       v-model="filters"
       v-model:search="search"
@@ -43,6 +49,14 @@
         </tr>
       </Thead>
       <Tbody>
+        <tr v-if="courses.data.length === 0">
+          <Td class="text-center" colspan="5">
+            <div class="py-6 space-y-3">
+              <p>{{ __('No courses have been synced yet.') }}</p>
+              <SyncSchoolItemButton item="courses" />
+            </div>
+          </Td>
+        </tr>
         <tr v-for="course in courses.data" :key="course.id">
           <Td class="pr-0 w-4">
             <Checkbox v-model="selection" :value="course.id" @change="toggleSelection(course.id)" />
@@ -71,6 +85,8 @@
 <script setup>
 import { ref } from 'vue'
 import Authenticated from '@/layouts/Authenticated.vue'
+import ActionWrapper from '@/components/ActionWrapper.vue'
+import SyncSchoolItemButton from '@/components/SyncSchoolItemButton.vue'
 import { ActionColumn, Table, Tbody, Th, Thead } from '@/components/tables/index.js'
 import Td from '@/components/tables/Td.vue'
 import Pagination from '@/components/tables/Pagination.vue'

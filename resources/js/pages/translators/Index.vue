@@ -61,7 +61,7 @@
       </Thead>
       <Tbody>
         <tr v-if="requests.length === 0">
-          <Td colspan="8">{{ __('No translator requests.') }}</Td>
+          <Td colspan="8" class="text-center">{{ __('No translator requests.') }}</Td>
         </tr>
         <tr v-for="slot in requests" :key="slot.id">
           <Td class="whitespace-nowrap">{{ displayDate(slot.starts_at, 'full') }}</Td>
