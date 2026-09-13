@@ -64,7 +64,7 @@ class FortifyServiceProvider extends ServiceProvider
 
             return inertia('Auth/Login', [
                 'title' => $title,
-                'tenant' => Tenant::current()->only(['allow_oidc_login', 'allow_password_auth']),
+                'tenant' => Tenant::current()?->only(['allow_oidc_login', 'allow_password_auth']) ?? new \stdClass,
                 'status' => session('status'),
             ])->withViewData(compact('title'));
         });

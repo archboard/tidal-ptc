@@ -68,6 +68,9 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
  * @method static Builder<static>|Tenant whereTimezone($value)
  * @method static Builder<static>|Tenant whereUpdatedAt($value)
  *
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Activity> $activitiesAsSubject
+ * @property-read int|null $activities_as_subject_count
+ *
  * @mixin \Eloquent
  */
 final class Tenant extends TenantBase

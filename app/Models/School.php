@@ -84,6 +84,9 @@ use Spatie\Activitylog\Support\LogOptions;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereTimezone($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereUpdatedAt($value)
  *
+ * @property-read Collection<int, Activity> $activitiesAsSubject
+ * @property-read int|null $activities_as_subject_count
+ *
  * @mixin \Eloquent
  */
 class School extends Model implements ExistsInSis

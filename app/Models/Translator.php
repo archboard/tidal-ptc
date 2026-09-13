@@ -43,6 +43,31 @@ use Spatie\Activitylog\Support\LogOptions;
  * @method static Builder<static>|Translator active()
  * @method static Builder<static>|Translator speaks(Language $language)
  * @method static TranslatorFactory factory($count = null, $state = [])
+ *
+ * @property-read Collection<int, Activity> $activitiesAsSubject
+ * @property-read int|null $activities_as_subject_count
+ * @property-read int|null $assignments_count
+ *
+ * @method static Builder<static>|Translator newModelQuery()
+ * @method static Builder<static>|Translator newQuery()
+ * @method static Builder<static>|Translator onlyTrashed()
+ * @method static Builder<static>|Translator query()
+ * @method static Builder<static>|Translator whereActive($value)
+ * @method static Builder<static>|Translator whereCreatedAt($value)
+ * @method static Builder<static>|Translator whereDeletedAt($value)
+ * @method static Builder<static>|Translator whereEmail($value)
+ * @method static Builder<static>|Translator whereId($value)
+ * @method static Builder<static>|Translator whereLanguages($value)
+ * @method static Builder<static>|Translator whereName($value)
+ * @method static Builder<static>|Translator whereNotes($value)
+ * @method static Builder<static>|Translator wherePhone($value)
+ * @method static Builder<static>|Translator whereSchoolId($value)
+ * @method static Builder<static>|Translator whereTenantId($value)
+ * @method static Builder<static>|Translator whereUpdatedAt($value)
+ * @method static Builder<static>|Translator withTrashed(bool $withTrashed = true)
+ * @method static Builder<static>|Translator withoutTrashed()
+ *
+ * @mixin \Eloquent
  */
 class Translator extends Model
 {

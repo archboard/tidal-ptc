@@ -100,6 +100,13 @@ use Spatie\Activitylog\Support\LogOptions;
  * @method static Builder<static>|TimeSlot whereUserId($value)
  * @method static Builder<static>|TimeSlot whereLanguage($value)
  *
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Activity> $activitiesAsSubject
+ * @property-read int|null $activities_as_subject_count
+ *
+ * @method static Builder<static>|TimeSlot whereContactRemindedAt($value)
+ * @method static Builder<static>|TimeSlot whereStaffRemindedAt($value)
+ * @method static Builder<static>|TimeSlot whereTranslatorId($value)
+ *
  * @mixin \Eloquent
  */
 class TimeSlot extends Model
