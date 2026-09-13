@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserType;
 use App\Exceptions\SisNotConfiguredException;
 use Inertia\Testing\AssertableInertia;
 
@@ -15,6 +16,18 @@ it('will throw an exception without schools', function () {
     $this->withoutExceptionHandling();
     $this->expectException(SisNotConfiguredException::class);
     $this->get(route('select-school'));
+});
+
+it('does not throw for a guardian with no linked students', function () {
+    $this->user->update(['user_type' => UserType::guardian]);
+
+    $this->withoutExceptionHandling()
+        ->get(route('select-school'))
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('SchoolSelection')
+            ->has('schools', 0)
+        );
 });
 
 it('can view the school selection page', function () {

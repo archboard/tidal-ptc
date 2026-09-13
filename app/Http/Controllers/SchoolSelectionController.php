@@ -19,15 +19,17 @@ class SchoolSelectionController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $isGuardian = $user->user_type === UserType::guardian;
         $schools = $tenant->schools()
-            ->when($user->user_type === UserType::guardian, function (Builder $builder) use ($user) {
+            ->when($isGuardian, function (Builder $builder) use ($user) {
                 $builder->whereIn('id', $user->students()->pluck('school_id'));
             })
             ->where('active', true)
             ->get();
         $title = __('Select school');
 
-        throw_if($schools->isEmpty(), new SisNotConfiguredException('No schools configured'));
+        // Guardians are scoped to their students' schools; an empty list means no linked students, not a missing SIS config
+        throw_if($schools->isEmpty() && ! $isGuardian, new SisNotConfiguredException('No schools configured'));
 
         return inertia('SchoolSelection', [
             'schools' => SchoolResource::collection($schools),
