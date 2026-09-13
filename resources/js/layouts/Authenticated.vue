@@ -180,6 +180,7 @@ watch(currentSchool, (value) => {
       school_id: value
     }, {
       preserveScroll: true,
+      preserveState: false, // remount the page so nothing scoped to the old school lingers
       onError: (errors) => {
         $error(errors.school_id)
       }
