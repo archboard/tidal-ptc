@@ -17,7 +17,10 @@
     <env name="CACHE_DRIVER" value="array"/>
     <env name="MAIL_MAILER" value="array"/>
     <env name="MAIL_FROM_ADDRESS" value="noreply@example.com"/>
-    <env name="BROADCAST_CONNECTION" value="log"/>
+    <env name="BROADCAST_CONNECTION" value="reverb"/>
+    <env name="REVERB_APP_ID" value="testing"/>
+    <env name="REVERB_APP_KEY" value="testing"/>
+    <env name="REVERB_APP_SECRET" value="testing"/>
     <env name="QUEUE_CONNECTION" value="sync"/>
     <env name="SESSION_DRIVER" value="array"/>
   </php>
