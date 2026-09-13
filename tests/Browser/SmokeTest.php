@@ -34,3 +34,25 @@ it('loads authenticated pages without smoke', function () {
         '/users',
     ])->assertNoSmoke();
 });
+
+it('loads record pages without smoke', function () {
+    logIn();
+    fullPermissions();
+    $section = seedSection();
+    $student = $section->students->first();
+    $batch = seedBatch();
+    $slot = $batch->timeSlots->first();
+    $teacher = $slot->user;
+
+    visit([
+        "/batches/{$batch->id}/edit",
+        "/courses/{$section->course_id}",
+        "/sections/{$section->id}",
+        "/sections/{$section->id}/edit",
+        "/students/{$student->id}",
+        "/time-slots/{$slot->id}/activity",
+        "/users/{$teacher->id}",
+        "/users/{$teacher->id}/edit",
+        "/users/{$teacher->id}/permissions",
+    ])->assertNoSmoke();
+});
