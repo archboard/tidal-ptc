@@ -36,6 +36,11 @@ return Application::configure(basePath: dirname(__DIR__))
                 });
         },
     )
+    // Channel auth needs the tenant session resolved before `auth` runs
+    ->withBroadcasting(
+        __DIR__.'/../routes/channels.php',
+        ['middleware' => ['web', 'tenant', 'auth']],
+    )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(headers: Request::HEADER_X_FORWARDED_FOR
             | Request::HEADER_X_FORWARDED_HOST

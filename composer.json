@@ -20,6 +20,7 @@
     "intrfce/laravel-frontend-enums": "^1.1",
     "laravel/fortify": "^1.13",
     "laravel/framework": "^13.0",
+    "laravel/reverb": "^1.11",
     "laravel/tinker": "^3.0",
     "silber/bouncer": "^1.0",
     "spatie/laravel-activitylog": "^5.1",
