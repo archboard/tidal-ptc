@@ -84,14 +84,6 @@ class BatchController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id): void
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(School $school, Batch $batch): Response
@@ -132,13 +124,5 @@ class BatchController extends Controller
             'message' => __('Time slot updated successfully.'),
             'data' => new stdClass,
         ]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id): void
-    {
-        //
     }
 }

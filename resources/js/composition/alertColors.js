@@ -1,4 +1,4 @@
-import { computed } from 'vue'
+import { computed, unref } from 'vue'
 
 const bgColors = {
   success: 'bg-green-50 dark:bg-green-900',
@@ -26,10 +26,12 @@ const dismissColors = {
 }
 
 export default (level) => {
+  const key = () => unref(level)
+
   return {
-    iconColor: computed(() => iconColors[level] || iconColors.neutral),
-    bgColor: computed(() => bgColors[level] || bgColors.neutral),
-    textColor: computed(() => textColors[level] || textColors.neutral),
-    dismissColor: computed(() => dismissColors[level] || dismissColors.neutral),
+    iconColor: computed(() => iconColors[key()] || iconColors.neutral),
+    bgColor: computed(() => bgColors[key()] || bgColors.neutral),
+    textColor: computed(() => textColors[key()] || textColors.neutral),
+    dismissColor: computed(() => dismissColors[key()] || dismissColors.neutral),
   }
 }

@@ -7,7 +7,10 @@ use App\Forms\Traits\ValidatesTenantFields;
 use App\Http\Controllers\Controller;
 use App\Models\School;
 use App\Models\Tenant;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Response;
+use Inertia\ResponseFactory;
 
 class TenantSettingsController extends Controller
 {
@@ -16,7 +19,7 @@ class TenantSettingsController extends Controller
     /**
      * Shows the tenant settings form
      *
-     * @return \Inertia\Response|\Inertia\ResponseFactory
+     * @return Response|ResponseFactory
      */
     public function edit(Tenant $tenant)
     {
@@ -49,7 +52,7 @@ class TenantSettingsController extends Controller
     /**
      * Updates attributes for the tenant
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function update(Request $request, Tenant $tenant)
     {

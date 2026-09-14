@@ -28,8 +28,8 @@ class SectionResource extends JsonResource
             'teacher_can_book' => $this->resource->teacher_can_book,
             'alt_user_id' => $this->resource->alt_user_id,
             'course' => new CourseResource($this->whenLoaded('course')),
-            'teacher' => new UserResource($this->whenLoaded('teacher')),
-            'alt_teacher' => new UserResource($this->whenLoaded('altTeacher')),
+            'teacher' => new PublicUserResource($this->whenLoaded('teacher')),
+            'alt_teacher' => new PublicUserResource($this->whenLoaded('altTeacher')),
             'students' => StudentResource::collection($this->whenLoaded('students')),
             'model_alias' => $this->resource->getMorphClass(),
         ];

@@ -1,6 +1,5 @@
 <?php
 
-use App\Providers\RouteServiceProvider;
 use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
@@ -25,6 +24,7 @@ it('login screen can be rendered', function () {
             ->component('Auth/Login')
             ->has('title')
             ->has('status')
+            ->has('tenant.allow_password_auth')
         );
 });
 
@@ -38,6 +38,7 @@ it('login screen can be rendered when passwords are disabled', function () {
             ->component('Auth/Login')
             ->has('title')
             ->has('status')
+            ->where('tenant.allow_password_auth', false)
         );
 });
 
@@ -48,7 +49,7 @@ it('users can authenticate using the login screen', function () {
         'email' => $user->email,
         'password' => 'password',
     ])
-        ->assertRedirect(RouteServiceProvider::HOME);
+        ->assertRedirect('/');
 
     $this->assertAuthenticatedAs($user);
 });
@@ -88,4 +89,9 @@ it('users can logout when password auth is disabled', function () {
 it('guest cannot logout', function () {
     $this->post('/logout')
         ->assertRedirect('/login');
+});
+
+it('redirects guests to the login page', function () {
+    $this->get(route('time-slots.index'))
+        ->assertRedirect(route('login'));
 });

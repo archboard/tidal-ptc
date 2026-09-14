@@ -70,6 +70,6 @@ class SchoolSettingsController extends Controller
 
         session()->flash('success', __('Settings saved.'));
 
-        return to_route('settings.school.edit');
+        return back();
     }
 }

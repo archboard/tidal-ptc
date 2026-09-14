@@ -32,6 +32,6 @@ class UpdateCurrentSchoolController extends Controller
             'school' => School::findOrFail((int) $data['school_id'])->name,
         ]));
 
-        return back();
+        return to_route('home');
     }
 }

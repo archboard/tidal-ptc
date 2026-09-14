@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ActivityEvent;
 use App\Models\Contracts\ExistsInSis;
 use App\Traits\BelongsToTenant;
 use App\Traits\HasTimeSlots;
@@ -15,6 +16,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 /**
  * @property int $id
@@ -81,6 +84,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereTimezone($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereUpdatedAt($value)
  *
+ * @property-read Collection<int, Activity> $activitiesAsSubject
+ * @property-read int|null $activities_as_subject_count
+ *
  * @mixin \Eloquent
  */
 class School extends Model implements ExistsInSis
@@ -92,8 +98,19 @@ class School extends Model implements ExistsInSis
 
     use HasTimeSlots;
     use HasTimezone;
+    use LogsActivity;
 
     protected $guarded = [];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logExcept(['updated_at'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges()
+            ->setDescriptionForEvent(fn (string $event) => ActivityEvent::from($event)->description());
+    }
 
     protected $casts = [
         'active' => 'boolean',

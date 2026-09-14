@@ -1,0 +1,80 @@
+# Production stack. TLS terminates at your reverse proxy, which should route
+# `/` to app:8000 and `/app`, `/apps` to reverb:8080.
+x-app: &app
+  image: tidal-ptc
+  build: .
+  restart: unless-stopped
+  env_file: .env
+  environment:
+    OCTANE_SERVER: frankenphp
+    LOG_CHANNEL: stderr
+    DB_HOST: postgres
+    REDIS_HOST: redis
+    CACHE_DRIVER: redis
+    SESSION_DRIVER: redis
+    QUEUE_CONNECTION: redis
+    REVERB_SERVER_HOST: 0.0.0.0
+    REVERB_SERVER_PORT: 8080
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+
+services:
+  app:
+    <<: *app
+    command: sh -c "php artisan migrate --force && php artisan octane:frankenphp --host=0.0.0.0 --port=8000"
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/up"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  reverb:
+    <<: *app
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    ports:
+      - "8080:8080"
+
+  queue:
+    <<: *app
+    command: php artisan queue:work redis --tries=3 --max-time=3600
+
+  scheduler:
+    <<: *app
+    command: php artisan schedule:work
+
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-laravel}
+      POSTGRES_USER: ${DB_USERNAME:-laravel}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres:
+  redis:

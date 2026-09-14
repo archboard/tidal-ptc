@@ -17,6 +17,10 @@ class NotificationPreferencesController extends Controller
      */
     public function __invoke(Request $request): RedirectResponse
     {
+        $request->validate([
+            'reminder_hours' => ['nullable', 'integer', 'min:1', 'max:168'],
+        ]);
+
         /** @var User $user */
         $user = $request->user();
         $user->notification_config = $request->collect();

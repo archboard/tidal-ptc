@@ -1,7 +1,24 @@
 <template>
   <div class="flex justify-center py-12">
     <div class="max-w-md w-full mx-auto">
-      <form @submit.prevent="form.post(endpoint)">
+      <CardWrapper v-if="schools.length === 0">
+        <CardPadding class="text-center">
+          <UserGroupIcon class="mx-auto h-12 w-12 text-gray-400" />
+          <h2 class="mt-3 text-lg font-semibold text-gray-900 dark:text-gray-100">
+            {{ __('No students found') }}
+          </h2>
+          <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            {{ __("There are no students linked to your account, so there are no schools to choose from. If you believe this is a mistake, please contact your student's school to check your contact information.") }}
+          </p>
+        </CardPadding>
+        <CardAction>
+          <AppButton color="white" @click="router.post('/logout')">
+            {{ __('Log out') }}
+          </AppButton>
+        </CardAction>
+      </CardWrapper>
+
+      <form v-else @submit.prevent="form.post(endpoint)">
         <CardWrapper>
           <CardPadding>
             <CardHeader>{{ title }}</CardHeader>
@@ -30,7 +47,8 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useForm } from '@inertiajs/vue3'
+import { router, useForm } from '@inertiajs/vue3'
+import { UserGroupIcon } from '@heroicons/vue/24/outline/index.js'
 import CardWrapper from '@/components/CardWrapper.vue'
 import CardPadding from '@/components/CardPadding.vue'
 import CardHeader from '@/components/CardHeader.vue'

@@ -2,22 +2,23 @@
   <form @submit.prevent="save">
     <SplitForm :loading="form.processing">
       <template #headline>
-        <Headline3>{{ __('Time slot settings') }}</Headline3>
+        <Headline3>{{ compact ? __('Booking availability') : __('Time slot settings') }}</Headline3>
         <HelpText>{{ __("Configure your school's settings for time slots.") }}</HelpText>
+        <AppLink v-if="compact" href="/settings/school/edit" class="text-sm">{{ __('All school settings') }}</AppLink>
       </template>
 
-      <FormField :error="form.errors.timezone" :help="__('When a user has not set their timezone, it will use this as their timezone.')" required class="col-span-6 sm:col-span-3">
+      <FormField v-if="!compact" :error="form.errors.timezone" :help="__('When a user has not set their timezone, it will use this as their timezone.')" required class="col-span-6 sm:col-span-3">
         {{ __("School's default timezone") }}
         <template #component="{ id, hasError }">
           <TimezoneCombobox v-model="form.timezone" :id="id" :has-error="hasError" />
         </template>
       </FormField>
 
-      <FormField v-model="form.booking_buffer_hours" :error="form.errors.booking_buffer_hours" type="number" :help="__('The number of hours before a time slot that a contact cannot book it.')" required class="col-span-6 sm:col-span-3">
+      <FormField v-if="!compact" v-model="form.booking_buffer_hours" :error="form.errors.booking_buffer_hours" type="number" :help="__('The number of hours before a time slot that a contact cannot book it.')" required class="col-span-6 sm:col-span-3">
         {{ __('Booking buffer') }}
       </FormField>
 
-      <FormField :error="form.errors.allow_online_meetings" :help="__('When enabled, teachers can add a meeting URL and contacts can request to meet online.')" class="col-span-6">
+      <FormField v-if="!compact" :error="form.errors.allow_online_meetings" :help="__('When enabled, teachers can add a meeting URL and contacts can request to meet online.')" class="col-span-6">
         <template #component>
           <AppCheckbox v-model="form.allow_online_meetings">
             {{ __('Allow online meetings') }}
@@ -25,7 +26,7 @@
         </template>
       </FormField>
 
-      <FormField :error="form.errors.allow_translator_requests" :help="__('When enabled, contacts can request a translator and provide the language for which they need a translator.')" class="col-span-6">
+      <FormField v-if="!compact" :error="form.errors.allow_translator_requests" :help="__('When enabled, contacts can request a translator and provide the language for which they need a translator.')" class="col-span-6">
         <template #component>
           <AppCheckbox v-model="form.allow_translator_requests">
             {{ __('Allow contacts to request a translator') }}
@@ -116,9 +117,12 @@ import TimezoneCombobox from '@/components/forms/TimezoneCombobox.vue'
 import AppCheckbox from '@/components/forms/AppCheckbox.vue'
 import AppDatepicker from '@/components/forms/AppDatepicker.vue'
 import SimpleAlert from '@/components/alerts/SimpleAlert.vue'
+import AppLink from '@/components/AppLink.vue'
 
 const props = defineProps({
   school: Object,
+  // ponytail: dashboard widget shows only the open/close dates
+  compact: Boolean,
 })
 const { dayjs } = useDates()
 const form = useForm({

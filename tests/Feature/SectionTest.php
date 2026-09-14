@@ -1,6 +1,8 @@
 <?php
 
+use App\Enums\Permission;
 use App\Models\Section;
+use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
     logIn()->setSchool();
@@ -13,10 +15,10 @@ it("can't see section index page without permission", function () {
 });
 
 it('can show section index page with permission', function () {
-    $this->givePermission(\App\Enums\Permission::viewAny, Section::class)
+    $this->givePermission(Permission::viewAny, Section::class)
         ->get(route('sections.index'))
         ->assertOk()
-        ->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+        ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('sections/Index')
             ->has('title')
             ->has('sections')
@@ -29,10 +31,10 @@ it("can't show view page without permission", function () {
 });
 
 it('can show view page with permission', function () {
-    $this->givePermission(\App\Enums\Permission::view, Section::class)
+    $this->givePermission(Permission::view, Section::class)
         ->get(route('sections.show', $this->section))
         ->assertOk()
-        ->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+        ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('sections/Show')
             ->has('title')
             ->has('section')
@@ -40,10 +42,10 @@ it('can show view page with permission', function () {
 });
 
 it('can edit section', function () {
-    $this->givePermission(\App\Enums\Permission::update, Section::class)
+    $this->givePermission(Permission::update, Section::class)
         ->get(route('sections.edit', $this->section))
         ->assertOk()
-        ->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+        ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('sections/Edit')
             ->has('title')
             ->has('section')

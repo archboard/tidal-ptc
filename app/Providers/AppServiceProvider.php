@@ -3,23 +3,32 @@
 namespace App\Providers;
 
 use App\Enums\UserType;
+use App\Models\Activity;
+use App\Models\Batch;
+use App\Models\BatchUser;
 use App\Models\Course;
 use App\Models\School;
+use App\Models\SchoolLanguage;
 use App\Models\Section;
+use App\Models\SelectedModel;
 use App\Models\Student;
 use App\Models\Tenant;
 use App\Models\TimeSlot;
+use App\Models\Translator;
 use App\Models\User;
 use App\Services\ModelClassService;
 use Carbon\CarbonImmutable;
 use GrantHolle\PowerSchool\Auth\UserFactory;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\Support\CauserResolver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -43,8 +52,13 @@ class AppServiceProvider extends ServiceProvider
         JsonResource::withoutWrapping();
         Date::use(CarbonImmutable::class);
 
+        // The machine-token API guard authenticates a GenericUser, which the activity log can't reference
+        app(CauserResolver::class)->resolveUsing(fn () => auth()->user() instanceof User ? auth()->user() : null);
+
         $this->addRequestMarcos()
             ->addStringMacros();
+
+        RateLimiter::for('api', fn (Request $request) => Limit::perMinute(60)->by($request->user()?->id ?: $request->ip()));
 
         Relation::morphMap([
             'user' => User::class,
@@ -54,6 +68,12 @@ class AppServiceProvider extends ServiceProvider
             'section' => Section::class,
             'course' => Course::class,
             'time_slot' => TimeSlot::class,
+            'batch' => Batch::class,
+            'batch_user' => BatchUser::class,
+            'school_language' => SchoolLanguage::class,
+            'selected_model' => SelectedModel::class,
+            'activity' => Activity::class,
+            'translator' => Translator::class,
         ]);
 
         // Add the tenant_id to the identifying attributes when looking up a user

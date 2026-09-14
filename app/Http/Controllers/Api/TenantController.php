@@ -48,19 +48,4 @@ class TenantController extends Controller
 
         return new TenantApiResource($tenant);
     }
-
-    public function show(int $id): void
-    {
-        //
-    }
-
-    public function update(Request $request, int $id): void
-    {
-        //
-    }
-
-    public function destroy(int $id): void
-    {
-        //
-    }
 }

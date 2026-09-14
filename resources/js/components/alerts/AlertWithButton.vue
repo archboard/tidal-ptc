@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, toRef } from 'vue'
 import alertColors from '@/composition/alertColors'
 import AlertComponent from '@/mixins/AlertComponent'
 
@@ -38,8 +38,8 @@ export default defineComponent({
   },
   emits: ['action'],
 
-  setup ({ level }) {
-    const colors = alertColors(level)
+  setup (props) {
+    const colors = alertColors(toRef(props, 'level'))
 
     return {
       ...colors,

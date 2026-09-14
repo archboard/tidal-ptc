@@ -105,7 +105,7 @@
                   v-model="smtpForm.from_name"
                   :error="smtpForm.errors.from_name"
                   :label="__('From name')"
-                  placeholder="App Name"
+                  :placeholder="__('App Name')"
                   required
                 />
               </div>

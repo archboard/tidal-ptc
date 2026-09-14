@@ -25,6 +25,15 @@
         </template>
       </FormField>
 
+      <FormField :error="form.errors.locale" class="col-span-6 sm:col-span-3" required>
+        {{ __('Language') }}
+        <template #component>
+          <AppSelect v-model="form.locale" hide-null>
+            <option v-for="language in languages" :key="language.value" :value="language.value">{{ language.native_name }}</option>
+          </AppSelect>
+        </template>
+      </FormField>
+
       <FormField :error="form.errors.is_24h" :help="__('When enabled, you will see time formatted using 24 hours instead of 12. For example, 13:00 instead of 1:00pm.')" class="col-span-6">
         <template #component>
           <AppCheckbox v-model="form.is_24h">
@@ -53,6 +62,8 @@ import AppButton from '@/components/AppButton.vue'
 import { watch } from 'vue'
 import useSisObjectSync from '@/composition/useSisObjectSync.js'
 import AppCheckbox from '@/components/forms/AppCheckbox.vue'
+import AppSelect from '@/components/forms/AppSelect.vue'
+import useLanguages from '@/composition/useLanguages.js'
 
 const user = useProp('user')
 const tenant = useProp('tenant')
@@ -62,7 +73,9 @@ const form = useForm({
   email: user.value.email,
   timezone: user.value.timezone,
   is_24h: user.value.is_24h,
+  locale: user.value.locale ?? 'en',
 })
+const languages = useLanguages()
 const { syncing, sync } = useSisObjectSync('user', user)
 const submit = () => {
   form.put('/settings/personal', {
