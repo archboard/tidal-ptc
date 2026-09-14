@@ -32,7 +32,7 @@ class SchoolSelectionController extends Controller
         throw_if($schools->isEmpty() && ! $isGuardian, new SisNotConfiguredException('No schools configured'));
 
         if ($schools->count() === 1) {
-            $this->selectSchool($user, $schools->first()->id);
+            $this->selectSchool($user, $schools->sole()->id);
 
             return to_route('home');
         }
