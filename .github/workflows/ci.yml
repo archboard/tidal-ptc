@@ -113,6 +113,14 @@ jobs:
       - name: Run Pest
         run: ./vendor/bin/pest --parallel
 
+      - name: Upload browser screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-screenshots
+          path: tests/Browser/Screenshots
+          if-no-files-found: ignore
+
   docker:
     name: Docker
     runs-on: ubuntu-latest
