@@ -34,7 +34,9 @@ uses()->beforeEach(fn () => Vite::useHotFile(storage_path('framework/testing/no-
 
 pest()->browser()
     ->inChrome()
-    ->withHost('localhost');
+    ->withHost('localhost')
+    // ponytail: CI runners need longer than the 5s default to load Vite chunks + FullCalendar before events render
+    ->timeout(15000);
 
 /*
 |--------------------------------------------------------------------------
