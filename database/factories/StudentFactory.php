@@ -25,8 +25,8 @@ class StudentFactory extends Factory
             'email' => $this->faker->email(),
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
-            'sis_key' => $this->faker->numberBetween(1, 10000),
-            'sis_id' => $this->faker->numberBetween(1, 10000),
+            'sis_key' => $this->faker->unique()->numberBetween(1, 1000000),
+            'sis_id' => $this->faker->unique()->numberBetween(1, 1000000),
         ];
     }
 }
