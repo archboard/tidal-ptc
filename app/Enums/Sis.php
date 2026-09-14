@@ -46,7 +46,10 @@ enum Sis: string
     public function getProvider(Tenant $tenant): SisProvider
     {
         return match ($this) {
-            self::PS => new PowerSchoolProvider($tenant),
+            // Prefer a container-bound instance so tests can swap in a mock
+            self::PS => app()->bound(PowerSchoolProvider::class)
+                ? app(PowerSchoolProvider::class)
+                : new PowerSchoolProvider($tenant),
             self::CLASS_LINK => throw new \Exception('To be implemented'),
         };
     }

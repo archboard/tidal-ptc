@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ActivityEvent;
 use App\Enums\Sis;
 use App\SisProviders\SisProvider;
 use Carbon\CarbonImmutable;
@@ -14,6 +15,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 use Spatie\Multitenancy\Models\Tenant as TenantBase;
 
 /**
@@ -65,6 +68,9 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
  * @method static Builder<static>|Tenant whereTimezone($value)
  * @method static Builder<static>|Tenant whereUpdatedAt($value)
  *
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Activity> $activitiesAsSubject
+ * @property-read int|null $activities_as_subject_count
+ *
  * @mixin \Eloquent
  */
 final class Tenant extends TenantBase
@@ -72,7 +78,19 @@ final class Tenant extends TenantBase
     /** @use HasFactory<TenantFactory> */
     use HasFactory;
 
+    use LogsActivity;
+
     protected $guarded = [];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logExcept(['updated_at', 'sis_config', 'smtp_config'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges()
+            ->setDescriptionForEvent(fn (string $event) => ActivityEvent::from($event)->description());
+    }
 
     protected $casts = [
         'sis_provider' => Sis::class,

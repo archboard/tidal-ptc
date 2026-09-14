@@ -8,7 +8,7 @@
         </a>
       </div>
       <div class="mt-8 md:order-1 md:mt-0">
-        <p class="text-center text-base text-gray-400">&copy; {{ year }} <a class="hover:underline" href="//archboard.io" target="_blank">Archboard</a>. All rights reserved.</p>
+        <p class="text-center text-base text-gray-400">&copy; {{ year }} <a class="hover:underline" href="//archboard.io" target="_blank">Archboard</a>. {{ __('All rights reserved.') }}</p>
       </div>
     </div>
   </footer>

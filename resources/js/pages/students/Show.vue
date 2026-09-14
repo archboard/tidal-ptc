@@ -51,9 +51,14 @@
               </div>
             </Td>
             <ActionColumn>
-              <ContextMenu>
-                <SectionActionMenu :section="section" />
-              </ContextMenu>
+              <div class="flex items-center gap-3 justify-end">
+                <AppLink v-if="can('time_slot.update') && section.teacher" :href="`/reservations/create/${student.id}/${section.alt_teacher?.id ?? section.teacher.id}`">
+                  {{ __('Book conference') }}
+                </AppLink>
+                <ContextMenu>
+                  <SectionActionMenu :section="section" />
+                </ContextMenu>
+              </div>
             </ActionColumn>
           </tr>
         </Tbody>

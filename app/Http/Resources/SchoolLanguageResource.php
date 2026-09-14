@@ -8,6 +8,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * @property-read SchoolLanguage $resource
+ *
  * @mixin SchoolLanguage
  */
 class SchoolLanguageResource extends JsonResource

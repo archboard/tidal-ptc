@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\User;
+use GrantHolle\PowerSchool\Auth\Transformers\Lowercase;
+
 return [
 
     /*
@@ -43,7 +46,7 @@ return [
 
     'staff' => [
         'allowed' => true,
-        'model' => \App\Models\User::class,
+        'model' => User::class,
         'attributes' => [
             'firstName' => 'first_name',
             'given_name' => 'first_name',
@@ -55,14 +58,14 @@ return [
         'guard' => 'web',
         'identifying_attributes' => [],
         'attribute_transformers' => [
-            'email' => \GrantHolle\PowerSchool\Auth\Transformers\Lowercase::class,
+            'email' => Lowercase::class,
         ],
         'redirectTo' => '',
     ],
 
     'guardian' => [
         'allowed' => true,
-        'model' => \App\Models\User::class,
+        'model' => User::class,
         'attributes' => [
             'firstName' => 'first_name',
             'lastName' => 'last_name',
@@ -75,14 +78,14 @@ return [
         'guard' => 'web',
         'identifying_attributes' => [],
         'attribute_transformers' => [
-            'email' => \GrantHolle\PowerSchool\Auth\Transformers\Lowercase::class,
+            'email' => Lowercase::class,
         ],
         'redirectTo' => '',
     ],
 
     'student' => [
         'allowed' => false,
-        'model' => \App\User::class,
+        'model' => User::class,
         'attributes' => [
             'firstName' => 'first_name',
             'lastName' => 'last_name',
@@ -93,7 +96,7 @@ return [
             'openid_claimed_id' => 'openid_identity',
         ],
         'attribute_transformers' => [
-            'email' => \GrantHolle\PowerSchool\Auth\Transformers\Lowercase::class,
+            'email' => Lowercase::class,
         ],
         'redirectTo' => '',
     ],

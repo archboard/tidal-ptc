@@ -1,5 +1,7 @@
 <?php
 
+use App\DomainTenantFinder;
+use App\Tasks\ChangeConfigTask;
 use Illuminate\Broadcasting\BroadcastEvent;
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Mail\SendQueuedMailable;
@@ -9,6 +11,7 @@ use Spatie\Multitenancy\Actions\MakeQueueTenantAwareAction;
 use Spatie\Multitenancy\Actions\MakeTenantCurrentAction;
 use Spatie\Multitenancy\Actions\MigrateTenantAction;
 use Spatie\Multitenancy\Models\Tenant;
+use Spatie\Multitenancy\Tasks\PrefixCacheTask;
 
 return [
     /*
@@ -18,7 +21,7 @@ return [
      * This class should extend `Spatie\Multitenancy\TenantFinder\TenantFinder`
      *
      */
-    'tenant_finder' => \App\DomainTenantFinder::class,
+    'tenant_finder' => DomainTenantFinder::class,
 
     /*
      * These fields are used by tenant:artisan command to match one or more tenant
@@ -33,8 +36,8 @@ return [
      * A valid task is any class that implements Spatie\Multitenancy\Tasks\SwitchTenantTask
      */
     'switch_tenant_tasks' => [
-        \Spatie\Multitenancy\Tasks\PrefixCacheTask::class,
-        \App\Tasks\ChangeConfigTask::class,
+        PrefixCacheTask::class,
+        ChangeConfigTask::class,
         // This shouldn't be enabled because the scope will need to be set
         // to a school, not a district/tenant in general
         //        \App\Tasks\ScopeBouncer::class,
@@ -45,7 +48,7 @@ return [
      *
      * It must be or extend `Spatie\Multitenancy\Models\Tenant::class`
      */
-    'tenant_model' => \App\Models\Tenant::class,
+    'tenant_model' => App\Models\Tenant::class,
 
     /*
      * If there is a current tenant when dispatching a job, the id of the current tenant

@@ -16,8 +16,6 @@ use Silber\Bouncer\BouncerFacade;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication;
-
     protected bool $signIn = false;
 
     protected bool $cloud = false;

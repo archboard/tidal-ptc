@@ -228,10 +228,18 @@ class User extends Authenticatable implements ExistsInSis, Filterable
             ->withPivot(['relationship']);
     }
 
-    /** @return BelongsToMany<School, $this> */
-    public function adminSchools(): BelongsToMany
+    /**
+     * District admins can access every active school in the tenant; everyone else only their assigned schools.
+     *
+     * @return Builder<School>
+     */
+    public function adminSchools(): Builder
     {
-        return $this->schools()
+        $query = $this->isA(Role::DISTRICT_ADMIN->value)
+            ? $this->tenant->schools()->getQuery()
+            : $this->schools()->getQuery();
+
+        return $query
             ->active()
             ->orderBy('name');
     }
@@ -304,6 +312,19 @@ class User extends Authenticatable implements ExistsInSis, Filterable
     {
         return NotificationEvent::collect()
             ->filter(fn (NotificationEvent $event) => in_array($this->user_type, $event->getUserTypes()));
+    }
+
+    public const int DEFAULT_REMINDER_HOURS = 24;
+
+    public function reminderHours(): int
+    {
+        return (int) ($this->notification_config['reminder_hours'] ?? self::DEFAULT_REMINDER_HOURS);
+    }
+
+    public function wantsNotification(NotificationEvent $event): bool
+    {
+        return in_array($this->user_type, $event->getUserTypes())
+            && (bool) ($this->notification_config[$event->value] ?? true);
     }
 
     public function assignRole(Role|string $role): static

@@ -123,3 +123,13 @@ it('returns batch event source', function () {
 
     expect($data)->toBeArray();
 });
+
+it("can't delete batch time slots without permission", function () {
+    $batch = seedBatch();
+    $timeSlot = $batch->timeSlots()->first();
+
+    $this->postJson("/batches/{$batch->id}/delete", [
+        'starts_at' => $timeSlot->starts_at->toDateTimeString(),
+        'ends_at' => $timeSlot->ends_at->toDateTimeString(),
+    ])->assertForbidden();
+});

@@ -3,7 +3,17 @@
 
 @plugin '@tailwindcss/forms';
 
-@custom-variant dark (&:is(.dark *));
+/* Explicit .dark/.light on <html> wins; otherwise follow the OS preference */
+@custom-variant dark {
+  &:is(.dark *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:not(.light *) {
+      @slot;
+    }
+  }
+}
 
 @theme {
   --font-sans:

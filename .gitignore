@@ -28,3 +28,7 @@ boost.json
 .ai/
 /tests/Browser/Screenshots
 .phpunit.cache
+
+**/caddy
+frankenphp
+frankenphp-worker.php

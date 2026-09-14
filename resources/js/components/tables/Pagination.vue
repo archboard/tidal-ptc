@@ -50,7 +50,8 @@
 
 <script>
 import { defineComponent } from 'vue'
-import range from 'lodash/range'
+// ponytail: lodash was only here transitively via v-calendar
+const range = (start, end) => Array.from({ length: end - start }, (_, i) => start + i)
 import qs from 'qs'
 
 export default defineComponent({

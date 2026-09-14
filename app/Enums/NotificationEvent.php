@@ -5,7 +5,9 @@ namespace App\Enums;
 use App\Enums\Contracts\HasCustomName;
 use App\Enums\Traits\Collectable;
 use App\Enums\Traits\HasOptions;
+use Intrfce\LaravelFrontendEnums\Attributes\PublishEnum;
 
+#[PublishEnum]
 enum NotificationEvent: string implements HasCustomName
 {
     use Collectable;
@@ -42,9 +44,6 @@ enum NotificationEvent: string implements HasCustomName
     /** @return array<int, UserType> */
     public function getUserTypes(): array
     {
-        return match ($this) {
-            self::slot_booked => [UserType::staff],
-            default => [UserType::staff, UserType::guardian],
-        };
+        return [UserType::staff, UserType::guardian];
     }
 }

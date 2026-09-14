@@ -3,12 +3,12 @@
 namespace App\Http\Middleware;
 
 use App\Enums\Permission;
-use App\Enums\Role;
 use App\Http\Resources\SchoolResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Navigation\NavigationItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -59,21 +59,9 @@ class HandleInertiaRequests extends Middleware
                 : new \stdClass,
             'school' => fn () => new SchoolResource($school),
             'breadcrumbs' => [],
-            'adminSchools' => function () use ($user, $tenant) {
-                if (! $user) {
-                    return [];
-                }
-
-                $schools = $user->isA(Role::DISTRICT_ADMIN->value)
-                    ? $tenant->schools()
-                        ->active()
-                        ->orderBy('name')
-                        ->get()
-                    : $user->adminSchools()
-                        ->get();
-
-                return SchoolResource::collection($schools);
-            },
+            'adminSchools' => fn () => $user
+                ? SchoolResource::collection($user->adminSchools()->get())
+                : [],
             'flash' => [
                 'success' => session('success'),
                 'error' => session('error'),
@@ -91,7 +79,7 @@ class HandleInertiaRequests extends Middleware
                         ->withIcon('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg>'),
                 ];
 
-                if ($user->hasCachedPermission('time_slot', Permission::viewAny)) {
+                if ($user->hasCachedPermission('time_slot', Permission::viewAny) || $user->canOwnTimeSlots()) {
                     $nav[] = NavigationItem::make()
                         ->labeled(__('Time Slots'))
                         ->to(route('time-slots.index'))
@@ -129,6 +117,22 @@ class HandleInertiaRequests extends Middleware
                         ->to('/courses')
                         ->isCurrent($request->routeIs('courses.*'))
                         ->withIcon('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" /></svg>');
+                }
+
+                if ($user->hasCachedPermission('time_slot', Permission::viewAny) && $user->school?->allow_translator_requests) {
+                    $nav[] = NavigationItem::make()
+                        ->labeled(__('Translators'))
+                        ->to(route('translators.index'))
+                        ->isCurrent($request->routeIs('translators.*'))
+                        ->withIcon('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="m10.5 21 5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 0 1 6-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 0 1-3.827-5.802" /></svg>');
+                }
+
+                if ($user->hasCachedPermission('time_slot', Permission::viewAny)) {
+                    $nav[] = NavigationItem::make()
+                        ->labeled(__('Activity'))
+                        ->to(route('activity.index'))
+                        ->isCurrent($request->routeIs('activity.*'))
+                        ->withIcon('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>');
                 }
 
                 if ($user->hasCachedPermission('user', Permission::viewAny)) {
@@ -176,6 +180,11 @@ class HandleInertiaRequests extends Middleware
                 return array_map(fn (NavigationItem $item) => $item->toArray(), $nav);
             },
             'filterKey' => fn () => 'f',
+            // Echo's connection settings, so the JS bundle isn't tied to one environment
+            'reverb' => fn () => [
+                'key' => config('broadcasting.connections.reverb.key'),
+                ...Arr::only(config('broadcasting.connections.reverb.options'), ['host', 'port', 'scheme']),
+            ],
         ]);
     }
 }

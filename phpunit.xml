@@ -7,12 +7,20 @@
     <testsuite name="Feature">
       <directory suffix="Test.php">./tests/Feature</directory>
     </testsuite>
+    <testsuite name="Browser">
+      <directory suffix="Test.php">./tests/Browser</directory>
+    </testsuite>
   </testsuites>
   <php>
     <env name="APP_ENV" value="testing"/>
     <env name="BCRYPT_ROUNDS" value="4"/>
     <env name="CACHE_DRIVER" value="array"/>
     <env name="MAIL_MAILER" value="array"/>
+    <env name="MAIL_FROM_ADDRESS" value="noreply@example.com"/>
+    <env name="BROADCAST_CONNECTION" value="reverb"/>
+    <env name="REVERB_APP_ID" value="testing"/>
+    <env name="REVERB_APP_KEY" value="testing"/>
+    <env name="REVERB_APP_SECRET" value="testing"/>
     <env name="QUEUE_CONNECTION" value="sync"/>
     <env name="SESSION_DRIVER" value="array"/>
   </php>

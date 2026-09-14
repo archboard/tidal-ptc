@@ -4,7 +4,9 @@ namespace App\Enums;
 
 use App\Enums\Traits\Collectable;
 use App\Enums\Traits\HasName;
+use Intrfce\LaravelFrontendEnums\Attributes\PublishEnum;
 
+#[PublishEnum]
 enum Language: string
 {
     use Collectable;

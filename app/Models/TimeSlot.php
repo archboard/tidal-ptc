@@ -2,14 +2,19 @@
 
 namespace App\Models;
 
+use App\Data\TimeSlotSnapshot;
+use App\Enums\ActivityEvent;
 use App\Enums\Language;
+use App\Enums\NotificationEvent;
 use App\Http\Resources\TimeSlotResource;
+use App\Notifications\TimeSlotNotification;
 use App\Traits\BelongsToSchool;
 use App\Traits\BelongsToTenant;
 use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
 use Database\Factories\TimeSlotFactory;
 use GrantHolle\Timezone\Facades\Timezone;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,6 +22,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 /**
  * @property int $id
@@ -26,10 +33,13 @@ use Illuminate\Support\Str;
  * @property int|null $student_id
  * @property int|null $batch_id
  * @property int|null $reserved_by
+ * @property int|null $translator_id
  * @property int|null $created_by
  * @property CarbonImmutable $starts_at
  * @property CarbonImmutable $ends_at
  * @property CarbonImmutable|null $reserved_at
+ * @property CarbonImmutable|null $contact_reminded_at
+ * @property CarbonImmutable|null $staff_reminded_at
  * @property string|null $teacher_notes
  * @property string|null $contact_notes
  * @property string|null $location
@@ -50,6 +60,8 @@ use Illuminate\Support\Str;
  * @property-read mixed $local_starts_at
  * @property-read User|null $reservedBy
  * @property-read School $school
+ * @property-read Student|null $student
+ * @property-read Translator|null $translator
  * @property-read Tenant $tenant
  * @property-read User $user
  *
@@ -59,6 +71,8 @@ use Illuminate\Support\Str;
  * @method static Builder<static>|TimeSlot newQuery()
  * @method static Builder<static>|TimeSlot notExpired()
  * @method static Builder<static>|TimeSlot notReserved()
+ * @method static Builder<static>|TimeSlot reserved()
+ * @method static Builder<static>|TimeSlot bookable(School $school)
  * @method static Builder<static>|TimeSlot query()
  * @method static Builder<static>|TimeSlot whereAllowOnlineMeetings($value)
  * @method static Builder<static>|TimeSlot whereAllowTranslatorRequests($value)
@@ -86,6 +100,13 @@ use Illuminate\Support\Str;
  * @method static Builder<static>|TimeSlot whereUserId($value)
  * @method static Builder<static>|TimeSlot whereLanguage($value)
  *
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Activity> $activitiesAsSubject
+ * @property-read int|null $activities_as_subject_count
+ *
+ * @method static Builder<static>|TimeSlot whereContactRemindedAt($value)
+ * @method static Builder<static>|TimeSlot whereStaffRemindedAt($value)
+ * @method static Builder<static>|TimeSlot whereTranslatorId($value)
+ *
  * @mixin \Eloquent
  */
 class TimeSlot extends Model
@@ -97,12 +118,16 @@ class TimeSlot extends Model
     /** @use HasFactory<TimeSlotFactory> */
     use HasFactory;
 
+    use LogsActivity;
+
     protected $guarded = [];
 
     protected $casts = [
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
         'reserved_at' => 'datetime',
+        'contact_reminded_at' => 'datetime',
+        'staff_reminded_at' => 'datetime',
         'is_online' => 'boolean',
         'requested_online' => 'boolean',
         'contact_can_book' => 'boolean',
@@ -127,6 +152,40 @@ class TimeSlot extends Model
     public function scopeNotReserved(Builder $builder): void
     {
         $builder->whereNull('student_id');
+    }
+
+    /**
+     * Reservation columns are excluded here; those changes are logged as explicit
+     * reservation events by the controllers.
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['user_id', 'starts_at', 'ends_at', 'location', 'meeting_url', 'is_online', 'teacher_notes', 'contact_can_book', 'allow_translator_requests', 'allow_online_meetings', 'translator_notes'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges()
+            ->setDescriptionForEvent(fn (string $event) => ActivityEvent::from($event)->description());
+    }
+
+    /** @param Builder<static> $builder */
+    #[Scope]
+    protected function reserved(Builder $builder): void
+    {
+        $builder->whereNotNull('student_id');
+    }
+
+    /**
+     * Slots a contact could reserve right now: open, flagged bookable, and outside the buffer.
+     *
+     * @param  Builder<static>  $builder
+     */
+    #[Scope]
+    protected function bookable(Builder $builder, School $school): void
+    {
+        $builder->notReserved()
+            ->where('school_id', $school->id)
+            ->where('contact_can_book', true)
+            ->where('starts_at', '>', now()->addHours($school->booking_buffer_hours));
     }
 
     /** @param Builder<static> $builder */
@@ -172,6 +231,18 @@ class TimeSlot extends Model
         return $this->belongsTo(Batch::class);
     }
 
+    /** @return BelongsTo<Student, $this> */
+    public function student(): BelongsTo
+    {
+        return $this->belongsTo(Student::class);
+    }
+
+    /** @return BelongsTo<Translator, $this> */
+    public function translator(): BelongsTo
+    {
+        return $this->belongsTo(Translator::class);
+    }
+
     /** @return BelongsTo<User, $this> */
     public function reservedBy(): BelongsTo
     {
@@ -182,6 +253,17 @@ class TimeSlot extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /** Name of the reminder stamp column for the given participant. */
+    public function reminderColumnFor(User $user): string
+    {
+        return $user->id === $this->user_id ? 'staff_reminded_at' : 'contact_reminded_at';
+    }
+
+    public function isReserved(): bool
+    {
+        return $this->student_id !== null;
     }
 
     /** @param Collection<int, TimeSlot> $timeSlots */
@@ -203,13 +285,26 @@ class TimeSlot extends Model
         );
     }
 
+    /**
+     * Notify the reserving contact and the slot's staff member. Call before clearing a reservation.
+     * Pass the previous slot when rescheduling so the old time is included.
+     */
+    public function notifyReservation(NotificationEvent $event, ?TimeSlot $previous = null): void
+    {
+        $notification = new TimeSlotNotification($event, TimeSlotSnapshot::fromTimeSlot($this, $previous));
+
+        $this->user->notify($notification);
+        $this->reservedBy?->notify($notification);
+    }
+
     /** @return array<string, mixed> */
     public function toFullCalendar(): array
     {
         return [
             'id' => $this->id ?? Str::random(5),
             'groupId' => $this->batch_id,
-            'title' => '',
+            'title' => $this->isReserved() ? $this->student?->name : '',
+            'classNames' => $this->isReserved() ? ['reserved'] : [],
             'allDay' => false,
             'start' => $this->starts_at->toIso8601String(),
             'end' => $this->ends_at->toIso8601String(),

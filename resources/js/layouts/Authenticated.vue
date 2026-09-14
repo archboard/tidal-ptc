@@ -12,7 +12,7 @@
               <TransitionChild as="template" enter="ease-in-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in-out duration-300" leave-from="opacity-100" leave-to="opacity-0">
                 <div class="absolute top-0 right-0 -mr-12 pt-2">
                   <button type="button" class="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white" @click="sidebarOpen = false">
-                    <span class="sr-only">Close sidebar</span>
+                    <span class="sr-only">{{ __('Close sidebar') }}</span>
                     <XMarkIcon class="h-6 w-6 text-white" aria-hidden="true" />
                   </button>
                 </div>
@@ -55,7 +55,7 @@
         </div>
 
         <div v-if="adminSchools.length > 1" class="mt-5 px-2">
-          <label for="current-school" class="sr-only">Current school</label>
+          <label for="current-school" class="sr-only">{{ __('Current school') }}</label>
           <AppSelect v-model="currentSchool" class="bg-primary-200 dark:bg-primary-800 border-primary-300 dark:border-primary-900">
             <option v-for="school in adminSchools" :id="school.id" :value="school.id">{{ school.name }}</option>
           </AppSelect>
@@ -103,21 +103,11 @@
     <div class="flex flex-1 min-h-screen flex-col justify-between md:pl-64">
       <div class="sticky top-0 z-10 flex h-16 shrink-0 bg-white dark:bg-gray-800 shadow-sm">
         <button type="button" class="border-r border-gray-200 dark:border-gray-600 px-4 text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-gray-500 md:hidden" @click="sidebarOpen = true">
-          <span class="sr-only">Open sidebar</span>
+          <span class="sr-only">{{ __('Open sidebar') }}</span>
           <Bars3BottomLeftIcon class="h-6 w-6" aria-hidden="true" />
         </button>
-        <div class="flex flex-1 justify-between px-4">
-          <div class="flex flex-1">
-            <form class="flex w-full md:ml-0" action="#" method="GET">
-              <label for="search-field" class="sr-only">Search</label>
-              <div class="relative w-full text-gray-400 focus-within:text-gray-600 dark:focus-within:text-gray-200">
-                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center">
-                  <MagnifyingGlassIcon class="h-5 w-5" aria-hidden="true" />
-                </div>
-                <input id="search-field" class="block h-full w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-transparent py-2 pl-8 pr-3 placeholder-gray-500 dark:placeholder-gray-300 focus:border-transparent focus:placeholder-gray-400 focus:outline-hidden focus:ring-0 sm:text-sm" placeholder="Search" type="search" name="search" />
-              </div>
-            </form>
-          </div>
+        <div class="flex flex-1 justify-end px-4">
+          <div class="flex flex-1" />
           <div class="ml-4 flex items-center md:ml-6">
             <button @click.prevent="toggleTheme()" type="button" class="sr-hidden rounded-full bg-white dark:bg-gray-800 p-1 text-gray-400 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
               <MoonIcon v-if="isDark" class="h-6 w-6" aria-hidden="true" />
@@ -158,7 +148,7 @@
 </template>
 
 <script setup>
-import { inject, ref, watch } from 'vue'
+import { computed, inject, ref, watch } from 'vue'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { Bars3BottomLeftIcon, SunIcon, MoonIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
@@ -175,7 +165,8 @@ import useColorTheme from '@/composition/useColorTheme.js'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
 
 const title = usePageTitle()
-const { props } = usePage()
+const page = usePage()
+const props = computed(() => page.props)
 const sidebarOpen = ref(false)
 const { isDark, toggleTheme } = useColorTheme()
 const adminSchools = useProp('adminSchools')
@@ -189,6 +180,7 @@ watch(currentSchool, (value) => {
       school_id: value
     }, {
       preserveScroll: true,
+      preserveState: false, // remount the page so nothing scoped to the old school lingers
       onError: (errors) => {
         $error(errors.school_id)
       }

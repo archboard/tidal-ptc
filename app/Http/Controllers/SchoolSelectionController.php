@@ -15,19 +15,27 @@ use Inertia\Response;
 
 class SchoolSelectionController extends Controller
 {
-    public function index(Request $request, Tenant $tenant): Response
+    public function index(Request $request, Tenant $tenant): Response|RedirectResponse
     {
         /** @var User $user */
         $user = $request->user();
+        $isGuardian = $user->user_type === UserType::guardian;
         $schools = $tenant->schools()
-            ->when($user->user_type === UserType::guardian, function (Builder $builder) use ($user) {
+            ->when($isGuardian, function (Builder $builder) use ($user) {
                 $builder->whereIn('id', $user->students()->pluck('school_id'));
             })
             ->where('active', true)
             ->get();
         $title = __('Select school');
 
-        throw_if($schools->isEmpty(), new SisNotConfiguredException('No schools configured'));
+        // Guardians are scoped to their students' schools; an empty list means no linked students, not a missing SIS config
+        throw_if($schools->isEmpty() && ! $isGuardian, new SisNotConfiguredException('No schools configured'));
+
+        if ($schools->count() === 1) {
+            $this->selectSchool($user, $schools->sole()->id);
+
+            return to_route('home');
+        }
 
         return inertia('SchoolSelection', [
             'schools' => SchoolResource::collection($schools),
@@ -48,11 +56,17 @@ class SchoolSelectionController extends Controller
 
         /** @var User $user */
         $user = $request->user();
-        $user->update($data);
-        $user->schools()->syncWithoutDetaching($data['school_id']);
+        $this->selectSchool($user, (int) $data['school_id']);
 
         session()->flash('success', __('School selected successfully'));
 
         return to_route('home');
+    }
+
+    protected function selectSchool(User $user, int $schoolId): void
+    {
+        $user->update(['school_id' => $schoolId]);
+        $user->unsetRelation('school');
+        $user->schools()->syncWithoutDetaching($schoolId);
     }
 }

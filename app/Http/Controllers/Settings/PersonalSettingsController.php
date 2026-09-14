@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers\Settings;
 
+use App\Enums\Language;
 use App\Enums\NotificationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\FlashesAndRedirects;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Inertia\Response;
+use Inertia\ResponseFactory;
 
 class PersonalSettingsController extends Controller
 {
@@ -14,12 +20,12 @@ class PersonalSettingsController extends Controller
     /**
      * Show the settings page
      *
-     * @return \Inertia\Response|\Inertia\ResponseFactory
+     * @return Response|ResponseFactory
      */
     public function edit(Request $request)
     {
         $title = __('Personal settings');
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = $request->user();
 
         return inertia('settings/Personal', [
@@ -38,7 +44,7 @@ class PersonalSettingsController extends Controller
     /**
      * Updates a users name, email, and password
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function update(Request $request)
     {
@@ -48,9 +54,10 @@ class PersonalSettingsController extends Controller
             'email' => ['required', 'email'],
             'timezone' => ['required', 'timezone'],
             'is_24h' => ['required', 'boolean'],
+            'locale' => ['required', Rule::enum(Language::class)],
         ]);
 
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = $request->user();
         $user->update($data);
 

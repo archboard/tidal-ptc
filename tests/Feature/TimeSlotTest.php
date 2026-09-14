@@ -1,9 +1,12 @@
 <?php
 
 use App\Enums\Permission;
+use App\Http\Requests\UpdateTimeSlotRequest;
+use App\Models\Student;
 use App\Models\TimeSlot;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
+use Silber\Bouncer\BouncerFacade;
 
 beforeEach(function () {
     logIn()->setSchool();
@@ -102,7 +105,7 @@ it('can update a slot for another user with permission', function () {
         ->assertJsonStructure(['level', 'message', 'data']);
 
     $timeSlot->refresh();
-    expect($timeSlot)->toMatchRequestData($data, \App\Http\Requests\UpdateTimeSlotRequest::class);
+    expect($timeSlot)->toMatchRequestData($data, UpdateTimeSlotRequest::class);
 });
 
 it('can update own slot', function () {
@@ -114,7 +117,7 @@ it('can update own slot', function () {
         ->assertJsonStructure(['level', 'message', 'data']);
 
     $timeSlot->refresh();
-    expect($timeSlot)->toMatchRequestData($data, \App\Http\Requests\UpdateTimeSlotRequest::class);
+    expect($timeSlot)->toMatchRequestData($data, UpdateTimeSlotRequest::class);
 });
 
 it('can update a time slot batch', function () {
@@ -128,7 +131,7 @@ it('can update a time slot batch', function () {
         ->assertJsonStructure(['level', 'message', 'data']);
 
     $timeSlot->refresh();
-    expect($timeSlot)->toMatchRequestData($data, \App\Http\Requests\UpdateTimeSlotRequest::class);
+    expect($timeSlot)->toMatchRequestData($data, UpdateTimeSlotRequest::class);
 });
 
 it("can't delete another user's slot without permission", function () {
@@ -165,4 +168,133 @@ it('can delete own slot', function () {
         );
 
     expect(TimeSlot::find($timeSlot->id))->toBeNull();
+});
+
+it('determines whether a student can meet with staff', function () {
+    $teacher = seedUser();
+    $section = seedSection($teacher);
+    /** @var Student $student */
+    $student = $section->students->first();
+    $stranger = seedUser();
+
+    expect($student->canMeetWith($teacher))->toBeTrue()
+        ->and($student->canMeetWith($stranger))->toBeFalse();
+
+    $section->update(['alt_user_id' => $stranger->id]);
+    expect($student->canMeetWith($stranger))->toBeTrue();
+
+    $section->update(['can_book' => false]);
+    expect($student->canMeetWith($teacher))->toBeFalse();
+
+    $section->update(['can_book' => true]);
+    $section->course->update(['can_book' => false]);
+    expect($student->canMeetWith($teacher))->toBeFalse();
+
+    $this->givePermission(Permission::ownTimeSlots);
+    expect(BouncerFacade::scope()->onceTo($this->school->id, fn () => $student->canMeetWith($this->user)))->toBeTrue();
+});
+
+it('scopes bookable time slots', function () {
+    $this->school->update(['booking_buffer_hours' => 2]);
+    $bookable = seedTimeSlot();
+    seedTimeSlot(['contact_can_book' => false]);
+    seedTimeSlot(['student_id' => Student::factory()->create()->id]);
+    seedTimeSlot(['starts_at' => now()->addHour(), 'ends_at' => now()->addMinutes(75)]);
+    seedTimeSlot(['school_id' => $this->tenant->schools->firstWhere('id', '!=', $this->school->id)->id]);
+
+    expect(TimeSlot::bookable($this->school)->pluck('id')->all())->toBe([$bookable->id])
+        ->and(TimeSlot::reserved()->count())->toBe(1);
+});
+
+it('excludes slots starting exactly at the booking buffer', function () {
+    $this->school->update(['booking_buffer_hours' => 2]);
+    $this->travelTo(now()->startOfMinute());
+    seedTimeSlot(['starts_at' => now()->addHours(2), 'ends_at' => now()->addHours(2)->addMinutes(15)]);
+    $justAfter = seedTimeSlot(['starts_at' => now()->addHours(2)->addSecond(), 'ends_at' => now()->addHours(2)->addMinutes(15)]);
+
+    expect(TimeSlot::bookable($this->school)->pluck('id')->all())->toBe([$justAfter->id]);
+});
+
+it('titles reserved slots with the student name in the calendar', function () {
+    $student = Student::factory()->create();
+    $timeSlot = seedTimeSlot(['student_id' => $student->id]);
+
+    expect($timeSlot->toFullCalendar())
+        ->title->toBe($student->name)
+        ->classNames->toBe(['reserved']);
+});
+
+it("can't move a reserved slot without update permission", function () {
+    $timeSlot = seedTimeSlot(['student_id' => Student::factory()->create()->id]);
+    $moved = makeTimeSlotRequest(['starts_at' => now()->addDays(2)->toIso8601ZuluString(), 'ends_at' => now()->addDays(2)->addMinutes(15)->toIso8601ZuluString()]);
+    $unmoved = [...$moved, 'starts_at' => $timeSlot->starts_at->toIso8601ZuluString(), 'ends_at' => $timeSlot->ends_at->toIso8601ZuluString()];
+
+    $this->putJson(route('time-slots.update', $timeSlot), $moved)
+        ->assertForbidden();
+    $this->putJson(route('time-slots.update', $timeSlot), $unmoved)
+        ->assertOk();
+});
+
+it('can move a reserved slot with update permission', function () {
+    $timeSlot = seedTimeSlot(['student_id' => Student::factory()->create()->id]);
+    $moved = makeTimeSlotRequest(['starts_at' => now()->addDays(2)->toIso8601ZuluString(), 'ends_at' => now()->addDays(2)->addMinutes(15)->toIso8601ZuluString()]);
+
+    $this->givePermission(Permission::update, TimeSlot::class)
+        ->putJson(route('time-slots.update', $timeSlot), $moved)
+        ->assertOk();
+});
+
+it('hides reservation details from users who cannot view them', function () {
+    $owner = seedUser();
+    $student = Student::factory()->create();
+    TimeSlot::factory()->for($owner)->create(['student_id' => $student->id, 'contact_notes' => 'secret']);
+    $range = ['start' => now()->toDateString(), 'end' => now()->addWeek()->toDateString()];
+
+    $this->givePermission(Permission::viewAny, TimeSlot::class)
+        ->getJson(route('users.event-source', [$owner, ...$range]))
+        ->assertOk()
+        ->assertJsonMissingPath('0.extendedProps.contact_notes')
+        ->assertJsonMissingPath('0.extendedProps.student');
+
+    $this->actingAs($owner)
+        ->getJson(route('users.event-source', [$owner, ...$range]))
+        ->assertOk()
+        ->assertJsonPath('0.extendedProps.contact_notes', 'secret')
+        ->assertJsonPath('0.extendedProps.student.name', $student->name);
+});
+
+it('authorizes user and student event sources', function () {
+    $other = seedUser();
+    $student = Student::factory()->create();
+    $range = ['start' => now()->toDateString(), 'end' => now()->addWeek()->toDateString()];
+
+    $this->getJson(route('users.event-source', [$other, ...$range]))->assertForbidden();
+    $this->getJson(route('users.event-source', [$this->user, ...$range]))->assertOk();
+    $this->getJson(route('students.event-source', [$student, ...$range]))->assertForbidden();
+
+    $this->user->students()->attach($student);
+    $this->getJson(route('students.event-source', [$student, ...$range]))->assertOk();
+});
+
+it('allows event sources for any user with view permission', function () {
+    $range = ['start' => now()->toDateString(), 'end' => now()->addWeek()->toDateString()];
+
+    $this->givePermission(Permission::viewAny, TimeSlot::class)
+        ->getJson(route('users.event-source', [seedUser(), ...$range]))
+        ->assertOk();
+    $this->getJson(route('students.event-source', [Student::factory()->create(), ...$range]))
+        ->assertOk();
+});
+
+it('does not overwrite translator notes when updating a batch', function () {
+    $batch = seedBatch();
+    $slot = $batch->timeSlots()->first();
+    $slot->update(['student_id' => Student::factory()->create()->id, 'translator_notes' => 'keep']);
+    $data = makeTimeSlotRequest(['batch_id' => $batch->id, 'update_batch' => true, 'translator_notes' => '']);
+
+    $this->givePermission(Permission::update, TimeSlot::class)
+        ->putJson(route('time-slots.update', $slot), $data)
+        ->assertOk();
+
+    expect($slot->refresh()->translator_notes)->toBe('keep');
 });

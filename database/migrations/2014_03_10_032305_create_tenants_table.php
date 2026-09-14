@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Sis;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,7 +21,7 @@ class CreateTenantsTable extends Migration
             $table->dateTime('subscription_expires_at')->nullable();
             $table->uuid('license')->nullable();
             $table->string('timezone')->nullable();
-            $table->string('sis_provider')->default(\App\Enums\Sis::PS->value);
+            $table->string('sis_provider')->default(Sis::PS->value);
             $table->text('smtp_config')->nullable();
             $table->timestamps();
         });

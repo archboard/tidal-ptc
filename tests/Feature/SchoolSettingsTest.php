@@ -135,3 +135,15 @@ it('can save languages', function (array $data) {
             ->toArray();
     },
 ]);
+
+it('treats empty language limits as unlimited', function () {
+    fullPermissions();
+
+    $this->put(route('settings.school.languages'), ['languages' => [
+        ['code' => 'zh-CN', 'request_max' => null, 'overlap_max' => ''],
+    ]])->assertRedirect()->assertSessionHasNoErrors();
+
+    $language = $this->school->languages()->sole();
+    expect($language->request_max)->toBe(0)
+        ->and($language->overlap_max)->toBe(0);
+});

@@ -7,7 +7,9 @@ use App\Enums\Traits\HasOptions;
 use App\Exceptions\UnknownPersonaException;
 use App\Models\Tenant;
 use Illuminate\Support\Collection;
+use Intrfce\LaravelFrontendEnums\Attributes\PublishEnum;
 
+#[PublishEnum]
 enum UserType: string
 {
     use Collectable;
