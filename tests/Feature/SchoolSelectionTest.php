@@ -30,6 +30,16 @@ it('does not throw for a guardian with no linked students', function () {
         );
 });
 
+it('auto-selects the school when only one is available', function () {
+    $school = $this->tenant->schools->first();
+    $this->tenant->schools()->whereKeyNot($school->id)->delete();
+
+    $this->get(route('select-school'))
+        ->assertRedirect(route('home'));
+
+    expect($this->user->refresh()->school_id)->toBe($school->id);
+});
+
 it('can view the school selection page', function () {
     $this->get(route('select-school'))
         ->assertOk()
