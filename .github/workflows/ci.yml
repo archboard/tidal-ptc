@@ -52,7 +52,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:16
+        image: postgres:18
         env:
           POSTGRES_USER: laravel
           POSTGRES_PASSWORD: laravel
@@ -116,6 +116,9 @@ jobs:
   docker:
     name: Docker
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - uses: actions/checkout@v4
@@ -136,9 +139,40 @@ jobs:
         run: |
           docker run -d --name app -p 8000:8000 \
             -e APP_KEY=base64:$(openssl rand -base64 32) \
-            -e DB_CONNECTION=sqlite -e DB_DATABASE=:memory: \
+            -e DB_CONNECTION=sqlite -e DB_DATABASE=/tmp/ci.sqlite \
             -e CACHE_DRIVER=array -e SESSION_DRIVER=array -e QUEUE_CONNECTION=sync -e BROADCAST_CONNECTION=log \
             tidal-ptc:ci
-          for i in $(seq 1 30); do curl -fs http://localhost:8000/up && exit 0; sleep 2; done
+          # The tenant finder queries `tenants` on every request, so /up needs a migrated database
+          docker exec app php artisan migrate --force --no-interaction
+          for i in $(seq 1 30); do curl -f http://localhost:8000/up && exit 0; sleep 2; done
           docker logs app
           exit 1
+
+      - name: Log in to GHCR
+        if: github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Image tags
+        if: github.event_name == 'push'
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=sha
+            type=ref,event=branch
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Push image
+        if: github.event_name == 'push'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
