@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, toRef } from 'vue'
 import FadeIn from '@/components/transitions/FadeIn.vue'
 import alertColors from '@/composition/alertColors.js'
 import AlertComponent from '@/mixins/AlertComponent.js'
@@ -38,7 +38,7 @@ export default {
   },
 
   setup (props) {
-    const colors = alertColors(props.level)
+    const colors = alertColors(toRef(props, 'level'))
     const show = ref(true)
 
     return {
