@@ -25,8 +25,8 @@
             </tr>
           </Thead>
           <Tbody>
-            <tr v-if="reservations.length === 0">
-              <Td colspan="5">{{ __('No upcoming conferences.') }}</Td>
+            <tr v-if="reservations.length === 0 && placeholders.length === 0">
+              <Td colspan="5" class="text-center">{{ __('No upcoming conferences.') }}</Td>
             </tr>
             <tr v-for="slot in reservations" :key="slot.id">
               <Td>{{ displayDate(slot.starts_at, 'full') }}</Td>
@@ -41,6 +41,15 @@
                     <template #actionText>{{ __('Cancel conference') }}</template>
                   </ConfirmButton>
                 </div>
+              </ActionColumn>
+            </tr>
+            <tr v-for="row in placeholders" :key="row.key" class="text-gray-500 dark:text-gray-400">
+              <Td>{{ __('Not booked') }}</Td>
+              <Td>{{ row.student.name }}</Td>
+              <Td>{{ row.teacher.name }}</Td>
+              <Td>—</Td>
+              <ActionColumn>
+                <AppLink :href="`/reservations/create/${row.student.id}/${row.teacher.id}`">{{ __('Book') }}</AppLink>
               </ActionColumn>
             </tr>
           </Tbody>
@@ -78,6 +87,14 @@
 
     <!-- Staff -->
     <div v-else-if="user.user_type === UserType.staff" class="space-y-6">
+      <SimpleAlert :level="school.contacts_can_book ? 'success' : 'warning'" not-dismissible>
+        <template v-if="school.contacts_can_book">{{ __('Booking is open.') }}</template>
+        <template v-else-if="school.open_for_contacts_at && dayjs(school.open_for_contacts_at).isAfter(dayjs())">{{ __('Booking will be available on :when.', { when: displayDate(school.open_for_contacts_at, 'full', true) }) }}</template>
+        <template v-else>{{ __('Booking is closed.') }}</template>
+      </SimpleAlert>
+
+      <SchoolTimeSlotSettings v-if="canEditSchoolSettings" :school="school" compact />
+
       <dl v-if="schoolStats" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div v-for="stat in stats" :key="stat.label" class="rounded-2xl bg-white dark:bg-gray-800 shadow-sm px-5 py-4">
           <dt class="text-sm text-gray-500 dark:text-gray-300 truncate">{{ stat.label }}</dt>
@@ -141,6 +158,8 @@ import CardHeader from '@/components/CardHeader.vue'
 import HelpText from '@/components/forms/HelpText.vue'
 import AppLink from '@/components/AppLink.vue'
 import ConfirmButton from '@/components/ConfirmButton.vue'
+import SimpleAlert from '@/components/alerts/SimpleAlert.vue'
+import SchoolTimeSlotSettings from '@/components/forms/form-sets/SchoolTimeSlotSettings.vue'
 import { Table, Thead, Th, Tbody, Td, ActionColumn } from '@/components/tables/index.js'
 import useDates from '@/composition/useDates.js'
 import { UserType } from '@/Enums/UserType.enum.js'
@@ -155,10 +174,12 @@ const props = defineProps({
   myReservations: { type: Array, default: () => [] },
   openCount: Number,
   canManageTimeSlots: Boolean,
+  canEditSchoolSettings: Boolean,
   schoolStats: Object,
 })
 const user = usePage().props.user
-const { displayDate } = useDates()
+const school = usePage().props.school
+const { displayDate, dayjs } = useDates()
 
 const stats = computed(() => props.schoolStats ? [
   { label: __('Upcoming time slots'), value: props.schoolStats.slots },
@@ -181,6 +202,13 @@ const teacherRows = (student) => {
   props.otherStaff.forEach(staff => rows.push({ key: `staff-${staff.id}`, course: '', teacher: staff, bookable: true }))
   return rows
 }
+const placeholders = computed(() => props.bookingOpen
+  ? props.students
+    .filter(student => student.can_book)
+    .flatMap(student => teacherRows(student)
+      .filter(row => row.bookable && !reservationFor(student, row.teacher))
+      .map(row => ({ key: `${student.id}-${row.key}`, student, teacher: row.teacher })))
+  : [])
 const reservationFor = (student, teacher) => props.reservations.find(r => r.student_id === student.id && r.user?.id === teacher.id)
 const cancel = (slot, close) => router.delete(`/reservations/${slot.id}`, { onFinish: close, preserveScroll: true })
 </script>

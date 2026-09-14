@@ -63,6 +63,21 @@ it('shows admins school stats', function () {
             ->where('schoolStats.translators.0.max', 5));
 });
 
+it('hides the school settings widget from staff without permission', function () {
+    $this->user->update(['user_type' => UserType::staff]);
+
+    $this->get(route('home'))
+        ->assertInertia(fn (AssertableInertia $page) => $page->where('canEditSchoolSettings', false));
+});
+
+it('shows the school settings widget to staff with permission', function () {
+    $this->user->update(['user_type' => UserType::staff]);
+
+    $this->givePermission(Permission::editSchoolSettings)
+        ->get(route('home'))
+        ->assertInertia(fn (AssertableInertia $page) => $page->where('canEditSchoolSettings', true));
+});
+
 it('renders an empty dashboard for students', function () {
     $this->user->update(['user_type' => UserType::student]);
 

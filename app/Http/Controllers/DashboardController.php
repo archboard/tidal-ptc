@@ -83,6 +83,7 @@ class DashboardController extends Controller
             ),
             'openCount' => (clone $upcoming)->notReserved()->count(),
             'canManageTimeSlots' => $user->can('createOrForSelf', TimeSlot::class),
+            'canEditSchoolSettings' => $user->can(Permission::editSchoolSettings->value),
         ];
 
         if ($user->can(Permission::viewAny, TimeSlot::class)) {
