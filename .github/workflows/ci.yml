@@ -135,7 +135,7 @@ jobs:
       - name: Boot the image
         run: |
           docker run -d --name app -p 8000:8000 \
-            -e APP_KEY=$(docker run --rm tidal-ptc:ci php artisan key:generate --show) \
+            -e APP_KEY=base64:$(openssl rand -base64 32) \
             -e DB_CONNECTION=sqlite -e DB_DATABASE=:memory: \
             -e CACHE_DRIVER=array -e SESSION_DRIVER=array -e QUEUE_CONNECTION=sync -e BROADCAST_CONNECTION=log \
             tidal-ptc:ci
