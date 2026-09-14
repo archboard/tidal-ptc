@@ -26,6 +26,20 @@ Add the scheduler to cron so reminders go out and the activity log is pruned:
 
 Email is sent through the SMTP settings configured on the tenant settings page. `QUEUE_CONNECTION=sync` (the default) sends mail inline; set a real queue driver and run `php artisan queue:work` to send in the background.
 
+### Docker
+
+The repository ships a production Compose stack: the app on [Laravel Octane](https://laravel.com/docs/octane) (FrankenPHP), Reverb for websockets, a queue worker, the scheduler, PostgreSQL and Redis.
+
+```sh
+cp .env.example .env
+# Set APP_URL, APP_ENV=production, APP_DEBUG=false, DB_PASSWORD, the REVERB_* values
+# and the PowerSchool credentials, plus a key:
+sed -i "s|^APP_KEY=.*|APP_KEY=base64:$(openssl rand -base64 32)|" .env
+docker compose up -d --build
+```
+
+Migrations run automatically when the `app` service starts. Put a TLS-terminating reverse proxy in front and route `/` to port `8000` and `/app`, `/apps` (websockets) to port `8080`; `REVERB_HOST`/`REVERB_PORT`/`REVERB_SCHEME` must describe the proxy's public websocket address. Run Artisan with `docker compose exec app php artisan …`. After pulling a new version, `docker compose up -d --build` restarts every service on the new image.
+
 ### Local development
 
 `php artisan migrate --seed` creates a tenant on `APP_URL` with an admin (`admin@example.com`), a teacher, a guardian and sample time slots — all with the password `password`. Run `npm run enums` after changing a `#[PublishEnum]` enum to regenerate the JavaScript copies.

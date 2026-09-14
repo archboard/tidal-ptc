@@ -85,3 +85,17 @@ it('renders an empty dashboard for students', function () {
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page->component('Dashboard')->missing('students')->missing('myReservations'));
 });
+
+it('shares the reverb connection settings without the secret', function () {
+    config()->set('broadcasting.connections.reverb', [
+        'key' => 'public-key',
+        'secret' => 'shh',
+        'app_id' => '1',
+        'options' => ['host' => 'ws.example.test', 'port' => 443, 'scheme' => 'https', 'useTLS' => true],
+    ]);
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->where('reverb', ['key' => 'public-key', 'host' => 'ws.example.test', 'port' => 443, 'scheme' => 'https']));
+});

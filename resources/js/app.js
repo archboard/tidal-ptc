@@ -33,7 +33,10 @@ createInertiaApp({
     // Register all the plugins
     Object.values(plugins).forEach(app.use)
     // Echo needs the signed-in user to subscribe to their notification channel
-    app.use(echo, { userId: get(props, 'initialPage.props.user.id') })
+    app.use(echo, {
+      userId: get(props, 'initialPage.props.user.id'),
+      reverb: get(props, 'initialPage.props.reverb'),
+    })
 
     // Register global components
     Object.keys(components).forEach(componentName => {

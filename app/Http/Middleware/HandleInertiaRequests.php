@@ -8,6 +8,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Navigation\NavigationItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -179,6 +180,11 @@ class HandleInertiaRequests extends Middleware
                 return array_map(fn (NavigationItem $item) => $item->toArray(), $nav);
             },
             'filterKey' => fn () => 'f',
+            // Echo's connection settings, so the JS bundle isn't tied to one environment
+            'reverb' => fn () => [
+                'key' => config('broadcasting.connections.reverb.key'),
+                ...Arr::only(config('broadcasting.connections.reverb.options'), ['host', 'port', 'scheme']),
+            ],
         ]);
     }
 }

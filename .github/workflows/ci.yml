@@ -112,3 +112,33 @@ jobs:
 
       - name: Run Pest
         run: ./vendor/bin/pest --parallel
+
+  docker:
+    name: Docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: tidal-ptc:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Boot the image
+        run: |
+          docker run -d --name app -p 8000:8000 \
+            -e APP_KEY=$(docker run --rm tidal-ptc:ci php artisan key:generate --show) \
+            -e DB_CONNECTION=sqlite -e DB_DATABASE=:memory: \
+            -e CACHE_DRIVER=array -e SESSION_DRIVER=array -e QUEUE_CONNECTION=sync -e BROADCAST_CONNECTION=log \
+            tidal-ptc:ci
+          for i in $(seq 1 30); do curl -fs http://localhost:8000/up && exit 0; sleep 2; done
+          docker logs app
+          exit 1
