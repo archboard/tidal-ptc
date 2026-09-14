@@ -49,7 +49,7 @@ services:
     command: php artisan schedule:work
 
   postgres:
-    image: postgres:17-alpine
+    image: postgres:18-alpine
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${DB_DATABASE:-laravel}
