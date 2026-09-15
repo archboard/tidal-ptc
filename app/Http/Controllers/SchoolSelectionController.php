@@ -7,7 +7,6 @@ use App\Exceptions\SisNotConfiguredException;
 use App\Http\Resources\SchoolResource;
 use App\Models\Tenant;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -20,12 +19,9 @@ class SchoolSelectionController extends Controller
         /** @var User $user */
         $user = $request->user();
         $isGuardian = $user->user_type === UserType::guardian;
-        $schools = $tenant->schools()
-            ->when($isGuardian, function (Builder $builder) use ($user) {
-                $builder->whereIn('id', $user->students()->pluck('school_id'));
-            })
-            ->where('active', true)
-            ->get();
+        $schools = $isGuardian
+            ? $user->adminSchools()->get()
+            : $tenant->schools()->where('active', true)->get();
         $title = __('Select school');
 
         // Guardians are scoped to their students' schools; an empty list means no linked students, not a missing SIS config

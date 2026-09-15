@@ -70,14 +70,21 @@
             </tr>
           </Thead>
           <Tbody>
+            <tr v-if="teacherRows(student).length === 0">
+              <Td colspan="3" class="text-center text-gray-500 dark:text-gray-400">{{ __('No teachers found for this student.') }}</Td>
+            </tr>
             <tr v-for="row in teacherRows(student)" :key="row.key">
               <Td>{{ row.course }}</Td>
               <Td>{{ row.teacher.name }}</Td>
               <ActionColumn>
                 <span v-if="reservationFor(student, row.teacher)">{{ __('Booked') }}</span>
-                <AppLink v-else-if="bookingOpen && student.can_book && row.bookable" :href="`/reservations/create/${student.id}/${row.teacher.id}`">
-                  {{ __('Book') }}
-                </AppLink>
+                <template v-else-if="bookingOpen && student.can_book && row.bookable">
+                  <AppLink v-if="availabilityFor(row.teacher) === 'open'" :href="`/reservations/create/${student.id}/${row.teacher.id}`">
+                    {{ __('Book') }}
+                  </AppLink>
+                  <span v-else-if="availabilityFor(row.teacher) === 'full'" class="text-gray-500 dark:text-gray-400">{{ __('Fully booked') }}</span>
+                  <span v-else class="text-gray-500 dark:text-gray-400">{{ __('No time slots yet') }}</span>
+                </template>
               </ActionColumn>
             </tr>
           </Tbody>
@@ -167,6 +174,7 @@ import { UserType } from '@/Enums/UserType.enum.js'
 const props = defineProps({
   students: { type: Array, default: () => [] },
   otherStaff: { type: Array, default: () => [] },
+  slotAvailability: { type: Object, default: () => ({}) },
   reservations: { type: Array, default: () => [] },
   bookingOpen: Boolean,
   opensAt: String,
@@ -209,6 +217,7 @@ const placeholders = computed(() => props.bookingOpen
       .filter(row => row.bookable && !reservationFor(student, row.teacher))
       .map(row => ({ key: `${student.id}-${row.key}`, student, teacher: row.teacher })))
   : [])
+const availabilityFor = teacher => props.slotAvailability[teacher.id] ?? 'none'
 const reservationFor = (student, teacher) => props.reservations.find(r => r.student_id === student.id && r.user?.id === teacher.id)
 const cancel = (slot, close) => router.delete(`/reservations/${slot.id}`, { onFinish: close, preserveScroll: true })
 </script>

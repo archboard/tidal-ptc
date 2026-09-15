@@ -34,6 +34,24 @@ it('shows a guardian their students, teachers, other staff and reservations', fu
             ->missing('schoolStats'));
 });
 
+it('tells a guardian whether each teacher has open slots, is fully booked, or has none', function () {
+    $open = seedUser(['user_type' => UserType::staff]);
+    $full = seedUser(['user_type' => UserType::staff]);
+    $none = seedUser(['user_type' => UserType::staff]);
+    $student = seedSection($open)->students->first();
+    seedSection($full)->students()->attach($student);
+    seedSection($none)->students()->attach($student);
+    seedBookableSlot($open);
+    seedBookableSlot($full, ['student_id' => Student::factory()->create()->id]);
+
+    $this->actingAs(seedGuardian($student))
+        ->get(route('home'))
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->where("slotAvailability.{$open->id}", 'open')
+            ->where("slotAvailability.{$full->id}", 'full')
+            ->missing("slotAvailability.{$none->id}"));
+});
+
 it('shows staff their reservations and admins school stats', function () {
     $this->user->update(['user_type' => UserType::staff]);
     $student = Student::factory()->create();
