@@ -76,3 +76,22 @@ it('authorizes only the user on their notification channel', function () {
     $other = User::factory()->create(['tenant_id' => $this->tenant->id]);
     $auth($other->id)->assertForbidden();
 });
+
+it('syncs the whole school in dependency order', function () {
+    Notification::fake();
+    $order = [];
+    $mock = $this->mock(PowerSchoolProvider::class);
+
+    foreach (['syncSchool', 'syncSchoolStaff', 'syncSchoolStudents', 'syncSchoolCourses', 'syncSchoolSections'] as $method) {
+        $mock->shouldReceive($method)->once()->andReturnUsing(function () use (&$order, $method, $mock) {
+            $order[] = $method;
+
+            return $method === 'syncSchool' ? $this->school : $mock;
+        });
+    }
+
+    (new SyncSchoolItem($this->school, 'school', $this->user))->handle();
+
+    expect($order)->toBe(['syncSchool', 'syncSchoolStaff', 'syncSchoolStudents', 'syncSchoolCourses', 'syncSchoolSections']);
+    Notification::assertSentTo($this->user, SyncCompleted::class, fn (SyncCompleted $n) => $n->item === 'school' && $n->level === 'success');
+});

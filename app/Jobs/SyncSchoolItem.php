@@ -16,7 +16,7 @@ class SyncSchoolItem implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /** @var array<string, string> Sync item => School method */
+    /** @var array<string, string> Sync item => School method, in dependency order (sections need staff + courses) */
     public const METHODS = [
         'school' => 'syncFromSis',
         'staff' => 'syncStaff',
@@ -29,7 +29,12 @@ class SyncSchoolItem implements ShouldQueue
 
     public function handle(): void
     {
-        $this->school->{self::METHODS[$this->item]}();
+        // 'school' means the whole school: run every step in order
+        $methods = $this->item === 'school' ? self::METHODS : [self::METHODS[$this->item]];
+
+        foreach ($methods as $method) {
+            $this->school->{$method}();
+        }
 
         $this->user->notify(new SyncCompleted(
             $this->item,
