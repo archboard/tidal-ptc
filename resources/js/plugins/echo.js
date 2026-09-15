@@ -9,13 +9,14 @@ const INDEX_PATHS = {
   courses: ['/courses'],
   sections: ['/sections'],
   staff: ['/teachers', '/users'],
-  school: ['/settings/school', '/students', '/courses', '/sections', '/teachers', '/users'],
+  school: ['/students', '/courses', '/sections', '/teachers', '/users'],
 }
 
 const onSyncCompleted = (notification) => {
   store.addNotification({ level: notification.level, text: notification.text }, 6000)
 
-  const onIndex = (INDEX_PATHS[notification.item] || [])
+  // The settings page shows counts for every item, so it always reloads
+  const onIndex = ['/settings/school', ...(INDEX_PATHS[notification.item] || [])]
     .some(path => window.location.pathname.startsWith(path))
 
   if (notification.level === 'success' && onIndex) {
