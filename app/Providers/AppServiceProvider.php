@@ -26,6 +26,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\Support\CauserResolver;
@@ -51,6 +52,8 @@ class AppServiceProvider extends ServiceProvider
     {
         JsonResource::withoutWrapping();
         Date::use(CarbonImmutable::class);
+        // TLS terminates at the proxy, so a worker only sees http unless X-Forwarded-Proto arrives; never emit http links in production
+        URL::forceHttps($this->app->isProduction());
 
         // The machine-token API guard authenticates a GenericUser, which the activity log can't reference
         app(CauserResolver::class)->resolveUsing(fn () => auth()->user() instanceof User ? auth()->user() : null);
