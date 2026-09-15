@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Settings;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateSchoolSettingsRequest;
+use App\Jobs\SyncSchoolItem;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Response;
 
 class SchoolSettingsController extends Controller
@@ -18,6 +21,19 @@ class SchoolSettingsController extends Controller
 
         return inertia('settings/School', [
             'title' => __('Settings for :school', ['school' => $school->name]),
+            'syncing' => fn () => array_values(array_filter(
+                array_keys(SyncSchoolItem::METHODS),
+                fn (string $item) => Cache::has(SyncSchoolItem::syncingKey($school, $item)),
+            )),
+            'enrollmentSync' => function () use ($school): ?array {
+                $batch = Bus::findBatch(Cache::get(SyncSchoolItem::enrollmentBatchKey($school), ''));
+
+                return $batch && ! $batch->finished() ? [
+                    'processed' => $batch->processedJobs(),
+                    'total' => $batch->totalJobs,
+                    'failed' => $batch->failedJobs,
+                ] : null;
+            },
             'counts' => [
                 [
                     'key' => 'staff',

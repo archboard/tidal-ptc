@@ -229,15 +229,20 @@ class User extends Authenticatable implements ExistsInSis, Filterable
     }
 
     /**
-     * District admins can access every active school in the tenant; everyone else only their assigned schools.
+     * District admins can access every active school in the tenant, guardians the schools
+     * of their linked students, and everyone else only their assigned schools.
      *
      * @return Builder<School>
      */
     public function adminSchools(): Builder
     {
-        $query = $this->isA(Role::DISTRICT_ADMIN->value)
-            ? $this->tenant->schools()->getQuery()
-            : $this->schools()->getQuery();
+        $query = match (true) {
+            $this->isA(Role::DISTRICT_ADMIN->value) => $this->tenant->schools()->getQuery(),
+            $this->user_type === UserType::guardian => $this->tenant->schools()
+                ->getQuery()
+                ->whereIn('id', $this->students()->select('students.school_id')),
+            default => $this->schools()->getQuery(),
+        };
 
         return $query
             ->active()

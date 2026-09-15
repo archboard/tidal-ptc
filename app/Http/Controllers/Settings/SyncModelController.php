@@ -26,7 +26,7 @@ class SyncModelController extends Controller
 
             if ($instance instanceof School) {
                 // Whole-school syncs are slow; queue them and notify on completion
-                SyncSchoolItem::dispatch($instance, 'school', $user);
+                SyncSchoolItem::start($instance, 'school', $user);
                 session()->flash('success', __('Sync started. You will be notified when it finishes.'));
             } elseif ($instance instanceof ExistsInSis) {
                 $instance->syncFromSis();
