@@ -24,6 +24,7 @@ class TimeSlotResource extends JsonResource
             'batch_id' => $this->resource->batch_id,
             'starts_at' => $this->resource->starts_at->toDateTimeString(),
             'ends_at' => $this->resource->ends_at->toDateTimeString(),
+            'range_display' => $this->resource->range_display,
             'reserved_at' => $this->resource->reserved_at?->toDateTimeString(),
             'teacher_notes' => $this->resource->teacher_notes,
             'contact_notes' => $this->when($canViewReservation, $this->resource->contact_notes),

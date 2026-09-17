@@ -34,8 +34,8 @@ class ReservationController extends Controller
         'staff_reminded_at' => null,
     ];
 
-    /** Booking page for one student with one staff member. */
-    public function create(Request $request, Student $student, User $user): Response
+    /** Booking page for one student with one staff member; JSON for the dashboard modal. */
+    public function create(Request $request, Student $student, User $user): Response|JsonResponse
     {
         /** @var User $actor */
         $actor = $request->user();
@@ -58,8 +58,7 @@ class ReservationController extends Controller
             ->orderBy('starts_at')
             ->get();
 
-        return inertia('reservations/Create', [
-            'title' => __('Book a conference'),
+        $props = [
             'student' => new StudentResource($student),
             'staff' => new PublicUserResource($user),
             'slots' => TimeSlotResource::collection($slots),
@@ -68,7 +67,13 @@ class ReservationController extends Controller
                 ? $school->languages->map(fn ($language) => ['value' => $language->language->value, 'label' => $language->language->name()])->values()
                 : [],
             'allowOnline' => $school->allow_online_meetings,
-        ]);
+        ];
+
+        if ($request->wantsJson() && ! $request->inertia()) {
+            return response()->json($props);
+        }
+
+        return inertia('reservations/Create', ['title' => __('Book a conference'), ...$props]);
     }
 
     public function store(ReserveTimeSlotRequest $request, TimeSlot $timeSlot): JsonResponse|RedirectResponse

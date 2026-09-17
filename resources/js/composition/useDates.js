@@ -12,7 +12,7 @@ dayjs.extend(relativeTime)
 export default () => {
   const $http = inject('$http')
   const timezone = computed(() => usePage().props.user?.timezone || 'UTC')
-  const timeFormat = 'h:mma'
+  const timeFormat = usePage().props.user?.is_24h ? 'HH:mm' : 'h:mma'
   const formats = {
     full: `MMMM D, YYYY ${timeFormat}`,
     abbr: `MMM D, YYYY ${timeFormat}`,

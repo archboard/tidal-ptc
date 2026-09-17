@@ -1,6 +1,9 @@
 <template>
   <div class="inline-block">
-    <AppButton v-bind="$attrs" @click.prevent="show = true">
+    <AppLink v-if="link" is="button" v-bind="$attrs" @click.prevent="show = true">
+      <slot />
+    </AppLink>
+    <AppButton v-else v-bind="$attrs" @click.prevent="show = true">
       <slot />
     </AppButton>
 
@@ -19,8 +22,10 @@
 <script setup>
 import { ref } from 'vue'
 import AppButton from '@/components/AppButton.vue'
+import AppLink from '@/components/AppLink.vue'
 import ConfirmationModal from '@/components/modals/ConfirmationModal.vue'
 
+defineProps({ link: Boolean })
 const emit = defineEmits(['confirmed'])
 const modal = ref()
 const show = ref(false)

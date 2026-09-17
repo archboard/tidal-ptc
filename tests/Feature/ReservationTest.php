@@ -267,6 +267,30 @@ it('shows the booking page to contacts and admins only', function () {
         ->assertOk();
 });
 
+it('returns booking data as json for the dashboard modal', function () {
+    $this->actingAs($this->guardian)
+        ->getJson(route('reservations.create', [$this->student, $this->teacher]))
+        ->assertOk()
+        ->assertJsonPath('student.id', $this->student->id)
+        ->assertJsonPath('slots.0.id', $this->slot->id)
+        ->assertJsonPath('existingReservation', null);
+});
+
+it('formats the slot range in the users timezone and time style', function () {
+    $this->slot->update(['starts_at' => '2026-09-18 05:30:00', 'ends_at' => '2026-09-18 06:00:00']);
+    $this->guardian->update(['timezone' => 'Asia/Shanghai', 'is_24h' => false]);
+
+    $this->actingAs($this->guardian)
+        ->getJson(route('reservations.create', [$this->student, $this->teacher]))
+        ->assertJsonPath('slots.0.range_display', 'Sep 18 1:30pm - 2:00pm');
+
+    $this->guardian->update(['is_24h' => true]);
+
+    $this->actingAs($this->guardian->fresh())
+        ->getJson(route('reservations.create', [$this->student, $this->teacher]))
+        ->assertJsonPath('slots.0.range_display', 'Sep 18 13:30 - 14:00');
+});
+
 it('lists only bookable slots on the booking page', function () {
     seedBookableSlot($this->teacher, ['contact_can_book' => false]);
     seedBookableSlot($this->teacher, ['student_id' => Student::factory()->create()->id]);

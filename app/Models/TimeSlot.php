@@ -58,6 +58,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property-read mixed $local_ends_at
  * @property-read mixed $local_reserved_at
  * @property-read mixed $local_starts_at
+ * @property-read string $range_display
  * @property-read User|null $reservedBy
  * @property-read School $school
  * @property-read Student|null $student
@@ -223,6 +224,22 @@ class TimeSlot extends Model
         return Attribute::get(
             fn () => $this->reserved_at ? Timezone::toLocal($this->reserved_at) : null
         );
+    }
+
+    /**
+     * "Sep 18 1:30pm - 2:00pm" in the current user's timezone and 12/24-hour preference.
+     *
+     * @return Attribute<string, never>
+     */
+    public function rangeDisplay(): Attribute
+    {
+        return Attribute::get(function (): string {
+            $timeFormat = auth()->user()?->is_24h ? 'HH:mm' : 'h:mma';
+            $starts = Timezone::toLocal($this->starts_at);
+            $ends = Timezone::toLocal($this->ends_at);
+
+            return $starts->isoFormat("MMM D {$timeFormat}").' - '.$ends->isoFormat($timeFormat);
+        });
     }
 
     /** @return BelongsTo<Batch, $this> */
