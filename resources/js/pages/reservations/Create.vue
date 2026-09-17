@@ -7,6 +7,7 @@
           :student="student"
           :slots="slots"
           :existing-reservation="existingReservation"
+          :conflicts="conflicts"
           :languages="languages"
           :allow-online="allowOnline"
         />
@@ -27,6 +28,7 @@ defineProps({
   staff: Object,
   slots: Array,
   existingReservation: Object,
+  conflicts: Array,
   languages: Array,
   allowOnline: Boolean,
 })

@@ -11,6 +11,36 @@
 
       <SimpleAlert v-else-if="closesAt" level="neutral" not-dismissible>{{ __('Booking closes :when.', { when: displayDate(closesAt, 'full', true) }) }}</SimpleAlert>
 
+      <CardWrapper v-if="reservations.length">
+        <CardPadding>
+          <CardHeader>{{ __('Your conferences') }}</CardHeader>
+        </CardPadding>
+        <Table no-top-radius>
+          <Thead>
+            <tr>
+              <Th>{{ __('When') }}</Th>
+              <Th>{{ __('Student') }}</Th>
+              <Th>{{ __('Teacher') }}</Th>
+              <Th>{{ __('Where') }}</Th>
+            </tr>
+          </Thead>
+          <Tbody>
+            <tr v-for="slot in reservations" :key="slot.id">
+              <Td class="whitespace-nowrap">{{ slot.range_display }}</Td>
+              <Td class="whitespace-nowrap">{{ slot.student?.name }}</Td>
+              <Td class="whitespace-nowrap">{{ slot.user?.name }}</Td>
+              <Td>
+                <template v-if="slot.requested_online || slot.is_online">
+                  <AppLink v-if="slot.meeting_url" :href="slot.meeting_url" is="a" target="_blank" rel="noopener">{{ __('Join video call') }}</AppLink>
+                  <span v-else>{{ __('Online') }}</span>
+                </template>
+                <template v-else>{{ slot.location || '—' }}</template>
+              </Td>
+            </tr>
+          </Tbody>
+        </Table>
+      </CardWrapper>
+
       <CardWrapper v-for="student in students" :key="student.id">
         <CardPadding>
           <CardHeader>{{ student.name }}</CardHeader>
@@ -40,7 +70,7 @@
               <Td v-else class="whitespace-nowrap text-gray-500 dark:text-gray-400">{{ __('Not booked') }}</Td>
               <ActionColumn class="whitespace-nowrap">
                 <template v-if="reservationFor(student, row.teacher)">
-                  <AppLink v-if="bookingOpen" is="button" type="button" @click="booking = { student, staff: row.teacher }">{{ __('Move') }}</AppLink>
+                  <AppLink v-if="bookingOpen" is="button" type="button" @click="booking = { student, staff: row.teacher }">{{ __('Edit') }}</AppLink>
                   <ConfirmButton link color="red" @confirmed="close => cancel(reservationFor(student, row.teacher), close)">
                     {{ __('Cancel') }}
                     <template #actionText>{{ __('Cancel conference') }}</template>

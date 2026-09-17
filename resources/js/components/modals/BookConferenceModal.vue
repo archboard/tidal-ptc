@@ -1,11 +1,12 @@
 <template>
-  <Modal @close="$emit('close')" :headline="`${student.name} · ${staff.name}`" ref="modal" hide-actions size="2xl">
+  <Modal @close="$emit('close')" :headline="`${student.name} · ${staff.name}`" ref="modal" hide-actions size="3xl">
     <p v-if="!booking" class="text-sm text-gray-500">{{ __('Loading…') }}</p>
     <ConferenceBookingForm
       v-else
       :student="student"
       :slots="booking.slots"
       :existing-reservation="booking.existingReservation"
+      :conflicts="booking.conflicts"
       :languages="booking.languages"
       :allow-online="booking.allowOnline"
       @success="modal.close()"

@@ -5,9 +5,24 @@
     </HelpText>
     <HelpText v-else>{{ __('Choose a time that works for you.') }}</HelpText>
 
-    <p v-if="slots.length === 0" class="mt-4">{{ __('There are no available times right now.') }}</p>
+    <p v-if="selectableSlots.length === 0" class="mt-4">{{ __('There are no available times right now.') }}</p>
 
-    <div v-for="(daySlots, day) in slotsByDay" :key="day" class="mt-4">
+    <div v-if="slots.length" class="mt-4 flex justify-end">
+      <ButtonGroup v-model="view" :options="viewOptions" />
+    </div>
+
+    <TimeSlotCalendar
+      v-if="view === 'calendar'"
+      ref="calendarRef"
+      class="mt-4"
+      :time-format="user.fc_time_format"
+      :timezone="timezone"
+      :events="events"
+      :options-override="{ selectable: false, editable: false, initialDate: events[0]?.start, height: 700 }"
+      @event-click="selectEvent"
+    />
+
+    <div v-for="(daySlots, day) in slotsByDay" v-else :key="day" class="mt-4">
       <h4 class="font-semibold mb-2">{{ day }}</h4>
       <div class="flex flex-wrap gap-2">
         <AppButton
@@ -18,7 +33,7 @@
           @click="selected = slot"
         >
           {{ displayDate(slot.starts_at, 'time') }} – {{ displayDate(slot.ends_at, 'time') }}
-          <span v-if="slot.id === existingReservation?.id"> · {{ __('Current') }}</span>
+          <span v-if="isCurrentSlot(slot)" class="ml-1">· {{ __('Current') }}</span>
         </AppButton>
       </div>
     </div>
@@ -60,25 +75,37 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
-import { useForm } from '@inertiajs/vue3'
+import { computed, ref, watch } from 'vue'
+import { useForm, usePage } from '@inertiajs/vue3'
+import { trans as __ } from 'laravel-vue-i18n'
 import HelpText from '@/components/forms/HelpText.vue'
 import FormField from '@/components/forms/FormField.vue'
 import FieldError from '@/components/forms/FieldError.vue'
 import AppCheckbox from '@/components/forms/AppCheckbox.vue'
 import AppSelect from '@/components/forms/AppSelect.vue'
 import AppButton from '@/components/AppButton.vue'
+import ButtonGroup from '@/components/ButtonGroup.vue'
+import { ListBulletIcon, CalendarDaysIcon } from '@heroicons/vue/24/outline/index.js'
+import TimeSlotCalendar from '@/components/TimeSlotCalendar.vue'
 import useDates from '@/composition/useDates.js'
 
 const props = defineProps({
   student: Object,
   slots: Array,
   existingReservation: Object,
+  conflicts: { type: Array, default: () => [] },
   languages: Array,
   allowOnline: Boolean,
 })
 const emit = defineEmits(['success'])
-const { displayDate } = useDates()
+const { displayDate, timezone } = useDates()
+const user = usePage().props.user
+const view = ref('list')
+const viewOptions = [
+  { value: 'list', label: __('List'), icon: ListBulletIcon },
+  { value: 'calendar', label: __('Calendar'), icon: CalendarDaysIcon },
+]
+const calendarRef = ref()
 const selected = ref(props.existingReservation ?? null)
 const isCurrent = computed(() => selected.value?.id === props.existingReservation?.id)
 const form = useForm({
@@ -87,15 +114,51 @@ const form = useForm({
   requested_online: props.existingReservation?.requested_online ?? false,
   language: props.existingReservation?.language ?? null,
 })
-const slotsByDay = computed(() => [...props.slots, ...(props.existingReservation ? [props.existingReservation] : [])]
-  .sort((a, b) => a.starts_at.localeCompare(b.starts_at))
+const isCurrentSlot = slot => slot.id === props.existingReservation?.id
+const hasConflict = slot => props.conflicts.some(other => other.starts_at < slot.ends_at && other.ends_at > slot.starts_at)
+const isSelectable = slot => slot && (isCurrentSlot(slot) || (!slot.student_id && !hasConflict(slot)))
+// Event styling: available = primary, selected = darker primary, booked by someone else = gray, mine = dark/light gray, conflicting = gray
+const eventClasses = slot => {
+  if (selected.value?.id === slot.id) return ['bg-primary-800!', 'border-primary-800!']
+  if (isCurrentSlot(slot)) return ['bg-gray-700!', 'border-gray-700!', 'dark:bg-gray-200!', 'dark:border-gray-200!', 'dark:text-gray-900!']
+  if (slot.student_id || hasConflict(slot)) return ['bg-gray-400!', 'border-gray-400!', 'cursor-not-allowed!']
+  return []
+}
+const eventTitle = slot => {
+  if (isCurrentSlot(slot)) return __('Current')
+  if (slot.student_id) return __('Booked')
+  if (hasConflict(slot)) return __('Conflict')
+  return ''
+}
+const selectableSlots = computed(() => props.slots.filter(isSelectable))
+const events = computed(() => props.slots.map(slot => ({
+  id: slot.id,
+  title: eventTitle(slot),
+  start: `${slot.starts_at.replace(' ', 'T')}Z`,
+  end: `${slot.ends_at.replace(' ', 'T')}Z`,
+  classNames: eventClasses(slot),
+})))
+// ponytail: FullCalendar copies its options once, so restyle events through the API instead of re-rendering
+watch(selected, () => {
+  const api = calendarRef.value?.calendar?.getApi?.()
+  props.slots.forEach(slot => api?.getEventById(String(slot.id))?.setProp('classNames', eventClasses(slot)))
+})
+const selectEvent = ({ event }) => {
+  const slot = props.slots.find(slot => slot.id === Number(event.id))
+  if (isSelectable(slot)) selected.value = slot
+}
+const slotsByDay = computed(() => selectableSlots.value
   .reduce((carry, slot) => {
     const day = displayDate(slot.starts_at, 'dddd, MMMM D')
     ;(carry[day] ??= []).push(slot)
     return carry
   }, {}))
 const submit = () => {
-  const options = { onSuccess: () => emit('success') }
+  const options = {
+    onSuccess: () => emit('success'),
+    preserveScroll: true,
+  }
+
   if (props.existingReservation) {
     form.transform(data => ({ ...data, time_slot_id: selected.value.id }))
       .put(`/reservations/${props.existingReservation.id}`, options)

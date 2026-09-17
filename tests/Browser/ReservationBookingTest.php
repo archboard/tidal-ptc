@@ -60,6 +60,29 @@ it('books with the override teacher and shows the original in parentheses', func
         ->and($this->slot->refresh()->student_id)->toBeNull();
 });
 
+it('books a conference from the calendar view', function () {
+    visit("/reservations/create/{$this->student->id}/{$this->teacher->id}")
+        ->click('Calendar')
+        ->click('.fc-event')
+        ->click('Book conference')
+        ->waitForEvent('networkidle')
+        ->assertSee('Conference booked successfully.')
+        ->assertNoJavaScriptErrors();
+
+    expect($this->slot->refresh()->student_id)->toBe($this->student->id);
+});
+
+it('does not offer slots that overlap another conference', function () {
+    $otherTeacher = seedUser();
+    seedSection($otherTeacher)->students()->attach($this->student);
+    seedBookableSlot($otherTeacher, ['student_id' => $this->student->id, 'reserved_by' => $this->guardian->id, 'starts_at' => $this->slot->starts_at, 'ends_at' => $this->slot->ends_at]);
+
+    visit("/reservations/create/{$this->student->id}/{$this->teacher->id}")
+        ->assertSee('There are no available times right now.')
+        ->assertDontSee('–')
+        ->assertNoJavaScriptErrors();
+});
+
 it('hides the booking form when a selected slot is cancelled', function () {
     visit("/reservations/create/{$this->student->id}/{$this->teacher->id}")
         ->click('button:has-text("–")')

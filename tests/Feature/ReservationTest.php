@@ -276,6 +276,20 @@ it('returns booking data as json for the dashboard modal', function () {
         ->assertJsonPath('existingReservation', null);
 });
 
+it('lists the contacts and students other conferences as conflicts', function () {
+    $otherTeacher = seedUser();
+    $studentConflict = seedBookableSlot($otherTeacher, ['student_id' => $this->student->id, 'reserved_by' => seedGuardian($this->student)->id, 'starts_at' => now()->addDays(2), 'ends_at' => now()->addDays(2)->addMinutes(15)]);
+    $contactConflict = seedBookableSlot($otherTeacher, ['student_id' => Student::factory()->create()->id, 'reserved_by' => $this->guardian->id, 'starts_at' => now()->addDays(3), 'ends_at' => now()->addDays(3)->addMinutes(15)]);
+    $existing = seedBookableSlot($this->teacher, ['student_id' => $this->student->id, 'reserved_by' => $this->guardian->id, 'starts_at' => now()->addDays(4), 'ends_at' => now()->addDays(4)->addMinutes(15)]);
+
+    $this->actingAs($this->guardian)
+        ->getJson(route('reservations.create', [$this->student, $this->teacher]))
+        ->assertJsonCount(2, 'conflicts')
+        ->assertJsonPath('conflicts.0.starts_at', $studentConflict->starts_at->toDateTimeString())
+        ->assertJsonPath('conflicts.1.starts_at', $contactConflict->starts_at->toDateTimeString())
+        ->assertJsonPath('existingReservation.id', $existing->id);
+});
+
 it('formats the slot range in the users timezone and time style', function () {
     $this->slot->update(['starts_at' => '2026-09-18 05:30:00', 'ends_at' => '2026-09-18 06:00:00']);
     $this->guardian->update(['timezone' => 'Asia/Shanghai', 'is_24h' => false]);
@@ -291,17 +305,21 @@ it('formats the slot range in the users timezone and time style', function () {
         ->assertJsonPath('slots.0.range_display', 'Sep 18 13:30 - 14:00');
 });
 
-it('lists only bookable slots on the booking page', function () {
+it('lists open and reserved slots on the booking page without exposing other bookings', function () {
     seedBookableSlot($this->teacher, ['contact_can_book' => false]);
-    seedBookableSlot($this->teacher, ['student_id' => Student::factory()->create()->id]);
+    $other = seedBookableSlot($this->teacher, ['student_id' => Student::factory()->create()->id, 'starts_at' => now()->addDays(2), 'ends_at' => now()->addDays(2)->addMinutes(15)]);
     seedBookableSlot($this->teacher, ['starts_at' => now()->addHour(), 'ends_at' => now()->addMinutes(75)]);
     seedBookableSlot($this->teacher, ['starts_at' => now()->subDay(), 'ends_at' => now()->subDay()->addMinutes(15)]);
     $existing = seedBookableSlot($this->teacher, ['student_id' => $this->student->id, 'reserved_by' => $this->guardian->id, 'starts_at' => now()->addDays(3), 'ends_at' => now()->addDays(3)->addMinutes(15)]);
 
     $this->get(route('reservations.create', [$this->student, $this->teacher]))
         ->assertInertia(fn (AssertableInertia $page) => $page
-            ->has('slots', 1)
+            ->has('slots', 3)
             ->where('slots.0.id', $this->slot->id)
+            ->where('slots.1.id', $other->id)
+            ->where('slots.1.student_id', $other->student_id)
+            ->missing('slots.1.student')
+            ->where('slots.2.id', $existing->id)
             ->where('existingReservation.id', $existing->id));
 });
 
