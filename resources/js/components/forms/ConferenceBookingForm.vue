@@ -158,7 +158,6 @@ const submit = () => {
     onSuccess: () => emit('success'),
     preserveScroll: true,
   }
-
   if (props.existingReservation) {
     form.transform(data => ({ ...data, time_slot_id: selected.value.id }))
       .put(`/reservations/${props.existingReservation.id}`, options)
