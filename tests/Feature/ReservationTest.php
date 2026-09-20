@@ -206,6 +206,17 @@ it('blocks guardians from cancelling inside the buffer', function () {
     $this->actingAs($this->teacher)->deleteJson(route('reservations.destroy', $this->slot))->assertOk();
 });
 
+it('rejects rescheduling into a slot inside the buffer', function () {
+    $this->slot->update(['student_id' => $this->student->id, 'reserved_by' => $this->guardian->id]);
+    $target = seedBookableSlot($this->teacher, ['starts_at' => now()->addHour(), 'ends_at' => now()->addMinutes(75)]);
+
+    $this->putJson(route('reservations.update', $this->slot), ['time_slot_id' => $target->id])
+        ->assertUnprocessable()->assertJsonValidationErrors('time_slot_id');
+
+    expect($this->slot->refresh()->student_id)->toBe($this->student->id)
+        ->and($target->refresh()->student_id)->toBeNull();
+});
+
 it('reschedules a reservation to another slot of the same teacher', function () {
     $this->slot->update(['student_id' => $this->student->id, 'reserved_by' => $this->guardian->id, 'reserved_at' => now()->subDay(), 'contact_notes' => 'x', 'translator_notes' => 'tn']);
     $target = seedBookableSlot($this->teacher, ['starts_at' => now()->addDays(2), 'ends_at' => now()->addDays(2)->addMinutes(15)]);
