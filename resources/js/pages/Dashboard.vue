@@ -127,7 +127,7 @@
           </Thead>
           <Tbody>
             <tr v-if="myReservations.length === 0">
-              <Td colspan="5">{{ __('No upcoming conferences.') }}</Td>
+              <Td colspan="5" class="text-center">{{ __('No upcoming conferences.') }}</Td>
             </tr>
             <tr v-for="slot in myReservations" :key="slot.id">
               <Td>{{ displayDate(slot.starts_at, 'full') }}</Td>
@@ -187,7 +187,7 @@ const props = defineProps({
   schoolStats: Object,
 })
 const user = usePage().props.user
-const school = usePage().props.school
+const school = computed(() => usePage().props.school)
 const { displayDate, dayjs } = useDates()
 
 const stats = computed(() => props.schoolStats ? [
