@@ -2,7 +2,9 @@
 # `/` to app:8000 and `/app`, `/apps` to reverb:8080.
 x-app: &app
   image: tidal-ptc
-  build: .
+  build:
+    context: .
+    target: app
   restart: unless-stopped
   env_file: .env
   environment:

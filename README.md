@@ -3,6 +3,7 @@
 Tidal PTC (parent-teacher conferences) is [Archboard's](https://archboard.io) first open source project. It is a web application that allows parents and guardians to schedule parent-teacher conferences with their children's teachers. It has direct integration with PowerSchool, which makes it easy for IT admins to set up and get running.
 
 [![DigitalOcean Referral Badge](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%203.svg)](https://www.digitalocean.com/?refcode=5902fc4786e5&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
+[![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/archboard/tidal-ptc/tree/main&refcode=5902fc4786e5)
 
 ## Installation
 
@@ -41,6 +42,12 @@ docker compose up -d --build
 ```
 
 Migrations run automatically when the `app` service starts. Put a TLS-terminating reverse proxy in front and route `/` to port `8000` and `/app`, `/apps` (websockets) to port `8080`; `REVERB_HOST`/`REVERB_PORT`/`REVERB_SCHEME` must describe the proxy's public websocket address. Run Artisan with `docker compose exec app php artisan …`. After pulling a new version, `docker compose up -d --build` restarts every service on the new image.
+
+### DigitalOcean App Platform
+
+[![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/archboard/tidal-ptc/tree/main&refcode=5902fc4786e5)
+
+The button deploys `.do/deploy.template.yaml`: a single container built from the `app-platform` stage of the Dockerfile (Octane, Reverb, the queue worker and the scheduler in one process tree) plus a dev PostgreSQL database. Before deploying, fill in `APP_KEY` (`echo "base64:$(openssl rand -base64 32)"`) and the PowerSchool credentials; everything else has a working default. Websockets are served through the app's own domain, so no extra routing is needed.
 
 ### Local development
 
