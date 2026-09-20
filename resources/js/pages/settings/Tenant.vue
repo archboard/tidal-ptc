@@ -134,6 +134,16 @@
         </CardWrapper>
       </form>
 
+      <CardWrapper v-if="editable">
+        <CardPadding>
+          <CardHeader>{{ __('PowerSchool plugin') }}</CardHeader>
+          <HelpText>{{ __('The plugin is built for this domain, and each download has a higher version so it can be installed over the previous one.') }}</HelpText>
+        </CardPadding>
+        <CardAction>
+          <AppButton component="a" href="/settings/tenant/plugin" color="white">{{ __('Download plugin') }}</AppButton>
+        </CardAction>
+      </CardWrapper>
+
       <form @submit.prevent="saveSchools">
         <CardWrapper>
           <CardPadding>

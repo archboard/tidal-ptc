@@ -1,0 +1,102 @@
+<queries>
+  <query name="com.archboard.tidal_ptc.students.enrollment" flattened="true">
+    <description>Gets students' current enrollment.</description>
+    <args>
+      <arg name="dcid" type="array" required="true" />
+    </args>
+    <columns>
+      <column column="cc.dcid">section_dcid</column>
+      <column column="students.dcid">student_dcid</column>
+    </columns>
+    <sql>
+      <![CDATA[
+select
+  cc.dcid as section_dcid,
+  s.dcid as student_dcid
+from students s
+join cc on cc.studentid = s.id
+where
+  cc.termid in (
+    select id from terms
+    where
+      terms.schoolid = cc.schoolid and
+      firstday <= trunc(sysdate) and
+      lastday >= trunc(sysdate)
+  ) and
+  s.dcid in (:dcid)
+order by s.dcid
+      ]]>
+    </sql>
+  </query>
+  <query name="com.archboard.tidal_ptc.guardian.contactid" flattened="true">
+    <description>Gets the contact id of the guardian</description>
+    <args>
+      <arg name="guardianid" required="true" />
+    </args>
+    <columns>
+      <column column="guardianpersonassoc.personid">contact_id</column>
+    </columns>
+    <sql>
+      <![CDATA[
+select
+  personid as contact_id
+from guardianpersonassoc
+where
+  guardianid = :guardianid
+      ]]>
+    </sql>
+  </query>
+  <query name="com.archboard.tidal_ptc.user.get" flattened="true">
+    <description>Gets the data for a user/staff.</description>
+    <args>
+      <arg name="dcid" required="true" />
+    </args>
+    <columns>
+      <column column="users.first_name">first_name</column>
+      <column column="users.last_name">last_name</column>
+      <column column="users.email_addr">email</column>
+      <column column="users.homeroom">homeroom</column>
+    </columns>
+    <sql>
+      <![CDATA[
+select
+  first_name,
+  last_name,
+  email_addr as email,
+  homeroom
+from users
+where
+  dcid = :dcid
+      ]]>
+    </sql>
+  </query>
+  <query name="com.archboard.tidal_ptc.user.search" flattened="true">
+    <description>Searches for a user by name or email.</description>
+    <args>
+      <arg name="search" required="true" />
+    </args>
+    <columns>
+      <column column="users.dcid">dcid</column>
+      <column column="users.first_name">name</column>
+      <column column="users.first_name">first_name</column>
+      <column column="users.last_name">last_name</column>
+      <column column="users.email_addr">email</column>
+      <column column="users.homeroom">homeroom</column>
+    </columns>
+    <sql>
+      <![CDATA[
+select
+  dcid,
+  first_name || ' ' || last_name as name,
+  first_name,
+  last_name,
+  email_addr as email,
+  homeroom
+from users
+where
+  upper(first_name || ' ' || last_name) like upper('%' || :search || '%') or
+  upper(email_addr) like upper('%' || :search || '%')
+      ]]>
+    </sql>
+  </query>
+</queries>
