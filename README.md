@@ -31,17 +31,21 @@ Email is sent through the SMTP settings configured on the tenant settings page. 
 
 ### Docker
 
+For a step-by-step fresh-server walkthrough, including the reverse proxy, see [INSTALLATION.md](INSTALLATION.md).
+
 The repository ships a production Compose stack: the app on [Laravel Octane](https://laravel.com/docs/octane) (FrankenPHP), Reverb for websockets, a queue worker, the scheduler, PostgreSQL and Redis.
+
+Images are published to `ghcr.io/archboard/tidal-ptc` (`latest` and one tag per release), so a server only needs `docker-compose.yml` and an `.env`:
 
 ```sh
 cp .env.example .env
 # Set APP_URL, APP_ENV=production, APP_DEBUG=false, DB_PASSWORD, the REVERB_* values
 # and the PowerSchool credentials, plus a key:
 sed -i "s|^APP_KEY=.*|APP_KEY=base64:$(openssl rand -base64 32)|" .env
-docker compose up -d --build
+docker compose pull && docker compose up -d   # or `up -d --build` to build from source
 ```
 
-Migrations run automatically when the `app` service starts. Put a TLS-terminating reverse proxy in front and route `/` to port `8000` and `/app`, `/apps` (websockets) to port `8080`; `REVERB_HOST`/`REVERB_PORT`/`REVERB_SCHEME` must describe the proxy's public websocket address. Run Artisan with `docker compose exec app php artisan …`. After pulling a new version, `docker compose up -d --build` restarts every service on the new image.
+Migrations run automatically when the `app` service starts. Put a TLS-terminating reverse proxy in front and route `/` to port `8000` and `/app`, `/apps` (websockets) to port `8080`; `REVERB_HOST`/`REVERB_PORT`/`REVERB_SCHEME` must describe the proxy's public websocket address. Run Artisan with `docker compose exec app php artisan …`. To update, `docker compose pull && docker compose up -d` restarts every service on the new image (pin a version with `TIDAL_PTC_VERSION=1.2.3` in `.env`).
 
 ### DigitalOcean App Platform
 
