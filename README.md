@@ -2,6 +2,8 @@
 
 Tidal PTC (parent-teacher conferences) is [Archboard's](https://archboard.io) first open source project. It is a web application that allows parents and guardians to schedule parent-teacher conferences with their children's teachers. It has direct integration with PowerSchool, which makes it easy for IT admins to set up and get running.
 
+[![DigitalOcean Referral Badge](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%203.svg)](https://www.digitalocean.com/?refcode=5902fc4786e5&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
+
 ## Installation
 
 Requirements: PHP 8.5, PostgreSQL, Node 20+, a PowerSchool plugin (client ID/secret) for SSO and data sync.
@@ -43,6 +45,8 @@ Migrations run automatically when the `app` service starts. Put a TLS-terminatin
 ### Local development
 
 `php artisan migrate --seed` creates a tenant on `APP_URL` with an admin (`admin@example.com`), a teacher, a guardian and sample time slots — all with the password `password`. Run `npm run enums` after changing a `#[PublishEnum]` enum to regenerate the JavaScript copies.
+
+[![DigitalOcean Referral Badge](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%203.svg)](https://www.digitalocean.com/?refcode=5902fc4786e5&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
 
 ## License
 
