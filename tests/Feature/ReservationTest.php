@@ -291,18 +291,20 @@ it('lists the contacts and students other conferences as conflicts', function ()
 });
 
 it('formats the slot range in the users timezone and time style', function () {
-    $this->slot->update(['starts_at' => '2026-09-18 05:30:00', 'ends_at' => '2026-09-18 06:00:00']);
+    $starts = now()->addDay()->setTime(5, 30);
+    $this->slot->update(['starts_at' => $starts, 'ends_at' => $starts->copy()->addMinutes(30)]);
     $this->guardian->update(['timezone' => 'Asia/Shanghai', 'is_24h' => false]);
+    $day = $starts->copy()->tz('Asia/Shanghai')->isoFormat('MMM D');
 
     $this->actingAs($this->guardian)
         ->getJson(route('reservations.create', [$this->student, $this->teacher]))
-        ->assertJsonPath('slots.0.range_display', 'Sep 18 1:30pm - 2:00pm');
+        ->assertJsonPath('slots.0.range_display', "{$day} 1:30pm - 2:00pm");
 
     $this->guardian->update(['is_24h' => true]);
 
     $this->actingAs($this->guardian->fresh())
         ->getJson(route('reservations.create', [$this->student, $this->teacher]))
-        ->assertJsonPath('slots.0.range_display', 'Sep 18 13:30 - 14:00');
+        ->assertJsonPath('slots.0.range_display', "{$day} 13:30 - 14:00");
 });
 
 it('lists open and reserved slots on the booking page without exposing other bookings', function () {
