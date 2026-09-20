@@ -9,6 +9,42 @@ This guide takes a fresh Linux server to a running Tidal PTC behind HTTPS. The C
 - [Docker Engine](https://docs.docker.com/engine/install/) with the Compose plugin (`docker compose version` should work).
 - PowerSchool admin access to install the Tidal PTC plugin and copy its client ID and secret. You can do this after the app is running; the installer at `/install` lets you download the plugin.
 
+### Installing Docker (Debian / Ubuntu)
+
+Skip this if `docker compose version` already works. These steps follow Docker's official apt repository, which ships the Compose plugin; the `docker.io` package in the distro repos does not.
+
+```sh
+# Remove any distro-packaged Docker that may conflict
+sudo apt-get remove -y docker.io docker-doc docker-compose podman-docker containerd runc 2>/dev/null
+
+# Add Docker's GPG key and apt repository
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+. /etc/os-release
+sudo curl -fsSL "https://download.docker.com/linux/$ID/gpg" -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/$ID $VERSION_CODENAME stable" \
+  | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Install Docker Engine and the Compose plugin
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Start on boot and let your user run docker without sudo
+sudo systemctl enable --now docker
+sudo usermod -aG docker "$USER"
+```
+
+Log out and back in for the group change to take effect, then verify:
+
+```sh
+docker compose version
+docker run --rm hello-world
+```
+
+`$ID` resolves to `debian` or `ubuntu`. On derivatives (Linux Mint, Pop!_OS, Raspberry Pi OS) set `ID` and `VERSION_CODENAME` by hand to the upstream Debian/Ubuntu release they are based on.
+
 ## 2. Get the Compose file
 
 Prebuilt images are published to `ghcr.io/archboard/tidal-ptc` on every release, so you only need the Compose file and an `.env`, not the source.
@@ -99,7 +135,26 @@ Pick one of the following.
 
 ### Option A: Caddy (recommended)
 
-Caddy obtains and renews the Let's Encrypt certificate itself and proxies websockets without extra configuration. Install it from [caddyserver.com](https://caddyserver.com/docs/install) and replace `/etc/caddy/Caddyfile` with:
+Caddy obtains and renews the Let's Encrypt certificate itself and proxies websockets without extra configuration.
+
+<details>
+<summary>Installing Caddy (Debian / Ubuntu)</summary>
+
+From Caddy's official apt repository, per [caddyserver.com/docs/install](https://caddyserver.com/docs/install#debian-ubuntu-raspbian):
+
+```sh
+sudo apt-get install -y debian-keyring debian-archive-keyring apt-transport-https curl
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+sudo apt-get update
+sudo apt-get install -y caddy
+```
+
+The package installs a `caddy` systemd service that is enabled and running. Ports `80` and `443` must be reachable from the internet for certificate issuance.
+
+</details>
+
+Replace `/etc/caddy/Caddyfile` with:
 
 ```caddyfile
 ptc.example.org {
@@ -115,7 +170,20 @@ sudo systemctl reload caddy
 
 ### Option B: Nginx
 
-Install Nginx and [Certbot](https://certbot.eff.org/), then create `/etc/nginx/sites-available/tidal-ptc`:
+<details>
+<summary>Installing Nginx and Certbot (Debian / Ubuntu)</summary>
+
+```sh
+sudo apt-get update
+sudo apt-get install -y nginx certbot python3-certbot-nginx
+sudo systemctl enable --now nginx
+```
+
+Certbot's package installs a systemd timer that renews certificates automatically; `sudo certbot renew --dry-run` confirms it works once the site below is set up.
+
+</details>
+
+Create `/etc/nginx/sites-available/tidal-ptc`:
 
 ```nginx
 map $http_upgrade $connection_upgrade {
