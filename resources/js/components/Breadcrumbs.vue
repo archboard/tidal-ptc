@@ -1,7 +1,13 @@
 <template>
-  <nav v-if="pages.length > 0" class="flex bg-white dark:bg-gray-900" aria-label="Breadcrumb">
+  <nav :class="['flex bg-white dark:bg-gray-900', { 'md:hidden': pages.length === 0 }]" aria-label="Breadcrumb">
     <Container class="w-full">
       <ol role="list" class="flex w-full space-x-4 py-4">
+        <li class="flex md:hidden">
+          <button type="button" class="-ml-2 pr-2 text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-gray-500" @click="emit('open-sidebar')">
+            <span class="sr-only">{{ __('Open sidebar') }}</span>
+            <Bars3BottomLeftIcon class="h-5 w-5" aria-hidden="true" />
+          </button>
+        </li>
         <li class="flex">
           <div class="flex items-center">
             <InertiaLink href="/" class="text-gray-400 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-100">
@@ -35,8 +41,10 @@
 
 <script setup>
 import { HomeIcon } from '@heroicons/vue/20/solid'
+import { Bars3BottomLeftIcon } from '@heroicons/vue/24/outline'
 import useProp from '@/composition/useProp.js'
 import Container from '@/components/Container.vue'
 
 const pages = useProp('breadcrumbs')
+const emit = defineEmits(['open-sidebar'])
 </script>

@@ -101,24 +101,8 @@
     </div>
 
     <div class="flex flex-1 min-h-screen flex-col justify-between md:pl-64">
-      <div class="sticky top-0 z-10 flex h-16 shrink-0 bg-white dark:bg-gray-800 shadow-sm">
-        <button type="button" class="border-r border-gray-200 dark:border-gray-600 px-4 text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-gray-500 md:hidden" @click="sidebarOpen = true">
-          <span class="sr-only">{{ __('Open sidebar') }}</span>
-          <Bars3BottomLeftIcon class="h-6 w-6" aria-hidden="true" />
-        </button>
-        <div class="flex flex-1 justify-end px-4">
-          <div class="flex flex-1" />
-          <div class="ml-4 flex items-center md:ml-6">
-            <button @click.prevent="toggleTheme()" type="button" class="sr-hidden rounded-full bg-white dark:bg-gray-800 p-1 text-gray-400 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
-              <MoonIcon v-if="isDark" class="h-6 w-6" aria-hidden="true" />
-              <SunIcon v-else class="h-6 w-6" aria-hidden="true" />
-            </button>
-          </div>
-        </div>
-      </div>
-
       <main class="flex-1">
-        <Breadcrumbs />
+        <Breadcrumbs @open-sidebar="sidebarOpen = true" />
 
         <div class="py-6">
           <Container>
@@ -150,8 +134,7 @@
 <script setup>
 import { computed, inject, ref, watch } from 'vue'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
-import { Bars3BottomLeftIcon, SunIcon, MoonIcon, XMarkIcon } from '@heroicons/vue/24/outline'
-import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
+import { XMarkIcon } from '@heroicons/vue/24/outline'
 import Logo from '@/components/icons/Logo.vue'
 import Footer from '@/components/Footer.vue'
 import Notifications from '@/components/Notifications.vue'
@@ -161,14 +144,12 @@ import { router, usePage } from '@inertiajs/vue3'
 import useProp from '@/composition/useProp.js'
 import AppSelect from '@/components/forms/AppSelect.vue'
 import Container from '@/components/Container.vue'
-import useColorTheme from '@/composition/useColorTheme.js'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
 
 const title = usePageTitle()
 const page = usePage()
 const props = computed(() => page.props)
 const sidebarOpen = ref(false)
-const { isDark, toggleTheme } = useColorTheme()
 const adminSchools = useProp('adminSchools')
 const user = useProp('user')
 const $error = inject('$error')
