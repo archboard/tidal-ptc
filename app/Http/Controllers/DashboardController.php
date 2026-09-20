@@ -47,6 +47,7 @@ class DashboardController extends Controller
         $teacherIds = $students->flatMap(fn (Student $student) => $student->sections
             ->flatMap(fn ($section) => [$section->user_id, $section->alt_user_id]))
             ->filter()
+            ->map(fn ($id) => (int) $id)
             ->unique();
 
         $otherStaff = User::query()

@@ -72,3 +72,7 @@ it('downloads from tenant settings with permission', function () {
         ->assertOk()
         ->assertDownload('tidal-ptc-plugin.zip');
 });
+
+it('rejects a url without a host', function () {
+    app(PowerSchoolPluginService::class)->build('not-a-url');
+})->throws(InvalidArgumentException::class);

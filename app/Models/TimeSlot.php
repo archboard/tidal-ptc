@@ -229,14 +229,15 @@ class TimeSlot extends Model
     /**
      * "Sep 18 1:30pm - 2:00pm" in the current user's timezone and 12/24-hour preference.
      *
-     * @return Attribute<string, never>
+     * @return Attribute<non-falsy-string, never>
      */
     public function rangeDisplay(): Attribute
     {
         return Attribute::get(function (): string {
             $timeFormat = auth()->user()?->is_24h ? 'HH:mm' : 'h:mma';
-            $starts = Timezone::toLocal($this->starts_at);
-            $ends = Timezone::toLocal($this->ends_at);
+            $timezone = Timezone::getCurrentTimezone();
+            $starts = $this->starts_at->setTimezone($timezone);
+            $ends = $this->ends_at->setTimezone($timezone);
 
             return $starts->isoFormat("MMM D {$timeFormat}").' - '.$ends->isoFormat($timeFormat);
         });

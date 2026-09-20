@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Tenant;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
+use InvalidArgumentException;
 use ZipArchive;
 
 /**
@@ -26,8 +27,13 @@ class PowerSchoolPluginService
     public function build(string $url, ?Tenant $tenant = null): string
     {
         $parts = parse_url($url);
+
+        if (! is_array($parts) || ! isset($parts['host'])) {
+            throw new InvalidArgumentException("Invalid plugin URL: {$url}");
+        }
+
         $host = $parts['host'];
-        $port = $parts['port'] ?? ($parts['scheme'] === 'https' ? 443 : 80);
+        $port = $parts['port'] ?? (($parts['scheme'] ?? null) === 'https' ? 443 : 80);
 
         $pluginXml = Blade::render(File::get("{$this->sourcePath}/plugin.xml.stub"), [
             'version' => $this->nextVersion($tenant),
