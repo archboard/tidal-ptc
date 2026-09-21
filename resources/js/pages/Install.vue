@@ -8,6 +8,10 @@
           </CardHeader>
         </CardPadding>
         <CardPadding>
+          <SimpleAlert level="info" class="mb-5">
+            {{ __('Install the PowerSchool plugin first to get a client ID and secret.') }}
+            <AppLink is="a" href="/install/plugin">{{ __('Download plugin') }}</AppLink>
+          </SimpleAlert>
           <div class="grid grid-cols-1 md:grid-cols-6 gap-5">
             <div class="md:col-span-6">
               <InputField
@@ -71,6 +75,8 @@ import AppButton from '@/components/AppButton.vue'
 import CardAction from '@/components/CardAction.vue'
 import InputField from '@/components/forms/fields/InputField.vue'
 import Installation from '@/layouts/Installation.vue'
+import SimpleAlert from '@/components/alerts/SimpleAlert.vue'
+import AppLink from '@/components/AppLink.vue'
 
 const props = defineProps({
   name: String,

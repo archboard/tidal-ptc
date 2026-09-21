@@ -25,6 +25,7 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
  * @property Collection<array-key, mixed> $sis_config
  * @property string $domain
  * @property string|null $custom_domain
+ * @property int $plugin_downloads
  * @property bool $allow_password_auth
  * @property bool $allow_oidc_login
  * @property string|null $subscription_started_at

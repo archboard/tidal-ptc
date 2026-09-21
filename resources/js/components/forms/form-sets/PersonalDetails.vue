@@ -42,6 +42,14 @@
         </template>
       </FormField>
 
+      <FormField :help="__('Saved in this browser only.')" class="col-span-6">
+        <template #component>
+          <AppCheckbox v-model="isDark">
+            {{ __('Use dark theme') }}
+          </AppCheckbox>
+        </template>
+      </FormField>
+
       <template #actions="{ loading }">
         <AppButton type="button" @click.prevent="sync" :loading="syncing" color="white">{{ __('Sync from :sis', { sis: tenant.sis }) }}</AppButton>
         <AppButton type="submit" :loading="loading">{{ __('Save') }}</AppButton>
@@ -64,6 +72,7 @@ import useSisObjectSync from '@/composition/useSisObjectSync.js'
 import AppCheckbox from '@/components/forms/AppCheckbox.vue'
 import AppSelect from '@/components/forms/AppSelect.vue'
 import useLanguages from '@/composition/useLanguages.js'
+import useColorTheme from '@/composition/useColorTheme.js'
 
 const user = useProp('user')
 const tenant = useProp('tenant')
@@ -76,6 +85,7 @@ const form = useForm({
   locale: user.value.locale ?? 'en',
 })
 const languages = useLanguages()
+const { isDark } = useColorTheme()
 const { syncing, sync } = useSisObjectSync('user', user)
 const submit = () => {
   form.put('/settings/personal', {

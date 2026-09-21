@@ -47,6 +47,7 @@ class DashboardController extends Controller
         $teacherIds = $students->flatMap(fn (Student $student) => $student->sections
             ->flatMap(fn ($section) => [$section->user_id, $section->alt_user_id]))
             ->filter()
+            ->map(fn ($id) => (int) $id)
             ->unique();
 
         $otherStaff = User::query()
@@ -60,9 +61,20 @@ class DashboardController extends Controller
             ->orderBy('last_name')
             ->get();
 
+        // Per teacher: 'open' (bookable slot available), 'full' (slots exist but all taken), 'none' (no slots)
+        $withSlots = TimeSlot::query()
+            ->where('school_id', $school->id)
+            ->where('contact_can_book', true)
+            ->where('starts_at', '>', now()->addHours($school->booking_buffer_hours))
+            ->whereIn('user_id', $teacherIds->merge($otherStaff->modelKeys()));
+        $open = (clone $withSlots)->notReserved()->distinct()->pluck('user_id');
+        $availability = $withSlots->distinct()->pluck('user_id')
+            ->mapWithKeys(fn (int $id) => [$id => $open->contains($id) ? 'open' : 'full']);
+
         return [
             'students' => StudentResource::collection($students),
             'otherStaff' => PublicUserResource::collection($otherStaff),
+            'slotAvailability' => $availability,
             'reservations' => TimeSlotResource::collection(
                 $user->bookedTimeSlots()->notExpired()->with('user', 'student')->orderBy('starts_at')->get()
             ),

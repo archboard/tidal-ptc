@@ -20,7 +20,7 @@ class SyncSchoolItemController extends Controller
 
         abort_unless(isset(SyncSchoolItem::METHODS[$item]) && $item !== 'school', 404);
 
-        SyncSchoolItem::dispatch($request->school(), $item, $user);
+        SyncSchoolItem::start($request->school(), $item, $user);
         session()->flash('success', __('Sync started. You will be notified when it finishes.'));
 
         return back();

@@ -9,10 +9,11 @@
         </CardPadding>
       </CardWrapper>
 
-      <CardWrapper>
+      <SimpleAlert v-else-if="closesAt" level="neutral" not-dismissible>{{ __('Booking closes :when.', { when: displayDate(closesAt, 'full', true) }) }}</SimpleAlert>
+
+      <CardWrapper v-if="reservations.length">
         <CardPadding>
           <CardHeader>{{ __('Your conferences') }}</CardHeader>
-          <HelpText v-if="bookingOpen && closesAt">{{ __('Booking closes :when.', { when: displayDate(closesAt, 'full', true) }) }}</HelpText>
         </CardPadding>
         <Table no-top-radius>
           <Thead>
@@ -21,36 +22,20 @@
               <Th>{{ __('Student') }}</Th>
               <Th>{{ __('Teacher') }}</Th>
               <Th>{{ __('Where') }}</Th>
-              <Th></Th>
             </tr>
           </Thead>
           <Tbody>
-            <tr v-if="reservations.length === 0 && placeholders.length === 0">
-              <Td colspan="5" class="text-center">{{ __('No upcoming conferences.') }}</Td>
-            </tr>
             <tr v-for="slot in reservations" :key="slot.id">
-              <Td>{{ displayDate(slot.starts_at, 'full') }}</Td>
-              <Td>{{ slot.student?.name }}</Td>
-              <Td>{{ slot.user?.name }}</Td>
-              <Td>{{ slot.requested_online || slot.is_online ? __('Online') : (slot.location || '—') }}</Td>
-              <ActionColumn>
-                <div class="flex gap-3 justify-end">
-                  <AppLink v-if="bookingOpen" :href="`/reservations/create/${slot.student_id}/${slot.user?.id}`">{{ __('Move') }}</AppLink>
-                  <ConfirmButton color="red" class="text-sm" @confirmed="close => cancel(slot, close)">
-                    {{ __('Cancel') }}
-                    <template #actionText>{{ __('Cancel conference') }}</template>
-                  </ConfirmButton>
-                </div>
-              </ActionColumn>
-            </tr>
-            <tr v-for="row in placeholders" :key="row.key" class="text-gray-500 dark:text-gray-400">
-              <Td>{{ __('Not booked') }}</Td>
-              <Td>{{ row.student.name }}</Td>
-              <Td>{{ row.teacher.name }}</Td>
-              <Td>—</Td>
-              <ActionColumn>
-                <AppLink :href="`/reservations/create/${row.student.id}/${row.teacher.id}`">{{ __('Book') }}</AppLink>
-              </ActionColumn>
+              <Td class="whitespace-nowrap">{{ slot.range_display }}</Td>
+              <Td class="whitespace-nowrap">{{ slot.student?.name }}</Td>
+              <Td class="whitespace-nowrap">{{ slot.user?.name }}</Td>
+              <Td>
+                <template v-if="slot.requested_online || slot.is_online">
+                  <AppLink v-if="slot.meeting_url" :href="slot.meeting_url" is="a" target="_blank" rel="noopener">{{ __('Join video call') }}</AppLink>
+                  <span v-else>{{ __('Online') }}</span>
+                </template>
+                <template v-else>{{ slot.location || '—' }}</template>
+              </Td>
             </tr>
           </Tbody>
         </Table>
@@ -66,18 +51,38 @@
             <tr>
               <Th>{{ __('Course') }}</Th>
               <Th>{{ __('Teacher') }}</Th>
+              <Th>{{ __('Conference') }}</Th>
               <Th></Th>
             </tr>
           </Thead>
           <Tbody>
+            <tr v-if="teacherRows(student).length === 0">
+              <Td colspan="4" class="text-center text-gray-500 dark:text-gray-400">{{ __('No teachers found for this student.') }}</Td>
+            </tr>
             <tr v-for="row in teacherRows(student)" :key="row.key">
-              <Td>{{ row.course }}</Td>
-              <Td>{{ row.teacher.name }}</Td>
-              <ActionColumn>
-                <span v-if="reservationFor(student, row.teacher)">{{ __('Booked') }}</span>
-                <AppLink v-else-if="bookingOpen && student.can_book && row.bookable" :href="`/reservations/create/${student.id}/${row.teacher.id}`">
-                  {{ __('Book') }}
-                </AppLink>
+              <Td>{{ row.courses.filter(Boolean).join(', ') }}</Td>
+              <Td class="whitespace-nowrap">{{ row.label }}</Td>
+              <Td v-if="reservationFor(student, row.teacher)" class="whitespace-nowrap">
+                {{ reservationFor(student, row.teacher).range_display }}
+                <span v-if="reservationFor(student, row.teacher).requested_online || reservationFor(student, row.teacher).is_online" class="text-gray-500 dark:text-gray-400"> · {{ __('Online') }}</span>
+                <span v-else-if="reservationFor(student, row.teacher).location" class="text-gray-500 dark:text-gray-400"> · {{ reservationFor(student, row.teacher).location }}</span>
+              </Td>
+              <Td v-else class="whitespace-nowrap text-gray-500 dark:text-gray-400">{{ __('Not booked') }}</Td>
+              <ActionColumn class="whitespace-nowrap">
+                <template v-if="reservationFor(student, row.teacher)">
+                  <AppLink v-if="bookingOpen" is="button" type="button" @click="booking = { student, staff: row.teacher }">{{ __('Edit') }}</AppLink>
+                  <ConfirmButton link color="red" @confirmed="close => cancel(reservationFor(student, row.teacher), close)">
+                    {{ __('Cancel') }}
+                    <template #actionText>{{ __('Cancel conference') }}</template>
+                  </ConfirmButton>
+                </template>
+                <template v-else-if="bookingOpen && student.can_book && row.bookable">
+                  <AppLink v-if="availabilityFor(row.teacher) === 'open'" is="button" type="button" @click="booking = { student, staff: row.teacher }">
+                    {{ __('Book') }}
+                  </AppLink>
+                  <span v-else-if="availabilityFor(row.teacher) === 'full'" class="text-gray-500 dark:text-gray-400">{{ __('Fully booked') }}</span>
+                  <span v-else class="text-gray-500 dark:text-gray-400">{{ __('No time slots yet') }}</span>
+                </template>
               </ActionColumn>
             </tr>
           </Tbody>
@@ -122,7 +127,7 @@
           </Thead>
           <Tbody>
             <tr v-if="myReservations.length === 0">
-              <Td colspan="5">{{ __('No upcoming conferences.') }}</Td>
+              <Td colspan="5" class="text-center">{{ __('No upcoming conferences.') }}</Td>
             </tr>
             <tr v-for="slot in myReservations" :key="slot.id">
               <Td>{{ displayDate(slot.starts_at, 'full') }}</Td>
@@ -145,10 +150,12 @@
       <CardPadding>{{ __("You're logged in.") }}</CardPadding>
     </CardWrapper>
   </Authenticated>
+
+  <BookConferenceModal v-if="booking" :student="booking.student" :staff="booking.staff" @close="booking = null" />
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { router, usePage } from '@inertiajs/vue3'
 import { trans as __ } from 'laravel-vue-i18n'
 import Authenticated from '@/layouts/Authenticated.vue'
@@ -160,6 +167,7 @@ import AppLink from '@/components/AppLink.vue'
 import ConfirmButton from '@/components/ConfirmButton.vue'
 import SimpleAlert from '@/components/alerts/SimpleAlert.vue'
 import SchoolTimeSlotSettings from '@/components/forms/form-sets/SchoolTimeSlotSettings.vue'
+import BookConferenceModal from '@/components/modals/BookConferenceModal.vue'
 import { Table, Thead, Th, Tbody, Td, ActionColumn } from '@/components/tables/index.js'
 import useDates from '@/composition/useDates.js'
 import { UserType } from '@/Enums/UserType.enum.js'
@@ -167,6 +175,7 @@ import { UserType } from '@/Enums/UserType.enum.js'
 const props = defineProps({
   students: { type: Array, default: () => [] },
   otherStaff: { type: Array, default: () => [] },
+  slotAvailability: { type: Object, default: () => ({}) },
   reservations: { type: Array, default: () => [] },
   bookingOpen: Boolean,
   opensAt: String,
@@ -178,7 +187,7 @@ const props = defineProps({
   schoolStats: Object,
 })
 const user = usePage().props.user
-const school = usePage().props.school
+const school = computed(() => usePage().props.school)
 const { displayDate, dayjs } = useDates()
 
 const stats = computed(() => props.schoolStats ? [
@@ -191,24 +200,25 @@ const stats = computed(() => props.schoolStats ? [
 ] : [])
 
 const teacherRows = (student) => {
-  const rows = student.sections.flatMap(section => [section.teacher, section.alt_teacher]
-    .filter(Boolean)
-    .map(teacher => ({
-      key: `${section.id}-${teacher.id}`,
-      course: section.course?.name,
+  // ponytail: a conference is per teacher, not per section, so sections sharing a teacher collapse into one row
+  const rows = new Map()
+  student.sections.filter(section => section.teacher).forEach(section => {
+    const teacher = section.alt_teacher ?? section.teacher
+    const row = rows.get(teacher.id) ?? rows.set(teacher.id, {
+      key: `teacher-${teacher.id}`,
+      courses: [],
       teacher,
-      bookable: section.can_book && section.course?.can_book,
-    })))
-  props.otherStaff.forEach(staff => rows.push({ key: `staff-${staff.id}`, course: '', teacher: staff, bookable: true }))
-  return rows
+      label: section.teacher_display,
+      bookable: false,
+    }).get(teacher.id)
+    row.courses.push(section.course?.name)
+    row.bookable ||= section.can_book && section.course?.can_book
+  })
+  props.otherStaff.forEach(staff => rows.set(`staff-${staff.id}`, { key: `staff-${staff.id}`, courses: [], teacher: staff, label: staff.name, bookable: true }))
+  return [...rows.values()]
 }
-const placeholders = computed(() => props.bookingOpen
-  ? props.students
-    .filter(student => student.can_book)
-    .flatMap(student => teacherRows(student)
-      .filter(row => row.bookable && !reservationFor(student, row.teacher))
-      .map(row => ({ key: `${student.id}-${row.key}`, student, teacher: row.teacher })))
-  : [])
+const booking = ref(null)
+const availabilityFor = teacher => props.slotAvailability[teacher.id] ?? 'none'
 const reservationFor = (student, teacher) => props.reservations.find(r => r.student_id === student.id && r.user?.id === teacher.id)
 const cancel = (slot, close) => router.delete(`/reservations/${slot.id}`, { onFinish: close, preserveScroll: true })
 </script>

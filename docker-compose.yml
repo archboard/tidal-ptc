@@ -1,13 +1,17 @@
 # Production stack. TLS terminates at your reverse proxy, which should route
 # `/` to app:8000 and `/app`, `/apps` to reverb:8080.
+# `docker compose pull` uses the published image; `docker compose build` builds from source.
 x-app: &app
-  image: tidal-ptc
-  build: .
+  image: ghcr.io/archboard/tidal-ptc:${TIDAL_PTC_VERSION:-latest}
+  build:
+    context: .
+    target: app
   restart: unless-stopped
   env_file: .env
   environment:
     OCTANE_SERVER: frankenphp
     LOG_CHANNEL: stderr
+    TRUSTED_PROXIES: '*'
     DB_HOST: postgres
     REDIS_HOST: redis
     CACHE_DRIVER: redis

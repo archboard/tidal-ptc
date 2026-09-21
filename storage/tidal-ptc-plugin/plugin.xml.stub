@@ -1,0 +1,142 @@
+<{{ "?" }}xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin xmlns="http://plugin.powerschool.pearson.com" version="{{ $version }}" name="Tidal PTC" description="Manage parent-teacher conferences like a champ." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://plugin.powerschool.pearson.com plugin.xsd">
+  <publisher name="Archboard">
+    <contact email="support@archboard.io"/>
+  </publisher>
+  <oauth base-url="{{ $baseUrl }}" redirect-uri="/auth/powerschool/oidc" allow-client-credential="true" allow-auth-code="true" accessLevelV1Api="READ">
+    <allow-persona>staff</allow-persona>
+    <allow-persona>parent</allow-persona>
+    <allow-persona>teacher</allow-persona>
+  </oauth>
+  <openid host="{{ $host }}" port="{{ $port }}">
+    <links>
+      <link display-text="Tidal PTC" path="/auth/powerschool/openid" title="Sign in to Tidal PTC">
+        <ui_contexts>
+          <ui_context id="admin.header"/>
+          <ui_context id="admin.left_nav"/>
+          <ui_context id="teacher.header"/>
+          <ui_context id="guardian.header"/>
+        </ui_contexts>
+      </link>
+    </links>
+  </openid>
+  <access_request>
+    <field table="users" field="first_name" access="ViewOnly"/>
+    <field table="users" field="last_name" access="ViewOnly"/>
+    <field table="users" field="email_addr" access="ViewOnly"/>
+    <field table="users" field="dcid" access="ViewOnly"/>
+    <field table="users" field="homeroom" access="ViewOnly"/>
+    <field table="students" field="id" access="ViewOnly"/>
+    <field table="students" field="dcid" access="ViewOnly"/>
+    <field table="students" field="student_number" access="ViewOnly"/>
+    <field table="students" field="first_name" access="ViewOnly"/>
+    <field table="students" field="last_name" access="ViewOnly"/>
+    <field table="students" field="enroll_status" access="ViewOnly"/>
+    <field table="students" field="schoolid" access="ViewOnly"/>
+    <field table="students" field="grade_level" access="ViewOnly"/>
+    <field table="schoolstaff" field="id" access="ViewOnly"/>
+    <field table="schoolstaff" field="users_dcid" access="ViewOnly"/>
+    <field table="schoolstaff" field="schoolid" access="ViewOnly"/>
+    <field table="cc" field="termid" access="ViewOnly"/>
+    <field table="cc" field="teacherid" access="ViewOnly"/>
+    <field table="cc" field="studentid" access="ViewOnly"/>
+    <field table="cc" field="course_number" access="ViewOnly"/>
+    <field table="cc" field="section_number" access="ViewOnly"/>
+    <field table="cc" field="sectionid" access="ViewOnly"/>
+    <field table="cc" field="schoolid" access="ViewOnly"/>
+    <field table="cc" field="dcid" access="ViewOnly"/>
+    <field table="courses" field="course_number" access="ViewOnly"/>
+    <field table="courses" field="course_name" access="ViewOnly"/>
+    <field table="sections" field="teacher" access="ViewOnly"/>
+    <field table="sections" field="schoolid" access="ViewOnly"/>
+    <field table="sections" field="termid" access="ViewOnly"/>
+    <field table="sections" field="id" access="ViewOnly"/>
+    <field table="sectionteacher" field="sectionid" access="ViewOnly"/>
+    <field table="sectionteacher" field="teacherid" access="ViewOnly"/>
+    <field table="sectionteacher" field="start_date" access="ViewOnly"/>
+    <field table="sectionteacher" field="end_date" access="ViewOnly"/>
+    <field table="sectionteacher" field="roleid" access="ViewOnly"/>
+    <field table="roledef" field="id" access="ViewOnly"/>
+    <field table="roledef" field="rolekey" access="ViewOnly"/>
+    <field table="terms" field="id" access="ViewOnly"/>
+    <field table="terms" field="schoolid" access="ViewOnly"/>
+    <field table="terms" field="firstday" access="ViewOnly"/>
+    <field table="terms" field="lastday" access="ViewOnly"/>
+    <field table="schools" field="abbreviation" access="ViewOnly"/>
+    <field table="schools" field="school_number" access="ViewOnly"/>
+    <field table="studentcorefields" field="autosend_howoften" access="ViewOnly"/>
+    <field table="person" field="id" access="ViewOnly"/>
+    <field table="person" field="firstname" access="ViewOnly"/>
+    <field table="person" field="middlename" access="ViewOnly"/>
+    <field table="person" field="lastname" access="ViewOnly"/>
+    <field table="person" field="prefixcodesetid" access="ViewOnly"/>
+    <field table="person" field="suffixcodesetid" access="ViewOnly"/>
+    <field table="person" field="gendercodesetid" access="ViewOnly"/>
+    <field table="person" field="statecontactnumber" access="ViewOnly"/>
+    <field table="person" field="statecontactid" access="ViewOnly"/>
+    <field table="person" field="employer" access="ViewOnly"/>
+    <field table="person" field="isactive" access="ViewOnly"/>
+    <field table="person" field="excludefromstatereporting" access="ViewOnly"/>
+    <field table="codeset" field="codetype" access="ViewOnly"/>
+    <field table="codeset" field="code" access="ViewOnly"/>
+    <field table="pcas_account" field="username" access="ViewOnly"/>
+    <field table="pcas_account" field="isenabled" access="ViewOnly"/>
+    <field table="studentcontactassoc" field="studentcontactassocid" access="ViewOnly"/>
+    <field table="studentcontactassoc" field="studentdcid" access="ViewOnly"/>
+    <field table="studentcontactassoc" field="personid" access="ViewOnly"/>
+    <field table="studentcontactassoc" field="contactpriorityorder" access="ViewOnly"/>
+    <field table="studentcontactassoc" field="currreltypecodesetid" access="ViewOnly"/>
+    <field table="studentcontactdetail" field="studentcontactdetailid" access="ViewOnly"/>
+    <field table="studentcontactdetail" field="studentcontactassocid" access="ViewOnly"/>
+    <field table="studentcontactdetail" field="relationshiptypecodesetid" access="ViewOnly"/>
+    <field table="studentcontactdetail" field="relationshipnote" access="ViewOnly"/>
+    <field table="studentcontactdetail" field="isactive" access="ViewOnly"/>
+    <field table="studentcontactdetail" field="isemergency" access="ViewOnly"/>
+    <field table="studentcontactdetail" field="iscustodial" access="ViewOnly"/>
+    <field table="studentcontactdetail" field="liveswithflg" access="ViewOnly"/>
+    <field table="studentcontactdetail" field="schoolpickupflg" access="ViewOnly"/>
+    <field table="studentcontactdetail" field="receivesmailflg" access="ViewOnly"/>
+    <field table="studentcontactdetail" field="excludefromstatereportingflg" access="ViewOnly"/>
+    <field table="studentcontactdetail" field="startdate" access="ViewOnly"/>
+    <field table="studentcontactdetail" field="enddate" access="ViewOnly"/>
+    <field table="phonenumber" field="phonenumberid" access="ViewOnly"/>
+    <field table="phonenumber" field="phonenumber" access="ViewOnly"/>
+    <field table="phonenumber" field="issms" access="ViewOnly"/>
+    <field table="phonenumber" field="phonenumberext" access="ViewOnly"/>
+    <field table="guardianpersonassoc" field="personid" access="ViewOnly"/>
+    <field table="guardianpersonassoc" field="guardianid" access="ViewOnly"/>
+    <field table="personphonenumberassoc" field="personphonenumberassocid" access="ViewOnly"/>
+    <field table="personphonenumberassoc" field="personid" access="ViewOnly"/>
+    <field table="personphonenumberassoc" field="phonenumberasentered" access="ViewOnly"/>
+    <field table="personphonenumberassoc" field="phonenumberid" access="ViewOnly"/>
+    <field table="personphonenumberassoc" field="phonetypecodesetid" access="ViewOnly"/>
+    <field table="personphonenumberassoc" field="phonenumberpriorityorder" access="ViewOnly"/>
+    <field table="personphonenumberassoc" field="ispreferred" access="ViewOnly"/>
+    <field table="personaddress" field="personaddressid" access="ViewOnly"/>
+    <field table="personaddress" field="street" access="ViewOnly"/>
+    <field table="personaddress" field="linetwo" access="ViewOnly"/>
+    <field table="personaddress" field="city" access="ViewOnly"/>
+    <field table="personaddress" field="statescodesetid" access="ViewOnly"/>
+    <field table="personaddress" field="countrycodesetid" access="ViewOnly"/>
+    <field table="personaddress" field="postalcode" access="ViewOnly"/>
+    <field table="personaddress" field="geocodelatitude" access="ViewOnly"/>
+    <field table="personaddress" field="geocodelongitude" access="ViewOnly"/>
+    <field table="personaddress" field="unit" access="ViewOnly"/>
+    <field table="personaddressassoc" field="personaddressassocid" access="ViewOnly"/>
+    <field table="personaddressassoc" field="personid" access="ViewOnly"/>
+    <field table="personaddressassoc" field="personaddressid" access="ViewOnly"/>
+    <field table="personaddressassoc" field="addresstypecodesetid" access="ViewOnly"/>
+    <field table="personaddressassoc" field="addresspriorityorder" access="ViewOnly"/>
+    <field table="personaddressassoc" field="startdate" access="ViewOnly"/>
+    <field table="personaddressassoc" field="enddate" access="ViewOnly"/>
+    <field table="emailaddress" field="emailaddressid" access="ViewOnly"/>
+    <field table="emailaddress" field="emailaddress" access="ViewOnly"/>
+    <field table="personemailaddressassoc" field="personemailaddressassocid" access="ViewOnly"/>
+    <field table="personemailaddressassoc" field="personid" access="ViewOnly"/>
+    <field table="personemailaddressassoc" field="emailaddressid" access="ViewOnly"/>
+    <field table="personemailaddressassoc" field="emailtypecodesetid" access="ViewOnly"/>
+    <field table="personemailaddressassoc" field="isprimaryemailaddress" access="ViewOnly"/>
+    <field table="personemailaddressassoc" field="emailaddresspriorityorder" access="ViewOnly"/>
+    <field table="originalcontactmap" field="originalcontacttype" access="ViewOnly"/>
+  </access_request>
+</plugin>

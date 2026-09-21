@@ -1,6 +1,8 @@
 <?php
 
 use App\Enums\Role;
+use App\Enums\UserType;
+use App\Models\Student;
 
 beforeEach(function () {
     logIn();
@@ -23,4 +25,17 @@ it('rejects a school the user is not assigned to', function () {
 
     $this->put(route('settings.current-school.update'), ['school_id' => $other->id])
         ->assertSessionHasErrors('school_id');
+});
+
+it('lets a guardian switch to any school where they have a linked student', function () {
+    $this->user->update(['user_type' => UserType::guardian]);
+    $other = $this->tenant->schools()->where('id', '!=', $this->school->id)->where('active', true)->firstOrFail();
+    $this->user->students()->attach(Student::factory()->create(['tenant_id' => $this->tenant->id, 'school_id' => $other->id]));
+
+    expect($this->user->adminSchools()->pluck('id')->all())->toBe([$other->id]);
+
+    $this->put(route('settings.current-school.update'), ['school_id' => $other->id])
+        ->assertSessionDoesntHaveErrors();
+
+    expect($this->user->fresh()->school_id)->toBe($other->id);
 });

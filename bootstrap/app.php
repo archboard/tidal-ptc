@@ -43,7 +43,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ['middleware' => ['web', 'tenant', 'auth']],
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->trustProxies(headers: Request::HEADER_X_FORWARDED_FOR
+        // Only set TRUSTED_PROXIES=* when the app port is reachable solely through the proxy
+        $middleware->trustProxies(at: env('TRUSTED_PROXIES'), headers: Request::HEADER_X_FORWARDED_FOR
             | Request::HEADER_X_FORWARDED_HOST
             | Request::HEADER_X_FORWARDED_PORT
             | Request::HEADER_X_FORWARDED_PROTO

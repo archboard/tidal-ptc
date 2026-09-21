@@ -12,6 +12,7 @@ use App\Http\Controllers\ClassLinkOAuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeleteBatchTimeSlotController;
+use App\Http\Controllers\DownloadPowerSchoolPluginController;
 use App\Http\Controllers\GetLanguagesController;
 use App\Http\Controllers\GetSelectionController;
 use App\Http\Controllers\InstallationController;
@@ -70,6 +71,8 @@ Route::middleware(['self_hosted'])
                 Route::get('/install', [InstallationController::class, 'index']);
                 Route::post('/install', [InstallationController::class, 'store'])
                     ->name('install');
+                Route::get('/install/plugin', DownloadPowerSchoolPluginController::class)
+                    ->name('install.plugin');
             });
 
         Route::middleware(['tenant', 'installed', 'no_admin'])
@@ -220,6 +223,9 @@ Route::middleware('tenant')->group(function () {
 
                     Route::put('/tenant/schools', UpdateTenantSchoolsController::class)
                         ->name('tenant.schools');
+
+                    Route::get('/tenant/plugin', DownloadPowerSchoolPluginController::class)
+                        ->name('tenant.plugin');
                 });
 
                 Route::middleware(['has_school', 'scoped_permissions', 'can:edit school settings'])->group(function () {

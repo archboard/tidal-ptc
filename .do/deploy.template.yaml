@@ -1,0 +1,107 @@
+# Deploy to DigitalOcean button template. App Platform runs one container from
+# the `app-platform` stage of the Dockerfile plus a dev PostgreSQL database.
+spec:
+  name: tidal-ptc
+  region: nyc
+  databases:
+    - name: db
+      engine: PG
+  services:
+    - name: app
+      dockerfile_path: Dockerfile
+      git:
+        repo_clone_url: https://github.com/archboard/tidal-ptc.git
+        branch: main
+      http_port: 8000
+      instance_count: 1
+      instance_size_slug: apps-s-1vcpu-1gb
+      health_check:
+        http_path: /up
+      envs:
+        - key: VITE_APP_NAME
+          value: Tidal PTC
+          scope: RUN_AND_BUILD_TIME
+        - key: APP_ENV
+          value: production
+        - key: IS_CLOUD
+          value: "false"
+        # Generate with: echo "base64:$(openssl rand -base64 32)"
+        - key: APP_KEY
+          value: ""
+          type: SECRET
+        - key: APP_DEBUG
+          value: "false"
+        - key: APP_URL
+          value: ${APP_URL}
+        - key: OCTANE_SERVER
+          value: frankenphp
+        - key: LOG_CHANNEL
+          value: stderr
+        - key: LOG_LEVEL
+          value: info
+        - key: DB_CONNECTION
+          value: pgsql
+        - key: DB_HOST
+          value: ${db.HOSTNAME}
+        - key: DB_PORT
+          value: ${db.PORT}
+        - key: DB_DATABASE
+          value: ${db.DATABASE}
+        - key: DB_USERNAME
+          value: ${db.USERNAME}
+        - key: DB_PASSWORD
+          value: ${db.PASSWORD}
+          type: SECRET
+        - key: CACHE_DRIVER
+          value: database
+        - key: BROADCAST_CONNECTION
+          value: reverb
+        - key: QUEUE_CONNECTION
+          value: database
+        - key: SESSION_DRIVER
+          value: database
+        - key: SESSION_LIFETIME
+          value: "120"
+        # Optional: SMTP is normally configured on the tenant settings page
+        - key: MAIL_MAILER
+          value: smtp
+        - key: MAIL_HOST
+          value: ""
+        - key: MAIL_PORT
+          value: "587"
+        - key: MAIL_USERNAME
+          value: ""
+        - key: MAIL_PASSWORD
+          value: ""
+          type: SECRET
+        - key: MAIL_ENCRYPTION
+          value: tls
+        - key: MAIL_FROM_ADDRESS
+          value: ""
+        - key: MAIL_FROM_NAME
+          value: Tidal PTC
+        - key: POWERSCHOOL_ADDRESS
+          value: ""
+        - key: POWERSCHOOL_CLIENT_ID
+          value: ""
+          type: SECRET
+        - key: POWERSCHOOL_CLIENT_SECRET
+          value: ""
+          type: SECRET
+        - key: POWERSCHOOL_DEBUG
+          value: "false"
+        # Leave the Reverb credentials blank to have them generated at boot
+        - key: REVERB_APP_ID
+          value: ""
+        - key: REVERB_APP_KEY
+          value: ""
+          type: SECRET
+        - key: REVERB_APP_SECRET
+          value: ""
+          type: SECRET
+        - key: REVERB_HOST
+          value: ${APP_DOMAIN}
+        - key: REVERB_PORT
+          value: "443"
+        - key: REVERB_SCHEME
+          value: https

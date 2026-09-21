@@ -34,8 +34,8 @@ class ReservationController extends Controller
         'staff_reminded_at' => null,
     ];
 
-    /** Booking page for one student with one staff member. */
-    public function create(Request $request, Student $student, User $user): Response
+    /** Booking page for one student with one staff member; JSON for the dashboard modal. */
+    public function create(Request $request, Student $student, User $user): Response|JsonResponse
     {
         /** @var User $actor */
         $actor = $request->user();
@@ -48,19 +48,30 @@ class ReservationController extends Controller
         abort_unless($student->canMeetWith($user), 403, __('This student cannot book a conference with this staff member.'));
 
         $existing = $student->timeSlots()->notExpired()->where('user_id', $user->id)->first();
+        // Reserved slots are included so the calendar can grey them out; the resource hides who booked them.
         $slots = TimeSlot::query()
+            ->where('user_id', $user->id)
             ->when(
                 $actor->can(Permission::update, TimeSlot::class),
-                fn ($query) => $query->notReserved()->where('school_id', $school->id)->notExpired(),
-                fn ($query) => $query->bookable($school),
+                fn ($query) => $query->where('school_id', $school->id)->notExpired(),
+                fn ($query) => $query->where('school_id', $school->id)
+                    ->where('contact_can_book', true)
+                    ->where('starts_at', '>', now()->addHours($school->booking_buffer_hours)),
             )
-            ->where('user_id', $user->id)
             ->orderBy('starts_at')
             ->get();
 
-        return inertia('reservations/Create', [
-            'title' => __('Book a conference'),
+        // Other upcoming conferences for this student or contact; slots overlapping these cannot be chosen
+        $conflicts = $student->timeSlots()->notExpired()->get()
+            ->when(! $actor->can(Permission::update, TimeSlot::class), fn ($slots) => $slots->merge($actor->bookedTimeSlots()->notExpired()->get()))
+            ->unique('id')
+            ->reject(fn (TimeSlot $slot) => $slot->id === $existing?->id)
+            ->map(fn (TimeSlot $slot) => ['starts_at' => $slot->starts_at->toDateTimeString(), 'ends_at' => $slot->ends_at->toDateTimeString()])
+            ->values();
+
+        $props = [
             'student' => new StudentResource($student),
+            'conflicts' => $conflicts,
             'staff' => new PublicUserResource($user),
             'slots' => TimeSlotResource::collection($slots),
             'existingReservation' => $existing ? new TimeSlotResource($existing) : null,
@@ -68,7 +79,13 @@ class ReservationController extends Controller
                 ? $school->languages->map(fn ($language) => ['value' => $language->language->value, 'label' => $language->language->name()])->values()
                 : [],
             'allowOnline' => $school->allow_online_meetings,
-        ]);
+        ];
+
+        if ($request->wantsJson() && ! $request->inertia()) {
+            return response()->json($props);
+        }
+
+        return inertia('reservations/Create', ['title' => __('Book a conference'), ...$props]);
     }
 
     public function store(ReserveTimeSlotRequest $request, TimeSlot $timeSlot): JsonResponse|RedirectResponse

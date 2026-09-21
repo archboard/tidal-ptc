@@ -470,6 +470,7 @@ class PowerSchoolProvider implements SisProvider
             ->students()
             ->whereIn('sis_id', $students->keys())
             ->pluck('id', 'sis_id');
+
         $sync = $studentIds->mapWithKeys(fn ($id, $dcid) => [
             $id => [
                 'relationship' => Arr::get($students->get($dcid), 'studentDetails.0.relationship'),
