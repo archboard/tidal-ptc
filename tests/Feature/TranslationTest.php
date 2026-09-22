@@ -120,6 +120,19 @@ it('translates user-facing strings into Japanese', function () {
         ->and(__('Created at'))->toBe('作成日時');
 });
 
+it('translates user-facing strings into Spanish', function () {
+    app()->setLocale('es');
+
+    expect(__('Save'))->toBe('Guardar')
+        ->and(__('Time slots'))->toBe('Franjas horarias')
+        ->and(__('You are managing time slots for :count people.', ['count' => 3]))->toBe('Estás gestionando franjas horarias para 3 personas.')
+        ->and(__('auth.failed'))->toBe('Estas credenciales no coinciden con nuestros registros.')
+        ->and(__('passwords.sent'))->toBe('¡Te hemos enviado por correo el enlace para restablecer tu contraseña!')
+        ->and(__('validation.required'))->toBe('Este campo es obligatorio.')
+        ->and(__('Created'))->toBe('Creado')
+        ->and(__('Created at'))->toBe('Fecha de creación');
+});
+
 it('has a translation for every string used in the app', function (string $locale) {
     $catalogue = json_decode(file_get_contents(lang_path("$locale.json")), true);
 
