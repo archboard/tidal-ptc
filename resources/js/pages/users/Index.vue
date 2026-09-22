@@ -35,7 +35,7 @@
     <Table no-top-radius>
       <Thead>
         <tr>
-          <Th class="pr-0 w-4"><Checkbox @change="selectedAll = !selectedAll" :checked="selectedAll" /></Th>
+          <Th class="pe-0 w-4"><Checkbox @change="selectedAll = !selectedAll" :checked="selectedAll" /></Th>
           <Th>{{ __('Name') }}</Th>
           <Th>{{ __('Email') }}</Th>
           <Th>{{ __('Type') }}</Th>
@@ -44,7 +44,7 @@
       </Thead>
       <Tbody>
         <tr v-for="user in users.data" :key="user.id">
-          <Td class="pr-0 w-4">
+          <Td class="pe-0 w-4">
             <Checkbox v-model="selection" :value="user.id" @change="toggleSelection(user.id)" />
           </Td>
           <Td>

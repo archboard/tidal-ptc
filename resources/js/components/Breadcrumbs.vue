@@ -3,7 +3,7 @@
     <Container class="w-full">
       <ol role="list" class="flex w-full space-x-4 py-4">
         <li class="flex md:hidden">
-          <button type="button" class="-ml-2 pr-2 text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-gray-500" @click="emit('open-sidebar')">
+          <button type="button" class="-ms-2 pe-2 text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-gray-500" @click="emit('open-sidebar')">
             <span class="sr-only">{{ __('Open sidebar') }}</span>
             <Bars3BottomLeftIcon class="h-5 w-5" aria-hidden="true" />
           </button>
@@ -27,7 +27,7 @@
               :method="page.method"
               :target="page.target"
               :href="page.url || '#'"
-              :class="['ml-4 text-sm font-medium', page.current ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-200 hover:text-gray-700 dark:hover:text-gray-100']"
+              :class="['ms-4 text-sm font-medium', page.current ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-200 hover:text-gray-700 dark:hover:text-gray-100']"
               :aria-current="page.current ? 'page' : undefined"
             >
               {{ page.label }}

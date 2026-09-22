@@ -86,3 +86,19 @@ it('exposes the user locale as their notification locale preference', function (
     expect($this->user)->toBeInstanceOf(HasLocalePreference::class)
         ->and($this->user->preferredLocale())->toBe('ja');
 });
+
+it('renders the page right-to-left in Arabic', function () {
+    $this->user->update(['locale' => 'ar']);
+
+    $this->get(route('settings.personal.edit'))
+        ->assertOk()
+        ->assertSee('dir="rtl"', false);
+});
+
+it('renders the page left-to-right in other locales', function () {
+    $this->user->update(['locale' => 'ja']);
+
+    $this->get(route('settings.personal.edit'))
+        ->assertOk()
+        ->assertSee('dir="ltr"', false);
+});
