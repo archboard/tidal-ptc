@@ -64,6 +64,23 @@ function translatableKeys(): array
     return array_keys($keys);
 }
 
+/**
+ * Keys like "auth.failed" resolve to lang/{locale}/auth.php, not the JSON catalogue.
+ */
+function isGroupKey(string $key): bool
+{
+    return str_contains($key, '.')
+        && in_array(explode('.', $key)[0], ['auth', 'passwords', 'validation', 'pagination'], true);
+}
+
+$locales = array_values(array_diff(
+    array_map(
+        fn (string $path) => basename($path, '.json'),
+        glob(dirname(__DIR__, 2).'/lang/*.json') ?: [],
+    ),
+    ['en'],
+));
+
 it('translates user-facing strings into Chinese', function () {
     app()->setLocale('zh-CN');
 
@@ -75,16 +92,21 @@ it('translates user-facing strings into Chinese', function () {
         ->and(__('validation.required'))->toBe('此字段为必填项。');
 });
 
-it('has a Chinese translation for every string used in the app', function () {
-    $catalogue = json_decode(file_get_contents(lang_path('zh-CN.json')), true);
+it('has a translation for every string used in the app', function (string $locale) {
+    $catalogue = json_decode(file_get_contents(lang_path("$locale.json")), true);
 
     expect($catalogue)->toBeArray();
 
-    $missing = collect(translatableKeys())
-        ->reject(fn (string $key) => str_contains($key, '.') && in_array(explode('.', $key)[0], ['auth', 'passwords', 'validation', 'pagination'], true))
+    $missingStrings = collect(translatableKeys())
+        ->reject(fn (string $key) => isGroupKey($key))
         ->reject(fn (string $key) => array_key_exists($key, $catalogue))
         ->sort()
         ->values();
 
-    expect($missing)->toBeEmpty('Missing zh-CN translations: '.$missing->implode(' | '));
-});
+    $missingGroups = collect(['auth', 'passwords', 'pagination', 'validation'])
+        ->reject(fn (string $group) => File::exists(lang_path("$locale/$group.php")))
+        ->values();
+
+    expect($missingStrings)->toBeEmpty("Missing $locale translations: ".$missingStrings->implode(' | '))
+        ->and($missingGroups)->toBeEmpty("Missing $locale group files: ".$missingGroups->implode(', '));
+})->with($locales);
