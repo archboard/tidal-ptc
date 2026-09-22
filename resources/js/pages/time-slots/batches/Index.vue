@@ -3,7 +3,7 @@
     <Table>
       <Thead>
         <tr>
-          <Th>{{ __('Created') }}</Th>
+          <Th>{{ __('Created at') }}</Th>
           <Th>{{ __('Creator') }}</Th>
           <Th>{{ __('Time slots per teacher') }}</Th>
           <Th>{{ __('Total time slots') }}</Th>

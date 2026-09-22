@@ -89,7 +89,9 @@ it('translates user-facing strings into Chinese', function () {
         ->and(__('You are managing time slots for :count people.', ['count' => 3]))->toBe('您正在为 3 人管理时间段。')
         ->and(__('auth.failed'))->toBe('这些凭据与我们的记录不符。')
         ->and(__('passwords.sent'))->toBe('我们已通过邮件发送您的密码重置链接！')
-        ->and(__('validation.required'))->toBe('此字段为必填项。');
+        ->and(__('validation.required'))->toBe('此字段为必填项。')
+        ->and(__('Created'))->toBe('已创建')
+        ->and(__('Created at'))->toBe('创建时间');
 });
 
 it('translates user-facing strings into Korean', function () {
@@ -100,7 +102,9 @@ it('translates user-facing strings into Korean', function () {
         ->and(__('You are managing time slots for :count people.', ['count' => 3]))->toBe('3 명의 시간 슬롯을 관리하고 있습니다.')
         ->and(__('auth.failed'))->toBe('이 자격 증명은 우리 기록과 일치하지 않습니다.')
         ->and(__('passwords.sent'))->toBe('비밀번호 재설정 링크를 이메일로 보냈습니다!')
-        ->and(__('validation.required'))->toBe('이 필드는 필수입니다.');
+        ->and(__('validation.required'))->toBe('이 필드는 필수입니다.')
+        ->and(__('Created'))->toBe('생성됨')
+        ->and(__('Created at'))->toBe('생성일');
 });
 
 it('has a translation for every string used in the app', function (string $locale) {
