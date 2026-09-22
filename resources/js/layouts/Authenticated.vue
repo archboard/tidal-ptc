@@ -61,6 +61,13 @@
           </AppSelect>
         </div>
 
+        <div class="mt-5 px-2">
+          <label for="current-locale" class="sr-only">{{ __('Language') }}</label>
+          <AppSelect v-model="currentLocale" class="bg-primary-200 dark:bg-primary-800 border-primary-300 dark:border-primary-900">
+            <option v-for="language in languages" :key="language.value" :value="language.value">{{ language.native_name }}</option>
+          </AppSelect>
+        </div>
+
         <div class="mt-5 flex grow flex-col">
           <nav class="flex-1 space-y-8 px-2" aria-label="Sidebar">
             <div class="space-y-1">
@@ -145,6 +152,7 @@ import useProp from '@/composition/useProp.js'
 import AppSelect from '@/components/forms/AppSelect.vue'
 import Container from '@/components/Container.vue'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
+import useLanguages from '@/composition/useLanguages.js'
 
 const title = usePageTitle()
 const page = usePage()
@@ -154,6 +162,8 @@ const adminSchools = useProp('adminSchools')
 const user = useProp('user')
 const $error = inject('$error')
 const currentSchool = ref(user.value.school_id)
+const currentLocale = ref(user.value.locale)
+const languages = useLanguages()
 
 watch(currentSchool, (value) => {
   if (value) {
@@ -164,6 +174,20 @@ watch(currentSchool, (value) => {
       preserveState: false, // remount the page so nothing scoped to the old school lingers
       onError: (errors) => {
         $error(errors.school_id)
+      }
+    })
+  }
+})
+
+watch(currentLocale, (value) => {
+  if (value) {
+    router.put('/settings/locale', {
+      locale: value
+    }, {
+      preserveScroll: true,
+      onSuccess: () => window.location.reload(), // full refresh so server-rendered locale strings (lang attr, etc.) are picked up
+      onError: (errors) => {
+        $error(errors.locale)
       }
     })
   }

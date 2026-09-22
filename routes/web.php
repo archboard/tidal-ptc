@@ -41,6 +41,7 @@ use App\Http\Controllers\ToggleSelectionController;
 use App\Http\Controllers\TranslatorController;
 use App\Http\Controllers\TranslatorRequestController;
 use App\Http\Controllers\UpdateCurrentSchoolController;
+use App\Http\Controllers\UpdateLocaleController;
 use App\Http\Controllers\UpdateSelectionVisibilityController;
 use App\Http\Controllers\UpdateSmtpSettingsController;
 use App\Http\Controllers\UpdateTenantSchoolsController;
@@ -210,6 +211,9 @@ Route::middleware('tenant')->group(function () {
 
                 Route::put('/current-school', UpdateCurrentSchoolController::class)
                     ->name('current-school.update');
+
+                Route::put('/locale', UpdateLocaleController::class)
+                    ->name('locale.update');
 
                 Route::middleware('can:edit tenant settings')->group(function () {
                     Route::singleton('/tenant', TenantSettingsController::class)
