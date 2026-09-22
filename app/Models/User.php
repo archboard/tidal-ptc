@@ -22,6 +22,7 @@ use App\Traits\Selectable;
 use Carbon\CarbonImmutable;
 use Closure;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -127,7 +128,7 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
  *
  * @mixin \Eloquent
  */
-class User extends Authenticatable implements ExistsInSis, Filterable
+class User extends Authenticatable implements ExistsInSis, Filterable, HasLocalePreference
 {
     use BelongsToTenant;
 
@@ -507,5 +508,10 @@ class User extends Authenticatable implements ExistsInSis, Filterable
     {
         return $this->can(Permission::ownTimeSlots) ||
             $this->sections()->exists();
+    }
+
+    public function preferredLocale(): ?string
+    {
+        return $this->locale;
     }
 }

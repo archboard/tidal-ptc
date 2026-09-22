@@ -16,6 +16,7 @@ enum Language: string
     case CHINESE_SIMPLIFIED = 'zh-CN';
     case JAPANESE = 'ja';
     case KOREAN = 'ko';
+    case SPANISH = 'es';
     case ARABIC = 'ar';
 
     public function nativeName(): string
@@ -25,6 +26,7 @@ enum Language: string
             self::CHINESE_SIMPLIFIED => '简体中文',
             self::JAPANESE => '日本語',
             self::KOREAN => '한국어',
+            self::SPANISH => 'Español',
             self::ARABIC => 'العربية',
         };
     }
@@ -36,6 +38,7 @@ enum Language: string
             self::CHINESE_SIMPLIFIED => __('Chinese (Simplified)'),
             self::JAPANESE => __('Japanese'),
             self::KOREAN => __('Korean'),
+            self::SPANISH => __('Spanish'),
             self::ARABIC => __('Arabic'),
         };
     }

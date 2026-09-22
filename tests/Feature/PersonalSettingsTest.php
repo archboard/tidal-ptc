@@ -2,6 +2,7 @@
 
 use App\Enums\NotificationEvent;
 use App\Enums\UserType;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
@@ -64,4 +65,40 @@ it('applies the user locale to requests', function () {
     $this->get(route('settings.personal.edit'))->assertOk();
 
     expect(app()->getLocale())->toBe('ja');
+});
+
+it('can switch locale from the nav', function () {
+    $this->put(route('settings.locale.update'), ['locale' => 'ja'])
+        ->assertRedirect()
+        ->assertSessionHasNoErrors();
+
+    expect($this->user->refresh()->locale)->toBe('ja');
+});
+
+it('rejects an unsupported locale', function () {
+    $this->put(route('settings.locale.update'), ['locale' => 'xx'])
+        ->assertSessionHasErrors('locale');
+});
+
+it('exposes the user locale as their notification locale preference', function () {
+    $this->user->update(['locale' => 'ja']);
+
+    expect($this->user)->toBeInstanceOf(HasLocalePreference::class)
+        ->and($this->user->preferredLocale())->toBe('ja');
+});
+
+it('renders the page right-to-left in Arabic', function () {
+    $this->user->update(['locale' => 'ar']);
+
+    $this->get(route('settings.personal.edit'))
+        ->assertOk()
+        ->assertSee('dir="rtl"', false);
+});
+
+it('renders the page left-to-right in other locales', function () {
+    $this->user->update(['locale' => 'ja']);
+
+    $this->get(route('settings.personal.edit'))
+        ->assertOk()
+        ->assertSee('dir="ltr"', false);
 });

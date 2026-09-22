@@ -7,11 +7,11 @@
         </TransitionChild>
 
         <div class="fixed inset-0 z-40 flex">
-          <TransitionChild as="template" enter="transition ease-in-out duration-300 transform" enter-from="-translate-x-full" enter-to="translate-x-0" leave="transition ease-in-out duration-300 transform" leave-from="translate-x-0" leave-to="-translate-x-full">
+          <TransitionChild as="template" enter="transition ease-in-out duration-300 transform" enter-from="ltr:-translate-x-full rtl:translate-x-full" enter-to="translate-x-0" leave="transition ease-in-out duration-300 transform" leave-from="translate-x-0" leave-to="ltr:-translate-x-full rtl:translate-x-full">
             <DialogPanel class="relative flex w-full max-w-xs flex-1 flex-col bg-white pt-5 pb-4">
               <TransitionChild as="template" enter="ease-in-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in-out duration-300" leave-from="opacity-100" leave-to="opacity-0">
-                <div class="absolute top-0 right-0 -mr-12 pt-2">
-                  <button type="button" class="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white" @click="sidebarOpen = false">
+                <div class="absolute top-0 end-0 -me-12 pt-2">
+                  <button type="button" class="ms-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white" @click="sidebarOpen = false">
                     <span class="sr-only">{{ __('Close sidebar') }}</span>
                     <XMarkIcon class="h-6 w-6 text-white" aria-hidden="true" />
                   </button>
@@ -20,6 +20,21 @@
               <div class="flex shrink-0 items-center px-4">
                 <Logo class="h-8 w-auto" />
               </div>
+
+              <div v-if="adminSchools.length > 1" class="mt-5 px-4">
+                <label for="current-school-mobile" class="sr-only">{{ __('Current school') }}</label>
+                <AppSelect v-model="currentSchool">
+                  <option v-for="school in adminSchools" :id="school.id" :value="school.id">{{ school.name }}</option>
+                </AppSelect>
+              </div>
+
+              <div class="mt-5 px-4">
+                <label for="current-locale-mobile" class="sr-only">{{ __('Language') }}</label>
+                <AppSelect v-model="currentLocale">
+                  <option v-for="language in languages" :key="language.value" :value="language.value">{{ language.native_name }}</option>
+                </AppSelect>
+              </div>
+
               <div class="mt-5 h-0 flex-1 overflow-y-auto">
                 <nav class="space-y-1 px-2">
                   <component
@@ -32,7 +47,7 @@
                     :as="item.as"
                     :class="[item.current ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']"
                   >
-                    <div v-html="item.icon" :class="[item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-4 shrink-0 h-6 w-6']" aria-hidden="true" />
+                    <div v-html="item.icon" :class="[item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'me-4 shrink-0 h-6 w-6']" aria-hidden="true" />
                     {{ item.label }}
                   </component>
                 </nav>
@@ -49,7 +64,7 @@
     <!-- Static sidebar for desktop -->
     <div class="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
       <!-- Sidebar component, swap this element with another sidebar if you like -->
-      <div class="flex grow flex-col overflow-y-auto border-r border-primary-200 dark:border-transparent bg-primary-100 dark:bg-primary-900 pt-5 pb-4">
+      <div class="flex grow flex-col overflow-y-auto border-e border-primary-200 dark:border-transparent bg-primary-100 dark:bg-primary-900 pt-5 pb-4">
         <div class="flex shrink-0 items-center px-4">
           <Logo class="h-10 w-auto" />
         </div>
@@ -58,6 +73,13 @@
           <label for="current-school" class="sr-only">{{ __('Current school') }}</label>
           <AppSelect v-model="currentSchool" class="bg-primary-200 dark:bg-primary-800 border-primary-300 dark:border-primary-900">
             <option v-for="school in adminSchools" :id="school.id" :value="school.id">{{ school.name }}</option>
+          </AppSelect>
+        </div>
+
+        <div class="mt-5 px-2">
+          <label for="current-locale" class="sr-only">{{ __('Language') }}</label>
+          <AppSelect v-model="currentLocale" class="bg-primary-200 dark:bg-primary-800 border-primary-300 dark:border-primary-900">
+            <option v-for="language in languages" :key="language.value" :value="language.value">{{ language.native_name }}</option>
           </AppSelect>
         </div>
 
@@ -74,7 +96,7 @@
                 :as="item.as"
                 :class="[item.current ? 'bg-primary-200 dark:bg-primary-800 text-primary-900 dark:text-white' : 'text-primary-800 dark:text-gray-300 hover:bg-primary-200 dark:hover:bg-primary-700 hover:text-primary-900 dark:hover:text-gray-100', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']"
               >
-                <div v-html="item.icon" :class="[item.current ? 'text-primary-500 dark:text-gray-300' : 'text-primary-400 dark:text-gray-300 group-hover:text-primary-500 dark:group-hover:text-gray-300', 'mr-3 shrink-0']" aria-hidden="true" />
+                <div v-html="item.icon" :class="[item.current ? 'text-primary-500 dark:text-gray-300' : 'text-primary-400 dark:text-gray-300 group-hover:text-primary-500 dark:group-hover:text-gray-300', 'me-3 shrink-0']" aria-hidden="true" />
                 {{ item.label }}
               </component>
             </div>
@@ -100,7 +122,7 @@
       </div>
     </div>
 
-    <div class="flex flex-1 min-h-screen flex-col justify-between md:pl-64">
+    <div class="flex flex-1 min-h-screen flex-col justify-between md:ps-64">
       <main class="flex-1">
         <Breadcrumbs @open-sidebar="sidebarOpen = true" />
 
@@ -145,6 +167,7 @@ import useProp from '@/composition/useProp.js'
 import AppSelect from '@/components/forms/AppSelect.vue'
 import Container from '@/components/Container.vue'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
+import useLanguages from '@/composition/useLanguages.js'
 
 const title = usePageTitle()
 const page = usePage()
@@ -154,6 +177,8 @@ const adminSchools = useProp('adminSchools')
 const user = useProp('user')
 const $error = inject('$error')
 const currentSchool = ref(user.value.school_id)
+const currentLocale = ref(user.value.locale)
+const languages = useLanguages()
 
 watch(currentSchool, (value) => {
   if (value) {
@@ -164,6 +189,20 @@ watch(currentSchool, (value) => {
       preserveState: false, // remount the page so nothing scoped to the old school lingers
       onError: (errors) => {
         $error(errors.school_id)
+      }
+    })
+  }
+})
+
+watch(currentLocale, (value) => {
+  if (value) {
+    router.put('/settings/locale', {
+      locale: value
+    }, {
+      preserveScroll: true,
+      onSuccess: () => window.location.reload(), // full refresh so server-rendered locale strings (lang attr, etc.) are picked up
+      onError: (errors) => {
+        $error(errors.locale)
       }
     })
   }
