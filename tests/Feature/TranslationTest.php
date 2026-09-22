@@ -53,7 +53,7 @@ function translatableKeys(): array
                         }
                     }
                 }
-            } elseif (preg_match_all('/\b__(?:\(\s*)([\'"`])((?:\\\\.|(?!\1).)*)\1/s', $source, $matches, PREG_SET_ORDER)) {
+            } elseif (preg_match_all('/(?<![\w$.])(?:\$t|__|t)\(\s*([\'"`])((?:\\\\.|(?!\1).)*)\1/s', $source, $matches, PREG_SET_ORDER)) {
                 foreach ($matches as $match) {
                     $keys[$match[2]] = true;
                 }
@@ -91,7 +91,10 @@ it('translates user-facing strings into Chinese', function () {
         ->and(__('passwords.sent'))->toBe('我们已通过邮件发送您的密码重置链接！')
         ->and(__('validation.required'))->toBe('此字段为必填项。')
         ->and(__('Created'))->toBe('已创建')
-        ->and(__('Created at'))->toBe('创建时间');
+        ->and(__('Created at'))->toBe('创建时间')
+        ->and(__('Choose something else'))->toBe('选择其他时区')
+        ->and(__('This is a reminder of your upcoming conference for :with.', ['with' => 'A B']))->toBe('这是您即将进行的会议提醒：A B。')
+        ->and(__('This translator does not speak the requested language.'))->toBe('该翻译员不会说所申请的语言。');
 });
 
 it('translates user-facing strings into Korean', function () {
@@ -104,7 +107,10 @@ it('translates user-facing strings into Korean', function () {
         ->and(__('passwords.sent'))->toBe('비밀번호 재설정 링크를 이메일로 보냈습니다!')
         ->and(__('validation.required'))->toBe('이 필드는 필수입니다.')
         ->and(__('Created'))->toBe('생성됨')
-        ->and(__('Created at'))->toBe('생성일');
+        ->and(__('Created at'))->toBe('생성일')
+        ->and(__('Choose something else'))->toBe('다른 시간대 선택')
+        ->and(__('Conference'))->toBe('상담')
+        ->and(__('No, change it'))->toBe('아니요, 변경할게요');
 });
 
 it('translates user-facing strings into Japanese', function () {
@@ -117,7 +123,10 @@ it('translates user-facing strings into Japanese', function () {
         ->and(__('passwords.sent'))->toBe('パスワード再設定リンクをメールで送信しました！')
         ->and(__('validation.required'))->toBe('この項目は必須です。')
         ->and(__('Created'))->toBe('作成済み')
-        ->and(__('Created at'))->toBe('作成日時');
+        ->and(__('Created at'))->toBe('作成日時')
+        ->and(__('Choose something else'))->toBe('別のタイムゾーンを選ぶ')
+        ->and(__('Could not assign translator.'))->toBe('通訳者を割り当てられませんでした。')
+        ->and(__('Never mind'))->toBe('やめる');
 });
 
 it('translates user-facing strings into Spanish', function () {
@@ -130,7 +139,9 @@ it('translates user-facing strings into Spanish', function () {
         ->and(__('passwords.sent'))->toBe('¡Te hemos enviado por correo el enlace para restablecer tu contraseña!')
         ->and(__('validation.required'))->toBe('Este campo es obligatorio.')
         ->and(__('Created'))->toBe('Creado')
-        ->and(__('Created at'))->toBe('Fecha de creación');
+        ->and(__('Created at'))->toBe('Fecha de creación')
+        ->and(__('Subject'))->toBe('Elemento')
+        ->and(__('Override teacher'))->toBe('Reemplazar profesor');
 });
 
 it('translates user-facing strings into Arabic', function () {
@@ -143,7 +154,8 @@ it('translates user-facing strings into Arabic', function () {
         ->and(__('passwords.sent'))->toBe('أرسلنا لك رابط إعادة تعيين كلمة المرور عبر البريد الإلكتروني!')
         ->and(__('validation.required'))->toBe('هذا الحقل مطلوب.')
         ->and(__('Created'))->toBe('تم الإنشاء')
-        ->and(__('Created at'))->toBe('تاريخ الإنشاء');
+        ->and(__('Created at'))->toBe('تاريخ الإنشاء')
+        ->and(__('Schedule CSV'))->toBe('جدول CSV');
 });
 
 it('has a translation for every string used in the app', function (string $locale) {
