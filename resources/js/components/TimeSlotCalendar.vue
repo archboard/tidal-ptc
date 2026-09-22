@@ -11,6 +11,12 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import momentTimezonePlugin from '@fullcalendar/moment-timezone'
+import arLocale from '@fullcalendar/core/locales/ar'
+import esLocale from '@fullcalendar/core/locales/es'
+import jaLocale from '@fullcalendar/core/locales/ja'
+import koLocale from '@fullcalendar/core/locales/ko'
+import zhCnLocale from '@fullcalendar/core/locales/zh-cn'
+import { currentLocale } from 'laravel-vue-i18n'
 
 const props = defineProps({
   timezone: String,
@@ -42,6 +48,8 @@ const calendarOptions = {
   slotLabelFormat: props.timeFormat,
   eventTimeFormat: props.timeFormat,
   timeZone: props.timezone,
+  locales: [arLocale, esLocale, jaLocale, koLocale, zhCnLocale],
+  locale: currentLocale.value.toLowerCase(),
   selectable: true,
   selectMirror: true,
   slotEventOverlap: false,
