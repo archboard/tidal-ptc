@@ -133,6 +133,19 @@ it('translates user-facing strings into Spanish', function () {
         ->and(__('Created at'))->toBe('Fecha de creación');
 });
 
+it('translates user-facing strings into Arabic', function () {
+    app()->setLocale('ar');
+
+    expect(__('Save'))->toBe('حفظ')
+        ->and(__('Time slots'))->toBe('الفترات الزمنية')
+        ->and(__('You are managing time slots for :count people.', ['count' => 3]))->toBe('أنت تدير الفترات الزمنية لـ 3 أشخاص.')
+        ->and(__('auth.failed'))->toBe('بيانات الاعتماد هذه لا تتطابق مع سجلاتنا.')
+        ->and(__('passwords.sent'))->toBe('أرسلنا لك رابط إعادة تعيين كلمة المرور عبر البريد الإلكتروني!')
+        ->and(__('validation.required'))->toBe('هذا الحقل مطلوب.')
+        ->and(__('Created'))->toBe('تم الإنشاء')
+        ->and(__('Created at'))->toBe('تاريخ الإنشاء');
+});
+
 it('has a translation for every string used in the app', function (string $locale) {
     $catalogue = json_decode(file_get_contents(lang_path("$locale.json")), true);
 
