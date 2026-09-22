@@ -107,6 +107,19 @@ it('translates user-facing strings into Korean', function () {
         ->and(__('Created at'))->toBe('생성일');
 });
 
+it('translates user-facing strings into Japanese', function () {
+    app()->setLocale('ja');
+
+    expect(__('Save'))->toBe('保存')
+        ->and(__('Time slots'))->toBe('時間枠')
+        ->and(__('You are managing time slots for :count people.', ['count' => 3]))->toBe('3 名の時間枠を管理しています。')
+        ->and(__('auth.failed'))->toBe('これらの認証情報は記録と一致しません。')
+        ->and(__('passwords.sent'))->toBe('パスワード再設定リンクをメールで送信しました！')
+        ->and(__('validation.required'))->toBe('この項目は必須です。')
+        ->and(__('Created'))->toBe('作成済み')
+        ->and(__('Created at'))->toBe('作成日時');
+});
+
 it('has a translation for every string used in the app', function (string $locale) {
     $catalogue = json_decode(file_get_contents(lang_path("$locale.json")), true);
 
