@@ -92,6 +92,17 @@ it('translates user-facing strings into Chinese', function () {
         ->and(__('validation.required'))->toBe('此字段为必填项。');
 });
 
+it('translates user-facing strings into Korean', function () {
+    app()->setLocale('ko');
+
+    expect(__('Save'))->toBe('저장')
+        ->and(__('Time slots'))->toBe('시간 슬롯')
+        ->and(__('You are managing time slots for :count people.', ['count' => 3]))->toBe('3 명의 시간 슬롯을 관리하고 있습니다.')
+        ->and(__('auth.failed'))->toBe('이 자격 증명은 우리 기록과 일치하지 않습니다.')
+        ->and(__('passwords.sent'))->toBe('비밀번호 재설정 링크를 이메일로 보냈습니다!')
+        ->and(__('validation.required'))->toBe('이 필드는 필수입니다.');
+});
+
 it('has a translation for every string used in the app', function (string $locale) {
     $catalogue = json_decode(file_get_contents(lang_path("$locale.json")), true);
 
