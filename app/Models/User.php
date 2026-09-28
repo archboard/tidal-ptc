@@ -126,6 +126,10 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
  * @method static Builder<static>|User whereUpdatedAt($value)
  * @method static Builder<static>|User whereUserType($value)
  *
+ * @property string|null $room
+ *
+ * @method static Builder<static>|User whereRoom($value)
+ *
  * @mixin \Eloquent
  */
 class User extends Authenticatable implements ExistsInSis, Filterable, HasLocalePreference

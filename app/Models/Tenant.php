@@ -72,6 +72,8 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
  *
+ * @method static Builder<static>|Tenant wherePluginDownloads($value)
+ *
  * @mixin \Eloquent
  */
 final class Tenant extends TenantBase
