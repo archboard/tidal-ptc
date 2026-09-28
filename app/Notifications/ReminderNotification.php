@@ -69,7 +69,7 @@ class ReminderNotification extends Notification implements ShouldQueue
         $lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//'.$escape(config('app.name')).'//EN', 'METHOD:PUBLISH'];
 
         foreach ($this->slots as $slot) {
-            $where = $slot->isOnline ? ($slot->meetingUrl ?? __('Online')) : $slot->location;
+            $where = $slot->isOnline ? (string) ($slot->meetingUrl ?? __('Online')) : $slot->location;
 
             $lines = [...$lines,
                 'BEGIN:VEVENT',
