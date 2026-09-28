@@ -247,3 +247,28 @@ it('names the assigned translator in the email', function () {
 
     expect($lines)->toContain('Yuki Sato')->toContain('Japanese');
 });
+
+it('attaches the upcoming conferences as a calendar file', function () {
+    reserve($this->slot)->update(['location' => 'Room 4, Building B']);
+    $online = reserve(seedBookableSlot($this->teacher, ['is_online' => true, 'meeting_url' => 'https://meet.example.com/abc']));
+    $slots = [TimeSlotSnapshot::fromTimeSlot($this->slot->refresh()), TimeSlotSnapshot::fromTimeSlot($online->refresh())];
+
+    $mail = (new ReminderNotification($slots))->toMail($this->guardian);
+    $ics = $mail->rawAttachments[0]['data'];
+
+    expect($mail->rawAttachments[0]['name'])->toBe('conferences.ics')
+        ->and(substr_count($ics, 'BEGIN:VEVENT'))->toBe(2)
+        ->and($ics)->toContain("UID:time-slot-{$this->slot->id}@")
+        ->toContain('DTSTART:'.$this->slot->starts_at->utc()->format('Ymd\THis\Z'))
+        ->toContain('LOCATION:Room 4\, Building B')
+        ->toContain('URL:https://meet.example.com/abc');
+});
+
+it('falls back to the teacher room when a slot has no location', function () {
+    $this->teacher->update(['room' => 'B-204']);
+    reserve($this->slot)->update(['location' => null, 'is_online' => false, 'requested_online' => false]);
+
+    $ics = (new ReminderNotification([TimeSlotSnapshot::fromTimeSlot($this->slot->refresh())]))->toIcs();
+
+    expect($ics)->toContain('LOCATION:B-204');
+});
