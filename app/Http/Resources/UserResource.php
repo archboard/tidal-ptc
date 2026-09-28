@@ -29,6 +29,7 @@ class UserResource extends JsonResource
             'can_book' => $this->resource->can_book,
             'is_24h' => $this->resource->is_24h,
             'locale' => $this->resource->locale,
+            'room' => $this->resource->room,
             'sections_count' => $this->resource->sections_count,
             'alt_sections_count' => $this->resource->alt_sections_count,
             'time_slots_count' => $this->resource->time_slots_count,

@@ -34,6 +34,10 @@
         </template>
       </FormField>
 
+      <FormField v-if="user.user_type === UserType.staff" v-model="form.room" :error="form.errors.room" :help="__('Used as the conference location when a time slot has none.')" class="col-span-6 sm:col-span-3">
+        {{ __('Room') }}
+      </FormField>
+
       <FormField :error="form.errors.is_24h" :help="__('When enabled, you will see time formatted using 24 hours instead of 12. For example, 13:00 instead of 1:00pm.')" class="col-span-6">
         <template #component>
           <AppCheckbox v-model="form.is_24h">
@@ -73,6 +77,7 @@ import AppCheckbox from '@/components/forms/AppCheckbox.vue'
 import AppSelect from '@/components/forms/AppSelect.vue'
 import useLanguages from '@/composition/useLanguages.js'
 import useColorTheme from '@/composition/useColorTheme.js'
+import { UserType } from '@/Enums/UserType.enum.js'
 
 const user = useProp('user')
 const tenant = useProp('tenant')
@@ -83,6 +88,7 @@ const form = useForm({
   timezone: user.value.timezone,
   is_24h: user.value.is_24h,
   locale: user.value.locale ?? 'en',
+  room: user.value.room,
 })
 const languages = useLanguages()
 const { isDark } = useColorTheme()

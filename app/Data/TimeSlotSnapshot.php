@@ -36,7 +36,7 @@ final readonly class TimeSlotSnapshot
             teacher: $timeSlot->user->name,
             student: $timeSlot->student?->name,
             contact: $timeSlot->reservedBy?->name,
-            location: $timeSlot->location,
+            location: $timeSlot->location ?: $timeSlot->user->room,
             meetingUrl: $timeSlot->meeting_url ?: $timeSlot->user->meeting_url,
             isOnline: $timeSlot->is_online || $timeSlot->requested_online,
             language: $timeSlot->language?->name(),

@@ -26,6 +26,7 @@ it('can update personal settings', function () {
         'timezone' => fake()->timezone(),
         'is_24h' => fake()->boolean(),
         'locale' => 'ja',
+        'room' => 'B-204',
     ];
 
     $this->put(route('settings.personal.update'), $data)
@@ -40,6 +41,7 @@ it('can update personal settings', function () {
     $this->assertEquals($data['timezone'], $this->user->timezone);
     $this->assertEquals($data['is_24h'], $this->user->is_24h);
     $this->assertEquals('ja', $this->user->locale);
+    $this->assertEquals('B-204', $this->user->room);
 });
 
 it('defaults notifications to on and honors opt-outs', function () {
