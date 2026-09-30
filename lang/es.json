@@ -308,7 +308,6 @@
     "School selected successfully": "Escuela seleccionada correctamente",
     "School settings": "Configuración de la escuela",
     "School's default timezone": "Zona horaria predeterminada de la escuela",
-    "Schools are managed in your Archboard account.": "Las escuelas se gestionan en tu cuenta de Archboard.",
     "Schools updated successfully.": "Escuelas actualizadas correctamente.",
     "Search": "Buscar",
     "Search by course…": "Buscar por curso…",
@@ -485,5 +484,7 @@
     "You're logged in.": "Has iniciado sesión.",
     "Your conferences": "Tus reuniones",
     "Your current timezone doesn't match the one in your settings. Update your timezone if it has changed.": "Tu zona horaria actual no coincide con la de tu configuración. Actualiza tu zona horaria si ha cambiado.",
-    "This district is still being set up. Please contact your administrator.": "Este distrito aún se está configurando. Comuníquese con su administrador."
+    "This district is still being set up. Please contact your administrator.": "Este distrito aún se está configurando. Comuníquese con su administrador.",
+    "Your plan covers :max schools. Contact us to add more.": "Su plan cubre :max escuelas. Contáctenos para agregar más.",
+    ":active of :limit licensed schools selected": ":active de :limit escuelas con licencia seleccionadas"
 }

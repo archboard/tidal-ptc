@@ -149,11 +149,11 @@
           <CardPadding>
             <CardHeader>{{ __('Active schools') }}</CardHeader>
             <HelpText>{{ __('Select the schools that are active in the app.') }}</HelpText>
+            <HelpText v-if="schoolLimit !== null">
+              {{ __(':active of :limit licensed schools selected', { active: schoolForm.schools.length, limit: schoolLimit }) }}
+            </HelpText>
           </CardPadding>
           <CardPadding>
-            <SimpleAlert v-if="!editable" level="warning" class="mb-4">
-              {{ __('Schools are managed in your Archboard account.') }}
-            </SimpleAlert>
             <SimpleAlert v-if="schoolForm.errors.schools" level="error" class="mb-4">
               {{ schoolForm.errors.schools }}
             </SimpleAlert>
@@ -165,14 +165,14 @@
 
             <template v-for="school in schools" :key="school.id">
               <div>
-                <AppCheckbox v-model="schoolForm.schools" :value="school.id" :disabled="!editable">
+                <AppCheckbox v-model="schoolForm.schools" :value="school.id">
                   {{ school.name }}
                 </AppCheckbox>
               </div>
             </template>
           </CardPadding>
           <CardAction>
-            <AppButton type="submit" :loading="schoolForm.processing" :disabled="!editable">
+            <AppButton type="submit" :loading="schoolForm.processing">
               {{ __('Save') }}
             </AppButton>
           </CardAction>
@@ -208,6 +208,7 @@ const props = defineProps({
   smtp: Object,
   sisOptions: Array,
   schools: Array,
+  schoolLimit: { type: Number, default: null },
   editable: Boolean,
 })
 
@@ -242,19 +243,15 @@ const schoolForm = useForm({
 })
 
 const select = all => {
-  if (props.editable) {
-    schoolForm.schools = all
-      ? props.schools.map(school => school.id)
-      : []
-  }
+  schoolForm.schools = all
+    ? props.schools.map(school => school.id)
+    : []
 }
 
 const saveSchools = () => {
-  if (props.editable) {
-    schoolForm.put(`/settings/tenant/schools`, {
-      preserveScroll: true,
-    })
-  }
+  schoolForm.put(`/settings/tenant/schools`, {
+    preserveScroll: true,
+  })
 }
 
 const sendSmtpTest = () => {

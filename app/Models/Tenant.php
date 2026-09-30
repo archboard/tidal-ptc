@@ -28,6 +28,7 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
  * @property string $domain
  * @property string|null $custom_domain
  * @property int $plugin_downloads
+ * @property int|null $school_limit
  * @property bool $allow_password_auth
  * @property bool $allow_oidc_login
  * @property string|null $subscription_started_at
@@ -102,6 +103,7 @@ final class Tenant extends TenantBase
         'sis_config' => 'encrypted:collection',
         'smtp_config' => 'encrypted:collection',
         'allow_password_auth' => 'boolean',
+        'school_limit' => 'integer',
     ];
 
     /** @return Attribute<string, string> */
