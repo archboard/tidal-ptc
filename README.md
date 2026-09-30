@@ -47,6 +47,8 @@ docker compose pull && docker compose up -d   # or `up -d --build` to build from
 
 Migrations run automatically when the `app` service starts. Put a TLS-terminating reverse proxy in front and route `/` to port `8000` and `/app`, `/apps` (websockets) to port `8080`; `REVERB_HOST`/`REVERB_PORT`/`REVERB_SCHEME` must describe the proxy's public websocket address. Run Artisan with `docker compose exec app php artisan …`. To update, `docker compose pull && docker compose up -d` restarts every service on the new image (pin a version with `TIDAL_PTC_VERSION=1.2.3` in `.env`).
 
+To hear about new versions, watch the repository's releases on GitHub (**Watch → Custom → Releases**). To update automatically instead, run [Watchtower](https://containrrr.dev/watchtower/) against the stack, and leave `TIDAL_PTC_VERSION` unset so it follows `latest`.
+
 ### DigitalOcean App Platform
 
 [![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/archboard/tidal-ptc/tree/main&refcode=5902fc4786e5)
