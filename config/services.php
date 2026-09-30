@@ -30,4 +30,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // Cloud only: where districts request more school licenses
+    'billing' => [
+        'url' => env('BILLING_URL'),
+    ],
+
 ];

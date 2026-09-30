@@ -486,5 +486,9 @@
     "Your current timezone doesn't match the one in your settings. Update your timezone if it has changed.": "您当前的时区与设置中的时区不一致。如已变更，请更新您的时区。",
     "This district is still being set up. Please contact your administrator.": "该学区仍在设置中。请联系您的管理员。",
     "Your plan covers :max schools. Contact us to add more.": "您的方案包含 :max 所学校。如需添加，请联系我们。",
-    ":active of :limit licensed schools selected": "已选择 :active 所（共 :limit 所授权学校）"
+    ":active of :limit licensed schools selected": "已选择 :active 所（共 :limit 所授权学校）",
+    "Your district has :active active schools but is licensed for :limit. To resolve this, add school licenses, or deactivate schools in Tenant settings.": "您的学区有 :active 所活跃学校，但授权仅涵盖 :limit 所。请添加学校授权，或在租户设置中停用部分学校。",
+    "Tidal PTC is unavailable for your district right now. Please contact your district administrator.": "Tidal PTC 目前对您的学区不可用。请联系您的学区管理员。",
+    "Request more licenses": "申请更多授权",
+    "402: School license limit reached": "402：已达到学校授权上限"
 }

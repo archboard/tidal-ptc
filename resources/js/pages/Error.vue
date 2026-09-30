@@ -2,6 +2,11 @@
   <div>
     <h1>{{ title }}</h1>
     <div>{{ description }}</div>
+    <ul v-if="links.length">
+      <li v-for="link in links" :key="link.href">
+        <a :href="link.href">{{ link.label }}</a>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -10,6 +15,10 @@ export default {
   props: {
     status: Number,
     message: String,
+    links: {
+      type: Array,
+      default: () => [],
+    },
   },
 
   computed: {
@@ -19,6 +28,7 @@ export default {
         500: this.__('500: Server Error'),
         404: this.__('404: Page Not Found'),
         403: this.__('403: Forbidden'),
+        402: this.__('402: School license limit reached'),
       }[this.status]
     },
 

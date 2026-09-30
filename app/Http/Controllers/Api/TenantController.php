@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreTenantRequest;
+use App\Http\Requests\UpsertTenantRequest;
 use App\Http\Resources\TenantApiResource;
 use App\Models\Tenant;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -25,17 +25,19 @@ class TenantController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @return TenantApiResource
+     * Creates or updates the tenant for a billing license: provisioning, retries and
+     * renewals are all this call. The resource responds 201 when it created the tenant.
+     * Setup links come back until the district has an admin, so calling it again reissues them.
      */
-    public function store(StoreTenantRequest $request)
+    public function update(UpsertTenantRequest $request, string $license): TenantApiResource
     {
-        /** @var Tenant $tenant */
-        $tenant = Tenant::create($request->validated());
-        $tenant->refresh();
-        $tenant->makeCurrent();
+        $tenant = $request->existingTenant() ?? new Tenant(['license' => $license]);
+        $tenant->fill($request->validated())->save();
 
-        return new TenantApiResource($tenant)->additional($tenant->setupLinks());
+        $links = $tenant->execute(fn (Tenant $tenant) => $tenant->hasDistrictAdmin()
+            ? ['setup_url' => null, 'plugin_url' => null]
+            : $tenant->setupLinks());
+
+        return new TenantApiResource($tenant->refresh())->additional($links);
     }
 }

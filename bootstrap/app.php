@@ -14,6 +14,7 @@ use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\SetupLinkIsOpen;
 use App\Http\Middleware\SisConfigured;
 use App\Http\Middleware\Uninstalled;
+use App\Http\Middleware\WithinSchoolLimit;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -35,7 +36,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('api')
                 ->group(function () {
                     Route::get('/tenants', [TenantController::class, 'index']);
-                    Route::post('/tenants', [TenantController::class, 'store']);
+                    Route::put('/tenants/{license}', [TenantController::class, 'update'])
+                        ->whereUuid('license');
                 });
         },
     )
@@ -65,6 +67,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'self_hosted' => SelfHosted::class,
             'self_hosted_or_setup' => SelfHostedOrSetup::class,
             'setup_link_open' => SetupLinkIsOpen::class,
+            'within_school_limit' => WithinSchoolLimit::class,
             'cloud' => Cloud::class,
             'allows_pw_auth' => AllowsPasswordLogins::class,
             'sis_configured' => SisConfigured::class,

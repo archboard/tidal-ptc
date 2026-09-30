@@ -140,7 +140,7 @@ Route::middleware('tenant')->group(function () {
         Route::match(['get', 'post'], '/schools/{school}/event-source', SchoolEventSourceController::class)
             ->name('schools.event-source');
 
-        Route::middleware(['has_school', 'scoped_permissions'])
+        Route::middleware(['has_school', 'scoped_permissions', 'within_school_limit'])
             ->group(function () {
                 Route::match(['post', 'delete'], '/selection/{model}', ToggleSelectionController::class)
                     ->name('selection.toggle');
