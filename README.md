@@ -53,6 +53,14 @@ Migrations run automatically when the `app` service starts. Put a TLS-terminatin
 
 The button deploys `.do/deploy.template.yaml`: a single container built from the `app-platform` stage of the Dockerfile (Octane, Reverb, the queue worker and the scheduler in one process tree) plus a dev PostgreSQL database. Before deploying, fill in `APP_KEY` (`echo "base64:$(openssl rand -base64 32)"`) and the PowerSchool credentials; everything else has a working default. Websockets are served through the app's own domain, so no extra routing is needed.
 
+### Rotating the app key
+
+`APP_KEY` encrypts every tenant's PowerSchool and SMTP credentials, and it signs sessions and cloud setup links. Keep it only in your host's secret store. If it leaks, or on a schedule, rotate it:
+
+1. Generate a new key with `php artisan key:generate --show`. Set it as `APP_KEY`, move the old key to `APP_PREVIOUS_KEYS` (comma-separated), and deploy. Existing secrets, sessions and links keep working.
+2. Run `php artisan key:reencrypt` to rewrite the tenant secrets with the new key.
+3. Remove `APP_PREVIOUS_KEYS` and deploy. Everyone is signed out, and unused cloud setup links stop working (reissue them with `php artisan tenant:setup-link`).
+
 ### Local development
 
 `php artisan migrate --seed` creates a tenant on `APP_URL` with an admin (`admin@example.com`), a teacher, a guardian and sample time slots — all with the password `password`. Run `npm run enums` after changing a `#[PublishEnum]` enum to regenerate the JavaScript copies.
