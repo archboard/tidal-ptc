@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreTenantRequest;
 use App\Http\Resources\TenantApiResource;
 use App\Models\Tenant;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class TenantController extends Controller
@@ -29,19 +29,10 @@ class TenantController extends Controller
      *
      * @return TenantApiResource
      */
-    public function store(Request $request)
+    public function store(StoreTenantRequest $request)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'license' => ['required', 'uuid', 'unique:tenants'],
-            'domain' => ['required', 'string', 'unique:tenants'],
-            'custom_domain' => ['nullable', 'string', 'unique:tenants'],
-            'subscription_started_at' => ['required', 'date'],
-            'subscription_expires_at' => ['required', 'date'],
-        ]);
-
         /** @var Tenant $tenant */
-        $tenant = Tenant::create($data);
+        $tenant = Tenant::create($request->validated());
         $tenant->refresh();
         $tenant->makeCurrent();
 
