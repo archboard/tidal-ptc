@@ -484,5 +484,6 @@
     "You do not have access to that school.": "その学校へのアクセス権がありません。",
     "You're logged in.": "ログインしています。",
     "Your conferences": "自分の面談",
-    "Your current timezone doesn't match the one in your settings. Update your timezone if it has changed.": "現在のタイムゾーンが設定のタイムゾーンと一致しません。変更されている場合はタイムゾーンを更新してください。"
+    "Your current timezone doesn't match the one in your settings. Update your timezone if it has changed.": "現在のタイムゾーンが設定のタイムゾーンと一致しません。変更されている場合はタイムゾーンを更新してください。",
+    "This district is still being set up. Please contact your administrator.": "この学区はまだ設定中です。管理者にお問い合わせください。"
 }

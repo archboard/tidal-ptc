@@ -484,5 +484,6 @@
     "You do not have access to that school.": "您无权访问该学校。",
     "You're logged in.": "您已登录。",
     "Your conferences": "您的会议",
-    "Your current timezone doesn't match the one in your settings. Update your timezone if it has changed.": "您当前的时区与设置中的时区不一致。如已变更，请更新您的时区。"
+    "Your current timezone doesn't match the one in your settings. Update your timezone if it has changed.": "您当前的时区与设置中的时区不一致。如已变更，请更新您的时区。",
+    "This district is still being set up. Please contact your administrator.": "该学区仍在设置中。请联系您的管理员。"
 }

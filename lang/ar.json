@@ -484,5 +484,6 @@
     "You do not have access to that school.": "ليس لديك وصول إلى تلك المدرسة.",
     "You're logged in.": "تم تسجيل دخولك.",
     "Your conferences": "اجتماعاتك",
-    "Your current timezone doesn't match the one in your settings. Update your timezone if it has changed.": "منطقتك الزمنية الحالية لا تطابق تلك الموجودة في إعداداتك. حدّث منطقتك الزمنية إذا تغيّرت."
+    "Your current timezone doesn't match the one in your settings. Update your timezone if it has changed.": "منطقتك الزمنية الحالية لا تطابق تلك الموجودة في إعداداتك. حدّث منطقتك الزمنية إذا تغيّرت.",
+    "This district is still being set up. Please contact your administrator.": "لا تزال هذه المنطقة التعليمية قيد الإعداد. يرجى التواصل مع المسؤول."
 }

@@ -484,5 +484,6 @@
     "You do not have access to that school.": "No tienes acceso a esa escuela.",
     "You're logged in.": "Has iniciado sesión.",
     "Your conferences": "Tus reuniones",
-    "Your current timezone doesn't match the one in your settings. Update your timezone if it has changed.": "Tu zona horaria actual no coincide con la de tu configuración. Actualiza tu zona horaria si ha cambiado."
+    "Your current timezone doesn't match the one in your settings. Update your timezone if it has changed.": "Tu zona horaria actual no coincide con la de tu configuración. Actualiza tu zona horaria si ha cambiado.",
+    "This district is still being set up. Please contact your administrator.": "Este distrito aún se está configurando. Comuníquese con su administrador."
 }

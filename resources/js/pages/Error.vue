@@ -9,6 +9,7 @@
 export default {
   props: {
     status: Number,
+    message: String,
   },
 
   computed: {
@@ -22,7 +23,7 @@ export default {
     },
 
     description () {
-      return {
+      return this.message ?? {
         503: this.__('Sorry, we are doing some maintenance. Please check back soon.'),
         500: this.__('Whoops, something went wrong on our servers.'),
         404: this.__('Sorry, the page you are looking for could not be found.'),

@@ -70,6 +70,12 @@ it('returns 404 for setup links once a district admin exists', function (string 
     $this->get($this->tenant->setupLinks()[$link])->assertNotFound();
 })->with(['setup_url', 'plugin_url']);
 
+it('shows a setup-in-progress page when an uninstalled tenant is visited without a link', function () {
+    $this->get('/login')
+        ->assertServiceUnavailable()
+        ->assertInertia(fn (AssertableInertia $page) => $page->component('Error')->has('message'));
+});
+
 it('downloads the plugin from a plugin link', function () {
     $this->get($this->tenant->setupLinks()['plugin_url'])
         ->assertDownload('tidal-ptc-plugin.zip');

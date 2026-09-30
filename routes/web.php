@@ -66,7 +66,7 @@ use Illuminate\Support\Facades\Route;
 /**
  * Cloud setup links, see Tenant::setupLinks()
  */
-Route::middleware(['cloud', 'tenant', 'signed:relative', 'setup_link_open'])
+Route::middleware(['cloud', 'signed:relative', 'setup_link_open'])
     ->prefix('/setup/{tenant}')
     ->whereNumber('tenant')
     ->group(function () {
