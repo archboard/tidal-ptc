@@ -1,8 +1,10 @@
 <?php
 
 use App\Models\Tenant;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 beforeEach(function () {
@@ -57,3 +59,17 @@ it('can create tenant', function () {
 
     expect(Tenant::query()->where('license', $data['license'])->exists())->toBeTrue();
 });
+
+it('returns signed setup links on the new tenant\'s domain', function (string $link) {
+    $response = $this->postJson('/api/tenants', [
+        'name' => fake()->company(),
+        'domain' => 'new-district.example.com',
+        'license' => fake()->uuid(),
+        'subscription_started_at' => now()->subMonth()->toDateTimeString(),
+        'subscription_expires_at' => now()->addYear()->toDateTimeString(),
+    ], $this->headers)->assertCreated();
+
+    $url = $response->json($link);
+    expect($url)->toStartWith('https://new-district.example.com/setup/')
+        ->and(URL::hasValidRelativeSignature(Request::create($url)))->toBeTrue();
+})->with(['setup_url', 'plugin_url']);

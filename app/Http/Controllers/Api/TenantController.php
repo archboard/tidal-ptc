@@ -7,7 +7,6 @@ use App\Http\Resources\TenantApiResource;
 use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Arr;
 
 class TenantController extends Controller
 {
@@ -42,10 +41,10 @@ class TenantController extends Controller
         ]);
 
         /** @var Tenant $tenant */
-        $tenant = Tenant::create(Arr::except($data, 'email'));
+        $tenant = Tenant::create($data);
         $tenant->refresh();
         $tenant->makeCurrent();
 
-        return new TenantApiResource($tenant);
+        return new TenantApiResource($tenant)->additional($tenant->setupLinks());
     }
 }
