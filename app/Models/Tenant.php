@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ActivityEvent;
+use App\Enums\Role;
 use App\Enums\Sis;
 use App\SisProviders\SisProvider;
 use Carbon\CarbonImmutable;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
@@ -209,6 +211,29 @@ final class Tenant extends TenantBase
                     ->where('custom_domain', $host);
             })
             ->first();
+    }
+
+    public function hasDistrictAdmin(): bool
+    {
+        return $this->users()->whereIs(Role::DISTRICT_ADMIN->value)->exists();
+    }
+
+    /**
+     * Signed links that let a new cloud district install the plugin and run the setup wizard.
+     * They're signed relative to the path so they only resolve on this tenant's domain.
+     *
+     * @return array{setup_url: string, plugin_url: string}
+     */
+    public function setupLinks(): array
+    {
+        $expiresAt = now()->addDays(14);
+        $link = fn (string $route): string => "https://{$this->domain}"
+            .URL::temporarySignedRoute($route, $expiresAt, ['tenant' => $this->id], absolute: false);
+
+        return [
+            'setup_url' => $link('setup'),
+            'plugin_url' => $link('setup.plugin'),
+        ];
     }
 
     public function installed(): bool

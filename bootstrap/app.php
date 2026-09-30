@@ -9,7 +9,9 @@ use App\Http\Middleware\Installed;
 use App\Http\Middleware\NoDistrictAdmin;
 use App\Http\Middleware\ScopeBouncerToSchool;
 use App\Http\Middleware\SelfHosted;
+use App\Http\Middleware\SelfHostedOrSetup;
 use App\Http\Middleware\SetLocale;
+use App\Http\Middleware\SetupLinkIsOpen;
 use App\Http\Middleware\SisConfigured;
 use App\Http\Middleware\Uninstalled;
 use Illuminate\Foundation\Application;
@@ -61,6 +63,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'self_hosted' => SelfHosted::class,
+            'self_hosted_or_setup' => SelfHostedOrSetup::class,
+            'setup_link_open' => SetupLinkIsOpen::class,
             'cloud' => Cloud::class,
             'allows_pw_auth' => AllowsPasswordLogins::class,
             'sis_configured' => SisConfigured::class,

@@ -21,7 +21,7 @@
                 required
               />
             </div>
-            <div class="md:col-span-6">
+            <div v-if="!isCloud" class="md:col-span-6">
               <InputField
                 v-model="inertiaForm.domain"
                 :error="inertiaForm.errors.domain"
@@ -82,6 +82,7 @@ const props = defineProps({
   name: String,
   domain: String,
   sisConfig: Object,
+  isCloud: Boolean,
 })
 
 const inertiaForm = useForm({

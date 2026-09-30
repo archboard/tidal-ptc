@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Enums\Role;
 use App\Models\Tenant;
 use Closure;
 use Illuminate\Http\Request;
@@ -20,7 +19,7 @@ class NoDistrictAdmin
         /** @var Tenant $tenant */
         $tenant = Tenant::current();
 
-        if ($tenant->users()->whereIs(Role::DISTRICT_ADMIN->value)->doesntExist()) {
+        if (! $tenant->hasDistrictAdmin()) {
             return $next($request);
         }
 
