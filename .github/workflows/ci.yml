@@ -124,6 +124,8 @@ jobs:
 
   docker:
     name: Docker
+    # Never publish an image that failed the checks
+    needs: [phpstan, pint, pest]
     runs-on: ubuntu-latest
     permissions:
       contents: read
