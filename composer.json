@@ -12,6 +12,7 @@
     "ext-intl": "*",
     "ext-pdo": "*",
     "ext-redis": "*",
+    "ext-zip": "*",
     "grantholle/laravel-powerschool-auth": "^3.0",
     "grantholle/laravel-timezone": "^1.0",
     "grantholle/powerschool-api": "^4.0",

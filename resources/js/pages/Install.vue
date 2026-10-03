@@ -67,6 +67,7 @@
 </template>
 
 <script setup>
+import { onMounted, onUnmounted } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import CardWrapper from '@/components/CardWrapper.vue'
 import CardPadding from '@/components/CardPadding.vue'
@@ -94,4 +95,11 @@ const inertiaForm = useForm({
     client_secret: props.sisConfig?.client_secret ?? '',
   },
 })
+
+// PowerSchool registers the plugin as it's enabled, which fills in its connection details
+onMounted(() => {
+  window.Echo?.channel('install')
+    .listen('PowerSchoolPluginRegistered', ({ sisConfig }) => Object.assign(inertiaForm.sis_config, sisConfig))
+})
+onUnmounted(() => window.Echo?.leave('install'))
 </script>
