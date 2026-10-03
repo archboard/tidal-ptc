@@ -58,7 +58,7 @@ class PowerSchoolPluginRegistrationController extends Controller
         ];
 
         $tenant->name ??= $request->host();
-        $tenant->sis_config = [...$tenant->sis_config, ...$sisConfig];
+        $tenant->sis_config = $tenant->sis_config->merge($sisConfig);
         $tenant->save();
 
         if ($tenant->wasRecentlyCreated) {

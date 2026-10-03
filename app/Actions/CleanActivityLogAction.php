@@ -3,7 +3,6 @@
 namespace App\Actions;
 
 use App\Models\Activity;
-use Illuminate\Database\Eloquent\Builder;
 use Spatie\Activitylog\Actions\CleanActivityLogAction as BaseCleanActivityLogAction;
 
 /**
@@ -13,9 +12,12 @@ class CleanActivityLogAction extends BaseCleanActivityLogAction
 {
     protected function deleteOldActivities(string $cutOffDate, ?string $logName): int
     {
-        return Activity::withoutTenant()
-            ->where('created_at', '<', $cutOffDate)
-            ->when($logName !== null, fn (Builder $query) => $query->inLog($logName))
-            ->delete();
+        $query = Activity::withoutTenant()->where('created_at', '<', $cutOffDate);
+
+        if ($logName !== null) {
+            $query->inLog($logName);
+        }
+
+        return $query->delete();
     }
 }

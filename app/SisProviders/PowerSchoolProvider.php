@@ -59,7 +59,7 @@ class PowerSchoolProvider implements SisProvider
             ->values();
 
         School::upsert(
-            $this->limitNewActiveSchools($data)->toArray(),
+            $this->limitNewActiveSchools($data->all()),
             ['sis_key'],
             ['name', 'school_number', 'low_grade', 'high_grade', 'updated_at']
         );
@@ -72,10 +72,10 @@ class PowerSchoolProvider implements SisProvider
      * slots in school number order and the rest come in inactive. The upsert never
      * updates `active`, so existing schools keep what the district chose.
      *
-     * @param  Collection<int, array<string, mixed>>  $rows
-     * @return Collection<int, array<string, mixed>>
+     * @param  array<int, array<string, mixed>>  $rows
+     * @return array<int, array<string, mixed>>
      */
-    protected function limitNewActiveSchools(Collection $rows): Collection
+    protected function limitNewActiveSchools(array $rows): array
     {
         $limit = $this->tenant->school_limit;
 
@@ -86,12 +86,12 @@ class PowerSchoolProvider implements SisProvider
         $existing = $this->tenant->schools()->pluck('sis_id');
         $openSlots = max(0, $limit - $this->tenant->schools()->where('active', true)->count());
 
-        return $rows->map(function (array $row) use ($existing, &$openSlots) {
+        return array_map(function (array $row) use ($existing, &$openSlots) {
             $isNew = ! $existing->contains($row['sis_id']);
             $row['active'] = ! $isNew || $openSlots-- > 0;
 
             return $row;
-        });
+        }, $rows);
     }
 
     /** @return array<array-key, mixed> */

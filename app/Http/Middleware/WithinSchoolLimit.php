@@ -60,7 +60,7 @@ class WithinSchoolLimit
         return inertia('Error', [
             'status' => 402,
             'message' => $message,
-            'links' => array_values($links),
+            'links' => $links,
         ])->toResponse($request)->setStatusCode(402);
     }
 }

@@ -59,7 +59,7 @@ class InstallationController extends Controller
     protected function tenant(Request $request): Tenant
     {
         return config('app.cloud')
-            ? Tenant::current()
+            ? Tenant::current() ?? abort(404)
             : Tenant::fromRequestAndFallback($request);
     }
 }
