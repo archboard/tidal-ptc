@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM node:24-alpine AS assets
+FROM node:26-alpine AS assets
 WORKDIR /app
 ARG VITE_APP_NAME="Tidal PTC"
 ENV VITE_APP_NAME=$VITE_APP_NAME
