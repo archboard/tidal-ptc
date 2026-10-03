@@ -21,7 +21,7 @@
                 required
               />
             </div>
-            <div class="md:col-span-6">
+            <div v-if="!isCloud" class="md:col-span-6">
               <InputField
                 v-model="inertiaForm.domain"
                 :error="inertiaForm.errors.domain"
@@ -67,6 +67,7 @@
 </template>
 
 <script setup>
+import { onMounted, onUnmounted } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import CardWrapper from '@/components/CardWrapper.vue'
 import CardPadding from '@/components/CardPadding.vue'
@@ -82,6 +83,7 @@ const props = defineProps({
   name: String,
   domain: String,
   sisConfig: Object,
+  isCloud: Boolean,
 })
 
 const inertiaForm = useForm({
@@ -93,4 +95,11 @@ const inertiaForm = useForm({
     client_secret: props.sisConfig?.client_secret ?? '',
   },
 })
+
+// PowerSchool registers the plugin as it's enabled, which fills in its connection details
+onMounted(() => {
+  window.Echo?.channel('install')
+    .listen('PowerSchoolPluginRegistered', ({ sisConfig }) => Object.assign(inertiaForm.sis_config, sisConfig))
+})
+onUnmounted(() => window.Echo?.leave('install'))
 </script>

@@ -46,6 +46,40 @@ it('can update smtp settings', function () {
     $this->assertEquals($data, $this->tenant->smtp_config->toArray());
 });
 
+it('shows the licensed school count in the cloud', function () {
+    fullPermissions();
+    $this->asCloud();
+    $this->tenant->update(['school_limit' => 5]);
+
+    $this->get(route('settings.tenant.edit'))
+        ->assertInertia(fn (AssertableInertia $page) => $page->where('schoolLimit', 5));
+});
+
+it('activates the chosen schools within the limit in the cloud', function () {
+    fullPermissions();
+    $this->asCloud();
+    $this->tenant->update(['school_limit' => 1]);
+    [$chosen, $other] = $this->tenant->schools;
+
+    $this->put(route('settings.tenant.schools'), ['schools' => [$chosen->id]])
+        ->assertSessionHas('success');
+
+    expect($chosen->fresh()->active)->toBeTrue()
+        ->and($other->fresh()->active)->toBeFalse();
+});
+
+it('rejects activating more schools than the limit in the cloud', function () {
+    fullPermissions();
+    $this->asCloud();
+    $this->tenant->update(['school_limit' => 1]);
+    $this->tenant->schools()->update(['active' => false]);
+
+    $this->put(route('settings.tenant.schools'), ['schools' => $this->tenant->schools->pluck('id')->all()])
+        ->assertSessionHasErrors('schools');
+
+    expect($this->tenant->schools()->where('active', true)->exists())->toBeFalse();
+});
+
 it('can update tenant settings', function () {
     fullPermissions();
 

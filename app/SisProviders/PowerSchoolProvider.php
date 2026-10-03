@@ -34,25 +34,17 @@ class PowerSchoolProvider implements SisProvider
     /** @return Collection<array-key, mixed> */
     public function getAllSchools(): Collection
     {
-        $response = $this->builder
+        return $this->builder
             ->to('/ws/v1/district/school')
-            ->get();
-
-        // Only get the schools that exist already
-        if (config('app.cloud')) {
-            $schools = $this->tenant->schools()->pluck('sis_id');
-
-            return $response->collect()
-                ->filter(fn (array $school) => $schools->contains($school['id']));
-        }
-
-        return $response->collect();
+            ->get()
+            ->collect();
     }
 
     public function syncSchools(): static
     {
         $now = now()->toDateTimeString();
         $data = $this->getAllSchools()
+            ->sortBy('school_number')
             ->map(fn ($school) => [
                 'tenant_id' => $this->tenant->id,
                 'sis_id' => $school['id'],
@@ -63,15 +55,43 @@ class PowerSchoolProvider implements SisProvider
                 'created_at' => $now,
                 'updated_at' => $now,
                 'sis_key' => $this->makeSisKey($school),
-            ]);
+            ])
+            ->values();
 
         School::upsert(
-            $data->toArray(),
+            $this->limitNewActiveSchools($data->all()),
             ['sis_key'],
             ['name', 'school_number', 'low_grade', 'high_grade', 'updated_at']
         );
 
         return $this;
+    }
+
+    /**
+     * In the cloud only `school_limit` schools may be active. New schools fill the open
+     * slots in school number order and the rest come in inactive. The upsert never
+     * updates `active`, so existing schools keep what the district chose.
+     *
+     * @param  array<int, array<string, mixed>>  $rows
+     * @return array<int, array<string, mixed>>
+     */
+    protected function limitNewActiveSchools(array $rows): array
+    {
+        $limit = $this->tenant->school_limit;
+
+        if (! config('app.cloud') || $limit === null) {
+            return $rows;
+        }
+
+        $existing = $this->tenant->schools()->pluck('sis_id');
+        $openSlots = max(0, $limit - $this->tenant->schools()->where('active', true)->count());
+
+        return array_map(function (array $row) use ($existing, &$openSlots) {
+            $isNew = ! $existing->contains($row['sis_id']);
+            $row['active'] = ! $isNew || $openSlots-- > 0;
+
+            return $row;
+        }, $rows);
     }
 
     /** @return array<array-key, mixed> */

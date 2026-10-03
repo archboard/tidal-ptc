@@ -47,11 +47,21 @@ docker compose pull && docker compose up -d   # or `up -d --build` to build from
 
 Migrations run automatically when the `app` service starts. Put a TLS-terminating reverse proxy in front and route `/` to port `8000` and `/app`, `/apps` (websockets) to port `8080`; `REVERB_HOST`/`REVERB_PORT`/`REVERB_SCHEME` must describe the proxy's public websocket address. Run Artisan with `docker compose exec app php artisan …`. To update, `docker compose pull && docker compose up -d` restarts every service on the new image (pin a version with `TIDAL_PTC_VERSION=1.2.3` in `.env`).
 
+To hear about new versions, watch the repository's releases on GitHub (**Watch → Custom → Releases**). To update automatically instead, run [Watchtower](https://containrrr.dev/watchtower/) against the stack, and leave `TIDAL_PTC_VERSION` unset so it follows `latest`.
+
 ### DigitalOcean App Platform
 
 [![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/archboard/tidal-ptc/tree/main&refcode=5902fc4786e5)
 
 The button deploys `.do/deploy.template.yaml`: a single container built from the `app-platform` stage of the Dockerfile (Octane, Reverb, the queue worker and the scheduler in one process tree) plus a dev PostgreSQL database. Before deploying, fill in `APP_KEY` (`echo "base64:$(openssl rand -base64 32)"`) and the PowerSchool credentials; everything else has a working default. Websockets are served through the app's own domain, so no extra routing is needed.
+
+### Rotating the app key
+
+`APP_KEY` encrypts every tenant's PowerSchool and SMTP credentials, and it signs sessions and cloud setup links. Keep it only in your host's secret store. If it leaks, or on a schedule, rotate it:
+
+1. Generate a new key with `php artisan key:generate --show`. Set it as `APP_KEY`, move the old key to `APP_PREVIOUS_KEYS` (comma-separated), and deploy. Existing secrets, sessions and links keep working.
+2. Run `php artisan key:reencrypt` to rewrite the tenant secrets with the new key.
+3. Remove `APP_PREVIOUS_KEYS` and deploy. Everyone is signed out, and unused cloud setup links stop working (reissue them with `php artisan tenant:setup-link`).
 
 ### Local development
 

@@ -25,6 +25,8 @@ it('builds a zip with plugin.xml at the root and the query files in place', func
         ->toContain('version="1.0.0"')
         ->toContain('base-url="https://ptc.example.com"')
         ->toContain('<openid host="ptc.example.com" port="443">')
+        ->toContain('<registration url="https://ptc.example.com/api/powerschool/registration">')
+        ->toContain('<callback-data>'.PowerSchoolPluginService::registrationKey('ptc.example.com').'</callback-data>')
         ->not->toContain('{{');
 
     unlink($zipPath);

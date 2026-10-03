@@ -34,6 +34,7 @@ class InstallFirstUserController extends Controller
         BouncerFacade::allow(Role::DISTRICT_ADMIN->value)->everything();
         $user->assignRole(Role::DISTRICT_ADMIN);
         auth()->login($user);
+        $request->session()->forget('setup_tenant_id');
 
         return to_route('select-school');
     }

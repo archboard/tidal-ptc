@@ -15,30 +15,27 @@ class InstallationController extends Controller
     public function index(Request $request): Response
     {
         $title = __('Installation');
-        $tenant = Tenant::fromRequestAndFallback($request);
+        $tenant = $this->tenant($request);
 
         return inertia('Install', [
             'title' => $title,
             'name' => $tenant->name,
             'domain' => $tenant->domain,
             'sisConfig' => $tenant->sis_config->toArray(),
+            'isCloud' => config('app.cloud'),
         ])->withViewData(compact('title'));
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $tenant = Tenant::fromRequestAndFallback($request);
+        $tenant = $this->tenant($request);
 
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'domain' => ['required', Rule::unique('tenants', 'domain')->ignoreModel($tenant)],
-            ...(config('app.cloud') ? [
-                'custom_domain' => [
-                    'nullable',
-                    Rule::unique('tenants', 'domain')->ignoreModel($tenant),
-                    Rule::unique('tenants', 'custom_domain')->ignoreModel($tenant),
-                ],
-            ] : []),
+            // Cloud domains are set at provisioning
+            ...(config('app.cloud') ? [] : [
+                'domain' => ['required', Rule::unique('tenants', 'domain')->ignoreModel($tenant)],
+            ]),
             'sis_config.url' => ['required', 'url'],
             'sis_config.client_id' => ['required', 'uuid'],
             'sis_config.client_secret' => ['required', 'uuid'],
@@ -54,5 +51,15 @@ class InstallationController extends Controller
         session()->flash('success', __('Installation complete. Sync has been started.'));
 
         return to_route('install.user');
+    }
+
+    /**
+     * A cloud setup session always has a current tenant; only self-hosted installs create one.
+     */
+    protected function tenant(Request $request): Tenant
+    {
+        return config('app.cloud')
+            ? Tenant::current() ?? abort(404)
+            : Tenant::fromRequestAndFallback($request);
     }
 }

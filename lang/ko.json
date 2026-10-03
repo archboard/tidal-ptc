@@ -308,7 +308,6 @@
     "School selected successfully": "학교가 선택되었습니다",
     "School settings": "학교 설정",
     "School's default timezone": "학교의 기본 시간대",
-    "Schools are managed in your Archboard account.": "학교는 Archboard 계정에서 관리됩니다.",
     "Schools updated successfully.": "학교가 업데이트되었습니다.",
     "Search": "검색",
     "Search by course…": "과목으로 검색…",
@@ -484,5 +483,12 @@
     "You do not have access to that school.": "해당 학교에 접근할 권한이 없습니다.",
     "You're logged in.": "로그인되었습니다.",
     "Your conferences": "내 상담",
-    "Your current timezone doesn't match the one in your settings. Update your timezone if it has changed.": "현재 시간대가 설정의 시간대와 일치하지 않습니다. 변경되었다면 시간대를 업데이트하세요."
+    "Your current timezone doesn't match the one in your settings. Update your timezone if it has changed.": "현재 시간대가 설정의 시간대와 일치하지 않습니다. 변경되었다면 시간대를 업데이트하세요.",
+    "This district is still being set up. Please contact your administrator.": "이 교육구는 아직 설정 중입니다. 관리자에게 문의하세요.",
+    "Your plan covers :max schools. Contact us to add more.": "현재 요금제는 학교 :max개까지 포함합니다. 추가하려면 문의하세요.",
+    ":active of :limit licensed schools selected": "라이선스 학교 :limit개 중 :active개 선택됨",
+    "Your district has :active active schools but is licensed for :limit. To resolve this, add school licenses, or deactivate schools in Tenant settings.": "교육구에 활성 학교가 :active개 있지만 라이선스는 :limit개입니다. 학교 라이선스를 추가하거나 테넌트 설정에서 학교를 비활성화하세요.",
+    "Tidal PTC is unavailable for your district right now. Please contact your district administrator.": "현재 교육구에서 Tidal PTC를 사용할 수 없습니다. 교육구 관리자에게 문의하세요.",
+    "Request more licenses": "라이선스 추가 요청",
+    "402: School license limit reached": "402: 학교 라이선스 한도에 도달함"
 }

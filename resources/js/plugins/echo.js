@@ -26,7 +26,8 @@ const onSyncCompleted = (notification) => {
 
 export default {
   install (app, { userId, reverb } = {}) {
-    if (!userId || !reverb?.key) {
+    // Guests connect too, the self-hosted install form listens for the plugin's registration
+    if (!reverb?.key) {
       return
     }
 
@@ -40,6 +41,10 @@ export default {
       forceTLS: (reverb.scheme ?? 'https') === 'https',
       enabledTransports: ['ws', 'wss'],
     })
+
+    if (!userId) {
+      return
+    }
 
     window.Echo.private(`App.Models.User.${userId}`)
       .notification(notification => {

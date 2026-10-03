@@ -3,6 +3,9 @@
   <publisher name="Archboard">
     <contact email="support@archboard.io"/>
   </publisher>
+  <registration url="{{ $registrationRoute }}">
+    <callback-data>{{ $key }}</callback-data>
+  </registration>
   <oauth base-url="{{ $baseUrl }}" redirect-uri="/auth/powerschool/oidc" allow-client-credential="true" allow-auth-code="true" accessLevelV1Api="READ">
     <allow-persona>staff</allow-persona>
     <allow-persona>parent</allow-persona>

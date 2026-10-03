@@ -18,6 +18,9 @@ class TenantApiResource extends TenantResource
         return [
             ...parent::toArray($request),
             'id' => $this->resource->id,
+            'name' => $this->resource->name,
+            'school_limit' => $this->resource->school_limit,
+            'subscription_expires_at' => $this->resource->subscription_expires_at,
         ];
     }
 }

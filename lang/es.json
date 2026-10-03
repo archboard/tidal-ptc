@@ -308,7 +308,6 @@
     "School selected successfully": "Escuela seleccionada correctamente",
     "School settings": "Configuración de la escuela",
     "School's default timezone": "Zona horaria predeterminada de la escuela",
-    "Schools are managed in your Archboard account.": "Las escuelas se gestionan en tu cuenta de Archboard.",
     "Schools updated successfully.": "Escuelas actualizadas correctamente.",
     "Search": "Buscar",
     "Search by course…": "Buscar por curso…",
@@ -484,5 +483,12 @@
     "You do not have access to that school.": "No tienes acceso a esa escuela.",
     "You're logged in.": "Has iniciado sesión.",
     "Your conferences": "Tus reuniones",
-    "Your current timezone doesn't match the one in your settings. Update your timezone if it has changed.": "Tu zona horaria actual no coincide con la de tu configuración. Actualiza tu zona horaria si ha cambiado."
+    "Your current timezone doesn't match the one in your settings. Update your timezone if it has changed.": "Tu zona horaria actual no coincide con la de tu configuración. Actualiza tu zona horaria si ha cambiado.",
+    "This district is still being set up. Please contact your administrator.": "Este distrito aún se está configurando. Comuníquese con su administrador.",
+    "Your plan covers :max schools. Contact us to add more.": "Su plan cubre :max escuelas. Contáctenos para agregar más.",
+    ":active of :limit licensed schools selected": ":active de :limit escuelas con licencia seleccionadas",
+    "Your district has :active active schools but is licensed for :limit. To resolve this, add school licenses, or deactivate schools in Tenant settings.": "Su distrito tiene :active escuelas activas, pero su licencia cubre :limit. Para resolverlo, agregue licencias de escuela o desactive escuelas en la configuración del inquilino.",
+    "Tidal PTC is unavailable for your district right now. Please contact your district administrator.": "Tidal PTC no está disponible para su distrito en este momento. Comuníquese con el administrador de su distrito.",
+    "Request more licenses": "Solicitar más licencias",
+    "402: School license limit reached": "402: Se alcanzó el límite de licencias de escuelas"
 }

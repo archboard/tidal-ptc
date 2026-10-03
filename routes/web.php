@@ -32,6 +32,7 @@ use App\Http\Controllers\Settings\SchoolSettingsController;
 use App\Http\Controllers\Settings\SyncModelController;
 use App\Http\Controllers\Settings\SyncSchoolItemController;
 use App\Http\Controllers\Settings\TenantSettingsController;
+use App\Http\Controllers\StartCloudSetupController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentEventSourceController;
 use App\Http\Controllers\TeacherController;
@@ -63,9 +64,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 /**
- * Self-hosted only routes
+ * Cloud setup links, see Tenant::setupLinks()
  */
-Route::middleware(['self_hosted'])
+Route::middleware(['cloud', 'signed:relative', 'setup_link_open'])
+    ->prefix('/setup/{tenant}')
+    ->whereNumber('tenant')
+    ->group(function () {
+        Route::get('/', StartCloudSetupController::class)
+            ->name('setup');
+        Route::get('/plugin', DownloadPowerSchoolPluginController::class)
+            ->name('setup.plugin');
+    });
+
+/**
+ * Installation wizard, for self-hosted or a cloud setup session
+ */
+Route::middleware(['self_hosted_or_setup'])
     ->group(function () {
         Route::middleware('uninstalled')
             ->group(function () {
@@ -126,7 +140,7 @@ Route::middleware('tenant')->group(function () {
         Route::match(['get', 'post'], '/schools/{school}/event-source', SchoolEventSourceController::class)
             ->name('schools.event-source');
 
-        Route::middleware(['has_school', 'scoped_permissions'])
+        Route::middleware(['has_school', 'scoped_permissions', 'within_school_limit'])
             ->group(function () {
                 Route::match(['post', 'delete'], '/selection/{model}', ToggleSelectionController::class)
                     ->name('selection.toggle');

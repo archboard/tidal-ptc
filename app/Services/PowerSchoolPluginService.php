@@ -40,6 +40,8 @@ class PowerSchoolPluginService
             'baseUrl' => rtrim($url, '/'),
             'host' => $host,
             'port' => $port,
+            'registrationRoute' => rtrim($url, '/').route('powerschool.registration', absolute: false),
+            'key' => static::registrationKey($host),
         ]);
 
         $zipPath = tempnam(sys_get_temp_dir(), 'tidal-ptc-plugin');
@@ -56,6 +58,15 @@ class PowerSchoolPluginService
         $zip->close();
 
         return $zipPath;
+    }
+
+    /**
+     * The plugin's registration callback data. It's bound to the host so it can be
+     * verified before a tenant exists, and only this app can produce it.
+     */
+    public static function registrationKey(string $host): string
+    {
+        return hash_hmac('sha256', $host, config('app.key'));
     }
 
     /**

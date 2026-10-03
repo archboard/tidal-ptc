@@ -308,7 +308,6 @@
     "School selected successfully": "学校を選択しました",
     "School settings": "学校設定",
     "School's default timezone": "学校の既定のタイムゾーン",
-    "Schools are managed in your Archboard account.": "学校は Archboard アカウントで管理されます。",
     "Schools updated successfully.": "学校を更新しました。",
     "Search": "検索",
     "Search by course…": "コースで検索…",
@@ -484,5 +483,12 @@
     "You do not have access to that school.": "その学校へのアクセス権がありません。",
     "You're logged in.": "ログインしています。",
     "Your conferences": "自分の面談",
-    "Your current timezone doesn't match the one in your settings. Update your timezone if it has changed.": "現在のタイムゾーンが設定のタイムゾーンと一致しません。変更されている場合はタイムゾーンを更新してください。"
+    "Your current timezone doesn't match the one in your settings. Update your timezone if it has changed.": "現在のタイムゾーンが設定のタイムゾーンと一致しません。変更されている場合はタイムゾーンを更新してください。",
+    "This district is still being set up. Please contact your administrator.": "この学区はまだ設定中です。管理者にお問い合わせください。",
+    "Your plan covers :max schools. Contact us to add more.": "ご利用のプランは:max校までです。追加をご希望の場合はお問い合わせください。",
+    ":active of :limit licensed schools selected": "ライセンス対象:limit校のうち:active校を選択中",
+    "Your district has :active active schools but is licensed for :limit. To resolve this, add school licenses, or deactivate schools in Tenant settings.": "この学区には有効な学校が:active校ありますが、ライセンスは:limit校分です。学校ライセンスを追加するか、テナント設定で学校を無効にしてください。",
+    "Tidal PTC is unavailable for your district right now. Please contact your district administrator.": "現在、この学区ではTidal PTCをご利用いただけません。学区の管理者にお問い合わせください。",
+    "Request more licenses": "ライセンスを追加で依頼",
+    "402: School license limit reached": "402: 学校ライセンスの上限に達しました"
 }

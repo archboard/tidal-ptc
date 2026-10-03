@@ -122,8 +122,31 @@ jobs:
           path: tests/Browser/Screenshots
           if-no-files-found: ignore
 
+  # Laravel Cloud builds from source, so this only triggers the deploy hooks. The hooks
+  # return once the deploy is queued, not when it finishes. Push to deploy must be off.
+  deploy:
+    name: Deploy
+    needs: [phpstan, pint, pest]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    # `if` can't read secrets directly, so each step checks its hook through env and skips when unset (e.g. on forks)
+    env:
+      STAGING_DEPLOY_HOOK: ${{ secrets.LARAVEL_CLOUD_STAGING_DEPLOY_HOOK }}
+      PRODUCTION_DEPLOY_HOOK: ${{ secrets.LARAVEL_CLOUD_PRODUCTION_DEPLOY_HOOK }}
+
+    steps:
+      - name: Deploy to staging
+        if: env.STAGING_DEPLOY_HOOK != ''
+        run: curl --fail-with-body -X POST "$STAGING_DEPLOY_HOOK?commit_hash=$GITHUB_SHA"
+
+      - name: Deploy to production
+        if: env.PRODUCTION_DEPLOY_HOOK != ''
+        run: curl --fail-with-body -X POST "$PRODUCTION_DEPLOY_HOOK?commit_hash=$GITHUB_SHA"
+
   docker:
     name: Docker
+    # Never publish an image that failed the checks
+    needs: [phpstan, pint, pest]
     runs-on: ubuntu-latest
     permissions:
       contents: read

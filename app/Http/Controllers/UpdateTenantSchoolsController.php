@@ -14,23 +14,25 @@ class UpdateTenantSchoolsController extends Controller
      */
     public function __invoke(Request $request, Tenant $tenant): RedirectResponse
     {
+        $limit = config('app.cloud') ? $tenant->school_limit : null;
+
         $data = $request->validate([
-            'schools' => ['required', 'array'],
+            'schools' => ['required', 'array', ...($limit !== null ? ["max:{$limit}"] : [])],
             'schools.*' => [
                 'integer',
                 Rule::exists('schools', 'id')
                     ->where('tenant_id', $tenant->id),
             ],
+        ], [
+            'schools.max' => __('Your plan covers :max schools. Contact us to add more.'),
         ]);
 
-        if (config('app.self_hosted')) {
-            $tenant->schools()
-                ->whereIn('id', $data['schools'])
-                ->update(['active' => true]);
-            $tenant->schools()
-                ->whereNotIn('id', $data['schools'])
-                ->update(['active' => false]);
-        }
+        $tenant->schools()
+            ->whereIn('id', $data['schools'])
+            ->update(['active' => true]);
+        $tenant->schools()
+            ->whereNotIn('id', $data['schools'])
+            ->update(['active' => false]);
 
         session()->flash('success', __('Schools updated successfully.'));
 
