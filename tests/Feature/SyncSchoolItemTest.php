@@ -10,6 +10,7 @@ use Illuminate\Bus\PendingBatch;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Queue;
 use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
@@ -28,6 +29,14 @@ it('queues a school item sync', function () {
     Bus::assertDispatched(SyncSchoolItem::class, fn (SyncSchoolItem $job) => $job->school->is($this->school)
         && $job->item === 'courses'
         && $job->user->is($this->user));
+});
+
+it('queues school syncs on the low-priority SIS sync queue', function () {
+    Queue::fake([SyncSchoolItem::class]);
+
+    $this->post(route('settings.school.item-sync', 'courses'));
+
+    Queue::assertPushedOn('sis_sync', SyncSchoolItem::class);
 });
 
 it('queues a whole-school sync from the model sync endpoint', function () {
@@ -151,7 +160,8 @@ it('syncs the whole school in dependency order', function () {
     Notification::assertSentTo($this->user, SyncCompleted::class, fn (SyncCompleted $n) => $n->item === 'school' && $n->level === 'success');
     Bus::assertBatched(fn (PendingBatch $batch) => $batch->jobs->count() === 2
         && $batch->jobs->first()->section->is($sections->first())
-        && $batch->allowsFailures());
+        && $batch->allowsFailures()
+        && $batch->queue() === 'sis_sync');
 });
 
 it('exposes enrollment sync progress on the settings page', function () {

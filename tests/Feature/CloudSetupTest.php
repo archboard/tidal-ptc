@@ -33,7 +33,7 @@ it('opens the install wizard from a setup link and installs the current tenant',
         ->name->toBe('Test District')
         ->domain->toBe($domain)
         ->and(Tenant::count())->toBe(1);
-    Queue::assertPushed(SyncSchools::class);
+    Queue::assertPushedOn('sis_sync', SyncSchools::class);
 });
 
 it('sends an installed tenant without an admin to the first user step', function () {

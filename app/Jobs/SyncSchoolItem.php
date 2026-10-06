@@ -10,12 +10,17 @@ use Illuminate\Bus\Batch;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\Attributes\Queue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Cache;
 use Throwable;
 
+/**
+ * Syncs run on the low-priority `sis_sync` queue so mail and notifications on `default` go first.
+ */
+#[Queue('sis_sync')]
 class SyncSchoolItem implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -92,6 +97,8 @@ class SyncSchoolItem implements ShouldQueue
         $batch = Bus::batch($jobs)
             ->name("Enrollment sync for {$school->name}")
             ->allowFailures()
+            // Batched jobs ignore their own #[Queue], so the batch sets it
+            ->onQueue('sis_sync')
             ->finally(fn (Batch $batch) => $user->notify(new SyncCompleted(
                 'sections',
                 $batch->failedJobs ? 'error' : 'success',

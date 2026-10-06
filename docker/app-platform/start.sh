@@ -15,7 +15,7 @@ php artisan migrate --force --no-interaction
 # Octane is PID 1, so if it dies the platform restarts the whole container.
 forever() { while :; do "$@" || true; sleep 1; done; }
 forever php artisan reverb:start --host=127.0.0.1 --port=8080 &
-forever php artisan queue:work database --tries=3 --max-time=3600 &
+forever php artisan queue:work database --queue=default,sis_sync --tries=3 --max-time=3600 &
 forever php artisan schedule:work &
 
 exec php artisan octane:frankenphp --host=0.0.0.0 --port=8000 --caddyfile=docker/app-platform/Caddyfile

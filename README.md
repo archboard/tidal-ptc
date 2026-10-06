@@ -17,7 +17,7 @@ php artisan key:generate
 php artisan migrate
 ```
 
-Point a web server at `public/`, then visit `/install` to configure the tenant and create the first administrator.
+Point a web server at `public/`, then visit `/install` to configure the tenant and create the first administrator. For a step-by-step fresh-server walkthrough without Docker (Nginx, PHP-FPM, PostgreSQL, Redis and systemd services), see [INSTALLATION-VM.md](INSTALLATION-VM.md).
 
 ### Scheduled tasks and email
 
@@ -27,7 +27,7 @@ Add the scheduler to cron so reminders go out and the activity log is pruned:
 * * * * * cd /path/to/tidal-ptc && php artisan schedule:run >> /dev/null 2>&1
 ```
 
-Email is sent through the SMTP settings configured on the tenant settings page. `QUEUE_CONNECTION=sync` (the default) sends mail inline; set a real queue driver and run `php artisan queue:work` to send in the background.
+Email is sent through the SMTP settings configured on the tenant settings page. `QUEUE_CONNECTION=sync` (the default) sends mail inline; set a real queue driver and run `php artisan queue:work --queue=default,sis_sync` to send in the background. PowerSchool syncs run on the `sis_sync` queue, which the worker only picks up once `default` is empty.
 
 ### Docker
 
