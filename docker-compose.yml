@@ -46,7 +46,7 @@ services:
 
   queue:
     <<: *app
-    command: php artisan queue:work redis --tries=3 --max-time=3600
+    command: php artisan queue:work redis --queue=default,sis_sync --tries=3 --max-time=3600
 
   scheduler:
     <<: *app
@@ -60,7 +60,8 @@ services:
       POSTGRES_USER: ${DB_USERNAME:-laravel}
       POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
     volumes:
-      - postgres:/var/lib/postgresql/data
+      # Postgres 18+ keeps data in /var/lib/postgresql/18/docker, so mount the parent
+      - postgres:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
