@@ -2,6 +2,8 @@
 
 use App\Enums\UserType;
 use App\Exceptions\SisNotConfiguredException;
+use App\Jobs\SyncSchools;
+use Illuminate\Support\Facades\Bus;
 use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
@@ -10,12 +12,24 @@ beforeEach(function () {
 
 it('will redirect when no school is set', function () {});
 
-it('will throw an exception without schools', function () {
+it('syncs schools inline and throws when the sync finds none', function () {
+    Bus::fake();
     $this->tenant->schools()->delete();
 
     $this->withoutExceptionHandling();
-    $this->expectException(SisNotConfiguredException::class);
-    $this->get(route('select-school'));
+
+    expect(fn () => $this->get(route('select-school')))->toThrow(SisNotConfiguredException::class);
+    Bus::assertDispatchedSync(SyncSchools::class);
+});
+
+it('does not resync when every school is inactive', function () {
+    Bus::fake();
+    $this->tenant->schools()->update(['active' => false]);
+
+    $this->withoutExceptionHandling();
+
+    expect(fn () => $this->get(route('select-school')))->toThrow(SisNotConfiguredException::class);
+    Bus::assertNotDispatchedSync(SyncSchools::class);
 });
 
 it('does not throw for a guardian with no linked students', function () {

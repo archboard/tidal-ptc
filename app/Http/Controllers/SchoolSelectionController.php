@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\UserType;
 use App\Exceptions\SisNotConfiguredException;
 use App\Http\Resources\SchoolResource;
+use App\Jobs\SyncSchools;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -23,6 +24,12 @@ class SchoolSelectionController extends Controller
             ? $user->adminSchools()->get()
             : $tenant->schools()->where('active', true)->get();
         $title = __('Select school');
+
+        // Plugin registration installs the tenant without running InstallationController, so the first sync can land here
+        if ($schools->isEmpty() && ! $isGuardian && $tenant->schools()->doesntExist()) {
+            SyncSchools::dispatchSync($tenant);
+            $schools = $tenant->schools()->where('active', true)->get();
+        }
 
         // Guardians are scoped to their students' schools; an empty list means no linked students, not a missing SIS config
         throw_if($schools->isEmpty() && ! $isGuardian, new SisNotConfiguredException('No schools configured'));
