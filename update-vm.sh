@@ -4,12 +4,12 @@
 # migrates, re-caches and restarts PHP-FPM, Reverb and the queue worker.
 # Leaves Nginx, PostgreSQL, systemd units and .env alone (re-run install-vm.sh for those).
 #
-#   sudo bash /var/www/tidal-ptc/update-vm.sh [--version v1.2.3]
+#   cd /var/www/tidal-ptc && sudo ./update-vm.sh [--version v1.2.3]
 
 set -euo pipefail
 
 VERSION="${VERSION:-}"
-APP_DIR="${APP_DIR:-/var/www/tidal-ptc}"
+APP_DIR="${APP_DIR:-$PWD}"
 APP_USER="${APP_USER:-tidal}"
 
 PHP=8.5
@@ -20,7 +20,7 @@ usage() {
 Usage: update-vm.sh [options]
 
   --version REF      Git branch or tag to deploy (default: the current branch)
-  --dir PATH         Install directory (default: /var/www/tidal-ptc)
+  --dir PATH         Install directory (default: the current directory)
   -h, --help         Show this help
 EOF
 }

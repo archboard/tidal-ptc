@@ -335,10 +335,10 @@ Run app commands as the `tidal` user: `sudo -iu tidal`, then `cd /var/www/tidal-
 
 ### Updating to a new version
 
-[`update-vm.sh`](update-vm.sh) does all of this in one go (add `--version v1.2.3` to deploy a tag):
+[`update-vm.sh`](update-vm.sh) does all of this in one go. Run it from the install directory, or pass `--dir`; add `--version v1.2.3` to deploy a tag:
 
 ```sh
-sudo bash /var/www/tidal-ptc/update-vm.sh
+cd /var/www/tidal-ptc && sudo ./update-vm.sh
 ```
 
 By hand:
