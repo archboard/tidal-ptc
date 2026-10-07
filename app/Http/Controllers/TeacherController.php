@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\Permission;
 use App\Http\Resources\UserResource;
+use App\Models\School;
 use App\Models\User;
 use App\Navigation\NavigationItem;
 use Illuminate\Http\Request;
@@ -15,14 +16,14 @@ class TeacherController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request, School $school): Response
     {
         $this->authorize(Permission::viewAny, User::class);
 
         $request->addFilter('teacher', true);
 
         $filters = $request->currentFilters();
-        $teachers = User::query()
+        $teachers = $school->users()
             ->filter($filters)
             ->withCount([
                 'sections',
