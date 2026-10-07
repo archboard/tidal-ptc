@@ -2,6 +2,8 @@
 
 This guide takes a fresh Linux server to a running Tidal PTC behind HTTPS. The Compose stack in this repository runs everything the application needs: the app on Octane (FrankenPHP), Reverb for websockets, a queue worker, the scheduler, PostgreSQL and Redis. The only thing you add is a reverse proxy that terminates TLS.
 
+To install each piece directly on the server instead, see [INSTALLATION-VM.md](INSTALLATION-VM.md).
+
 ## 1. Requirements
 
 - A Linux server (2 GB RAM is plenty to start) with a public IP.
