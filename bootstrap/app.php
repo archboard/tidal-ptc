@@ -89,7 +89,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->respond(function (Response $response, Throwable $e, Request $request) {
             if (
-                app()->environment('production')
+                ! config('app.debug')
                 && in_array($response->getStatusCode(), [500, 503, 404, 403])
                 && (! $request->wantsJson() || $request->inertia())
             ) {
