@@ -7,8 +7,11 @@ use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Enums\UserType;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Models\Tenant;
 use App\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +20,8 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Http\Controllers\NewPasswordController as FortifyNewPasswordController;
+use Laravel\Fortify\Http\Controllers\PasswordResetLinkController as FortifyPasswordResetLinkController;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -27,7 +32,8 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(FortifyPasswordResetLinkController::class, PasswordResetLinkController::class);
+        $this->app->bind(FortifyNewPasswordController::class, NewPasswordController::class);
     }
 
     /**
@@ -41,6 +47,12 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
+
+        ResetPassword::createUrlUsing(fn (User $user, string $token) => route('password.reset', [
+            'token' => $token,
+            'email' => $user->getEmailForPasswordReset(),
+            'user_type' => $user->user_type?->value,
+        ]));
 
         RateLimiter::for('login', function (Request $request) {
             $email = (string) $request->email;
@@ -81,6 +93,7 @@ class FortifyServiceProvider extends ServiceProvider
             return inertia('Auth/ForgotPassword', [
                 'title' => $title,
                 'status' => session('status'),
+                'userTypes' => UserType::selectOptions(),
             ])->withViewData(compact('title'));
         });
 
@@ -90,6 +103,7 @@ class FortifyServiceProvider extends ServiceProvider
             return inertia('Auth/ResetPassword', [
                 'title' => $title,
                 'email' => $request->email,
+                'userType' => $request->user_type,
                 'token' => $request->route('token'),
             ])->withViewData(compact('title'));
         });
