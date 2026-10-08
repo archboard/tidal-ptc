@@ -1,3 +1,5 @@
+During local development, assume it's not running using docker or Octane/frankenphp.
+
 # Test Enforcement
 
 - Test every code change by adding or updating a test.
