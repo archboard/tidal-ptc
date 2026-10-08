@@ -3,7 +3,7 @@
     <canvas ref="canvas" class="absolute inset-0 size-full" />
     <div
       v-if="mask"
-      class="absolute inset-0 m-auto aspect-square w-2/5 max-w-80 mask-contain mask-center mask-no-repeat"
+      class="absolute inset-0 m-auto aspect-square w-1/2 max-w-100 mask-contain mask-center mask-no-repeat"
       :class="maskClass"
       :style="{ maskImage: `url(${mask})` }"
     />
@@ -58,7 +58,7 @@ void main() {
       lane * aspect * 0.9 + 0.12 * sin(time * 0.21 + f * 2.4),
       0.55 * sin(time * (0.09 + 0.017 * f) + f * 1.9)
     );
-    float radius = 0.1 + 0.03 * sin(time * 0.3 + f * 1.3);
+    float radius = 0.18 + 0.04 * sin(time * 0.3 + f * 1.3);
     vec2 d = p - center;
     float falloff = max(0.0, 1.0 - dot(d, d) / (4.84 * radius * radius));
     float weight = 1.6 * falloff * falloff;
