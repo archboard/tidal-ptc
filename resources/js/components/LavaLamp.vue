@@ -85,7 +85,8 @@ const pointer = { x: 0, y: 0, z: 0, targetX: 0, targetY: 0, target: 0 }
 
 let gl, uniforms, frame, resizeObserver, intersectionObserver
 const start = performance.now()
-const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches
+/** Draw a single frame instead of animating: for reduced motion, and for software WebGL, whose frames tie up the main thread. */
+let still = matchMedia('(prefers-reduced-motion: reduce)').matches
 
 function track(event) {
   const rect = root.value.getBoundingClientRect()
@@ -124,6 +125,17 @@ function resolveColors() {
   gl.uniform3fv(uniforms.colors, blobColors)
 }
 
+/** Chrome masks RENDERER as 'WebKit WebGL'; Firefox exposes it directly and deprecates the debug extension. */
+function isSoftwareRendered() {
+  let renderer = gl.getParameter(gl.RENDERER)
+  if (renderer === 'WebKit WebGL') {
+    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info')
+    renderer = debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : renderer
+  }
+
+  return /swiftshader|llvmpipe|software/i.test(renderer)
+}
+
 function compile(type, source) {
   const shader = gl.createShader(type)
   gl.shaderSource(shader, source)
@@ -136,7 +148,7 @@ function draw(now) {
   pointer.x += (pointer.targetX - pointer.x) * 0.04
   pointer.y += (pointer.targetY - pointer.y) * 0.04
   pointer.z += (pointer.target - pointer.z) * 0.04
-  gl.uniform1f(uniforms.time, reducedMotion ? 20 : ((now - start) / 1000) * props.speed)
+  gl.uniform1f(uniforms.time, still ? 20 : ((now - start) / 1000) * props.speed)
   gl.uniform3f(uniforms.pointer, pointer.x, pointer.y, pointer.z)
   gl.drawArrays(gl.TRIANGLES, 0, 3)
 }
@@ -147,7 +159,7 @@ function loop(now) {
 }
 
 function play() {
-  if (!reducedMotion && !frame) {
+  if (!still && !frame) {
     frame = requestAnimationFrame(loop)
   }
 }
@@ -171,6 +183,7 @@ onMounted(() => {
   if (!gl) {
     return
   }
+  still ||= isSoftwareRendered()
 
   const program = gl.createProgram()
   gl.attachShader(program, compile(gl.VERTEX_SHADER, vertexShader))
