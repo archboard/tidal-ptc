@@ -28,7 +28,7 @@ it('login screen can be rendered', function () {
             ->has('title')
             ->has('status')
             ->has('tenant.allow_password_auth')
-            ->where('userTypes.1', ['label' => 'Contact', 'value' => 'guardian'])
+            ->where('userTypes.1', ['label' => 'Contact/Guardian', 'value' => 'guardian'])
         );
 });
 

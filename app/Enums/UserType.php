@@ -23,7 +23,7 @@ enum UserType: string
     {
         return match ($this) {
             self::staff => __('Staff'),
-            self::guardian => __('Contact'),
+            self::guardian => __('Contact/Guardian'),
             self::student => __('Student'),
         };
     }
