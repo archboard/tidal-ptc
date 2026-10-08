@@ -2,7 +2,9 @@
 
 use Inertia\Testing\AssertableInertia;
 
-it('renders the branded error page outside local', function () {
+it('renders the branded error page when debug is off', function () {
+    config(['app.debug' => false]);
+
     $this->get('/this-page-does-not-exist')
         ->assertNotFound()
         ->assertInertia(fn (AssertableInertia $page) => $page
@@ -11,8 +13,8 @@ it('renders the branded error page outside local', function () {
         );
 });
 
-it('leaves the default error response in local', function () {
-    app()->detectEnvironment(fn () => 'local');
+it('leaves the default error response when debug is on', function () {
+    config(['app.debug' => true]);
 
     $this->get('/this-page-does-not-exist')
         ->assertNotFound()

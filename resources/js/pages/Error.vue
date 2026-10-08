@@ -71,7 +71,7 @@ const props = defineProps({
   },
 })
 
-const appName = import.meta.env.APP_NAME
+const appName = import.meta.env.VITE_APP_NAME
 const currentUrl = typeof window !== 'undefined' ? window.location.href : '/'
 
 const copy = computed(() => ({

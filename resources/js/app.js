@@ -10,7 +10,7 @@ import { i18nVue } from 'laravel-vue-i18n'
 import '../css/app.css'
 
 createInertiaApp({
-  title: title => title ? `${title} | ${import.meta.env.APP_NAME}` : import.meta.env.APP_NAME,
+  title: title => title ? `${title} | ${import.meta.env.VITE_APP_NAME}` : import.meta.env.VITE_APP_NAME,
   progress: {
     delay: 0,
     color: '#14b8a6',
