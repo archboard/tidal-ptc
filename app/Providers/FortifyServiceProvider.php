@@ -6,6 +6,7 @@ use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
+use App\Enums\UserType;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rule;
 use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -51,7 +53,10 @@ class FortifyServiceProvider extends ServiceProvider
         });
 
         Fortify::authenticateUsing(function (Request $request) {
+            $request->validate(['user_type' => ['required', Rule::enum(UserType::class)]]);
+
             $user = User::where(DB::raw('lower(email)'), strtolower($request->input('email', '')))
+                ->where('user_type', $request->input('user_type'))
                 ->first();
 
             if ($user && $user->password && Hash::check((string) $request->input('password'), $user->password)) {
@@ -66,6 +71,7 @@ class FortifyServiceProvider extends ServiceProvider
                 'title' => $title,
                 'tenant' => Tenant::current()?->only(['allow_oidc_login', 'allow_password_auth']) ?? new \stdClass,
                 'status' => session('status'),
+                'userTypes' => UserType::selectOptions(),
             ])->withViewData(compact('title'));
         });
 
