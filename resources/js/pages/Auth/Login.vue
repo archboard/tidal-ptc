@@ -42,7 +42,7 @@
         </AppButton>
 
         <p>
-          <AppLink v-if="tenant.allow_password_auth" href="/forgot-password">
+          <AppLink v-if="tenant.allow_password_auth" class="text-sm" href="/forgot-password">
             {{ __('Forgot your password?') }}
           </AppLink>
         </p>
