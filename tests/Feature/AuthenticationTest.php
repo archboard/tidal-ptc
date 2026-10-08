@@ -20,6 +20,7 @@ it('login screen can be rendered', function () {
     $this->get('/login')
         ->assertOk()
         ->assertViewHas('title')
+        ->assertSee('<link rel="icon" type="image/png" href="/favicon.png" />', false)
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('Auth/Login')
             ->has('title')
