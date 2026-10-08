@@ -13,6 +13,7 @@
     "A conference has been booked for :with.": "面談が予約されました: :with",
     "A district admin already exists.": "学区管理者はすでに存在します。",
     "A meeting URL is required if the time slot is online and you do not have a default meeting URL in your personal settings.": "時間枠がオンラインで、個人設定に既定の会議 URL がない場合は、会議 URL が必要です。",
+    "Account type": "アカウントの種類",
     "Actions": "操作",
     "Active": "有効",
     "Active schools": "有効な学校",

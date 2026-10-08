@@ -13,6 +13,7 @@
     "A conference has been booked for :with.": "已为 :with 预约会议。",
     "A district admin already exists.": "学区管理员已存在。",
     "A meeting URL is required if the time slot is online and you do not have a default meeting URL in your personal settings.": "如果时间段为线上形式，且您的个人设置中没有默认会议链接，则必须填写会议链接。",
+    "Account type": "账户类型",
     "Actions": "操作",
     "Active": "启用",
     "Active schools": "启用的学校",

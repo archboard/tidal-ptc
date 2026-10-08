@@ -5,6 +5,13 @@
     </div>
 
     <form @submit.prevent="submit">
+      <FormField :error="form.errors.user_type" class="mb-4">
+        {{ __('Account type') }}
+        <template #component>
+          <RadioGroup v-model="form.user_type" :options="userTypes" />
+        </template>
+      </FormField>
+
       <FormField v-model="form.email" :error="form.errors.email" type="email">
         {{ __('Email') }}
       </FormField>
@@ -22,13 +29,17 @@
 import Button from '@/components/AppButton.vue'
 import Layout from '@/layouts/Guest.vue'
 import FormField from '@/components/forms/FormField.vue'
+import RadioGroup from '@/components/forms/RadioGroup.vue'
+import { UserType } from '@/Enums/UserType.enum.js'
 import { useForm } from '@inertiajs/vue3'
 
 const props = defineProps({
-  status: String
+  status: String,
+  userTypes: Array,
 })
 const form = useForm({
-  email: ''
+  user_type: UserType.staff,
+  email: '',
 })
 const submit = () => {
   form.post('/forgot-password')

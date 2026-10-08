@@ -2,7 +2,7 @@
   <Layout>
     <form @submit.prevent="submit">
       <Fieldset>
-        <FormField v-model="form.email" :error="form.errors.email" type="email">
+        <FormField v-model="form.email" :error="form.errors.email || form.errors.user_type" type="email">
           {{ __('Email') }}
         </FormField>
 
@@ -31,11 +31,13 @@ import FormField from '@/components/forms/FormField.vue'
 
 const props = defineProps({
   email: String,
+  userType: String,
   token: String,
 })
 const form = useForm({
   token: props.token,
   email: props.email,
+  user_type: props.userType,
   password: '',
   password_confirmation: '',
 })
