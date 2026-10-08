@@ -1,14 +1,7 @@
 <template>
   <div class="relative isolate flex min-h-screen flex-col overflow-hidden bg-primary-50 dark:bg-primary-950">
-    <header class="px-6 pt-6 sm:px-10">
-      <a href="/" class="inline-flex items-center gap-2 font-semibold text-primary-900 dark:text-primary-100">
-        <Logo class="h-9 w-auto" />
-        <span>{{ appName }}</span>
-      </a>
-    </header>
-
     <main class="relative z-10 mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center px-6 pb-56 text-center">
-      <Logo class="bob mb-6 h-16 w-auto drop-shadow-lg" aria-hidden="true" />
+      <ArchboardLogo class="bob mb-6 h-16 w-auto text-orange-500 drop-shadow-lg dark:text-orange-400" aria-hidden="true" />
 
       <p class="bg-linear-to-b from-primary-400 to-primary-800 bg-clip-text text-[7rem] leading-none font-black tracking-tighter text-transparent sm:text-[11rem] dark:from-primary-200 dark:to-primary-500">
         {{ status }}
@@ -59,7 +52,7 @@
 <script setup>
 import { computed } from 'vue'
 import { trans as __ } from 'laravel-vue-i18n'
-import Logo from '@/components/icons/Logo.vue'
+import ArchboardLogo from '@/components/icons/ArchboardLogo.vue'
 import AppButton from '@/components/AppButton.vue'
 
 const props = defineProps({
@@ -71,7 +64,6 @@ const props = defineProps({
   },
 })
 
-const appName = import.meta.env.VITE_APP_NAME
 const currentUrl = typeof window !== 'undefined' ? window.location.href : '/'
 
 const copy = computed(() => ({
