@@ -1,18 +1,21 @@
 <template>
-  <div class="min-h-screen flex flex-col sm:justify-center pt-48 sm:pt-0 items-center">
-    <div class="max-w-sm px-4 w-full relative">
-      <div class="pb-5 absolute top-0 inset-x-0 flex justify-center transform -translate-y-full">
-        <InertiaLink href="/">
-<!--          <Logo class="w-20 h-20 fill-current text-white" />-->
-        </InertiaLink>
+  <!-- wrap-reverse puts the lava panel on top once the columns stack on phones -->
+  <div class="flex min-h-screen flex-wrap-reverse">
+    <div class="flex min-w-0 flex-[1_1_420px] flex-col justify-center px-6 py-10 sm:px-12">
+      <div class="mx-auto w-full max-w-sm">
+        <Alert v-if="status" level="success" class="mb-4">
+          {{ status }}
+        </Alert>
+
+        <slot />
       </div>
-
-      <Alert v-if="status" level="success" class="mb-4">
-        {{ status }}
-      </Alert>
-
-      <slot />
     </div>
+
+    <LavaLamp
+      class="m-4 min-h-80 flex-[1_1_520px] rounded-3xl bg-primary-950"
+      :colors="['bg-primary-400', 'bg-cyan-300', '#047481', 'bg-sky-500', 'bg-emerald-400']"
+      :mask="logoMask"
+    />
 
     <Notifications />
   </div>
@@ -20,7 +23,9 @@
 
 <script setup>
 import Alert from '@/components/alerts/SimpleAlert.vue'
+import LavaLamp from '@/components/LavaLamp.vue'
 import Notifications from '@/components/Notifications.vue'
+import logoMask from '@/components/icons/logo-mask.svg'
 import { usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
 

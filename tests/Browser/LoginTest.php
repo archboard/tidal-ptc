@@ -7,6 +7,13 @@ beforeEach(function () {
     setSchool();
 });
 
+it('renders the lava lamp panel without errors', function () {
+    visit('/login')
+        ->assertPresent('div > canvas')
+        ->assertNoJavaScriptErrors()
+        ->assertNoConsoleLogs();
+});
+
 it('logs in with valid credentials', function () {
     $user = seedUser(['user_type' => UserType::staff]);
 
