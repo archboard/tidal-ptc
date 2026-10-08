@@ -12,6 +12,7 @@ use App\Http\Controllers\ClassLinkOAuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeleteBatchTimeSlotController;
+use App\Http\Controllers\DemoLoginController;
 use App\Http\Controllers\DownloadPowerSchoolPluginController;
 use App\Http\Controllers\GetLanguagesController;
 use App\Http\Controllers\GetSelectionController;
@@ -100,6 +101,10 @@ Route::middleware(['self_hosted_or_setup'])
     });
 
 Route::middleware('tenant')->group(function () {
+    Route::post('/demo/login/{userType}', DemoLoginController::class)
+        ->middleware('guest')
+        ->name('demo.login');
+
     // PowerSchool auth
     Route::middleware(['sis_configured'])
         ->prefix('/auth/powerschool')

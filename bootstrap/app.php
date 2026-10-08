@@ -7,6 +7,7 @@ use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\HasSchoolSet;
 use App\Http\Middleware\Installed;
 use App\Http\Middleware\NoDistrictAdmin;
+use App\Http\Middleware\PreventInDemo;
 use App\Http\Middleware\ScopeBouncerToSchool;
 use App\Http\Middleware\SelfHosted;
 use App\Http\Middleware\SelfHostedOrSetup;
@@ -56,7 +57,7 @@ return Application::configure(basePath: dirname(__DIR__))
             | Request::HEADER_X_FORWARDED_AWS_ELB);
 
         // Inertia must run last so every earlier middleware can still share props
-        $middleware->web(append: [SetLocale::class, HandleInertiaRequests::class]);
+        $middleware->web(append: [SetLocale::class, PreventInDemo::class, HandleInertiaRequests::class]);
 
         $middleware->group('tenant', [
             Installed::class,
