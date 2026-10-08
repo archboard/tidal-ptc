@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('VITE_APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Laravel'),
 
     'cloud' => env('IS_CLOUD', false),
 
@@ -58,7 +58,7 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
-    'asset_url' => env('ASSET_URL', null),
+    'asset_url' => env('ASSET_URL'),
 
     /*
     |--------------------------------------------------------------------------
@@ -147,7 +147,7 @@ return [
     */
 
     'maintenance' => [
-        'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
+        'driver' => env('APP_MAINTENANCE_DRIVER', 'cache'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
