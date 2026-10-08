@@ -8,7 +8,7 @@
 
         <div class="fixed inset-0 z-40 flex">
           <TransitionChild as="template" enter="transition ease-in-out duration-300 transform" enter-from="ltr:-translate-x-full rtl:translate-x-full" enter-to="translate-x-0" leave="transition ease-in-out duration-300 transform" leave-from="translate-x-0" leave-to="ltr:-translate-x-full rtl:translate-x-full">
-            <DialogPanel class="relative flex w-full max-w-xs flex-1 flex-col bg-white pt-5 pb-4">
+            <DialogPanel class="relative flex w-full max-w-xs flex-1 flex-col bg-primary-100 dark:bg-primary-900 pt-5 pb-4">
               <TransitionChild as="template" enter="ease-in-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in-out duration-300" leave-from="opacity-100" leave-to="opacity-0">
                 <div class="absolute top-0 end-0 -me-12 pt-2">
                   <button type="button" class="ms-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white" @click="sidebarOpen = false">
@@ -18,19 +18,19 @@
                 </div>
               </TransitionChild>
               <div class="flex shrink-0 items-center px-4">
-                <Logo class="h-8 w-auto" />
+                <ArchboardLogo class="h-8 w-auto text-orange-500 dark:text-orange-400" />
               </div>
 
               <div v-if="adminSchools.length > 1" class="mt-5 px-4">
                 <label for="current-school-mobile" class="sr-only">{{ __('Current school') }}</label>
-                <AppSelect v-model="currentSchool">
+                <AppSelect v-model="currentSchool" class="bg-primary-200 dark:bg-primary-800 border-primary-300 dark:border-primary-900">
                   <option v-for="school in adminSchools" :id="school.id" :value="school.id">{{ school.name }}</option>
                 </AppSelect>
               </div>
 
               <div class="mt-5 px-4">
                 <label for="current-locale-mobile" class="sr-only">{{ __('Language') }}</label>
-                <AppSelect v-model="currentLocale">
+                <AppSelect v-model="currentLocale" class="bg-primary-200 dark:bg-primary-800 border-primary-300 dark:border-primary-900">
                   <option v-for="language in languages" :key="language.value" :value="language.value">{{ language.native_name }}</option>
                 </AppSelect>
               </div>
@@ -45,9 +45,9 @@
                     :method="item.method"
                     :href="item.url"
                     :as="item.as"
-                    :class="[item.current ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']"
+                    :class="[item.current ? 'bg-primary-200 dark:bg-primary-800 text-primary-900 dark:text-white' : 'text-primary-800 dark:text-gray-300 hover:bg-primary-200 dark:hover:bg-primary-700 hover:text-primary-900 dark:hover:text-gray-100', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']"
                   >
-                    <div v-html="item.icon" :class="[item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'me-4 shrink-0 h-6 w-6']" aria-hidden="true" />
+                    <div v-html="item.icon" :class="[item.current ? 'text-primary-500 dark:text-gray-300' : 'text-primary-400 dark:text-gray-300 group-hover:text-primary-500 dark:group-hover:text-gray-300', 'me-4 shrink-0 h-6 w-6']" aria-hidden="true" />
                     {{ item.label }}
                   </component>
                 </nav>
@@ -66,7 +66,7 @@
       <!-- Sidebar component, swap this element with another sidebar if you like -->
       <div class="flex grow flex-col overflow-y-auto border-e border-primary-200 dark:border-transparent bg-primary-100 dark:bg-primary-900 pt-5 pb-4">
         <div class="flex shrink-0 items-center px-4">
-          <Logo class="h-10 w-auto" />
+          <ArchboardLogo class="h-10 w-auto text-orange-500 dark:text-orange-400" />
         </div>
 
         <div v-if="adminSchools.length > 1" class="mt-5 px-2">
@@ -157,7 +157,7 @@
 import { computed, inject, ref, watch } from 'vue'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
-import Logo from '@/components/icons/Logo.vue'
+import ArchboardLogo from '@/components/icons/ArchboardLogo.vue'
 import Footer from '@/components/Footer.vue'
 import Notifications from '@/components/Notifications.vue'
 import TimezoneBanner from '@/components/banners/TimezoneBanner.vue'
