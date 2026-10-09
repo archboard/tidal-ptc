@@ -45,8 +45,8 @@
           <Th class="pe-0 w-4"><Checkbox @change="selectedAll = !selectedAll" :checked="selectedAll" /></Th>
           <Th>{{ __('Name') }}</Th>
           <Th>{{ __('Email') }}</Th>
-          <Th class="text-right">{{ __('Sections') }}</Th>
-          <Th class="text-right">{{ __('Time slots') }}</Th>
+          <Th right>{{ __('Sections') }}</Th>
+          <Th right>{{ __('Time slots') }}</Th>
           <Th></Th>
         </tr>
       </Thead>
@@ -62,8 +62,8 @@
             </div>
           </Td>
           <Td>{{ user.email }}</Td>
-          <Td class="text-right">{{ user.sections_count + user.alt_sections_count }}</Td>
-          <Td class="text-right">{{ user.time_slots_count }}</Td>
+          <Td class="text-end">{{ user.sections_count + user.alt_sections_count }}</Td>
+          <Td class="text-end">{{ user.time_slots_count }}</Td>
           <ActionColumn>
             <ContextMenu>
               <UserActionMenu :user="user" />
