@@ -37,6 +37,15 @@ it('has no demo login outside demo mode', function () {
     $this->assertGuest();
 });
 
+it('asks to retry when the demo users are missing', function () {
+    $this->from(route('login'))
+        ->post(route('demo.login', UserType::staff))
+        ->assertRedirect(route('login'))
+        ->assertSessionHas('error', 'The demo is being reset. Please try again in a minute.');
+
+    $this->assertGuest();
+});
+
 it('blocks settings changes in demo mode', function () {
     logIn()->fullPermission();
     $name = $this->tenant->name;

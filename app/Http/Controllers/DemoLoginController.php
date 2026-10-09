@@ -21,7 +21,14 @@ class DemoLoginController extends Controller
             default => abort(404),
         };
 
-        Auth::login(User::query()->where('email', $email)->where('user_type', $userType)->firstOrFail());
+        $user = User::query()->where('email', $email)->where('user_type', $userType)->first();
+
+        // Missing until DemoSeeder runs, and briefly during each scheduled reset
+        if (! $user) {
+            return back()->with('error', __('The demo is being reset. Please try again in a minute.'));
+        }
+
+        Auth::login($user);
         $request->session()->regenerate();
 
         return redirect('/');

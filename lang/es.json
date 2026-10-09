@@ -77,7 +77,7 @@
     "Change your timezone to :timezone?": "¿Cambiar tu zona horaria a :timezone?",
     "Changing the domain could have unintended consequences. Ensure you have configured DNS properly and have a valid certificate for the new domain.": "Cambiar el dominio puede tener consecuencias no deseadas. Asegúrate de haber configurado el DNS correctamente y de tener un certificado válido para el nuevo dominio.",
     "Changing your SIS provider requires reconfiguration and a resync. Data will likely be disrupted, become invalid or disappear entirely.": "Cambiar tu proveedor de SIS requiere reconfiguración y una nueva sincronización. Es probable que los datos se vean afectados, dejen de ser válidos o desaparezcan por completo.",
-    "Chinese (Simplified)": "Chino (simplificado)",
+    "Chinese (Mandarin)": "Chino (mandarín)",
     "Choose a time that works for you.": "Elige una hora que te venga bien.",
     "Choose something else": "Elegir otra cosa",
     "Choose your current school": "Elige tu escuela actual",

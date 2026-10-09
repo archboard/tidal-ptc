@@ -138,6 +138,16 @@ it('lists translators for admins', function () {
         ->assertJsonPath('0.id', $this->translator->id);
 });
 
+it('labels chinese by its spoken language, not its script', function () {
+    $this->school->languages()->create(['language' => Language::CHINESE_SIMPLIFIED, 'request_max' => 0, 'overlap_max' => 0]);
+    app()->setLocale('es');
+
+    $this->givePermission(Permission::viewAny, TimeSlot::class)
+        ->get(route('translator-profiles.index'))
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->where('languages.2', ['value' => 'zh-CN', 'label' => 'Chino (mandarín)']));
+});
+
 it('shows translators and assignment filters on the request list', function () {
     $this->slot->update(['translator_id' => $this->translator->id]);
     $unassigned = seedTimeSlot(['student_id' => Student::factory()->create()->id, 'language' => Language::KOREAN, 'starts_at' => now()->addDays(2), 'ends_at' => now()->addDays(2)->addMinutes(15)]);

@@ -77,7 +77,7 @@
     "Change your timezone to :timezone?": "시간대를 :timezone 로 변경하시겠습니까?",
     "Changing the domain could have unintended consequences. Ensure you have configured DNS properly and have a valid certificate for the new domain.": "도메인을 변경하면 예상치 못한 결과가 발생할 수 있습니다. DNS를 올바르게 구성했고 새 도메인에 대한 유효한 인증서가 있는지 확인하세요.",
     "Changing your SIS provider requires reconfiguration and a resync. Data will likely be disrupted, become invalid or disappear entirely.": "SIS 제공업체를 변경하려면 재구성과 재동기화가 필요합니다. 데이터가 중단되거나 유효하지 않게 되거나 완전히 사라질 수 있습니다.",
-    "Chinese (Simplified)": "중국어(간체)",
+    "Chinese (Mandarin)": "중국어(표준 중국어)",
     "Choose a time that works for you.": "가능한 시간을 선택하세요.",
     "Choose something else": "다른 시간대 선택",
     "Choose your current school": "현재 학교 선택",

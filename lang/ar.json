@@ -77,7 +77,7 @@
     "Change your timezone to :timezone?": "هل تريد تغيير منطقتك الزمنية إلى :timezone؟",
     "Changing the domain could have unintended consequences. Ensure you have configured DNS properly and have a valid certificate for the new domain.": "قد يؤدي تغيير النطاق إلى نتائج غير مقصودة. تأكد من إعداد DNS بشكل صحيح ومن امتلاكك شهادة صالحة للنطاق الجديد.",
     "Changing your SIS provider requires reconfiguration and a resync. Data will likely be disrupted, become invalid or disappear entirely.": "يتطلب تغيير مزوّد SIS إعادة التهيئة وإعادة المزامنة. من المحتمل أن تتعطل البيانات أو تصبح غير صالحة أو تختفي تمامًا.",
-    "Chinese (Simplified)": "الصينية (المبسطة)",
+    "Chinese (Mandarin)": "الصينية (الماندرين)",
     "Choose a time that works for you.": "اختر وقتًا يناسبك.",
     "Choose something else": "اختر شيئًا آخر",
     "Choose your current school": "اختر مدرستك الحالية",
