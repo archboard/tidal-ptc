@@ -498,5 +498,7 @@
     "At full capacity": "容量已满",
     "Your school license limit has been reached.": "您学校的许可证数量已达上限。",
     "Something went wrong": "出了点问题",
-    "Please try again.": "请重试。"
+    "Please try again.": "请重试。",
+    "Emails are sent through our email service unless you use your own provider.": "除非您使用自己的服务提供商，否则电子邮件将通过我们的电子邮件服务发送。",
+    "I want to use my own email provider.": "我想使用自己的电子邮件服务提供商。"
 }
