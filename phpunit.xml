@@ -23,6 +23,7 @@
     <env name="REVERB_APP_SECRET" value="testing"/>
     <env name="QUEUE_CONNECTION" value="sync"/>
     <env name="SESSION_DRIVER" value="array"/>
+    <env name="INERTIA_SSR_ENABLED" value="false"/>
   </php>
   <source>
     <include>
