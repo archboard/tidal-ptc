@@ -29,7 +29,9 @@
     "spatie/laravel-flare": "^3.2",
     "spatie/laravel-model-flags": "^1.2",
     "spatie/laravel-multitenancy": "^4.0",
-    "spatie/laravel-query-builder": "^7.0"
+    "spatie/laravel-query-builder": "^7.0",
+    "symfony/http-client": "^8.1",
+    "symfony/postmark-mailer": "^8.1"
   },
   "require-dev": {
     "barryvdh/laravel-ide-helper": "^3.0",

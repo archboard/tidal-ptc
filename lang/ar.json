@@ -498,5 +498,7 @@
     "At full capacity": "السعة ممتلئة",
     "Your school license limit has been reached.": "تم الوصول إلى حد تراخيص مدرستك.",
     "Something went wrong": "حدث خطأ ما",
-    "Please try again.": "يرجى المحاولة مرة أخرى."
+    "Please try again.": "يرجى المحاولة مرة أخرى.",
+    "Emails are sent through our email service unless you use your own provider.": "يتم إرسال الرسائل الإلكترونية عبر خدمة البريد الإلكتروني الخاصة بنا ما لم تستخدم مزودك الخاص.",
+    "I want to use my own email provider.": "أريد استخدام مزود البريد الإلكتروني الخاص بي."
 }

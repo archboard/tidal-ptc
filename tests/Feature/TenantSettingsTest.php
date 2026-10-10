@@ -46,6 +46,25 @@ it('can update smtp settings', function () {
     $this->assertEquals($data, $this->tenant->smtp_config->toArray());
 });
 
+it('lets cloud tenants keep the app-wide mailer without smtp settings', function () {
+    fullPermissions();
+    $this->asCloud();
+
+    $this->put(route('settings.tenant.smtp'), ['custom' => false])
+        ->assertSessionHasNoErrors()
+        ->assertRedirect(route('settings.tenant.edit'));
+
+    expect($this->tenant->refresh()->smtp_config->get('custom'))->toBeFalse();
+});
+
+it('requires smtp settings when a cloud tenant uses its own provider', function () {
+    fullPermissions();
+    $this->asCloud();
+
+    $this->put(route('settings.tenant.smtp'), ['custom' => true])
+        ->assertSessionHasErrors(['host', 'port', 'from_name', 'from_address']);
+});
+
 it('shows the licensed school count in the cloud', function () {
     fullPermissions();
     $this->asCloud();

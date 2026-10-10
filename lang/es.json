@@ -498,5 +498,7 @@
     "At full capacity": "Capacidad completa",
     "Your school license limit has been reached.": "Se alcanzó el límite de licencias de tu escuela.",
     "Something went wrong": "Algo salió mal",
-    "Please try again.": "Inténtalo de nuevo."
+    "Please try again.": "Inténtalo de nuevo.",
+    "Emails are sent through our email service unless you use your own provider.": "Los correos electrónicos se envían a través de nuestro servicio de correo, a menos que utilices tu propio proveedor.",
+    "I want to use my own email provider.": "Quiero usar mi propio proveedor de correo electrónico."
 }

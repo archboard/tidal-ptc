@@ -39,7 +39,7 @@ class TenantSettingsController extends Controller
             ],
             'isCloud' => config('app.cloud'),
             'schoolLimit' => config('app.cloud') ? $tenant->school_limit : null,
-            'smtp' => config('app.self_hosted') ? $tenant->smtp_config->toArray() : null,
+            'smtp' => $tenant->smtp_config->toArray(),
             'sisOptions' => Sis::selectOptions(),
             'schools' => $schools->map(fn (School $school) => [
                 'id' => $school->id,

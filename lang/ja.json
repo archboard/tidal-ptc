@@ -498,5 +498,7 @@
     "At full capacity": "満員です",
     "Your school license limit has been reached.": "学校のライセンス上限に達しました。",
     "Something went wrong": "問題が発生しました",
-    "Please try again.": "もう一度お試しください。"
+    "Please try again.": "もう一度お試しください。",
+    "Emails are sent through our email service unless you use your own provider.": "独自のプロバイダーを使用しない限り、メールは当社のメールサービスを通じて送信されます。",
+    "I want to use my own email provider.": "独自のメールプロバイダーを使用する。"
 }

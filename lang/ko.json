@@ -498,5 +498,7 @@
     "At full capacity": "정원 초과",
     "Your school license limit has been reached.": "학교 라이선스 한도에 도달했습니다.",
     "Something went wrong": "문제가 발생했습니다",
-    "Please try again.": "다시 시도해 주세요."
+    "Please try again.": "다시 시도해 주세요.",
+    "Emails are sent through our email service unless you use your own provider.": "자체 제공업체를 사용하지 않는 한 이메일은 당사 이메일 서비스를 통해 발송됩니다.",
+    "I want to use my own email provider.": "자체 이메일 제공업체를 사용하겠습니다."
 }

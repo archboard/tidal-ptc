@@ -60,13 +60,21 @@
         </CardWrapper>
       </form>
 
-      <form v-if="smtp" @submit.prevent="smtpForm.put('/settings/tenant/smtp', { preserveScroll: true })">
+      <form @submit.prevent="smtpForm.put('/settings/tenant/smtp', { preserveScroll: true })">
         <CardWrapper>
           <CardPadding>
             <CardHeader>{{ __('SMTP Settings') }}</CardHeader>
+            <HelpText v-if="isCloud">{{ __('Emails are sent through our email service unless you use your own provider.') }}</HelpText>
           </CardPadding>
           <CardPadding>
-            <div class="grid grid-cols-1 md:grid-cols-6 gap-5">
+            <CheckboxField
+              v-if="isCloud"
+              v-model="smtpForm.custom"
+              :error="smtpForm.errors.custom"
+              :label="__('I want to use my own email provider.')"
+              class="mb-5"
+            />
+            <fieldset :disabled="isCloud && !smtpForm.custom" class="grid grid-cols-1 md:grid-cols-6 gap-5 disabled:opacity-50">
               <div class="md:col-span-3">
                 <InputField
                   v-model="smtpForm.host"
@@ -125,7 +133,7 @@
                   :options="{ tls: 'TLS', ssl: 'SSL' }"
                 />
               </div>
-            </div>
+            </fieldset>
           </CardPadding>
           <CardAction>
             <AppButton @click.prevent="sendSmtpTest" type="button" color="white" :loading="uiState === 'sending'">{{ __('Send test') }}</AppButton>
@@ -223,6 +231,7 @@ const tenantForm = useForm({
 })
 
 const smtpForm = useForm({
+  ...(props.isCloud ? { custom: props.smtp?.custom ?? false } : {}),
   host: props.smtp?.host ?? null,
   port: props.smtp?.port ?? null,
   username: props.smtp?.username ?? null,
