@@ -59,16 +59,23 @@ trait ValidatesTenantFields
         ];
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * Cloud tenants send through the app-wide mailer unless they opt into their own provider.
+     *
+     * @return array<string, mixed>
+     */
     public function smtpRules(): array
     {
+        $required = config('app.cloud') ? 'required_if_accepted:custom' : 'required';
+
         return [
-            'host' => ['required'],
-            'port' => ['required'],
+            ...(config('app.cloud') ? ['custom' => ['required', 'boolean']] : []),
+            'host' => [$required],
+            'port' => [$required],
             'username' => ['nullable'],
             'password' => ['nullable'],
-            'from_name' => ['required'],
-            'from_address' => ['required', 'email'],
+            'from_name' => [$required],
+            'from_address' => [$required, 'nullable', 'email'],
             'encryption' => ['nullable', Rule::in(['tls', 'ssl'])],
         ];
     }
