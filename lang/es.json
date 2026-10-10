@@ -500,5 +500,12 @@
     "Something went wrong": "Algo salió mal",
     "Please try again.": "Inténtalo de nuevo.",
     "Emails are sent through our email service unless you use your own provider.": "Los correos electrónicos se envían a través de nuestro servicio de correo, a menos que utilices tu propio proveedor.",
-    "I want to use my own email provider.": "Quiero usar mi propio proveedor de correo electrónico."
+    "I want to use my own email provider.": "Quiero usar mi propio proveedor de correo electrónico.",
+    "Demo mode: data resets every hour and settings are read-only.": "Modo demo: los datos se restablecen cada hora y la configuración es de solo lectura.",
+    "Log in as admin/staff": "Iniciar sesión como administrador/personal",
+    "Log in as contact/guardian": "Iniciar sesión como contacto/tutor",
+    "Settings can't be changed in demo mode.": "La configuración no se puede cambiar en el modo demo.",
+    "The demo is being reset. Please try again in a minute.": "La demo se está restableciendo. Inténtalo de nuevo en un minuto.",
+    "This is a demo. Data resets every hour and settings are read-only.": "Esto es una demo. Los datos se restablecen cada hora y la configuración es de solo lectura.",
+    "This is disabled in demo mode.": "Esto está deshabilitado en el modo demo."
 }

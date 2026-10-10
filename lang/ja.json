@@ -500,5 +500,12 @@
     "Something went wrong": "問題が発生しました",
     "Please try again.": "もう一度お試しください。",
     "Emails are sent through our email service unless you use your own provider.": "独自のプロバイダーを使用しない限り、メールは当社のメールサービスを通じて送信されます。",
-    "I want to use my own email provider.": "独自のメールプロバイダーを使用する。"
+    "I want to use my own email provider.": "独自のメールプロバイダーを使用する。",
+    "Demo mode: data resets every hour and settings are read-only.": "デモモード：データは1時間ごとにリセットされ、設定は読み取り専用です。",
+    "Log in as admin/staff": "管理者/スタッフとしてログイン",
+    "Log in as contact/guardian": "連絡先/保護者としてログイン",
+    "Settings can't be changed in demo mode.": "デモモードでは設定を変更できません。",
+    "The demo is being reset. Please try again in a minute.": "デモをリセットしています。1分後にもう一度お試しください。",
+    "This is a demo. Data resets every hour and settings are read-only.": "これはデモです。データは1時間ごとにリセットされ、設定は読み取り専用です。",
+    "This is disabled in demo mode.": "これはデモモードでは無効です。"
 }

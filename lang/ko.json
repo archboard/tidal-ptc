@@ -500,5 +500,12 @@
     "Something went wrong": "문제가 발생했습니다",
     "Please try again.": "다시 시도해 주세요.",
     "Emails are sent through our email service unless you use your own provider.": "자체 제공업체를 사용하지 않는 한 이메일은 당사 이메일 서비스를 통해 발송됩니다.",
-    "I want to use my own email provider.": "자체 이메일 제공업체를 사용하겠습니다."
+    "I want to use my own email provider.": "자체 이메일 제공업체를 사용하겠습니다.",
+    "Demo mode: data resets every hour and settings are read-only.": "데모 모드: 데이터는 매시간 초기화되며 설정은 읽기 전용입니다.",
+    "Log in as admin/staff": "관리자/교직원으로 로그인",
+    "Log in as contact/guardian": "연락처/보호자로 로그인",
+    "Settings can't be changed in demo mode.": "데모 모드에서는 설정을 변경할 수 없습니다.",
+    "The demo is being reset. Please try again in a minute.": "데모를 초기화하는 중입니다. 1분 후에 다시 시도해 주세요.",
+    "This is a demo. Data resets every hour and settings are read-only.": "데모 버전입니다. 데이터는 매시간 초기화되며 설정은 읽기 전용입니다.",
+    "This is disabled in demo mode.": "데모 모드에서는 사용할 수 없습니다."
 }

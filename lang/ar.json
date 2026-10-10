@@ -500,5 +500,12 @@
     "Something went wrong": "حدث خطأ ما",
     "Please try again.": "يرجى المحاولة مرة أخرى.",
     "Emails are sent through our email service unless you use your own provider.": "يتم إرسال الرسائل الإلكترونية عبر خدمة البريد الإلكتروني الخاصة بنا ما لم تستخدم مزودك الخاص.",
-    "I want to use my own email provider.": "أريد استخدام مزود البريد الإلكتروني الخاص بي."
+    "I want to use my own email provider.": "أريد استخدام مزود البريد الإلكتروني الخاص بي.",
+    "Demo mode: data resets every hour and settings are read-only.": "وضع العرض التوضيحي: تتم إعادة تعيين البيانات كل ساعة والإعدادات للقراءة فقط.",
+    "Log in as admin/staff": "تسجيل الدخول كمسؤول/موظف",
+    "Log in as contact/guardian": "تسجيل الدخول كجهة اتصال/ولي أمر",
+    "Settings can't be changed in demo mode.": "لا يمكن تغيير الإعدادات في وضع العرض التوضيحي.",
+    "The demo is being reset. Please try again in a minute.": "تتم إعادة تعيين العرض التوضيحي. يرجى المحاولة مرة أخرى بعد دقيقة.",
+    "This is a demo. Data resets every hour and settings are read-only.": "هذا عرض توضيحي. تتم إعادة تعيين البيانات كل ساعة والإعدادات للقراءة فقط.",
+    "This is disabled in demo mode.": "هذا معطل في وضع العرض التوضيحي."
 }
