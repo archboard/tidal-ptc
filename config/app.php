@@ -19,6 +19,9 @@ return [
 
     'self_hosted' => ! env('IS_CLOUD', false),
 
+    // Public demo: one-click logins, read-only settings, and data reset by DemoSeeder on a schedule
+    'demo' => (bool) env('DEMO_MODE', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

@@ -171,6 +171,8 @@ class HandleInertiaRequests extends Middleware
                 return array_map(fn (NavigationItem $item) => $item->toArray(), $nav);
             },
             'filterKey' => fn () => 'f',
+            'demo' => (bool) config('app.demo'),
+            'demoReadOnly' => fn () => PreventInDemo::locks($request),
             // Echo's connection settings, so the JS bundle isn't tied to one environment
             'reverb' => fn () => [
                 'key' => config('broadcasting.connections.reverb.key'),

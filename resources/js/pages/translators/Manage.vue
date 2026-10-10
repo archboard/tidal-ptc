@@ -36,14 +36,20 @@
           </Td>
           <Td>{{ translator.upcoming_count }}</Td>
           <ActionColumn>
-            <div v-if="can('time_slot.update')" class="flex gap-3 justify-end items-center">
-              <TableLink is="a" :href="`/translators?translator_id=${translator.id}&export=csv`">{{ __('Schedule CSV') }}</TableLink>
-              <TableLink is="button" type="button" @click="openForm(translator)">{{ __('Edit') }}</TableLink>
-              <ConfirmButton color="red" class="text-sm" @confirmed="close => remove(translator, close)">
-                {{ __('Remove') }}
-                <template #actionText>{{ __('Remove translator') }}</template>
-              </ConfirmButton>
-            </div>
+            <ContextMenu v-if="can('time_slot.update')">
+              <div class="p-1">
+                <AppMenuItem is="a" :href="`/translators?translator_id=${translator.id}&export=csv`">{{ __('Schedule CSV') }}</AppMenuItem>
+                <AppMenuItem is="button" type="button" @click="openForm(translator)">{{ __('Edit') }}</AppMenuItem>
+              </div>
+              <div class="p-1">
+                <AppMenuItem is="button" type="button" @click="removing = translator" v-slot="{ active }">
+                  <span :class="['flex items-center gap-2', active ? 'text-white' : 'text-red-600 dark:text-red-400']">
+                    <TrashIcon class="h-5 w-5" />
+                    <span>{{ __('Remove') }}</span>
+                  </span>
+                </AppMenuItem>
+              </div>
+            </ContextMenu>
           </ActionColumn>
         </tr>
       </Tbody>
@@ -74,6 +80,10 @@
         </FormField>
       </form>
     </Modal>
+
+    <ConfirmationModal v-if="removing" @confirmed="close => remove(removing, close)" @close="removing = null">
+      <template #actionText>{{ __('Remove translator') }}</template>
+    </ConfirmationModal>
   </Authenticated>
 </template>
 
@@ -81,12 +91,15 @@
 import { ref } from 'vue'
 import { router, useForm } from '@inertiajs/vue3'
 import Authenticated from '@/layouts/Authenticated.vue'
-import { Table, Thead, Th, Tbody, Td, ActionColumn, TableLink } from '@/components/tables/index.js'
+import { Table, Thead, Th, Tbody, Td, ActionColumn } from '@/components/tables/index.js'
 import Modal from '@/components/modals/Modal.vue'
 import FormField from '@/components/forms/FormField.vue'
 import AppCheckbox from '@/components/forms/AppCheckbox.vue'
 import AppButton from '@/components/AppButton.vue'
-import ConfirmButton from '@/components/ConfirmButton.vue'
+import { TrashIcon } from '@heroicons/vue/24/outline'
+import ContextMenu from '@/components/ContextMenu.vue'
+import AppMenuItem from '@/components/AppMenuItem.vue'
+import ConfirmationModal from '@/components/modals/ConfirmationModal.vue'
 import Pill from '@/components/Pill.vue'
 import HelpText from '@/components/forms/HelpText.vue'
 import AppLink from '@/components/AppLink.vue'
@@ -97,6 +110,7 @@ const props = defineProps({
 })
 const modal = ref()
 const editing = ref(null)
+const removing = ref(null)
 const form = useForm({
   name: '',
   email: '',

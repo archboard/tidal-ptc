@@ -124,6 +124,7 @@
 
     <div class="flex flex-1 min-h-screen flex-col justify-between md:ps-64">
       <main class="flex-1">
+        <DemoBanner />
         <Breadcrumbs @open-sidebar="sidebarOpen = true" />
 
         <div class="py-6">
@@ -138,7 +139,13 @@
             </div>
 
             <div class="py-4 mt-4">
-              <slot />
+              <SimpleAlert v-if="demoReadOnly" level="warning" class="mb-5">
+                {{ __("Settings can't be changed in demo mode.") }}
+              </SimpleAlert>
+              <!-- Greys out every control on read-only demo pages; PreventInDemo rejects anything that gets through -->
+              <fieldset :disabled="demoReadOnly" class="min-w-0">
+                <slot />
+              </fieldset>
             </div>
           </Container>
         </div>
@@ -161,6 +168,8 @@ import ArchboardLogo from '@/components/icons/ArchboardLogo.vue'
 import Footer from '@/components/Footer.vue'
 import Notifications from '@/components/Notifications.vue'
 import TimezoneBanner from '@/components/banners/TimezoneBanner.vue'
+import DemoBanner from '@/components/banners/DemoBanner.vue'
+import SimpleAlert from '@/components/alerts/SimpleAlert.vue'
 import usePageTitle from '@/composition/usePageTitle.js'
 import { router, usePage } from '@inertiajs/vue3'
 import useProp from '@/composition/useProp.js'
@@ -175,6 +184,7 @@ const props = computed(() => page.props)
 const sidebarOpen = ref(false)
 const adminSchools = useProp('adminSchools')
 const user = useProp('user')
+const demoReadOnly = useProp('demoReadOnly', false)
 const $error = inject('$error')
 const currentSchool = ref(user.value.school_id)
 const currentLocale = ref(user.value.locale)

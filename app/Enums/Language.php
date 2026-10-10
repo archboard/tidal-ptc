@@ -35,7 +35,7 @@ enum Language: string
     {
         return match ($this) {
             self::ENGLISH => __('English'),
-            self::CHINESE_SIMPLIFIED => __('Chinese (Simplified)'),
+            self::CHINESE_SIMPLIFIED => __('Chinese (Mandarin)'),
             self::JAPANESE => __('Japanese'),
             self::KOREAN => __('Korean'),
             self::SPANISH => __('Spanish'),

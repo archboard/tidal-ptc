@@ -248,6 +248,14 @@ it('names the assigned translator in the email', function () {
     expect($lines)->toContain('Yuki Sato')->toContain('Japanese');
 });
 
+it('renders the email with the Archboard copyright', function () {
+    $mail = (new TimeSlotNotification(NotificationEvent::slot_booked, TimeSlotSnapshot::fromTimeSlot(reserve($this->slot))))->toMail($this->guardian);
+
+    expect((string) $mail->render())
+        ->toContain('© '.date('Y').' Archboard.')
+        ->not->toContain('© '.date('Y').' '.config('app.name'));
+});
+
 it('attaches the upcoming conferences as a calendar file', function () {
     reserve($this->slot)->update(['location' => 'Room 4, Building B']);
     $online = reserve(seedBookableSlot($this->teacher, ['is_online' => true, 'meeting_url' => 'https://meet.example.com/abc']));

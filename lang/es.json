@@ -77,7 +77,7 @@
     "Change your timezone to :timezone?": "¿Cambiar tu zona horaria a :timezone?",
     "Changing the domain could have unintended consequences. Ensure you have configured DNS properly and have a valid certificate for the new domain.": "Cambiar el dominio puede tener consecuencias no deseadas. Asegúrate de haber configurado el DNS correctamente y de tener un certificado válido para el nuevo dominio.",
     "Changing your SIS provider requires reconfiguration and a resync. Data will likely be disrupted, become invalid or disappear entirely.": "Cambiar tu proveedor de SIS requiere reconfiguración y una nueva sincronización. Es probable que los datos se vean afectados, dejen de ser válidos o desaparezcan por completo.",
-    "Chinese (Simplified)": "Chino (simplificado)",
+    "Chinese (Mandarin)": "Chino (mandarín)",
     "Choose a time that works for you.": "Elige una hora que te venga bien.",
     "Choose something else": "Elegir otra cosa",
     "Choose your current school": "Elige tu escuela actual",
@@ -500,5 +500,12 @@
     "Something went wrong": "Algo salió mal",
     "Please try again.": "Inténtalo de nuevo.",
     "Emails are sent through our email service unless you use your own provider.": "Los correos electrónicos se envían a través de nuestro servicio de correo, a menos que utilices tu propio proveedor.",
-    "I want to use my own email provider.": "Quiero usar mi propio proveedor de correo electrónico."
+    "I want to use my own email provider.": "Quiero usar mi propio proveedor de correo electrónico.",
+    "Demo mode: data resets every hour and settings are read-only.": "Modo demo: los datos se restablecen cada hora y la configuración es de solo lectura.",
+    "Log in as admin/staff": "Iniciar sesión como administrador/personal",
+    "Log in as contact/guardian": "Iniciar sesión como contacto/tutor",
+    "Settings can't be changed in demo mode.": "La configuración no se puede cambiar en el modo demo.",
+    "The demo is being reset. Please try again in a minute.": "La demo se está restableciendo. Inténtalo de nuevo en un minuto.",
+    "This is a demo. Data resets every hour and settings are read-only.": "Esto es una demo. Los datos se restablecen cada hora y la configuración es de solo lectura.",
+    "This is disabled in demo mode.": "Esto está deshabilitado en el modo demo."
 }

@@ -77,7 +77,7 @@
     "Change your timezone to :timezone?": "将您的时区更改为 :timezone？",
     "Changing the domain could have unintended consequences. Ensure you have configured DNS properly and have a valid certificate for the new domain.": "更改域名可能会产生意外后果。请确保已正确配置 DNS，并为新域名准备了有效证书。",
     "Changing your SIS provider requires reconfiguration and a resync. Data will likely be disrupted, become invalid or disappear entirely.": "更改 SIS 提供商需要重新配置并重新同步。数据可能会中断、失效或完全消失。",
-    "Chinese (Simplified)": "简体中文",
+    "Chinese (Mandarin)": "中文（普通话）",
     "Choose a time that works for you.": "选择适合您的时间。",
     "Choose something else": "选择其他时区",
     "Choose your current school": "选择您当前所在的学校",
@@ -500,5 +500,12 @@
     "Something went wrong": "出了点问题",
     "Please try again.": "请重试。",
     "Emails are sent through our email service unless you use your own provider.": "除非您使用自己的服务提供商，否则电子邮件将通过我们的电子邮件服务发送。",
-    "I want to use my own email provider.": "我想使用自己的电子邮件服务提供商。"
+    "I want to use my own email provider.": "我想使用自己的电子邮件服务提供商。",
+    "Demo mode: data resets every hour and settings are read-only.": "演示模式：数据每小时重置一次，设置为只读。",
+    "Log in as admin/staff": "以管理员/教职员身份登录",
+    "Log in as contact/guardian": "以联系人/监护人身份登录",
+    "Settings can't be changed in demo mode.": "演示模式下无法更改设置。",
+    "The demo is being reset. Please try again in a minute.": "演示正在重置，请一分钟后重试。",
+    "This is a demo. Data resets every hour and settings are read-only.": "这是一个演示。数据每小时重置一次，设置为只读。",
+    "This is disabled in demo mode.": "此功能在演示模式下已禁用。"
 }
