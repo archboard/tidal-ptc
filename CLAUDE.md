@@ -7,6 +7,11 @@ During local development, assume it's not running using docker or Octane/franken
 - Test the changed behavior and its important failure modes, but do not add tests beyond them.
 - Read the `testing-best-practices` skill before writing tests.
 
+# Translations
+
+- When adding or changing a user-facing string wrapped in `__()` (PHP or Vue), add or update its translation in every `lang/*.json` file (`ar`, `es`, `ja`, `ko`, `zh-CN`), keyed by the English string.
+- `tests/Feature/TranslationTest.php` fails when a translation is missing; run it after changing strings.
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
