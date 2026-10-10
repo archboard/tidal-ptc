@@ -13,7 +13,7 @@
     "@fullcalendar/moment": "^6.1.21",
     "@fullcalendar/moment-timezone": "^6.1.21",
     "@fullcalendar/timegrid": "^6.1.21",
-    "@fullcalendar/vue3": "^6.1.21",
+    "@fullcalendar/vue3": "^7.1.1",
     "@headlessui-float/vue": "^0.15.1",
     "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.2",
