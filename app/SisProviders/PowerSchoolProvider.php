@@ -140,7 +140,7 @@ class PowerSchoolProvider implements SisProvider
 
         while ($results = $builder->paginate()) {
             $filteredStaff = $results->collect()
-                ->filter(fn (array $user) => isset($user['users_dcid']));
+                ->whereNotNull('users_dcid');
 
             $entries = $filteredStaff->map(fn (array $user) => [
                 'tenant_id' => $this->tenant->id,
