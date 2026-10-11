@@ -507,5 +507,11 @@
     "Settings can't be changed in demo mode.": "La configuración no se puede cambiar en el modo demo.",
     "The demo is being reset. Please try again in a minute.": "La demo se está restableciendo. Inténtalo de nuevo en un minuto.",
     "This is a demo. Data resets every hour and settings are read-only.": "Esto es una demo. Los datos se restablecen cada hora y la configuración es de solo lectura.",
-    "This is disabled in demo mode.": "Esto está deshabilitado en el modo demo."
+    "This is disabled in demo mode.": "Esto está deshabilitado en el modo demo.",
+    "Find your district": "Encuentre su distrito",
+    "No district was found with that code.": "No se encontró ningún distrito con ese código.",
+    "Enter the four character code your district gave you to continue to its login page.": "Ingrese el código de cuatro caracteres que le proporcionó su distrito para continuar a su página de inicio de sesión.",
+    "District code": "Código del distrito",
+    "Continue": "Continuar",
+    "Too many attempts. Please try again in a minute.": "Demasiados intentos. Inténtelo de nuevo en un minuto."
 }

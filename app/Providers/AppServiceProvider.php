@@ -62,6 +62,10 @@ class AppServiceProvider extends ServiceProvider
             ->addStringMacros();
 
         RateLimiter::for('api', fn (Request $request) => Limit::perMinute(60)->by($request->user()?->id ?: $request->ip()));
+        // Codes are only four characters, so throttle guessing them on the district lookup
+        RateLimiter::for('district-lookup', fn (Request $request) => Limit::perMinute(10)
+            ->by($request->ip())
+            ->response(fn () => back()->withErrors(['code' => __('Too many attempts. Please try again in a minute.')])));
 
         Relation::morphMap([
             'user' => User::class,

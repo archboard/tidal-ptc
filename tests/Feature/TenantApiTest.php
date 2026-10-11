@@ -55,7 +55,9 @@ it('creates a tenant for a new license and returns signed setup links on its dom
     $response = $this->putJson("/api/tenants/{$this->license}", $this->body, $this->headers)
         ->assertCreated();
 
-    expect(Tenant::firstWhere('license', $this->license))
+    $tenant = Tenant::firstWhere('license', $this->license);
+    $response->assertJsonPath('data.code', $tenant->code);
+    expect($tenant)
         ->name->toBe('Springfield Public Schools')
         ->domain->toBe('springfield.example.com')
         ->school_limit->toBe(5);

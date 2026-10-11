@@ -21,6 +21,11 @@ class Installed
 
         // Cloud districts install through their signed setup link, see Tenant::setupLinks()
         if (config('app.cloud')) {
+            // The root domain, or a host no district owns
+            if (! Tenant::current()) {
+                return to_route('district.create');
+            }
+
             return inertia('Error', [
                 'status' => 503,
                 'message' => __('This district is still being set up. Please contact your administrator.'),

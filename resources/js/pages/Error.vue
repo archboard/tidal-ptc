@@ -3,7 +3,7 @@
     <main class="relative z-10 mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center px-6 pb-56 text-center">
       <ArchboardLogo class="bob mb-6 h-16 w-auto text-orange-500 drop-shadow-lg dark:text-orange-400" aria-hidden="true" />
 
-      <p class="bg-linear-to-b from-primary-400 to-primary-800 bg-clip-text text-[7rem] leading-none font-black tracking-tighter text-transparent sm:text-[11rem] dark:from-primary-200 dark:to-primary-500">
+      <p class="px-2 bg-linear-to-b from-primary-400 to-primary-800 bg-clip-text text-[7rem] leading-none font-black tracking-tighter text-transparent sm:text-[11rem] dark:from-primary-200 dark:to-primary-500">
         {{ status }}
       </p>
 

@@ -507,5 +507,11 @@
     "Settings can't be changed in demo mode.": "لا يمكن تغيير الإعدادات في وضع العرض التوضيحي.",
     "The demo is being reset. Please try again in a minute.": "تتم إعادة تعيين العرض التوضيحي. يرجى المحاولة مرة أخرى بعد دقيقة.",
     "This is a demo. Data resets every hour and settings are read-only.": "هذا عرض توضيحي. تتم إعادة تعيين البيانات كل ساعة والإعدادات للقراءة فقط.",
-    "This is disabled in demo mode.": "هذا معطل في وضع العرض التوضيحي."
+    "This is disabled in demo mode.": "هذا معطل في وضع العرض التوضيحي.",
+    "Find your district": "ابحث عن منطقتك التعليمية",
+    "No district was found with that code.": "لم يتم العثور على منطقة تعليمية بهذا الرمز.",
+    "Enter the four character code your district gave you to continue to its login page.": "أدخل الرمز المكون من أربعة أحرف الذي قدمته لك منطقتك التعليمية للمتابعة إلى صفحة تسجيل الدخول الخاصة بها.",
+    "District code": "رمز المنطقة التعليمية",
+    "Continue": "متابعة",
+    "Too many attempts. Please try again in a minute.": "محاولات كثيرة جدًا. يرجى المحاولة مرة أخرى بعد دقيقة."
 }

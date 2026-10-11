@@ -52,6 +52,11 @@
                   </component>
                 </nav>
               </div>
+
+              <div v-if="tenant.code" class="mx-4 mt-4 rounded-md border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-950 px-3 py-2 shadow-inner">
+                <p class="text-xs text-primary-700 dark:text-gray-300">{{ __('District code') }}</p>
+                <p class="font-mono text-lg font-semibold tracking-widest text-primary-900 dark:text-white">{{ tenant.code }}</p>
+              </div>
             </DialogPanel>
           </TransitionChild>
           <div class="w-14 shrink-0" aria-hidden="true">
@@ -118,6 +123,11 @@
               </div>
             </div>
           </nav>
+
+          <div v-if="tenant.code" class="mx-2 mt-8 rounded-md border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-950 px-3 py-2 shadow-inner">
+            <p class="text-xs text-primary-700 dark:text-gray-300">{{ __('District code') }}</p>
+            <p class="font-mono text-lg font-semibold tracking-widest text-primary-900 dark:text-white">{{ tenant.code }}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -184,6 +194,7 @@ const props = computed(() => page.props)
 const sidebarOpen = ref(false)
 const adminSchools = useProp('adminSchools')
 const user = useProp('user')
+const tenant = useProp('tenant', {})
 const demoReadOnly = useProp('demoReadOnly', false)
 const $error = inject('$error')
 const currentSchool = ref(user.value.school_id)

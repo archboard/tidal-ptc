@@ -507,5 +507,11 @@
     "Settings can't be changed in demo mode.": "演示模式下无法更改设置。",
     "The demo is being reset. Please try again in a minute.": "演示正在重置，请一分钟后重试。",
     "This is a demo. Data resets every hour and settings are read-only.": "这是一个演示。数据每小时重置一次，设置为只读。",
-    "This is disabled in demo mode.": "此功能在演示模式下已禁用。"
+    "This is disabled in demo mode.": "此功能在演示模式下已禁用。",
+    "Find your district": "查找您的学区",
+    "No district was found with that code.": "未找到使用该代码的学区。",
+    "Enter the four character code your district gave you to continue to its login page.": "请输入学区提供给您的四位代码，以前往其登录页面。",
+    "District code": "学区代码",
+    "Continue": "继续",
+    "Too many attempts. Please try again in a minute.": "尝试次数过多。请一分钟后再试。"
 }
