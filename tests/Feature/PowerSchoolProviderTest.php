@@ -1,7 +1,10 @@
 <?php
 
 use App\Models\School;
+use App\Models\User;
 use App\SisProviders\PowerSchoolProvider;
+use GrantHolle\PowerSchool\Api\RequestBuilder;
+use GrantHolle\PowerSchool\Api\Response;
 
 function sisSchool(int $id, int $schoolNumber): array
 {
@@ -58,4 +61,22 @@ it('activates every school without a limit', function () {
     syncSchoolsFromSis([sisSchool(1, 100), sisSchool(2, 200), sisSchool(3, 300)]);
 
     expect(activeBySisId())->toEqual([1 => true, 2 => true, 3 => true]);
+});
+
+it('skips staff without a users_dcid when syncing school staff', function () {
+    $school = School::factory()->for($this->tenant)->create();
+    $page = Mockery::mock(Response::class);
+    $page->shouldReceive('collect')->andReturn(collect([
+        ['id' => 10, 'users_dcid' => 500, 'name' => ['first_name' => 'Ada', 'last_name' => 'Lovelace'], 'emails' => ['work_email' => 'ADA@example.com']],
+        ['id' => 11, 'name' => ['first_name' => 'No', 'last_name' => 'Account']],
+    ]));
+    $builder = Mockery::mock(RequestBuilder::class);
+    $builder->shouldReceive('method', 'to', 'expansions')->andReturnSelf();
+    $builder->shouldReceive('paginate')->andReturn($page, null);
+    $provider = new PowerSchoolProvider($this->tenant);
+    (fn () => $this->builder = $builder)->call($provider);
+
+    $provider->syncSchoolStaff($school);
+
+    expect(User::where('school_id', $school->id)->pluck('email')->all())->toBe(['ada@example.com']);
 });

@@ -30,10 +30,11 @@ class ActivityController extends Controller
             ->when($filters['subject_type'] ?? null, fn ($query, $type) => $query->where('subject_type', $type))
             ->when($filters['from'] ?? null, fn ($query, $from) => $query->where('created_at', '>=', $from))
             ->when($filters['to'] ?? null, fn ($query, $to) => $query->where('created_at', '<', now()->parse($to)->addDay()))
-            ->with(['causer', 'subject' => fn ($morph) => $morph->morphWith([TimeSlot::class => ['user']])])
+            ->with(['causer', 'subject'])
             ->latest('id')
             ->paginate()
-            ->withQueryString();
+            ->withQueryString()
+            ->loadMorph('subject', [TimeSlot::class => ['user']]);
 
         return inertia('activity/Index', [
             'title' => __('Activity'),

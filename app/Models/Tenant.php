@@ -76,6 +76,7 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
  * @property-read int|null $activities_as_subject_count
  *
  * @method static Builder<static>|Tenant wherePluginDownloads($value)
+ * @method static Builder<static>|Tenant whereSchoolLimit($value)
  *
  * @mixin \Eloquent
  */
