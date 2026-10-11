@@ -13083,16 +13083,16 @@
         },
         {
             "name": "larastan/larastan",
-            "version": "v3.12.3",
+            "version": "v3.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/larastan/larastan.git",
-                "reference": "792628d803d92fb154d6909d7e8d5862d81741f1"
+                "reference": "24ee69a7705ffc7c2cd8a3c96a5f498a4c2de5e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/larastan/larastan/zipball/792628d803d92fb154d6909d7e8d5862d81741f1",
-                "reference": "792628d803d92fb154d6909d7e8d5862d81741f1",
+                "url": "https://api.github.com/repos/larastan/larastan/zipball/24ee69a7705ffc7c2cd8a3c96a5f498a4c2de5e3",
+                "reference": "24ee69a7705ffc7c2cd8a3c96a5f498a4c2de5e3",
                 "shasum": ""
             },
             "require": {
@@ -13105,7 +13105,7 @@
                 "illuminate/pipeline": "^11.44.2 || ^12.4.1 || ^13",
                 "illuminate/support": "^11.44.2 || ^12.4.1 || ^13",
                 "php": "^8.2",
-                "phpstan/phpstan": "^2.2.14"
+                "phpstan/phpstan": "^2.3.0"
             },
             "require-dev": {
                 "doctrine/coding-standard": "^14",
@@ -13160,7 +13160,7 @@
             ],
             "support": {
                 "issues": "https://github.com/larastan/larastan/issues",
-                "source": "https://github.com/larastan/larastan/tree/v3.12.3"
+                "source": "https://github.com/larastan/larastan/tree/v3.13.0"
             },
             "funding": [
                 {
@@ -13168,7 +13168,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-04T20:01:26+00:00"
+            "time": "2026-10-07T14:14:28+00:00"
         },
         {
             "name": "laravel/agent-detector",
@@ -13234,16 +13234,16 @@
         },
         {
             "name": "laravel/boost",
-            "version": "v2.10.2",
+            "version": "v2.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/boost.git",
-                "reference": "2379e52b09bbdd2e72a5bf392891449be2f9f906"
+                "reference": "75c269a8a53e931c7252e7cd562e1a209356a7c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/boost/zipball/2379e52b09bbdd2e72a5bf392891449be2f9f906",
-                "reference": "2379e52b09bbdd2e72a5bf392891449be2f9f906",
+                "url": "https://api.github.com/repos/laravel/boost/zipball/75c269a8a53e931c7252e7cd562e1a209356a7c6",
+                "reference": "75c269a8a53e931c7252e7cd562e1a209356a7c6",
                 "shasum": ""
             },
             "require": {
@@ -13297,7 +13297,7 @@
                 "issues": "https://github.com/laravel/boost/issues",
                 "source": "https://github.com/laravel/boost"
             },
-            "time": "2026-10-05T13:34:47+00:00"
+            "time": "2026-10-07T19:07:19+00:00"
         },
         {
             "name": "laravel/mcp",
