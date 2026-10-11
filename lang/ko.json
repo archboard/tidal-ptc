@@ -507,5 +507,11 @@
     "Settings can't be changed in demo mode.": "데모 모드에서는 설정을 변경할 수 없습니다.",
     "The demo is being reset. Please try again in a minute.": "데모를 초기화하는 중입니다. 1분 후에 다시 시도해 주세요.",
     "This is a demo. Data resets every hour and settings are read-only.": "데모 버전입니다. 데이터는 매시간 초기화되며 설정은 읽기 전용입니다.",
-    "This is disabled in demo mode.": "데모 모드에서는 사용할 수 없습니다."
+    "This is disabled in demo mode.": "데모 모드에서는 사용할 수 없습니다.",
+    "Find your district": "학군 찾기",
+    "No district was found with that code.": "해당 코드의 학군을 찾을 수 없습니다.",
+    "Enter the four character code your district gave you to continue to its login page.": "학군에서 받은 4자리 코드를 입력하여 로그인 페이지로 이동하세요.",
+    "District code": "학군 코드",
+    "Continue": "계속",
+    "Too many attempts. Please try again in a minute.": "시도 횟수가 너무 많습니다. 1분 후에 다시 시도하세요."
 }

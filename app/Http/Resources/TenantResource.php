@@ -19,6 +19,8 @@ class TenantResource extends JsonResource
     {
         return [
             'domain' => $this->resource->domain,
+            // Districts enter this on the cloud root domain, see DistrictLookupController
+            'code' => $this->when(config('app.cloud'), $this->resource->code),
             'license' => $this->resource->license,
             'subscription_started_at' => $this->resource->subscription_started_at,
             'allow_oidc_login' => $this->resource->allow_oidc_login,

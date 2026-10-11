@@ -13,6 +13,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeleteBatchTimeSlotController;
 use App\Http\Controllers\DemoLoginController;
+use App\Http\Controllers\DistrictLookupController;
 use App\Http\Controllers\DownloadPowerSchoolPluginController;
 use App\Http\Controllers\GetLanguagesController;
 use App\Http\Controllers\GetSelectionController;
@@ -76,6 +77,17 @@ Route::middleware(['cloud', 'signed:relative', 'setup_link_open'])
         Route::get('/plugin', DownloadPowerSchoolPluginController::class)
             ->name('setup.plugin');
     });
+
+/**
+ * District lookup for the root domain or an unknown host, see Installed
+ */
+Route::middleware('cloud')->group(function () {
+    Route::get('/district', [DistrictLookupController::class, 'create'])
+        ->name('district.create');
+    Route::post('/district', [DistrictLookupController::class, 'store'])
+        ->middleware('throttle:district-lookup')
+        ->name('district.store');
+});
 
 /**
  * Installation wizard, for self-hosted or a cloud setup session

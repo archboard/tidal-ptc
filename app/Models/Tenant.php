@@ -24,6 +24,7 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
 /**
  * @property int $id
  * @property string $name
+ * @property string $code
  * @property Collection<array-key, mixed> $sis_config
  * @property string $domain
  * @property string|null $custom_domain
@@ -88,6 +89,25 @@ final class Tenant extends TenantBase
     use LogsActivity;
 
     protected $guarded = [];
+
+    protected static function booted(): void
+    {
+        self::creating(function (Tenant $tenant) {
+            $tenant->code ??= self::generateCode();
+        });
+    }
+
+    /**
+     * A unique four character code districts enter on the root domain to find their login page.
+     */
+    public static function generateCode(): string
+    {
+        do {
+            $code = Str::upper(Str::random(4));
+        } while (self::query()->where('code', $code)->exists());
+
+        return $code;
+    }
 
     public function getActivitylogOptions(): LogOptions
     {
