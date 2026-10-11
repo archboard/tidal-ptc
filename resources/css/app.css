@@ -106,41 +106,38 @@
   --vc-accent-900: var(--color-primary-900);
 }
 
-.fc {
-  --fc-small-font-size: .85em;
-  --fc-page-bg-color: #fff;
-  --fc-neutral-bg-color: rgba(208, 208, 208, 0.3);
-  --fc-neutral-text-color: #808080;
-  --fc-border-color: #ddd;
+.time-slot-calendar {
+  --fc-classic-button: var(--color-primary-500);
+  --fc-classic-button-border: var(--color-primary-500);
+  --fc-classic-button-strong: var(--color-primary-700);
+  --fc-classic-button-strong-border: var(--color-primary-700);
+  --fc-classic-button-foreground: #fff;
 
-  --fc-button-text-color: #fff;
-  --fc-button-bg-color: var(--color-primary-500);
-  --fc-button-border-color: var(--color-primary-500);
-  --fc-button-hover-bg-color: var(--color-primary-600);
-  --fc-button-hover-border-color: var(--color-primary-600);
-  --fc-button-active-bg-color: var(--color-primary-700);
-  --fc-button-active-border-color: var(--color-primary-700);
+  --fc-classic-primary: var(--color-primary-500);
+  --fc-classic-primary-foreground: #fff;
+  --fc-classic-event: var(--color-primary-500);
+  --fc-classic-event-contrast: #fff;
+  --fc-classic-background-event: rgb(143, 223, 130);
+  --fc-classic-background-event-opacity: 30%;
+  --fc-classic-highlight: rgba(188, 232, 241, 0.3);
+  --fc-classic-today: rgba(255, 220, 40, 0.15);
+  --fc-classic-now: red;
 
-  --fc-event-bg-color: var(--color-primary-500);
-  --fc-event-border-color: var(--color-primary-500);
-  --fc-event-text-color: #fff;
-  --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.25);
+  /* The classic palette only darkens under [data-color-scheme=dark], so mirror it on the app's dark variant */
+  @variant dark {
+    --fc-classic-highlight: #3b82f633;
+    --fc-classic-today: #fef08a1A;
 
-  --fc-more-link-bg-color: #d0d0d0;
-  --fc-more-link-text-color: inherit;
+    --fc-classic-background: var(--color-gray-800);
+    --fc-classic-faint: #ffffff0A;
+    --fc-classic-muted: #ffffff14;
+    --fc-classic-strong: #ffffff24;
 
-  --fc-event-resizer-thickness: 8px;
-  --fc-event-resizer-dot-total-width: 8px;
-  --fc-event-resizer-dot-border-width: 1px;
+    --fc-classic-foreground: var(--color-gray-100);
+    --fc-classic-faint-foreground: var(--color-gray-500);
+    --fc-classic-muted-foreground: var(--color-gray-400);
 
-  --fc-non-business-color: rgba(215, 215, 215, 0.3);
-  --fc-bg-event-color: rgb(143, 223, 130);
-  --fc-bg-event-opacity: 0.3;
-  --fc-highlight-color: rgba(188, 232, 241, 0.3);
-  --fc-today-bg-color: rgba(255, 220, 40, 0.15);
-  --fc-now-indicator-color: red;
-
-  .fc-event {
-    @apply cursor-pointer;
+    --fc-classic-border: var(--color-gray-700);
+    --fc-classic-strong-border: var(--color-gray-600);
   }
 }

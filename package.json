@@ -7,13 +7,6 @@
     "dev": "vite"
   },
   "devDependencies": {
-    "@fullcalendar/core": "^6.1.21",
-    "@fullcalendar/daygrid": "^6.1.21",
-    "@fullcalendar/interaction": "^6.1.21",
-    "@fullcalendar/moment": "^6.1.21",
-    "@fullcalendar/moment-timezone": "^6.1.21",
-    "@fullcalendar/timegrid": "^6.1.21",
-    "@fullcalendar/vue3": "^6.1.21",
     "@headlessui-float/vue": "^0.15.1",
     "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.2",
@@ -46,6 +39,8 @@
     "vue": "^3.5.43"
   },
   "dependencies": {
-    "playwright": "^1.63.0"
+    "@fullcalendar/vue3": "^7.1.1",
+    "playwright": "^1.63.0",
+    "temporal-polyfill": "^1.0.5"
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="time-slot-calendar">
     <FullCalendar ref="calendar" :options="calendarOptions" />
   </div>
 </template>
@@ -7,15 +7,18 @@
 <script setup>
 import { inject, ref } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import momentTimezonePlugin from '@fullcalendar/moment-timezone'
-import arLocale from '@fullcalendar/core/locales/ar'
-import esLocale from '@fullcalendar/core/locales/es'
-import jaLocale from '@fullcalendar/core/locales/ja'
-import koLocale from '@fullcalendar/core/locales/ko'
-import zhCnLocale from '@fullcalendar/core/locales/zh-cn'
+import classicThemePlugin from '@fullcalendar/vue3/themes/classic'
+import dayGridPlugin from '@fullcalendar/vue3/daygrid'
+import interactionPlugin from '@fullcalendar/vue3/interaction'
+import timeGridPlugin from '@fullcalendar/vue3/timegrid'
+import arLocale from '@fullcalendar/vue3/locales/ar'
+import esLocale from '@fullcalendar/vue3/locales/es'
+import jaLocale from '@fullcalendar/vue3/locales/ja'
+import koLocale from '@fullcalendar/vue3/locales/ko'
+import zhCnLocale from '@fullcalendar/vue3/locales/zh-cn'
+import '@fullcalendar/vue3/skeleton.css'
+import '@fullcalendar/vue3/themes/classic/theme.css'
+import '@fullcalendar/vue3/themes/classic/palette.css'
 import { currentLocale } from 'laravel-vue-i18n'
 
 const props = defineProps({
@@ -31,7 +34,7 @@ const emit = defineEmits(['select', 'eventClick', 'eventDrop', 'eventResize'])
 const __ = inject('$translate')
 const calendar = ref({})
 const calendarOptions = {
-  plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, momentTimezonePlugin],
+  plugins: [classicThemePlugin, dayGridPlugin, interactionPlugin, timeGridPlugin],
   initialView: 'timeGridThreeDay',
   headerToolbar: {
     left: 'prev,next',
@@ -42,10 +45,12 @@ const calendarOptions = {
     timeGridThreeDay: {
       type: 'timeGrid',
       duration: { days: 3 },
-      buttonText: __('3 days'),
     }
   },
-  slotLabelFormat: props.timeFormat,
+  buttons: {
+    timeGridThreeDay: { text: __('3 days') },
+  },
+  slotHeaderFormat: props.timeFormat,
   eventTimeFormat: props.timeFormat,
   timeZone: props.timezone,
   locales: [arLocale, esLocale, jaLocale, koLocale, zhCnLocale],
@@ -59,6 +64,8 @@ const calendarOptions = {
   slotDuration: '00:05:00',
   scrollTime: '08:00:00',
   nowIndicator: true,
+  // ponytail: v7 dropped the fc-event class; re-add it as a stable hook for styles and browser tests
+  eventClass: 'fc-event cursor-pointer',
   events: props.events,
   select: (event) => {
     emit('select', event)

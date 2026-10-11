@@ -119,10 +119,10 @@ const hasConflict = slot => props.conflicts.some(other => other.starts_at < slot
 const isSelectable = slot => slot && (isCurrentSlot(slot) || (!slot.student_id && !hasConflict(slot)))
 // Event styling: available = primary, selected = darker primary, booked by someone else = gray, mine = dark/light gray, conflicting = gray
 const eventClasses = slot => {
-  if (selected.value?.id === slot.id) return ['bg-primary-800!', 'border-primary-800!']
-  if (isCurrentSlot(slot)) return ['bg-gray-700!', 'border-gray-700!', 'dark:bg-gray-200!', 'dark:border-gray-200!', 'dark:text-gray-900!']
-  if (slot.student_id || hasConflict(slot)) return ['bg-gray-400!', 'border-gray-400!', 'cursor-not-allowed!']
-  return []
+  if (selected.value?.id === slot.id) return 'bg-primary-800! border-primary-800!'
+  if (isCurrentSlot(slot)) return 'bg-gray-700! border-gray-700! dark:bg-gray-200! dark:border-gray-200! dark:text-gray-900!'
+  if (slot.student_id || hasConflict(slot)) return 'bg-gray-400! border-gray-400! cursor-not-allowed!'
+  return ''
 }
 const eventTitle = slot => {
   if (isCurrentSlot(slot)) return __('Current')
@@ -136,12 +136,12 @@ const events = computed(() => props.slots.map(slot => ({
   title: eventTitle(slot),
   start: `${slot.starts_at.replace(' ', 'T')}Z`,
   end: `${slot.ends_at.replace(' ', 'T')}Z`,
-  classNames: eventClasses(slot),
+  className: eventClasses(slot),
 })))
 // ponytail: FullCalendar copies its options once, so restyle events through the API instead of re-rendering
 watch(selected, () => {
   const api = calendarRef.value?.calendar?.getApi?.()
-  props.slots.forEach(slot => api?.getEventById(String(slot.id))?.setProp('classNames', eventClasses(slot)))
+  props.slots.forEach(slot => api?.getEventById(String(slot.id))?.setProp('className', eventClasses(slot)))
 })
 const selectEvent = ({ event }) => {
   const slot = props.slots.find(slot => slot.id === Number(event.id))
