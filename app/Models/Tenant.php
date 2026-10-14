@@ -12,9 +12,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
@@ -257,6 +259,28 @@ final class Tenant extends TenantBase
             'setup_url' => $link('setup'),
             'plugin_url' => $link('setup.plugin'),
         ];
+    }
+
+    /**
+     * Permanently deletes the district and everything it owns. Most tables cascade from the
+     * tenant's foreign key; the rest only reference the tenant or its users loosely.
+     */
+    public function purge(): void
+    {
+        DB::transaction(function () {
+            // ponytail: query builder, the models' global tenant/school scopes don't apply here
+            $userIds = DB::table('users')->where('tenant_id', $this->id)->select('id');
+
+            DB::table('sessions')->whereIn('user_id', $userIds)->delete();
+            DB::table('assigned_roles')->where('entity_type', 'user')->whereIn('entity_id', $userIds)->delete();
+            DB::table('permissions')->where('entity_type', 'user')->whereIn('entity_id', $userIds)->delete();
+            DB::table('activity_log')
+                ->where('tenant_id', $this->id)
+                ->orWhere(fn (QueryBuilder $query) => $query->where('subject_type', 'tenant')->where('subject_id', $this->id))
+                ->delete();
+
+            activity()->withoutLogging(fn () => $this->delete());
+        });
     }
 
     public function installed(): bool

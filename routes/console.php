@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\PurgeExpiredTenants;
 use App\Console\Commands\SendTimeSlotReminders;
 use Database\Seeders\DemoSeeder;
 use Illuminate\Database\Console\Migrations\FreshCommand;
@@ -8,6 +9,10 @@ use Spatie\Activitylog\Commands\CleanActivitylogCommand;
 
 Schedule::command(SendTimeSlotReminders::class)->hourly();
 Schedule::command(CleanActivitylogCommand::class)->daily();
+Schedule::command(PurgeExpiredTenants::class)
+    ->everyFiveMinutes()
+    ->withoutOverlapping()
+    ->when(fn () => config('app.cloud'));
 Schedule::command(FreshCommand::class, ['--force', '--seed', '--seeder' => DemoSeeder::class])
     ->hourly()
     ->when(fn () => config('app.demo'));
