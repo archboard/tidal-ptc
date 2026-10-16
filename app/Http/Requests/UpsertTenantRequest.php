@@ -39,6 +39,8 @@ class UpsertTenantRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            // The billing portal owns the code; a tenant created without one generates its own
+            'code' => ['sometimes', 'string', 'size:4', 'alpha_num:ascii', 'uppercase', Rule::unique('tenants', 'code')->ignore($tenant)],
             'domain' => ['required', 'string', 'max:255', Rule::unique('tenants', 'domain')->ignore($tenant)],
             'custom_domain' => ['nullable', 'string', 'max:255', Rule::unique('tenants', 'custom_domain')->ignore($tenant)],
             'school_limit' => ['required', 'integer', 'min:1'],

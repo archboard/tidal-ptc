@@ -67,6 +67,21 @@ it('creates a tenant for a new license and returns signed setup links on its dom
     }
 });
 
+it('takes the code the billing portal sends', function () {
+    $this->putJson("/api/tenants/{$this->license}", [...$this->body, 'code' => 'SPS1'], $this->headers)
+        ->assertCreated()
+        ->assertJsonPath('data.code', 'SPS1');
+
+    $this->putJson("/api/tenants/{$this->license}", [...$this->body, 'code' => 'SPS2'], $this->headers)
+        ->assertOk()
+        ->assertJsonPath('data.code', 'SPS2');
+});
+
+it('rejects a code another tenant uses', function () {
+    $this->putJson("/api/tenants/{$this->license}", [...$this->body, 'code' => $this->tenant->code], $this->headers)
+        ->assertJsonValidationErrors('code');
+});
+
 it('updates the existing tenant for a known license', function () {
     $this->putJson("/api/tenants/{$this->license}", $this->body, $this->headers);
 
