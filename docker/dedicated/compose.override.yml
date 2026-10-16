@@ -1,0 +1,30 @@
+# Dedicated instances provisioned by archboard-billing. Caddy terminates TLS for
+# every host in DOMAINS (comma-separated, written to .env by billing's sync).
+# docker compose -f docker-compose.yml -f docker/dedicated/compose.override.yml up -d
+services:
+  app:
+    command: sh -c "php artisan migrate --force && php artisan make:token --token=\"$$MACHINE_API_TOKEN\" --quiet && php artisan octane:frankenphp --host=0.0.0.0 --port=8000"
+    ports: !reset []
+
+  reverb:
+    ports: !reset []
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./docker/dedicated/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+      - reverb
+
+volumes:
+  caddy_data:
+  caddy_config:

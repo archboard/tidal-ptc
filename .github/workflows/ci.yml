@@ -196,6 +196,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=stable,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
 
       - name: Push image
         if: github.event_name == 'push'

@@ -110,6 +110,20 @@ it('rejects a domain another tenant uses', function () {
     expect(Tenant::count())->toBe(1);
 });
 
+it('sets a custom domain the tenant is found by', function () {
+    $this->putJson("/api/tenants/{$this->license}", [...$this->body, 'custom_domain' => 'ptc.springfield.org'], $this->headers)
+        ->assertCreated();
+
+    expect(Tenant::getByHost('ptc.springfield.org')?->license)->toBe($this->license);
+});
+
+it('rejects a custom domain another tenant uses', function () {
+    $this->tenant->update(['custom_domain' => 'ptc.springfield.org']);
+
+    $this->putJson("/api/tenants/{$this->license}", [...$this->body, 'custom_domain' => 'ptc.springfield.org'], $this->headers)
+        ->assertJsonValidationErrors('custom_domain');
+});
+
 it('returns 404 for a license that is not a UUID', function () {
     $this->putJson('/api/tenants/not-a-uuid', $this->body, $this->headers)
         ->assertNotFound();

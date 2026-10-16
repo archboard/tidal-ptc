@@ -19,5 +19,6 @@ tests
 frankenphp
 caddy
 docker-compose*.yml
+!docker-compose.yml
 Dockerfile
 *.md

@@ -40,6 +40,7 @@ class UpsertTenantRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'domain' => ['required', 'string', 'max:255', Rule::unique('tenants', 'domain')->ignore($tenant)],
+            'custom_domain' => ['nullable', 'string', 'max:255', Rule::unique('tenants', 'custom_domain')->ignore($tenant)],
             'school_limit' => ['required', 'integer', 'min:1'],
             'subscription_started_at' => ['required', 'date'],
             'subscription_expires_at' => ['required', 'date', 'after:subscription_started_at'],

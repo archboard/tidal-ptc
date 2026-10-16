@@ -38,3 +38,13 @@ it('can new generate token over existing tokens', function () {
     expect(DB::table('machine_api_tokens')->whereNotNull('api_token')->count())->toBe(1);
     expect(DB::table('machine_api_tokens')->where('api_token', 'existing')->doesntExist())->toBeTrue();
 });
+
+it('can store a given token', function () {
+    DB::table('machine_api_tokens')->insert(['api_token' => 'existing']);
+
+    $this->artisan('make:token', ['--token' => 'abc'])
+        ->assertOk();
+
+    expect(DB::table('machine_api_tokens')->whereNotNull('api_token')->pluck('api_token')->all())
+        ->toBe([hash('sha256', 'abc')]);
+});

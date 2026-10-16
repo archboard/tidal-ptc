@@ -13,7 +13,7 @@ class GenerateMachineToken extends Command
      *
      * @var string
      */
-    protected $signature = 'make:token';
+    protected $signature = 'make:token {--token= : Use this token instead of a random one}';
 
     /**
      * The console command description.
@@ -42,7 +42,7 @@ class GenerateMachineToken extends Command
             ->delete();
 
         // Generate a new long token
-        $token = Str::random(60);
+        $token = $this->option('token') ?: Str::random(60);
 
         DB::table('machine_api_tokens')->insert([
             'api_token' => hash('sha256', $token),
