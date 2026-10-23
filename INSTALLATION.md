@@ -110,15 +110,15 @@ The app now listens on `http://<server-ip>:8000` and Reverb on `:8080`. Don't ex
 
 ### Bind the published ports to localhost
 
-By default Compose publishes ports `8000` and `8080` on every interface. Create a `docker-compose.override.yml` so they are only reachable by the reverse proxy on the same host. Compose merges this file automatically.
+By default Compose publishes ports `8000` and `8080` on every interface. Create a `docker-compose.override.yml` so they are only reachable by the reverse proxy on the same host. Compose merges this file automatically; `!override` replaces the default port list instead of appending to it, which would bind each port twice and fail with "address already in use".
 
 ```yaml
 services:
   app:
-    ports:
+    ports: !override
       - "127.0.0.1:8000:8000"
   reverb:
-    ports:
+    ports: !override
       - "127.0.0.1:8080:8080"
 ```
 
