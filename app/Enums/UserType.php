@@ -28,6 +28,19 @@ enum UserType: string
         };
     }
 
+    /**
+     * User types that can log in with a password. Students only sign in through the SIS.
+     *
+     * @return array<int, array{label: string, value: string}>
+     */
+    public static function passwordSelectOptions(): array
+    {
+        return array_values(array_filter(
+            self::selectOptions(),
+            fn (array $option) => $option['value'] !== self::student->value,
+        ));
+    }
+
     /** @param Collection<array-key, mixed> $data */
     public static function fromData(Collection $data): UserType
     {

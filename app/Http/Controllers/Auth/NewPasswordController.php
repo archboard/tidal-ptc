@@ -24,7 +24,7 @@ class NewPasswordController extends FortifyNewPasswordController
         $request->validate([
             'token' => 'required',
             Fortify::email() => 'required|email',
-            'user_type' => ['required', Rule::enum(UserType::class)],
+            'user_type' => ['required', Rule::enum(UserType::class)->except(UserType::student)],
             'password' => 'required',
         ]);
 

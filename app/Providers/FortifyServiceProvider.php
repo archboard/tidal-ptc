@@ -65,7 +65,7 @@ class FortifyServiceProvider extends ServiceProvider
         });
 
         Fortify::authenticateUsing(function (Request $request) {
-            $request->validate(['user_type' => ['required', Rule::enum(UserType::class)]]);
+            $request->validate(['user_type' => ['required', Rule::enum(UserType::class)->except(UserType::student)]]);
 
             $user = User::where(DB::raw('lower(email)'), strtolower($request->input('email', '')))
                 ->where('user_type', $request->input('user_type'))
@@ -83,7 +83,7 @@ class FortifyServiceProvider extends ServiceProvider
                 'title' => $title,
                 'tenant' => Tenant::current()?->only(['allow_oidc_login', 'allow_password_auth']) ?? new \stdClass,
                 'status' => session('status'),
-                'userTypes' => UserType::selectOptions(),
+                'userTypes' => UserType::passwordSelectOptions(),
             ])->withViewData(compact('title'));
         });
 
@@ -93,7 +93,7 @@ class FortifyServiceProvider extends ServiceProvider
             return inertia('Auth/ForgotPassword', [
                 'title' => $title,
                 'status' => session('status'),
-                'userTypes' => UserType::selectOptions(),
+                'userTypes' => UserType::passwordSelectOptions(),
             ])->withViewData(compact('title'));
         });
 

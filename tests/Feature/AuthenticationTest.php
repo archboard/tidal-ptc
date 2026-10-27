@@ -28,7 +28,10 @@ it('login screen can be rendered', function () {
             ->has('title')
             ->has('status')
             ->has('tenant.allow_password_auth')
-            ->where('userTypes.1', ['label' => 'Contact/Guardian', 'value' => 'guardian'])
+            ->where('userTypes', [
+                ['label' => 'Staff', 'value' => 'staff'],
+                ['label' => 'Contact/Guardian', 'value' => 'guardian'],
+            ])
         );
 });
 
@@ -98,6 +101,19 @@ it('users can not authenticate as a different user type', function () {
         'user_type' => UserType::guardian->value,
     ])
         ->assertSessionHasErrors(['email' => __('auth.failed')]);
+
+    $this->assertGuest();
+});
+
+it('students can not authenticate with a password', function () {
+    $user = $this->seedUser(['user_type' => UserType::student]);
+
+    $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'password',
+        'user_type' => UserType::student->value,
+    ])
+        ->assertSessionHasErrors(['user_type' => 'The selected user type is invalid.']);
 
     $this->assertGuest();
 });

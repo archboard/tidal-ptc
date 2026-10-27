@@ -26,7 +26,10 @@ it('reset password link screen can be rendered', function () {
             ->component('Auth/ForgotPassword')
             ->has('title')
             ->has('status')
-            ->where('userTypes.1', ['label' => 'Contact/Guardian', 'value' => 'guardian'])
+            ->where('userTypes', [
+                ['label' => 'Staff', 'value' => 'staff'],
+                ['label' => 'Contact/Guardian', 'value' => 'guardian'],
+            ])
         );
 });
 
@@ -106,6 +109,32 @@ it('requires a valid user type to request a reset link', function (?string $user
     'missing' => [null, 'This field is required.'],
     'unknown' => ['admin', 'The selected user type is invalid.'],
 ]);
+
+it('students can not request a reset link', function () {
+    Notification::fake();
+    $user = $this->seedUser(['user_type' => UserType::student]);
+
+    $this->post('/forgot-password', ['email' => $user->email, 'user_type' => UserType::student->value])
+        ->assertSessionHasErrors(['user_type' => 'The selected user type is invalid.']);
+
+    Notification::assertNothingSent();
+});
+
+it('students can not reset a password', function () {
+    $user = $this->seedUser(['user_type' => UserType::student]);
+    $token = Password::broker()->createToken($user);
+
+    $this->post('/reset-password', [
+        'token' => $token,
+        'email' => $user->email,
+        'user_type' => UserType::student->value,
+        'password' => 'new-password',
+        'password_confirmation' => 'new-password',
+    ])
+        ->assertSessionHasErrors(['user_type' => 'The selected user type is invalid.']);
+
+    expect(Hash::check('password', $user->fresh()->password))->toBeTrue();
+});
 
 it('requires a valid user type to reset a password', function (?string $userType, string $message) {
     $user = $this->seedUser(['user_type' => UserType::staff]);

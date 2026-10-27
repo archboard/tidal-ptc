@@ -19,7 +19,7 @@ class PasswordResetLinkController extends FortifyPasswordResetLinkController
 {
     public function store(SendPasswordResetLinkRequest $request): Responsable
     {
-        $request->validate(['user_type' => ['required', Rule::enum(UserType::class)]]);
+        $request->validate(['user_type' => ['required', Rule::enum(UserType::class)->except(UserType::student)]]);
 
         $status = $this->broker()->sendResetLink(
             $request->only(Fortify::email(), 'user_type')
