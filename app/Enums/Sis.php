@@ -26,7 +26,7 @@ enum Sis: string
         );
     }
 
-    /** @return array<int, array<string, string>> */
+    /** @return array<int, array{label: string, value: string}> */
     public static function selectOptions(): array
     {
         return array_map(fn (Sis $sis) => [
