@@ -8,10 +8,37 @@ To install each piece directly on the server instead, see [INSTALLATION-VM.md](I
 
 - A Linux server (2 GB RAM is plenty to start) with a public IP.
 - A DNS `A` record for your domain (e.g. `ptc.example.org`) pointing at the server.
-- [Docker Engine](https://docs.docker.com/engine/install/) with the Compose plugin (`docker compose version` should work).
+- Debian or Ubuntu with `sudo`, for the setup script to install Docker. On another distribution, install [Docker Engine](https://docs.docker.com/engine/install/) with the Compose plugin yourself first (`docker compose version` should work); the script then skips that step.
 - PowerSchool admin access to install the Tidal PTC plugin and copy its client ID and secret. You can do this after the app is running; the installer at `/install` lets you download the plugin.
 
-### Installing Docker (Debian / Ubuntu)
+## 2. Install Docker and configure `.env`
+
+Prebuilt images are published to `ghcr.io/archboard/tidal-ptc` on every release, so you only need the Compose file and an `.env`, not the source. The setup script:
+
+- installs Docker Engine and the Compose plugin from Docker's official apt repository, if `docker compose` isn't already available,
+- downloads `docker-compose.yml` and `.env`,
+- generates the app key, database password and Reverb credentials,
+- sets the production URL and Reverb host from your domain.
+
+Run it as your regular user (it uses `sudo` where needed):
+
+```sh
+sudo mkdir -p /opt/tidal-ptc && sudo chown "$USER" /opt/tidal-ptc
+cd /opt/tidal-ptc
+curl -fsSL https://raw.githubusercontent.com/archboard/tidal-ptc/main/setup-docker.sh \
+  | bash -s -- --domain ptc.example.org --powerschool https://powerschool.example.org
+```
+
+`--powerschool` is optional, and `--no-tls` switches the URLs to plain HTTP. The script is safe to re-run (for example after changing the domain); existing secrets are kept. If it installed Docker, log out and back in (or run `newgrp docker`) so your user can run `docker` without `sudo`.
+
+The only values left to add by hand are `POWERSCHOOL_CLIENT_ID` and `POWERSCHOOL_CLIENT_SECRET`, which come from the plugin once it is installed in PowerSchool (see step 5). Email (SMTP) is configured later in the app's tenant settings page.
+
+`latest` tracks `main`. To pin a release, add `TIDAL_PTC_VERSION=1.2.3` to `.env` (tags match the GitHub releases).
+
+<details>
+<summary>Doing it all manually</summary>
+
+#### Install Docker (Debian / Ubuntu)
 
 Skip this if `docker compose version` already works. These steps follow Docker's official apt repository, which ships the Compose plugin; the `docker.io` package in the distro repos does not.
 
@@ -46,28 +73,17 @@ docker run --rm hello-world
 ```
 
 `$ID` resolves to `debian` or `ubuntu`. On derivatives (Linux Mint, Pop!_OS, Raspberry Pi OS) set `ID` and `VERSION_CODENAME` by hand to the upstream Debian/Ubuntu release they are based on.
-
-## 2. Get the Compose file
-
-Prebuilt images are published to `ghcr.io/archboard/tidal-ptc` on every release, so you only need the Compose file and an `.env`, not the source.
+#### Get the Compose file
 
 ```sh
 sudo mkdir -p /opt/tidal-ptc && sudo chown "$USER" /opt/tidal-ptc
 cd /opt/tidal-ptc
 curl -fsSLO https://raw.githubusercontent.com/archboard/tidal-ptc/main/docker-compose.yml
 curl -fsSL -o .env https://raw.githubusercontent.com/archboard/tidal-ptc/main/.env.example
+chmod 600 .env
 ```
 
-`latest` tracks `main`. To pin a release, add `TIDAL_PTC_VERSION=1.2.3` to `.env` (tags match the GitHub releases).
-
-<details>
-<summary>Building from source instead</summary>
-
-Clone the repository into `/opt/tidal-ptc` and use `docker compose build` / `docker compose up -d --build` wherever this guide says `pull`. Everything else is identical.
-
-</details>
-
-## 3. Configure `.env`
+#### Configure `.env`
 
 ```sh
 sed -i "s|^APP_KEY=.*|APP_KEY=base64:$(openssl rand -base64 32)|" .env
@@ -81,7 +97,7 @@ Then edit `.env` and set the following. Everything not listed keeps a working de
 | `APP_DEBUG` | `false` |
 | `APP_URL` | `https://ptc.example.org` |
 | `DB_PASSWORD` | A long random password (`openssl rand -hex 24`). Required; Compose refuses to start without it. |
-| `REVERB_APP_ID` | Any number, e.g. `openssl rand -hex 4 \| tr -dc 0-9` or just `100001` |
+| `REVERB_APP_ID` | Any number, e.g. `100001` |
 | `REVERB_APP_KEY` | `openssl rand -hex 16` |
 | `REVERB_APP_SECRET` | `openssl rand -hex 32` |
 | `REVERB_HOST` | `ptc.example.org` — the public hostname browsers connect to, **not** the container |
@@ -90,9 +106,16 @@ Then edit `.env` and set the following. Everything not listed keeps a working de
 | `POWERSCHOOL_ADDRESS` | `https://powerschool.example.org` |
 | `POWERSCHOOL_CLIENT_ID` / `POWERSCHOOL_CLIENT_SECRET` | From the plugin, once installed in PowerSchool |
 
-Email (SMTP) is configured later in the app's tenant settings page, so the `MAIL_*` values can stay as they are.
+</details>
 
-## 4. Pull and start
+<details>
+<summary>Building from source instead</summary>
+
+Clone the repository into `/opt/tidal-ptc`, run `./setup-docker.sh --domain ptc.example.org` there, and use `docker compose build` / `docker compose up -d --build` wherever this guide says `pull`. Everything else is identical.
+
+</details>
+
+## 3. Pull and start
 
 ```sh
 docker compose pull
@@ -124,7 +147,7 @@ services:
 
 Then `docker compose up -d` to apply it. This matters: the Compose file sets `TRUSTED_PROXIES=*` so the app reads client IPs from `X-Forwarded-For`, which is only safe when the ports can't be reached except through your proxy. If your firewall (`ufw`, security groups, etc.) is on, only ports `80` and `443` need to be open.
 
-## 5. Reverse proxy
+## 4. Reverse proxy
 
 Two paths need routing:
 
@@ -246,11 +269,11 @@ sudo nginx -t && sudo systemctl reload nginx
 - `https://ptc.example.org/up` returns `200`.
 - Open the browser dev tools on any page: there should be a websocket connection to `wss://ptc.example.org/app/<REVERB_APP_KEY>` with status `101`. If it fails, `REVERB_HOST`/`REVERB_PORT`/`REVERB_SCHEME` don't match the public URL or the proxy isn't forwarding `Upgrade`.
 
-## 6. Finish the installation
+## 5. Finish the installation
 
-Visit `https://ptc.example.org/install`. The installer walks you through downloading the PowerSchool plugin, entering the tenant details and creating the first administrator. If you didn't have the PowerSchool credentials in step 3, add them to `.env` now and run `docker compose up -d` so the containers pick them up.
+Visit `https://ptc.example.org/install`. The installer walks you through downloading the PowerSchool plugin, entering the tenant details and creating the first administrator. If you didn't have the PowerSchool credentials in step 2, add them to `.env` now and run `docker compose up -d` so the containers pick them up.
 
-## 7. Day-to-day operations
+## 6. Day-to-day operations
 
 | Task | Command (from `/opt/tidal-ptc`) |
 |---|---|

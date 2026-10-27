@@ -32,19 +32,13 @@ Run the commands as a normal user with `sudo`. Replace `ptc.example.org` with yo
 
 ### PHP 8.5
 
-Ubuntu 26.04 ships PHP 8.5 in `universe`. Older releases need Ondřej Surý's repository; add only the one for your OS.
+Ubuntu 26.04 ships PHP 8.5 in `universe`. Older Debian and Ubuntu releases need Ondřej Surý's repository.
 
 ```sh
 sudo apt-get update
 sudo apt-get install -y ca-certificates curl git unzip lsb-release
 
-# Ubuntu 26.04: nothing to add (universe is enabled by default)
-
-# Ubuntu 24.04 (the PPA has no packages for 26.04 and breaks apt update there)
-sudo apt-get install -y software-properties-common
-sudo add-apt-repository -y ppa:ondrej/php
-
-# Debian 12 / 13
+# Debian 12 / 13, Ubuntu 24.04 (skip on Ubuntu 26.04)
 curl -sSL https://packages.sury.org/php/README.txt | sudo bash -x
 
 sudo apt-get update

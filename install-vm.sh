@@ -110,12 +110,10 @@ export DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a
 
 step "Installing system packages"
 
-ONDREJ_PPA="https://ppa.launchpadcontent.net/ondrej/php/ubuntu/dists/${VERSION_CODENAME:-}/Release"
-
-# The PPA only publishes for some Ubuntu releases (not 26.04, which ships PHP
-# 8.5 itself). An entry for an unpublished release fails every apt update.
-if compgen -G "/etc/apt/sources.list.d/ondrej-ubuntu-php-*" > /dev/null && ! curl -fsIo /dev/null "$ONDREJ_PPA"; then
-    warn "Removing the ondrej/php PPA: it has no packages for $VERSION_CODENAME."
+# Older versions of this script added the ondrej/php PPA on Ubuntu; Sury's own
+# repository now covers both Debian and Ubuntu
+if compgen -G "/etc/apt/sources.list.d/ondrej-ubuntu-php-*" > /dev/null; then
+    warn "Replacing the ondrej/php PPA with packages.sury.org."
     rm -f /etc/apt/sources.list.d/ondrej-ubuntu-php-*
 fi
 
@@ -123,19 +121,12 @@ apt-get update -q
 apt-get install -yq ca-certificates curl git unzip gnupg cron openssl
 
 if ! apt-cache show "php$PHP-fpm" > /dev/null 2>&1; then
-    if [[ "$ID" == ubuntu ]]; then
-        apt-get install -yq software-properties-common
-        if curl -fsIo /dev/null "$ONDREJ_PPA"; then
-            add-apt-repository -y ppa:ondrej/php
-        else
-            add-apt-repository -y universe
-        fi
-    else
-        curl -fsSLo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb
-        dpkg -i /tmp/debsuryorg-archive-keyring.deb
-        echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $VERSION_CODENAME main" \
-            > /etc/apt/sources.list.d/php.list
-    fi
+    curl -fsIo /dev/null "https://packages.sury.org/php/dists/${VERSION_CODENAME:-}/Release" \
+        || die "packages.sury.org has no PHP packages for $PRETTY_NAME."
+    curl -fsSLo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb
+    dpkg -i /tmp/debsuryorg-archive-keyring.deb
+    echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $VERSION_CODENAME main" \
+        > /etc/apt/sources.list.d/php.list
     apt-get update -q
     apt-cache show "php$PHP-fpm" > /dev/null 2>&1 || die "PHP $PHP is not available for $PRETTY_NAME."
 fi
