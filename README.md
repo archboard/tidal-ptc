@@ -71,4 +71,4 @@ The button deploys `.do/deploy.template.yaml`: a single container built from the
 
 ## License
 
-Tidal PTC is licensed under the [GNU GPLv3](LICENSE.md) license. You can read more about it on [GNU's website](https://www.gnu.org/licenses/quick-guide-gplv3.html).
+Tidal PTC is licensed under the [GNU AGPLv3](LICENSE.md) license. You can read more about it on [GNU's website](https://www.gnu.org/licenses/agpl-3.0.html).
