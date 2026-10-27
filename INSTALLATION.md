@@ -1,39 +1,44 @@
 # Installing Tidal PTC with Docker
 
-This guide takes a fresh Linux server to a running Tidal PTC behind HTTPS. The Compose stack in this repository runs everything the application needs: the app on Octane (FrankenPHP), Reverb for websockets, a queue worker, the scheduler, PostgreSQL and Redis. The only thing you add is a reverse proxy that terminates TLS.
+This guide takes a fresh Linux server to a running Tidal PTC behind HTTPS. The Compose stack in this repository runs everything the application needs: the app on Octane (FrankenPHP), Reverb for websockets, a queue worker, the scheduler, PostgreSQL and Redis. A single setup script installs Docker, configures the stack and puts a reverse proxy with a Let's Encrypt certificate in front of it.
 
 To install each piece directly on the server instead, see [INSTALLATION-VM.md](INSTALLATION-VM.md).
 
 ## 1. Requirements
 
-- A Linux server (2 GB RAM is plenty to start) with a public IP.
-- A DNS `A` record for your domain (e.g. `ptc.example.org`) pointing at the server.
-- Debian or Ubuntu with `sudo`, for the setup script to install Docker. On another distribution, install [Docker Engine](https://docs.docker.com/engine/install/) with the Compose plugin yourself first (`docker compose version` should work); the script then skips that step.
+- A Debian 12+ or Ubuntu 24.04+ server (2 GB RAM is plenty to start) with a public IP and `sudo`.
+- A DNS `A` record for your domain (e.g. `ptc.example.org`) pointing at the server, and ports `80` and `443` reachable from the internet for Let's Encrypt.
 - PowerSchool admin access to install the Tidal PTC plugin and copy its client ID and secret. You can do this after the app is running; the installer at `/install` lets you download the plugin.
 
-## 2. Install Docker and configure `.env`
-
-Prebuilt images are published to `ghcr.io/archboard/tidal-ptc` on every release, so you only need the Compose file and an `.env`, not the source. The setup script:
-
-- installs Docker Engine and the Compose plugin from Docker's official apt repository, if `docker compose` isn't already available,
-- downloads `docker-compose.yml` and `.env`,
-- generates the app key, database password and Reverb credentials,
-- sets the production URL and Reverb host from your domain.
-
-Run it as your regular user (it uses `sudo` where needed):
+## 2. Run the setup script
 
 ```sh
-sudo mkdir -p /opt/tidal-ptc && sudo chown "$USER" /opt/tidal-ptc
-cd /opt/tidal-ptc
 curl -fsSL https://raw.githubusercontent.com/archboard/tidal-ptc/main/setup-docker.sh \
-  | bash -s -- --domain ptc.example.org --powerschool https://powerschool.example.org
+  | sudo bash -s -- --domain ptc.example.org --email you@example.org
 ```
 
-`--powerschool` is optional, and `--no-tls` switches the URLs to plain HTTP. The script is safe to re-run (for example after changing the domain); existing secrets are kept. If it installed Docker, log out and back in (or run `newgrp docker`) so your user can run `docker` without `sudo`.
+From start to finish, the script:
 
-The only values left to add by hand are `POWERSCHOOL_CLIENT_ID` and `POWERSCHOOL_CLIENT_SECRET`, which come from the plugin once it is installed in PowerSchool (see step 5). Email (SMTP) is configured later in the app's tenant settings page.
+1. Installs Docker Engine and the Compose plugin from Docker's official apt repository, if `docker compose` isn't already available.
+2. Downloads `docker-compose.yml` into `/opt/tidal-ptc` and adds a `docker-compose.override.yml` that binds the app and Reverb ports to localhost.
+3. Writes `.env`: generates the app key, database password and Reverb credentials, and sets the production URL and Reverb host from your domain.
+4. Installs a reverse proxy and gets a Let's Encrypt certificate: Caddy (the default) or Nginx with Certbot.
+5. Pulls the published images from `ghcr.io/archboard/tidal-ptc`, starts the stack and waits for it to be healthy (migrations run automatically).
+6. Checks that `https://<domain>/up` responds.
 
-`latest` tracks `main`. To pin a release, add `TIDAL_PTC_VERSION=1.2.3` to `.env` (tags match the GitHub releases).
+| Option | |
+|---|---|
+| `--domain` | Public hostname. Prompted for if omitted. |
+| `--email` | Let's Encrypt expiry notices (optional). |
+| `--proxy caddy\|nginx` | Reverse proxy to install. Default `caddy`; a re-run keeps the one already set up. |
+| `--powerschool URL` | PowerSchool address, e.g. `https://powerschool.example.org`. |
+| `--version TAG` | Pin an image tag (matches the GitHub releases). Default `latest`, which tracks `main`. |
+| `--dir PATH` | Install directory. Default `/opt/tidal-ptc`. |
+| `--no-tls` | Skip Let's Encrypt and serve plain HTTP. |
+
+The script is safe to re-run: existing secrets and `.env` values are kept, and a re-run fetches the latest Compose file, pulls new images and restarts the stack. Your user is added to the `docker` group, so after logging out and back in you can run `docker compose` from `/opt/tidal-ptc` without `sudo`.
+
+The only values left to add by hand are `POWERSCHOOL_CLIENT_ID` and `POWERSCHOOL_CLIENT_SECRET`, which come from the plugin once it is installed in PowerSchool (see step 4). Email (SMTP) is configured later in the app's tenant settings page.
 
 <details>
 <summary>Doing it all manually</summary>
@@ -106,16 +111,7 @@ Then edit `.env` and set the following. Everything not listed keeps a working de
 | `POWERSCHOOL_ADDRESS` | `https://powerschool.example.org` |
 | `POWERSCHOOL_CLIENT_ID` / `POWERSCHOOL_CLIENT_SECRET` | From the plugin, once installed in PowerSchool |
 
-</details>
-
-<details>
-<summary>Building from source instead</summary>
-
-Clone the repository into `/opt/tidal-ptc`, run `./setup-docker.sh --domain ptc.example.org` there, and use `docker compose build` / `docker compose up -d --build` wherever this guide says `pull`. Everything else is identical.
-
-</details>
-
-## 3. Pull and start
+#### Pull and start
 
 ```sh
 docker compose pull
@@ -129,9 +125,9 @@ docker compose ps
 docker compose logs -f app
 ```
 
-The app now listens on `http://<server-ip>:8000` and Reverb on `:8080`. Don't expose those publicly; put the reverse proxy from the next section in front of them.
+The app now listens on `http://<server-ip>:8000` and Reverb on `:8080`. Don't expose those publicly; bind them to localhost and put the reverse proxy below in front of them.
 
-### Bind the published ports to localhost
+#### Bind the published ports to localhost
 
 By default Compose publishes ports `8000` and `8080` on every interface. Create a `docker-compose.override.yml` so they are only reachable by the reverse proxy on the same host. Compose merges this file automatically; `!override` replaces the default port list instead of appending to it, which would bind each port twice and fail with "address already in use".
 
@@ -147,7 +143,7 @@ services:
 
 Then `docker compose up -d` to apply it. This matters: the Compose file sets `TRUSTED_PROXIES=*` so the app reads client IPs from `X-Forwarded-For`, which is only safe when the ports can't be reached except through your proxy. If your firewall (`ufw`, security groups, etc.) is on, only ports `80` and `443` need to be open.
 
-## 4. Reverse proxy
+#### Reverse proxy
 
 Two paths need routing:
 
@@ -158,7 +154,7 @@ Two paths need routing:
 
 Pick one of the following.
 
-### Option A: Caddy (recommended)
+##### Option A: Caddy (recommended)
 
 Caddy obtains and renews the Let's Encrypt certificate itself and proxies websockets without extra configuration.
 
@@ -193,7 +189,7 @@ ptc.example.org {
 sudo systemctl reload caddy
 ```
 
-### Option B: Nginx
+##### Option B: Nginx
 
 <details>
 <summary>Installing Nginx and Certbot (Debian / Ubuntu)</summary>
@@ -264,22 +260,31 @@ sudo certbot --nginx -d ptc.example.org
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
-### Verify
+</details>
 
-- `https://ptc.example.org/up` returns `200`.
+<details>
+<summary>Building from source instead</summary>
+
+Clone the repository into `/opt/tidal-ptc` and run the setup script there (or pass `--dir`). When a `Dockerfile` is present, the script builds the images instead of pulling them and keeps your checkout's `docker-compose.yml`. When doing it by hand, use `docker compose build` / `docker compose up -d --build` wherever this guide says `pull`.
+
+</details>
+
+## 3. Verify
+
+- `https://ptc.example.org/up` returns `200` (the script checks this for you).
 - Open the browser dev tools on any page: there should be a websocket connection to `wss://ptc.example.org/app/<REVERB_APP_KEY>` with status `101`. If it fails, `REVERB_HOST`/`REVERB_PORT`/`REVERB_SCHEME` don't match the public URL or the proxy isn't forwarding `Upgrade`.
 
-## 5. Finish the installation
+## 4. Finish the installation
 
-Visit `https://ptc.example.org/install`. The installer walks you through downloading the PowerSchool plugin, entering the tenant details and creating the first administrator. If you didn't have the PowerSchool credentials in step 2, add them to `.env` now and run `docker compose up -d` so the containers pick them up.
+Visit `https://ptc.example.org/install`. The installer walks you through downloading the PowerSchool plugin, entering the tenant details and creating the first administrator. If you didn't have the PowerSchool credentials when you ran the script, add them to `.env` now and run `docker compose up -d` so the containers pick them up.
 
-## 6. Day-to-day operations
+## 5. Day-to-day operations
 
 | Task | Command (from `/opt/tidal-ptc`) |
 |---|---|
 | Run Artisan | `docker compose exec app php artisan <command>` |
 | Tail logs | `docker compose logs -f app queue reverb` |
-| Update to a new version | `curl -fsSLO https://raw.githubusercontent.com/archboard/tidal-ptc/main/docker-compose.yml && docker compose pull && docker compose up -d` |
+| Update to a new version | Re-run the setup script (same command as step 2), or `curl -fsSLO https://raw.githubusercontent.com/archboard/tidal-ptc/main/docker-compose.yml && docker compose pull && docker compose up -d` |
 | Change `.env` | Edit, then `docker compose up -d` (containers are recreated with the new values) |
 | Back up the database | `docker compose exec -T postgres sh -c 'pg_dump -U $POSTGRES_USER $POSTGRES_DB' \| gzip > ptc-$(date +%F).sql.gz` |
 | Restore a backup | `gunzip -c ptc-YYYY-MM-DD.sql.gz \| docker compose exec -T postgres sh -c 'psql -U $POSTGRES_USER $POSTGRES_DB'` |
