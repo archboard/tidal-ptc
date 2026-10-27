@@ -25,6 +25,16 @@ x-app: &app
     redis:
       condition: service_healthy
 
+# Background services start once the app is healthy, i.e. after migrations have
+# run, and drop the image's FrankenPHP healthcheck since they don't serve HTTP
+x-worker: &worker
+  <<: *app
+  healthcheck:
+    disable: true
+  depends_on:
+    app:
+      condition: service_healthy
+
 services:
   app:
     <<: *app
@@ -39,17 +49,17 @@ services:
       start_period: 30s
 
   reverb:
-    <<: *app
+    <<: *worker
     command: php artisan reverb:start --host=0.0.0.0 --port=8080
     ports:
       - "8080:8080"
 
   queue:
-    <<: *app
+    <<: *worker
     command: php artisan queue:work redis --queue=default,sis_sync --tries=3 --max-time=3600
 
   scheduler:
-    <<: *app
+    <<: *worker
     command: php artisan schedule:work
 
   postgres:

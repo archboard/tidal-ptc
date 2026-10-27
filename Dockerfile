@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
 
-FROM node:26-alpine AS assets
+# Built assets are the same on every architecture, so build them natively once
+FROM --platform=$BUILDPLATFORM node:26-alpine AS assets
 WORKDIR /app
 ARG VITE_APP_NAME="Tidal PTC"
 ENV VITE_APP_NAME=$VITE_APP_NAME
