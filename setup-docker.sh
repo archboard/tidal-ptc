@@ -446,10 +446,7 @@ cat <<EOF
 
 Tidal PTC is running from $APP_DIR behind $PROXY.
 
-Next steps:
-  1. Visit $scheme://$DOMAIN/install to download the PowerSchool plugin and create the first administrator.
-  2. Add POWERSCHOOL_CLIENT_ID and POWERSCHOOL_CLIENT_SECRET to $APP_DIR/.env once the plugin is
-     installed in PowerSchool, then run \`docker compose up -d\` from $APP_DIR.
+Next step: visit $scheme://$DOMAIN/install to download the PowerSchool plugin and create the first administrator.
 
 Re-run this script at any time to update to the latest images.
 EOF

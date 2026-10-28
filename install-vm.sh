@@ -466,10 +466,7 @@ cat <<EOF
 
 Tidal PTC is installed at $APP_DIR.
 
-Next steps:
-  1. Visit $scheme://$DOMAIN/install to download the PowerSchool plugin and create the first administrator.
-  2. Add POWERSCHOOL_ADDRESS, POWERSCHOOL_CLIENT_ID and POWERSCHOOL_CLIENT_SECRET to $APP_DIR/.env,
-     then re-run this script (or: sudo -u $APP_USER php $APP_DIR/artisan optimize && systemctl restart tidal-ptc-queue).
+Next step: visit $scheme://$DOMAIN/install to download the PowerSchool plugin and create the first administrator.
 
 Re-run this script at any time to update to the latest $VERSION.
 EOF

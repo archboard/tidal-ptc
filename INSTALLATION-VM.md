@@ -140,7 +140,6 @@ Edit `.env` and set the following. Everything not listed keeps a working default
 | `REVERB_SCHEME` | `https` |
 | `REVERB_SERVER_HOST` | `127.0.0.1` (add this line; keeps the websocket server off the public interface) |
 | `POWERSCHOOL_ADDRESS` | `https://powerschool.example.org` |
-| `POWERSCHOOL_CLIENT_ID` / `POWERSCHOOL_CLIENT_SECRET` | From the plugin, once installed in PowerSchool |
 
 Leave `TRUSTED_PROXIES` unset: Nginx talks to PHP-FPM directly over FastCGI, so the app already sees the real client IP and HTTPS.
 
@@ -313,7 +312,7 @@ echo '* * * * * cd /var/www/tidal-ptc && php artisan schedule:run >> /dev/null 2
 
 ## 10. Finish the installation
 
-Visit `https://ptc.example.org/install`. The installer walks you through downloading the PowerSchool plugin, entering the tenant details and creating the first administrator. If you didn't have the PowerSchool credentials in step 4, add them to `.env` now and see "Change `.env`" below.
+Visit `https://ptc.example.org/install`. The installer walks you through downloading the PowerSchool plugin, entering the tenant details and creating the first administrator.
 
 ## 11. Day-to-day operations
 

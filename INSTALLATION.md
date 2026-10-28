@@ -38,7 +38,7 @@ From start to finish, the script:
 
 The script is safe to re-run: existing secrets and `.env` values are kept, and a re-run fetches the latest Compose file, pulls new images and restarts the stack. Your user is added to the `docker` group, so after logging out and back in you can run `docker compose` from `/opt/tidal-ptc` without `sudo`.
 
-The only values left to add by hand are `POWERSCHOOL_CLIENT_ID` and `POWERSCHOOL_CLIENT_SECRET`, which come from the plugin once it is installed in PowerSchool (see step 4). Email (SMTP) is configured later in the app's tenant settings page.
+The PowerSchool client ID and secret are entered in the installer (see step 4), not in `.env`. Email (SMTP) is configured later in the app's tenant settings page.
 
 <details>
 <summary>Doing it all manually</summary>
@@ -109,7 +109,6 @@ Then edit `.env` and set the following. Everything not listed keeps a working de
 | `REVERB_PORT` | `443` |
 | `REVERB_SCHEME` | `https` |
 | `POWERSCHOOL_ADDRESS` | `https://powerschool.example.org` |
-| `POWERSCHOOL_CLIENT_ID` / `POWERSCHOOL_CLIENT_SECRET` | From the plugin, once installed in PowerSchool |
 
 #### Pull and start
 
@@ -276,7 +275,7 @@ Clone the repository into `/opt/tidal-ptc` and run the setup script there (or pa
 
 ## 4. Finish the installation
 
-Visit `https://ptc.example.org/install`. The installer walks you through downloading the PowerSchool plugin, entering the tenant details and creating the first administrator. If you didn't have the PowerSchool credentials when you ran the script, add them to `.env` now and run `docker compose up -d` so the containers pick them up.
+Visit `https://ptc.example.org/install`. The installer walks you through downloading the PowerSchool plugin, entering the tenant details and creating the first administrator.
 
 ## 5. Day-to-day operations
 
