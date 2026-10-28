@@ -167,8 +167,9 @@ chown "$APP_USER:$APP_USER" "$APP_DIR"
 
 if [[ -d "$APP_DIR/.git" ]]; then
     UPDATING=1
-    # Show the maintenance page while the update runs
-    as_app php artisan down --retry=15 || true
+    # Show the maintenance page while the update runs (skipped if an earlier
+    # run stopped before composer install)
+    [[ -f "$APP_DIR/vendor/autoload.php" ]] && { as_app php artisan down --retry=15 || true; }
     trap 'as_app php artisan up > /dev/null 2>&1 || true' EXIT
     as_app git fetch --tags --force origin
 else
