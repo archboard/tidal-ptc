@@ -129,6 +129,18 @@ if [[ "$NO_TLS" != 1 ]]; then
     ask "Email for Let's Encrypt notices (optional, Enter to skip): " EMAIL
 fi
 
+# Without swap a 1 GB server runs out of memory, thrashes and stops responding;
+# swap lets it run slower instead
+mem_mb=$(awk '/MemTotal/ { print int($2 / 1024) }' /proc/meminfo)
+if (( mem_mb < 1500 )) && [[ -z "$(swapon --noheadings)" ]]; then
+    warn "Only ${mem_mb} MB of RAM (2 GB recommended). Adding a 2 GB swap file at /swapfile."
+    fallocate -l 2G /swapfile
+    chmod 600 /swapfile
+    mkswap /swapfile > /dev/null
+    swapon /swapfile
+    grep -qF /swapfile /etc/fstab || echo '/swapfile none swap sw 0 0' >> /etc/fstab
+fi
+
 export DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a
 
 apt-get update -q

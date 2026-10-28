@@ -14,7 +14,7 @@ set -euo pipefail
 
 DOMAIN="${DOMAIN:-}"
 EMAIL="${EMAIL:-}"
-VERSION="${VERSION:-main}"
+REF="${REF:-main}"
 REPO="${REPO:-https://github.com/archboard/tidal-ptc.git}"
 APP_DIR="${APP_DIR:-/var/www/tidal-ptc}"
 APP_USER="${APP_USER:-tidal}"
@@ -45,7 +45,7 @@ while [[ $# -gt 0 ]]; do
     case "$1" in
         --domain) DOMAIN="$2"; shift 2 ;;
         --email) EMAIL="$2"; shift 2 ;;
-        --version) VERSION="$2"; shift 2 ;;
+        --version) REF="$2"; shift 2 ;;
         --no-tls) NO_TLS=1; shift ;;
         --dir) APP_DIR="$2"; shift 2 ;;
         -h|--help) usage; exit 0 ;;
@@ -159,7 +159,7 @@ systemctl enable --now postgresql redis-server nginx "php$PHP-fpm" cron
 
 # ---------------------------------------------------------------------------
 
-step "Fetching the code ($VERSION)"
+step "Fetching the code ($REF)"
 
 id "$APP_USER" > /dev/null 2>&1 || useradd --create-home --home-dir "$APP_HOME" --shell /bin/bash "$APP_USER"
 mkdir -p "$APP_DIR"
@@ -177,10 +177,10 @@ else
     runuser -u "$APP_USER" -- git clone "$REPO" "$APP_DIR"
 fi
 
-as_app git checkout -q "$VERSION"
+as_app git checkout -q "$REF"
 # Branches fast-forward to the remote; tags are already exact
 if as_app git symbolic-ref -q HEAD > /dev/null; then
-    as_app git merge -q --ff-only "origin/$VERSION"
+    as_app git merge -q --ff-only "origin/$REF"
 fi
 
 # ---------------------------------------------------------------------------
@@ -468,5 +468,5 @@ Tidal PTC is installed at $APP_DIR.
 
 Next step: visit $scheme://$DOMAIN/install to download the PowerSchool plugin and create the first administrator.
 
-Re-run this script at any time to update to the latest $VERSION.
+Re-run this script at any time to update to the latest $REF.
 EOF
