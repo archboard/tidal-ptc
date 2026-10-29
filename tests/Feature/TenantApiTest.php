@@ -143,3 +143,12 @@ it('returns 404 for a license that is not a UUID', function () {
     $this->putJson('/api/tenants/not-a-uuid', $this->body, $this->headers)
         ->assertNotFound();
 });
+
+it('logs activity without a causer for every request a long-lived worker serves', function () {
+    $this->putJson("/api/tenants/{$this->license}", $this->body, $this->headers)->assertCreated();
+
+    // Octane drops scoped instances, the activity log's causer resolver among them, between requests
+    app()->forgetScopedInstances();
+
+    $this->putJson("/api/tenants/{$this->license}", [...$this->body, 'school_limit' => 8], $this->headers)->assertOk();
+});

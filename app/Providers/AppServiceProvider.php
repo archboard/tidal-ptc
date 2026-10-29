@@ -55,8 +55,11 @@ class AppServiceProvider extends ServiceProvider
         // TLS terminates at the proxy, so a worker only sees http unless X-Forwarded-Proto arrives; never emit http links in production
         URL::forceHttps($this->app->isProduction());
 
-        // The machine-token API guard authenticates a GenericUser, which the activity log can't reference
-        app(CauserResolver::class)->resolveUsing(fn () => auth()->user() instanceof User ? auth()->user() : null);
+        // The machine-token API guard authenticates a GenericUser, which the activity log can't reference. The resolver
+        // is scoped, so Octane builds a fresh one each request: set the override whenever it's resolved, not once at boot
+        $this->app->resolving(CauserResolver::class, fn (CauserResolver $resolver) => $resolver->resolveUsing(
+            fn () => auth()->user() instanceof User ? auth()->user() : null,
+        ));
 
         $this->addRequestMarcos()
             ->addStringMacros();
