@@ -315,7 +315,7 @@ class TimeSlot extends Model
         $notification = new TimeSlotNotification($event, TimeSlotSnapshot::fromTimeSlot($this, $previous));
 
         collect([$this->user, $this->reservedBy])
-            ->merge($this->student?->contacts ?? [])
+            ->merge($this->student->contacts ?? [])
             ->filter()
             ->unique('id')
             ->each->notify($notification);
