@@ -307,15 +307,18 @@ class TimeSlot extends Model
     }
 
     /**
-     * Notify the reserving contact and the slot's staff member. Call before clearing a reservation.
-     * Pass the previous slot when rescheduling so the old time is included.
+     * Notify the slot's staff member, the reserving user and the student's contacts, once each.
+     * Call before clearing a reservation. Pass the previous slot when rescheduling so the old time is included.
      */
     public function notifyReservation(NotificationEvent $event, ?TimeSlot $previous = null): void
     {
         $notification = new TimeSlotNotification($event, TimeSlotSnapshot::fromTimeSlot($this, $previous));
 
-        $this->user->notify($notification);
-        $this->reservedBy?->notify($notification);
+        collect([$this->user, $this->reservedBy])
+            ->merge($this->student?->contacts ?? [])
+            ->filter()
+            ->unique('id')
+            ->each->notify($notification);
     }
 
     /** @return array<string, mixed> */

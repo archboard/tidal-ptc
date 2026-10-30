@@ -313,3 +313,23 @@ it('falls back to the teacher room when a slot has no location', function () {
 
     expect($ics)->toContain('LOCATION:B-204');
 });
+
+it('notifies the teacher, the booking admin and every guardian when staff book', function () {
+    $this->user->update(['user_type' => UserType::staff]);
+    $coGuardian = seedGuardian($this->student);
+
+    $this->actingAs($this->user);
+    fullPermissions()
+        ->postJson(route('reservations.store', $this->slot), ['student_id' => $this->student->id])
+        ->assertOk();
+
+    assertNotified(NotificationEvent::slot_booked, $this->teacher, $this->user, $this->guardian, $coGuardian);
+});
+
+it('notifies a booking guardian once', function () {
+    $this->actingAs($this->guardian)
+        ->postJson(route('reservations.store', $this->slot), ['student_id' => $this->student->id])
+        ->assertOk();
+
+    Notification::assertSentToTimes($this->guardian, TimeSlotNotification::class, 1);
+});
