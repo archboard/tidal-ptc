@@ -515,5 +515,6 @@
     "Continue": "Continuar",
     "Too many attempts. Please try again in a minute.": "Demasiados intentos. Inténtelo de nuevo en un minuto.",
     "Default meeting URL": "URL de reunión predeterminada",
-    "Used for online conferences when a time slot has no meeting URL.": "Se usa para las conferencias en línea cuando el horario no tiene una URL de reunión."
+    "Used for online conferences when a time slot has no meeting URL.": "Se usa para las conferencias en línea cuando el horario no tiene una URL de reunión.",
+    "Notes: :notes": "Notas: :notes"
 }

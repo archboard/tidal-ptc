@@ -515,5 +515,6 @@
     "Continue": "متابعة",
     "Too many attempts. Please try again in a minute.": "محاولات كثيرة جدًا. يرجى المحاولة مرة أخرى بعد دقيقة.",
     "Default meeting URL": "عنوان الاجتماع الافتراضي",
-    "Used for online conferences when a time slot has no meeting URL.": "يُستخدم للاجتماعات عبر الإنترنت عندما لا يحتوي الموعد على رابط اجتماع."
+    "Used for online conferences when a time slot has no meeting URL.": "يُستخدم للاجتماعات عبر الإنترنت عندما لا يحتوي الموعد على رابط اجتماع.",
+    "Notes: :notes": "ملاحظات: :notes"
 }

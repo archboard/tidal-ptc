@@ -333,3 +333,12 @@ it('notifies a booking guardian once', function () {
 
     Notification::assertSentToTimes($this->guardian, TimeSlotNotification::class, 1);
 });
+
+it('includes the teacher notes in the email', function () {
+    $this->slot->update(['teacher_notes' => 'Bring last term\'s report']);
+    $this->slot->refresh()->load('user', 'student', 'reservedBy');
+
+    $lines = collect((new TimeSlotNotification(NotificationEvent::slot_updated, TimeSlotSnapshot::fromTimeSlot($this->slot)))->toMail($this->guardian)->introLines)->implode("\n");
+
+    expect($lines)->toContain('Notes: Bring last term\'s report');
+});

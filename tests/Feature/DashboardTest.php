@@ -38,11 +38,12 @@ it('shows the teacher default meeting URL and room on reservations with none of 
     $teacher = seedUser(['user_type' => UserType::staff, 'meeting_url' => 'https://meet.example.com/teacher', 'room' => 'B-204']);
     $student = seedSection($teacher)->students->first();
     $guardian = seedGuardian($student);
-    seedBookableSlot($teacher, ['student_id' => $student->id, 'reserved_by' => $guardian->id, 'is_online' => true, 'meeting_url' => null, 'location' => null]);
+    seedBookableSlot($teacher, ['student_id' => $student->id, 'reserved_by' => $guardian->id, 'is_online' => true, 'meeting_url' => null, 'location' => null, 'teacher_notes' => 'Bring a laptop']);
 
     $this->actingAs($guardian)
         ->get(route('home'))
         ->assertInertia(fn (AssertableInertia $page) => $page
+            ->where('reservations.0.teacher_notes', 'Bring a laptop')
             ->where('reservations.0.join_url', 'https://meet.example.com/teacher')
             ->where('reservations.0.where', 'B-204')
             ->where('reservations.0.meeting_url', null)

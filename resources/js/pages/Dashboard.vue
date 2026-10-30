@@ -35,6 +35,7 @@
                   <span v-else>{{ __('Online') }}</span>
                 </template>
                 <template v-else>{{ slot.where || '—' }}</template>
+                <p v-if="slot.teacher_notes" class="whitespace-pre-line text-sm text-gray-500 dark:text-gray-400">{{ slot.teacher_notes }}</p>
               </Td>
             </tr>
           </Tbody>

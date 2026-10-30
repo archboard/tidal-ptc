@@ -515,5 +515,6 @@
     "Continue": "继续",
     "Too many attempts. Please try again in a minute.": "尝试次数过多。请一分钟后再试。",
     "Default meeting URL": "默认会议链接",
-    "Used for online conferences when a time slot has no meeting URL.": "当时间段没有会议链接时，用于在线会议。"
+    "Used for online conferences when a time slot has no meeting URL.": "当时间段没有会议链接时，用于在线会议。",
+    "Notes: :notes": "备注: :notes"
 }

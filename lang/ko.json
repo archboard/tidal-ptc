@@ -515,5 +515,6 @@
     "Continue": "계속",
     "Too many attempts. Please try again in a minute.": "시도 횟수가 너무 많습니다. 1분 후에 다시 시도하세요.",
     "Default meeting URL": "기본 회의 URL",
-    "Used for online conferences when a time slot has no meeting URL.": "시간대에 회의 URL이 없을 때 온라인 면담에 사용됩니다."
+    "Used for online conferences when a time slot has no meeting URL.": "시간대에 회의 URL이 없을 때 온라인 면담에 사용됩니다.",
+    "Notes: :notes": "메모: :notes"
 }
