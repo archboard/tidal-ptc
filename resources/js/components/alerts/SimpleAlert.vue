@@ -13,7 +13,7 @@
         <div class="ml-auto pl-3">
           <div class="-mx-1.5 -my-1.5">
             <button @click.prevent="show = false" type="button" class="inline-flex rounded-lg p-1.5 focus:outline-hidden focus:ring-2 focus:ring-offset-2" :class="dismissColor">
-              <span class="sr-only">Dismiss</span>
+              <span class="sr-only">{{ __('Dismiss') }}</span>
               <XMarkIcon class="h-5 w-5" aria-hidden="true" />
             </button>
           </div>

@@ -516,5 +516,17 @@
     "Too many attempts. Please try again in a minute.": "試行回数が多すぎます。1分後にもう一度お試しください。",
     "Default meeting URL": "既定の会議URL",
     "Used for online conferences when a time slot has no meeting URL.": "時間枠に会議URLが設定されていない場合、オンライン面談で使用されます。",
-    "Notes: :notes": "メモ: :notes"
+    "Notes: :notes": "メモ: :notes",
+    "Ok": "OK",
+    "Dismiss": "閉じる",
+    "Breadcrumb": "パンくずリスト",
+    "Home": "ホーム",
+    "Sidebar": "サイドバー",
+    "Remove filter": "フィルターを削除",
+    "Delete filter": "フィルターを削除",
+    "Show or hide filter": "フィルターの表示/非表示",
+    "Search results": "結果を検索",
+    "Reset filters": "フィルターをリセット",
+    "Clear date": "日付をクリア",
+    "Clear selection": "選択をクリア"
 }

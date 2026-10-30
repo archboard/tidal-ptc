@@ -516,5 +516,17 @@
     "Too many attempts. Please try again in a minute.": "محاولات كثيرة جدًا. يرجى المحاولة مرة أخرى بعد دقيقة.",
     "Default meeting URL": "عنوان الاجتماع الافتراضي",
     "Used for online conferences when a time slot has no meeting URL.": "يُستخدم للاجتماعات عبر الإنترنت عندما لا يحتوي الموعد على رابط اجتماع.",
-    "Notes: :notes": "ملاحظات: :notes"
+    "Notes: :notes": "ملاحظات: :notes",
+    "Ok": "موافق",
+    "Dismiss": "تجاهل",
+    "Breadcrumb": "مسار التنقل",
+    "Home": "الرئيسية",
+    "Sidebar": "الشريط الجانبي",
+    "Remove filter": "إزالة عامل التصفية",
+    "Delete filter": "حذف عامل التصفية",
+    "Show or hide filter": "إظهار أو إخفاء عامل التصفية",
+    "Search results": "البحث في النتائج",
+    "Reset filters": "إعادة تعيين عوامل التصفية",
+    "Clear date": "مسح التاريخ",
+    "Clear selection": "مسح التحديد"
 }

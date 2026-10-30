@@ -516,5 +516,17 @@
     "Too many attempts. Please try again in a minute.": "Demasiados intentos. Inténtelo de nuevo en un minuto.",
     "Default meeting URL": "URL de reunión predeterminada",
     "Used for online conferences when a time slot has no meeting URL.": "Se usa para las conferencias en línea cuando el horario no tiene una URL de reunión.",
-    "Notes: :notes": "Notas: :notes"
+    "Notes: :notes": "Notas: :notes",
+    "Ok": "Aceptar",
+    "Dismiss": "Descartar",
+    "Breadcrumb": "Ruta de navegación",
+    "Home": "Inicio",
+    "Sidebar": "Barra lateral",
+    "Remove filter": "Quitar filtro",
+    "Delete filter": "Eliminar filtro",
+    "Show or hide filter": "Mostrar u ocultar filtro",
+    "Search results": "Buscar resultados",
+    "Reset filters": "Restablecer filtros",
+    "Clear date": "Borrar fecha",
+    "Clear selection": "Borrar selección"
 }

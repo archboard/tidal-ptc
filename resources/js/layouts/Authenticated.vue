@@ -89,7 +89,7 @@
         </div>
 
         <div class="mt-5 flex grow flex-col">
-          <nav class="flex-1 space-y-8 px-2" aria-label="Sidebar">
+          <nav class="flex-1 space-y-8 px-2" :aria-label="__('Sidebar')">
             <div class="space-y-1">
               <component
                 v-for="item in props.navigation"

@@ -1,5 +1,5 @@
 <template>
-  <nav :class="['flex bg-white dark:bg-gray-900', { 'md:hidden': pages.length === 0 }]" aria-label="Breadcrumb">
+  <nav :class="['flex bg-white dark:bg-gray-900', { 'md:hidden': pages.length === 0 }]" :aria-label="__('Breadcrumb')">
     <Container class="w-full">
       <ol role="list" class="flex w-full space-x-4 py-4">
         <li class="flex md:hidden">
@@ -12,7 +12,7 @@
           <div class="flex items-center">
             <InertiaLink href="/" class="text-gray-400 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-100">
               <HomeIcon class="h-5 w-5 shrink-0" aria-hidden="true" />
-              <span class="sr-only">Home</span>
+              <span class="sr-only">{{ __('Home') }}</span>
             </InertiaLink>
           </div>
         </li>
