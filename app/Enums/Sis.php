@@ -26,13 +26,17 @@ enum Sis: string
         );
     }
 
-    /** @return array<int, array{label: string, value: string}> */
+    /**
+     * Providers that can be chosen. ClassLink is not implemented yet.
+     *
+     * @return array<int, array{label: string, value: string}>
+     */
     public static function selectOptions(): array
     {
         return array_map(fn (Sis $sis) => [
             'label' => $sis->label(),
             'value' => $sis->value,
-        ], Sis::cases());
+        ], [self::PS]);
     }
 
     public function label(): string
