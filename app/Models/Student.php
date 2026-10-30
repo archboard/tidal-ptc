@@ -133,9 +133,14 @@ class Student extends Model implements ExistsInSis, Filterable
     /**
      * Whether this student may book a conference with the given staff member:
      * enrolled in a bookable section they teach, or the staff member owns time slots outright.
+     * Never when booking is disabled for the staff member.
      */
     public function canMeetWith(User $staff): bool
     {
+        if ($staff->can_book === false) {
+            return false;
+        }
+
         if ($staff->can(Permission::ownTimeSlots)) {
             return true;
         }

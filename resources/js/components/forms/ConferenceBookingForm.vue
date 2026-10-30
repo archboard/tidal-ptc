@@ -41,6 +41,7 @@
     <form v-if="selected" @submit.prevent="submit" class="mt-6 space-y-4">
       <p class="font-medium">{{ selected.range_display }}</p>
       <p v-if="selected.location" class="text-sm">{{ __('Location') }}: {{ selected.location }}</p>
+      <p v-if="selected.teacher_notes" class="whitespace-pre-line text-sm text-gray-500 dark:text-gray-400">{{ selected.teacher_notes }}</p>
 
       <FormField v-model="form.contact_notes" :error="form.errors.contact_notes" component="AppTextarea" :help="__('Anything you would like to discuss?')">
         {{ __('Notes') }}

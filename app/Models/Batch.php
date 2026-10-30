@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\ActivityEvent;
+use App\Enums\NotificationEvent;
 use App\Traits\BelongsToSchool;
 use App\Traits\BelongsToTenant;
 use App\Traits\BelongsToUser;
@@ -68,6 +70,30 @@ class Batch extends Model
             'id',
             'user_id'
         );
+    }
+
+    /**
+     * Update the slots in the window given by `starts_at`/`ends_at`, log it,
+     * and notify the contacts of reserved slots that changed notifiably.
+     *
+     * @param  array<string, mixed>  $attributes
+     */
+    public function updateTimeSlotsAndNotify(array $attributes): void
+    {
+        $affected = $this->timeSlots()
+            ->where('starts_at', $attributes['starts_at'])
+            ->where('ends_at', $attributes['ends_at'])
+            ->reserved()
+            ->get()
+            ->filter(fn (TimeSlot $slot) => $slot->fill($attributes)->isDirty(TimeSlot::NOTIFIABLE_CHANGES));
+
+        $this->updateTimeSlots($attributes);
+        ActivityEvent::batch_updated->log($this, $attributes);
+
+        $affected->each(function (TimeSlot $slot) {
+            $slot->refresh()->notifyReservation(NotificationEvent::slot_updated);
+            $slot->update(['contact_reminded_at' => null, 'staff_reminded_at' => null]);
+        });
     }
 
     public function fullCalendarEventUrl(): string

@@ -31,10 +31,11 @@
               <Td class="whitespace-nowrap">{{ slot.user?.name }}</Td>
               <Td>
                 <template v-if="slot.requested_online || slot.is_online">
-                  <AppLink v-if="slot.meeting_url" :href="slot.meeting_url" is="a" target="_blank" rel="noopener">{{ __('Join video call') }}</AppLink>
+                  <AppLink v-if="slot.join_url" :href="slot.join_url" is="a" target="_blank" rel="noopener">{{ __('Join video call') }}</AppLink>
                   <span v-else>{{ __('Online') }}</span>
                 </template>
-                <template v-else>{{ slot.location || '—' }}</template>
+                <template v-else>{{ slot.where || '—' }}</template>
+                <p v-if="slot.teacher_notes" class="whitespace-pre-line text-sm text-gray-500 dark:text-gray-400">{{ slot.teacher_notes }}</p>
               </Td>
             </tr>
           </Tbody>
@@ -212,7 +213,7 @@ const teacherRows = (student) => {
       bookable: false,
     }).get(teacher.id)
     row.courses.push(section.course?.name)
-    row.bookable ||= section.can_book && section.course?.can_book
+    row.bookable ||= section.can_book && section.course?.can_book && section.teacher_can_book
   })
   props.otherStaff.forEach(staff => rows.set(`staff-${staff.id}`, { key: `staff-${staff.id}`, courses: [], teacher: staff, label: staff.name, bookable: true }))
   return [...rows.values()]

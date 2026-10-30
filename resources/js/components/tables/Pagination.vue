@@ -17,7 +17,7 @@
       </div>
       <div>
         <nav v-if="pageLinks.length > 1" class="relative z-0 inline-flex shadow-xs">
-          <component :is="prevPage ? 'InertiaLink' : 'button'" :href="prevPage" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-800 text-sm leading-5 font-medium text-gray-500 dark:text-gray-300 hover:text-gray-400 dark:hover:bg-gray-500 focus:z-10 focus:outline-hidden focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150" aria-label="Previous">
+          <component :is="prevPage ? 'InertiaLink' : 'button'" :href="prevPage" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-800 text-sm leading-5 font-medium text-gray-500 dark:text-gray-300 hover:text-gray-400 dark:hover:bg-gray-500 focus:z-10 focus:outline-hidden focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150" :aria-label="__('Previous')">
             <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
             </svg>
@@ -37,7 +37,7 @@
             {{ link.label || '...' }}
           </component>
 
-          <component :is="nextPage ? 'InertiaLink' : 'button'" :href="nextPage" class="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-800 text-sm leading-5 font-medium text-gray-500 dark:text-gray-300 hover:text-gray-400 dark:hover:bg-gray-500 focus:z-10 focus:outline-hidden focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150" aria-label="Next">
+          <component :is="nextPage ? 'InertiaLink' : 'button'" :href="nextPage" class="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-800 text-sm leading-5 font-medium text-gray-500 dark:text-gray-300 hover:text-gray-400 dark:hover:bg-gray-500 focus:z-10 focus:outline-hidden focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150" :aria-label="__('Next')">
             <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
             </svg>

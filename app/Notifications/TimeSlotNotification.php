@@ -64,6 +64,10 @@ class TimeSlotNotification extends Notification implements ShouldQueue
             $message->line(__('Where: :location', ['location' => $this->slot->location]));
         }
 
+        if ($this->slot->teacherNotes) {
+            $message->line(__('Notes: :notes', ['notes' => $this->slot->teacherNotes]));
+        }
+
         if ($this->slot->language) {
             $message->line($this->slot->translator
                 ? __('Translator: :language (:name)', ['language' => $this->slot->language, 'name' => $this->slot->translator])

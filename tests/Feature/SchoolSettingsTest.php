@@ -136,6 +136,29 @@ it('can save languages', function (array $data) {
     },
 ]);
 
+it('deletes languages that are removed', function () {
+    fullPermissions();
+    $this->school->languages()->createMany([
+        ['language' => Language::SPANISH->value, 'request_max' => 1, 'overlap_max' => 1],
+        ['language' => Language::JAPANESE->value, 'request_max' => 1, 'overlap_max' => 1],
+    ]);
+
+    $this->put(route('settings.school.languages'), ['languages' => [['code' => Language::SPANISH->value]]])
+        ->assertSessionHasNoErrors();
+
+    expect($this->school->languages()->pluck('language')->map->value->all())->toBe([Language::SPANISH->value]);
+});
+
+it('removes every language when the list is empty', function () {
+    fullPermissions();
+    $this->school->languages()->create(['language' => Language::SPANISH->value, 'request_max' => 1, 'overlap_max' => 1]);
+
+    $this->put(route('settings.school.languages'), ['languages' => []])
+        ->assertSessionHasNoErrors();
+
+    expect($this->school->languages()->count())->toBe(0);
+});
+
 it('treats empty language limits as unlimited', function () {
     fullPermissions();
 

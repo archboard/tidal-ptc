@@ -104,3 +104,23 @@ it('renders the page left-to-right in other locales', function () {
         ->assertOk()
         ->assertSee('dir="ltr"', false);
 });
+
+it('lets staff save a default meeting URL and rejects an invalid one', function () {
+    $this->user->update(['user_type' => UserType::staff]);
+    $data = [
+        'first_name' => 'John',
+        'last_name' => 'Doe',
+        'email' => 'john@example.com',
+        'timezone' => 'UTC',
+        'is_24h' => false,
+        'locale' => 'en',
+    ];
+
+    $this->put(route('settings.personal.update'), [...$data, 'meeting_url' => 'not a url'])
+        ->assertSessionHasErrors('meeting_url');
+
+    $this->put(route('settings.personal.update'), [...$data, 'meeting_url' => 'https://meet.example.com/room'])
+        ->assertSessionHasNoErrors();
+
+    expect($this->user->refresh()->meeting_url)->toBe('https://meet.example.com/room');
+});

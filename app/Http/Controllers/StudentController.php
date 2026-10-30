@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Http\Resources\StudentResource;
 use App\Models\School;
 use App\Models\Student;
@@ -16,6 +17,8 @@ class StudentController extends Controller
      */
     public function index(Request $request, School $school): Response
     {
+        $this->authorize(Permission::viewAny, Student::class);
+
         $title = __('Students');
         $filters = $request->currentFilters();
         $students = $school->students()
@@ -42,6 +45,8 @@ class StudentController extends Controller
      */
     public function show(Student $student): Response
     {
+        $this->authorize(Permission::view, $student);
+
         $title = $student->name;
         $student->load([
             'school',

@@ -81,6 +81,25 @@ it('can update batch time slots', function () {
         ->assertJsonStructure(['level', 'message', 'data']);
 });
 
+it('keeps slot ownership and batch when saving a batch and changes only the edited fields', function () {
+    $batch = seedBatch();
+    $slot = $batch->timeSlots()->first();
+    $before = $slot->only(['user_id', 'created_by', 'batch_id']);
+    $data = makeTimeSlotRequest([
+        'batch_id' => $batch->id,
+        'starts_at' => $slot->starts_at->toIso8601ZuluString(),
+        'ends_at' => $slot->ends_at->toIso8601ZuluString(),
+        'teacher_notes' => 'Updated notes',
+    ]);
+
+    $this->givePermission(Permission::update, TimeSlot::class)
+        ->putJson(route('batches.update', $batch), $data)
+        ->assertOk();
+
+    expect($slot->refresh()->only(['user_id', 'created_by', 'batch_id']))->toBe($before)
+        ->and($slot->teacher_notes)->toBe('Updated notes');
+});
+
 it('can delete batch time slots by time window', function () {
     $batch = seedBatch();
     $timeSlot = $batch->timeSlots()->first();
@@ -113,6 +132,7 @@ it('does not delete booked batch time slots', function () {
 });
 
 it('returns batch event source', function () {
+    fullPermissions();
     $batch = seedBatch();
 
     $response = $this->getJson(route('batches.event-source', $batch).'?start=2024-01-01&end=2024-12-31')

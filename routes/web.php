@@ -150,8 +150,10 @@ Route::middleware('tenant')->group(function () {
             ->name('select-school');
         Route::post('/select-school', [SchoolSelectionController::class, 'update']);
         Route::post('/sync/{model}/{id}', SyncModelController::class)
+            ->middleware('scoped_permissions')
             ->name('model.sync');
         Route::post('/search/{model}', SearchModelController::class)
+            ->middleware('scoped_permissions')
             ->name('model.search');
 
         Route::match(['get', 'post'], '/schools/{school}/event-source', SchoolEventSourceController::class)

@@ -17,7 +17,7 @@
 
       <button @click.prevent="localValue = null" v-if="!isEmpty(localValue)" type="button" class="absolute inset-y-0 right-8 flex items-center cursor-pointer">
         <TrashIcon class="h-4 w-4 text-red-400" aria-hidden="true" />
-        <span class="sr-only">Clear selection</span>
+        <span class="sr-only">{{ __('Clear selection') }}</span>
       </button>
 
       <ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2">
