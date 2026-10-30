@@ -52,7 +52,7 @@ Times on this page are in your own timezone, as the note above the calendar says
 | **Location** | The physical location, such as a room number. If empty, the teacher's configured room number is used. Hidden when the slot is online-only. |
 | **Allow online meetings** | The slot can be requested to be online. Only shown when the school allows online meetings. |
 | **Online meeting** | The slot is online-only. |
-| **Meeting URL** | The link for an online slot. When you edit an online slot, it is required unless you have a default meeting URL in your personal settings. |
+| **Meeting URL** | The link for an online slot. When you edit an online slot, it is required unless the slot's teacher has a default meeting URL in their personal settings. |
 | **Allow contacts to reserve the time slot** | If unchecked, only staff can reserve the slot for students and contacts. |
 | **Allow translator request** | Contacts can request a translator, based on the school's language settings. Only shown when the school allows translator requests. |
 
@@ -79,7 +79,7 @@ Teachers with booking disabled are skipped when slots are created. Enable bookin
 
 Click a time on the batch calendar to open **Edit time slot**.
 
-- **Save** applies the changed settings to every slot in the batch at that start and end time, including booked ones. Families are not notified of batch edits, so edit booked slots individually if the change matters to them.
+- **Save** changes only the fields you edited (teacher notes, location, online meeting settings, meeting URL, contacts can book and translator requests) on every slot in the batch at that start and end time, including booked ones. Slots keep their teacher and stay in the batch. If a booked slot's time, location, meeting URL, online setting or teacher notes change, the family and teacher are notified (see below).
 - **Delete** removes every slot in the batch at that time that has not been booked. Booked slots are kept.
 
 ### Find an existing batch

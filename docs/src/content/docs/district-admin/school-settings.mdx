@@ -28,6 +28,7 @@ The top of the page shows four counts: **Total staff**, **Total students**, **To
 
 - Select **Sync** on a count to sync just that item from your SIS.
 - Select **Sync** at the top of the page to sync the whole school: staff, students, courses and sections, in that order.
+- Syncing needs **Edit school settings**. Anyone can sync their own user from **Personal settings**.
 
 You see "Sync started. You will be notified when it finishes." Syncs run in the background on the `sis_sync` queue, and the counts refresh while a sync is running. After sections sync, student enrollment keeps syncing in the background; the sections count shows its progress as **Enrollment** with processed and total jobs.
 
@@ -75,7 +76,8 @@ The **Translator settings** card lists the languages families can request a tran
 2. Choose a **Language**. Each language can appear only once.
 3. Optionally set **Maximum requests**: the total number of upcoming translator requests allowed for this language.
 4. Optionally set **Maximum overlaps**: how many requests for this language can overlap in time.
-5. Select **Save**. You see "Language settings updated successfully."
+5. To remove a language, remove its row. Removing every language is allowed.
+6. Select **Save**. You see "Language settings updated successfully." Removed languages are deleted on save. Existing bookings keep their language, but families can no longer book with a removed one.
 </Steps>
 
 Leave a maximum empty or at `0` for no limit. When a limit is reached, families see "No more translator requests are available for this language." or "No translator is available for this language at that time." when booking.
