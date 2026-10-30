@@ -17,7 +17,7 @@ class UpdateSchoolLanguagesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'languages' => ['array'],
+            'languages' => ['present', 'array'],
             'languages.*.code' => ['required', Rule::enum(Language::class)],
             'languages.*.request_max' => ['nullable', 'integer', 'min:0'],
             'languages.*.overlap_max' => ['nullable', 'integer', 'min:0'],

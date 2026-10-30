@@ -29,6 +29,7 @@ class SaveSchoolLanguagesController extends Controller
             ['school_id', 'language'],
             ['request_max', 'overlap_max', 'language']
         );
+        $school->languages()->whereNotIn('language', array_column($languages, 'language'))->delete();
 
         session()->flash('success', __('Language settings updated successfully.'));
 
