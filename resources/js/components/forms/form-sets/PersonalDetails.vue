@@ -38,6 +38,10 @@
         {{ __('Room') }}
       </FormField>
 
+      <FormField v-if="user.user_type === UserType.staff" v-model="form.meeting_url" :error="form.errors.meeting_url" :help="__('Used for online conferences when a time slot has no meeting URL.')" type="url" class="col-span-6 sm:col-span-3">
+        {{ __('Default meeting URL') }}
+      </FormField>
+
       <FormField :error="form.errors.is_24h" :help="__('When enabled, you will see time formatted using 24 hours instead of 12. For example, 13:00 instead of 1:00pm.')" class="col-span-6">
         <template #component>
           <AppCheckbox v-model="form.is_24h">
@@ -89,6 +93,7 @@ const form = useForm({
   is_24h: user.value.is_24h,
   locale: user.value.locale ?? 'en',
   room: user.value.room,
+  meeting_url: user.value.meeting_url,
 })
 const languages = useLanguages()
 const { isDark } = useColorTheme()

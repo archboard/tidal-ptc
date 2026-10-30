@@ -30,6 +30,7 @@ class UserResource extends JsonResource
             'is_24h' => $this->resource->is_24h,
             'locale' => $this->resource->locale,
             'room' => $this->resource->room,
+            'meeting_url' => $this->resource->meeting_url,
             'sections_count' => $this->resource->sections_count,
             'alt_sections_count' => $this->resource->alt_sections_count,
             'time_slots_count' => $this->resource->time_slots_count,

@@ -31,10 +31,10 @@
               <Td class="whitespace-nowrap">{{ slot.user?.name }}</Td>
               <Td>
                 <template v-if="slot.requested_online || slot.is_online">
-                  <AppLink v-if="slot.meeting_url" :href="slot.meeting_url" is="a" target="_blank" rel="noopener">{{ __('Join video call') }}</AppLink>
+                  <AppLink v-if="slot.join_url" :href="slot.join_url" is="a" target="_blank" rel="noopener">{{ __('Join video call') }}</AppLink>
                   <span v-else>{{ __('Online') }}</span>
                 </template>
-                <template v-else>{{ slot.location || '—' }}</template>
+                <template v-else>{{ slot.where || '—' }}</template>
               </Td>
             </tr>
           </Tbody>

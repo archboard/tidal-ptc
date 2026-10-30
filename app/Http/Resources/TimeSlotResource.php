@@ -47,6 +47,8 @@ class TimeSlotResource extends JsonResource
             'user' => new PublicUserResource($this->whenLoaded('user')),
             'location' => $this->resource->location,
             'meeting_url' => $this->resource->meeting_url,
+            'join_url' => $this->whenLoaded('user', fn () => $this->resource->meeting_url ?: $this->resource->user->meeting_url),
+            'where' => $this->whenLoaded('user', fn () => $this->resource->location ?: $this->resource->user->room),
             'allow_online_meetings' => $this->resource->allow_online_meetings,
             'is_online' => $this->resource->is_online,
             'requested_online' => $this->resource->requested_online,

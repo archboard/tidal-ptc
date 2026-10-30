@@ -513,5 +513,7 @@
     "Enter the four character code your district gave you to continue to its login page.": "أدخل الرمز المكون من أربعة أحرف الذي قدمته لك منطقتك التعليمية للمتابعة إلى صفحة تسجيل الدخول الخاصة بها.",
     "District code": "رمز المنطقة التعليمية",
     "Continue": "متابعة",
-    "Too many attempts. Please try again in a minute.": "محاولات كثيرة جدًا. يرجى المحاولة مرة أخرى بعد دقيقة."
+    "Too many attempts. Please try again in a minute.": "محاولات كثيرة جدًا. يرجى المحاولة مرة أخرى بعد دقيقة.",
+    "Default meeting URL": "عنوان الاجتماع الافتراضي",
+    "Used for online conferences when a time slot has no meeting URL.": "يُستخدم للاجتماعات عبر الإنترنت عندما لا يحتوي الموعد على رابط اجتماع."
 }

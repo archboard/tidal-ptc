@@ -303,3 +303,16 @@ it('does not overwrite translator notes when updating a batch', function () {
 
     expect($slot->refresh()->translator_notes)->toBe('keep');
 });
+
+it('allows an online slot without a URL once the user has a default meeting URL', function () {
+    $this->user->school->update(['allow_online_meetings' => true]);
+    $timeSlot = TimeSlot::factory()->for($this->user)->create();
+    $data = makeTimeSlotRequest(['is_online' => true, 'meeting_url' => null]);
+
+    $this->putJson(route('time-slots.update', $timeSlot), $data)
+        ->assertJsonValidationErrors('meeting_url');
+
+    $this->user->update(['meeting_url' => 'https://meet.example.com/room']);
+
+    $this->putJson(route('time-slots.update', $timeSlot), $data)->assertOk();
+});

@@ -513,5 +513,7 @@
     "Enter the four character code your district gave you to continue to its login page.": "学区から提供された4文字のコードを入力して、ログインページに進んでください。",
     "District code": "学区コード",
     "Continue": "続行",
-    "Too many attempts. Please try again in a minute.": "試行回数が多すぎます。1分後にもう一度お試しください。"
+    "Too many attempts. Please try again in a minute.": "試行回数が多すぎます。1分後にもう一度お試しください。",
+    "Default meeting URL": "既定の会議URL",
+    "Used for online conferences when a time slot has no meeting URL.": "時間枠に会議URLが設定されていない場合、オンライン面談で使用されます。"
 }
