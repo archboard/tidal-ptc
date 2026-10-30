@@ -1,0 +1,336 @@
+---
+import '../styles/landing.css';
+import { Icon } from '@astrojs/starlight/components';
+import Screenshot from '../components/Screenshot.astro';
+import archboard from '../assets/archboard.svg?raw';
+import { BILLING_URL, DEMO_URL, GITHUB_URL, HOSTING_TIERS, SITE_URL } from '../config';
+import { faq } from '../faq';
+
+const title = 'Tidal PTC: parent-teacher conference scheduling with PowerSchool';
+const description =
+  'Open source parent-teacher conference scheduler. PowerSchool SSO and sync, translator requests, reminders and six languages. Self-host free or buy hosting.';
+const canonical = `${SITE_URL}/`;
+
+const features = [
+  { icon: 'clock', title: 'Time slots and batches', body: 'Create one slot or a whole week of them at once, in person or online, with buffers and booking windows.', href: '/staff/time-slots/' },
+  { icon: 'approve-check-circle', title: 'Guardian booking', body: 'Families pick a student, see open times and book, move or cancel a conference from their dashboard.', href: '/guardians/booking/' },
+  { icon: 'comment-alt', title: 'Translator requests', body: 'Families ask for a translator in the languages your school offers. Staff assign translators and export schedules.', href: '/staff/translators/' },
+  { icon: 'email', title: 'Reminders and notifications', body: 'Emails for booked, moved and cancelled conferences, plus a reminder digest at the lead time each person chooses.', href: '/guardians/reminders/' },
+  { icon: 'puzzle', title: 'PowerSchool sync and SSO', body: 'Install the plugin and schools, sections, students, teachers and contacts sync. Everyone signs in with PowerSchool.', href: '/integrations/powerschool/' },
+  { icon: 'padlock', title: 'Permissions per school', body: 'Grant exactly what each staff member can do, school by school, from a single permissions matrix.', href: '/district-admin/users-and-permissions/' },
+  { icon: 'list-format', title: 'Activity log', body: 'Every reservation, time slot change, setting and sent notification is recorded, with history per slot.', href: '/district-admin/activity-log/' },
+  { icon: 'translate', title: 'Multilingual', body: 'English, Spanish, Chinese, Korean, Japanese and Arabic, with a right-to-left layout. Each user picks their own.', href: '/reference/languages/' },
+] as const;
+
+const roles = [
+  {
+    title: 'District admin',
+    steps: ['Install the PowerSchool plugin and let it sync.', 'Turn on booking and languages for each school.', 'Give staff the permissions they need.'],
+    href: '/district-admin/tenant-settings/',
+  },
+  {
+    title: 'Teacher',
+    steps: ['Sign in with PowerSchool.', 'Create your conference times, or use the ones your school made.', 'See who booked and get an email when it changes.'],
+    href: '/teachers/signing-in/',
+  },
+  {
+    title: 'Parent or guardian',
+    steps: ['Sign in with your PowerSchool parent account.', 'Choose your student and a teacher.', 'Book a time, and ask for a translator if you need one.'],
+    href: '/guardians/signing-in/',
+  },
+];
+
+const showcase = [
+  { id: 'guardian', label: 'Guardian dashboard', name: 'dashboard-guardian', alt: 'A guardian’s dashboard listing their students’ upcoming conferences' },
+  { id: 'slots', label: 'Time slots', name: 'time-slots-teacher', alt: 'A teacher’s time slots calendar with three days of open conference times' },
+  { id: 'translators', label: 'Translators', name: 'translator-requests', alt: 'The translator requests list with assigned translators' },
+  { id: 'permissions', label: 'Users', name: 'users', alt: 'The users list for a school, with staff and guardians' },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'SoftwareApplication',
+      name: 'Tidal PTC',
+      applicationCategory: 'EducationalApplication',
+      operatingSystem: 'Web',
+      description,
+      url: canonical,
+      license: 'https://www.gnu.org/licenses/agpl-3.0.html',
+      codeRepository: GITHUB_URL,
+      publisher: { '@type': 'Organization', name: 'Archboard', url: 'https://archboard.io' },
+      offers: [
+        { '@type': 'Offer', name: 'Self-hosted', price: '0', priceCurrency: 'USD' },
+        { '@type': 'Offer', name: 'Cloud', price: '400', priceCurrency: 'USD', url: BILLING_URL },
+      ],
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={`${SITE_URL}/og.png`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {/* Same storage key and attribute as Starlight's theme picker, so the choice carries into the docs */}
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem('starlight-theme');
+        const theme = stored || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+  </head>
+  <body>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 btn-primary">Skip to content</a>
+
+    <header class="sticky top-0 z-40 border-b border-gray-200 bg-white/85 backdrop-blur dark:border-gray-800 dark:bg-gray-950/85">
+      <nav class="mx-auto flex max-w-6xl items-center gap-6 px-6 py-3" aria-label="Main">
+        <a href="/" class="flex items-center gap-2.5 font-semibold text-gray-900 no-underline dark:text-white">
+          <span class="size-7 text-primary-700 dark:text-primary-400 [&>svg]:size-full" set:html={archboard} aria-hidden="true" />
+          Tidal PTC
+        </a>
+        <ul class="hidden items-center gap-6 text-sm text-gray-600 md:flex dark:text-gray-300">
+          <li><a class="hover:text-gray-900 dark:hover:text-white" href="/getting-started/overview/">Docs</a></li>
+          <li><a class="hover:text-gray-900 dark:hover:text-white" href="#features">Features</a></li>
+          <li><a class="hover:text-gray-900 dark:hover:text-white" href="#pricing">Pricing</a></li>
+          <li><a class="hover:text-gray-900 dark:hover:text-white" href={GITHUB_URL}>GitHub</a></li>
+        </ul>
+        <div class="ms-auto flex items-center gap-3">
+          <button id="theme-toggle" type="button" class="btn px-3 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-900" aria-label="Theme: auto">
+            <Icon name="laptop" class="theme-auto" size="1.25rem" />
+            <Icon name="sun" class="theme-light hidden" size="1.25rem" />
+            <Icon name="moon" class="theme-dark hidden" size="1.25rem" />
+          </button>
+          <a href={BILLING_URL} class="btn-primary">Buy hosting</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="mx-auto max-w-6xl px-6 pt-20 pb-16 text-center md:pt-28">
+        <p class="mb-5 inline-flex items-center gap-2 rounded-full border border-primary-200 bg-primary-50 px-3 py-1 text-sm text-primary-800 dark:border-primary-800 dark:bg-primary-950 dark:text-primary-200">
+          Open source · Built for PowerSchool districts
+        </p>
+        <h1 class="mx-auto max-w-4xl font-display text-5xl leading-[1.05] tracking-tight text-gray-950 md:text-7xl dark:text-white">
+          Parent-teacher conferences, scheduled without the chaos.
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-300">
+          Tidal PTC lets schools publish conference times and families book them in a few clicks. It signs everyone in with
+          PowerSchool, handles translator requests and sends the reminders for you.
+        </p>
+        <div class="mt-9 flex flex-wrap justify-center gap-3">
+          <a href={BILLING_URL} class="btn-primary">Buy hosting</a>
+          <a href="/getting-started/overview/" class="btn-secondary">Read the docs</a>
+          <a href={DEMO_URL} class="btn text-primary-700 hover:underline dark:text-primary-300">Try the demo →</a>
+        </div>
+        <div class="mx-auto mt-16 max-w-5xl rounded-[1.25rem] border border-gray-200 bg-white p-2 shadow-2xl shadow-primary-900/10 dark:border-gray-800 dark:bg-gray-900 [&_figure]:m-0">
+          <Screenshot name="dashboard-admin" alt="The Tidal PTC dashboard for a school administrator" />
+        </div>
+      </section>
+
+      <section aria-label="Highlights" class="border-y border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900/40">
+        <ul class="mx-auto grid max-w-6xl gap-6 px-6 py-8 text-sm text-gray-600 sm:grid-cols-3 dark:text-gray-300">
+          <li class="flex items-center justify-center gap-3"><Icon name="puzzle" class="text-primary-600 dark:text-primary-400" size="1.25rem" /> PowerSchool SSO and data sync</li>
+          <li class="flex items-center justify-center gap-3"><Icon name="github" class="text-primary-600 dark:text-primary-400" size="1.25rem" /> Open source, AGPL-3.0</li>
+          <li class="flex items-center justify-center gap-3"><Icon name="translate" class="text-primary-600 dark:text-primary-400" size="1.25rem" /> Six languages, right-to-left ready</li>
+        </ul>
+      </section>
+
+      <section id="features" class="mx-auto max-w-6xl scroll-mt-20 px-6 py-24">
+        <h2 class="font-display text-4xl text-gray-950 md:text-5xl dark:text-white">Everything conference week needs</h2>
+        <p class="mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-300">From the first time slot to the last reminder email, in one place your staff and families already know how to sign in to.</p>
+        <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {features.map((feature) => (
+            <li class="card group relative p-6 transition-colors hover:border-primary-400 dark:hover:border-primary-700">
+              <Icon name={feature.icon} class="text-primary-600 dark:text-primary-400" size="1.5rem" />
+              <h3 class="mt-4 font-semibold text-gray-950 dark:text-white">
+                <a href={feature.href} class="after:absolute after:inset-0">{feature.title}</a>
+              </h3>
+              <p class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{feature.body}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="border-y border-gray-200 bg-white py-24 dark:border-gray-800 dark:bg-gray-900/40">
+        <div class="mx-auto max-w-6xl px-6">
+          <h2 class="font-display text-4xl text-gray-950 md:text-5xl dark:text-white">How it works</h2>
+          <div class="mt-12 grid gap-5 md:grid-cols-3">
+            {roles.map((role) => (
+              <div class="card flex flex-col p-7">
+                <h3 class="text-lg font-semibold text-gray-950 dark:text-white">{role.title}</h3>
+                <ol class="mt-5 flex-1 space-y-4">
+                  {role.steps.map((step, i) => (
+                    <li class="flex gap-3 text-gray-600 dark:text-gray-300">
+                      <span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary-100 text-sm font-semibold text-primary-800 dark:bg-primary-900 dark:text-primary-200">{i + 1}</span>
+                      {step}
+                    </li>
+                  ))}
+                </ol>
+                <a href={role.href} class="mt-6 text-sm font-medium text-primary-700 hover:underline dark:text-primary-400">Read the {role.title.toLowerCase()} guide →</a>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-6xl px-6 py-24">
+        <h2 class="font-display text-4xl text-gray-950 md:text-5xl dark:text-white">See it in action</h2>
+        <div class="showcase mt-10">
+          <div role="radiogroup" aria-label="Screens" class="flex flex-wrap gap-2">
+            {showcase.map((item, i) => (
+              <label class="cursor-pointer rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 has-checked:border-primary-500 has-checked:bg-primary-50 has-checked:text-primary-900 has-focus-visible:outline-2 has-focus-visible:outline-primary-500 dark:border-gray-800 dark:text-gray-300 dark:has-checked:border-primary-700 dark:has-checked:bg-primary-950 dark:has-checked:text-primary-100">
+                <input class="sr-only" type="radio" name="showcase" value={item.id} checked={i === 0} />
+                {item.label}
+              </label>
+            ))}
+          </div>
+          {showcase.map((item) => (
+            <div class="showcase-panel mt-6 rounded-[1.25rem] border border-gray-200 bg-white p-2 dark:border-gray-800 dark:bg-gray-900 [&_figure]:m-0" data-panel={item.id}>
+              <Screenshot name={item.name} alt={item.alt} />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="pricing" class="scroll-mt-20 border-y border-gray-200 bg-white py-24 dark:border-gray-800 dark:bg-gray-900/40">
+        <div class="mx-auto max-w-6xl px-6">
+          <h2 class="font-display text-4xl text-gray-950 md:text-5xl dark:text-white">Host it yourself, or let us</h2>
+          <p class="mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-300">Every option runs the same complete application. Prices are per year.</p>
+          <div class="mt-12 grid gap-5 lg:grid-cols-3">
+            {HOSTING_TIERS.map((tier) => (
+              <div class:list={['card relative flex flex-col p-7', 'badge' in tier && 'border-primary-500! dark:border-primary-600!']}>
+                {'badge' in tier && (
+                  <span class="absolute -top-3 left-7 rounded-full bg-primary-600 px-3 py-0.5 text-xs font-semibold text-white dark:bg-primary-500 dark:text-gray-950">{tier.badge}</span>
+                )}
+                <h3 class="text-lg font-semibold text-gray-950 dark:text-white">{tier.name}</h3>
+                <p class="mt-3 font-display text-3xl text-gray-950 dark:text-white">{tier.price}</p>
+                {'note' in tier && <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{tier.note}</p>}
+                <p class="mt-4 text-gray-600 dark:text-gray-300">{tier.blurb}</p>
+                <ul class="mt-6 flex-1 space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                  {tier.features.map((feature) => (
+                    <li class="flex gap-2"><Icon name="approve-check" class="mt-0.5 shrink-0 text-primary-600 dark:text-primary-400" /> {feature}</li>
+                  ))}
+                </ul>
+                <a href={tier.href} class:list={['mt-8', 'badge' in tier ? 'btn-primary' : 'btn-secondary']}>{tier.cta}</a>
+              </div>
+            ))}
+          </div>
+          <p class="mt-6 text-sm text-gray-500 dark:text-gray-400">
+            Not sure which to pick? <a class="text-primary-700 hover:underline dark:text-primary-400" href="/getting-started/choosing-hosting/">Compare hosting options</a>.
+          </p>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-3xl px-6 py-24">
+        <h2 class="font-display text-4xl text-gray-950 md:text-5xl dark:text-white">Questions</h2>
+        <div class="mt-10 divide-y divide-gray-200 border-y border-gray-200 dark:divide-gray-800 dark:border-gray-800">
+          {faq.map(({ q, a }) => (
+            <details class="group py-5">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-gray-950 dark:text-white [&::-webkit-details-marker]:hidden">
+                {q}
+                <Icon name="down-caret" class="shrink-0 transition-transform group-open:rotate-180" />
+              </summary>
+              <p class="mt-3 text-gray-600 dark:text-gray-300">{a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section class="px-6 pb-24">
+        <div class="mx-auto max-w-6xl rounded-3xl bg-primary-900 px-8 py-16 text-center text-white dark:bg-primary-950 dark:ring-1 dark:ring-primary-800">
+          <h2 class="font-display text-4xl md:text-5xl">Ready for your next conference week?</h2>
+          <p class="mx-auto mt-4 max-w-xl text-primary-100">Get a hosted district running today, or install it on your own servers for free.</p>
+          <div class="mt-8 flex flex-wrap justify-center gap-3">
+            <a href={BILLING_URL} class="btn bg-white font-semibold text-primary-900 hover:bg-primary-50">Buy hosting</a>
+            <a href="/installation/requirements/" class="btn border border-primary-400/50 text-white hover:bg-primary-800">Self-host it</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-gray-200 dark:border-gray-800">
+      <div class="mx-auto grid max-w-6xl gap-8 px-6 py-12 text-sm text-gray-600 sm:grid-cols-2 md:grid-cols-4 dark:text-gray-400">
+        <div>
+          <a href="https://archboard.io" class="flex items-center gap-2 font-medium text-gray-900 dark:text-white">
+            <span class="size-5 [&>svg]:size-full" set:html={archboard} aria-hidden="true" /> Tidal PTC by Archboard
+          </a>
+          <p class="mt-3">© {new Date().getFullYear()} Archboard</p>
+        </div>
+        <nav aria-label="Docs">
+          <h2 class="font-semibold text-gray-900 dark:text-white">Docs</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a class="hover:underline" href="/getting-started/overview/">Getting started</a></li>
+            <li><a class="hover:underline" href="/installation/requirements/">Installation</a></li>
+            <li><a class="hover:underline" href="/guardians/signing-in/">Guide for families</a></li>
+          </ul>
+        </nav>
+        <nav aria-label="Project">
+          <h2 class="font-semibold text-gray-900 dark:text-white">Project</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a class="hover:underline" href={GITHUB_URL}>GitHub</a></li>
+            <li><a class="hover:underline" href="/reference/changelog/">Changelog</a></li>
+            <li><a class="hover:underline" href={`${GITHUB_URL}/blob/main/LICENSE.md`}>License (AGPL-3.0)</a></li>
+          </ul>
+        </nav>
+        <nav aria-label="Hosting">
+          <h2 class="font-semibold text-gray-900 dark:text-white">Hosting</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a class="hover:underline" href={BILLING_URL}>Buy hosting</a></li>
+            <li><a class="hover:underline" href="/cloud/billing/">Billing and renewals</a></li>
+            <li><a class="hover:underline" href="/llms.txt">llms.txt</a></li>
+          </ul>
+        </nav>
+      </div>
+    </footer>
+
+    <script>
+      const toggle = document.getElementById('theme-toggle')!;
+      const order = ['auto', 'light', 'dark'] as const;
+      type Theme = (typeof order)[number];
+
+      const apply = (theme: Theme) => {
+        const resolved = theme === 'auto' ? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : theme;
+        document.documentElement.dataset.theme = resolved;
+        theme === 'auto' ? localStorage.removeItem('starlight-theme') : localStorage.setItem('starlight-theme', theme);
+        toggle.setAttribute('aria-label', `Theme: ${theme}`);
+        for (const option of order) {
+          toggle.querySelector(`.theme-${option}`)?.classList.toggle('hidden', option !== theme);
+        }
+      };
+
+      let current: Theme = (localStorage.getItem('starlight-theme') as Theme) || 'auto';
+      apply(current);
+      toggle.addEventListener('click', () => apply((current = order[(order.indexOf(current) + 1) % order.length])));
+      matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => current === 'auto' && apply('auto'));
+    </script>
+
+    <style>
+      .showcase:has(input[value='guardian']:not(:checked)) [data-panel='guardian'],
+      .showcase:has(input[value='slots']:not(:checked)) [data-panel='slots'],
+      .showcase:has(input[value='translators']:not(:checked)) [data-panel='translators'],
+      .showcase:has(input[value='permissions']:not(:checked)) [data-panel='permissions'] {
+        display: none;
+      }
+    </style>
+  </body>
+</html>

@@ -1,0 +1,56 @@
+---
+title: Choosing hosting
+description: Compare self-hosted, Cloud and Private dedicated hosting for Tidal PTC, including cost, who runs it, and where to start.
+sidebar:
+  order: 3
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Tidal PTC is the same application whichever way you run it. You can host it yourself for free, or have Archboard host it for you on shared Cloud servers or on dedicated servers reserved for your district. This page compares the three options and links to where each one starts.
+
+## Who this is for
+
+District IT staff and administrators deciding how to deploy Tidal PTC.
+
+## Compare the options
+
+| | Self-hosted | Cloud | Private dedicated |
+| --- | --- | --- | --- |
+| Price (per year, USD) | Free | $400 + $150 per school, up to $4,000. A single school pays $450. | Contact Archboard |
+| Who runs the servers | Your IT team | Archboard | Archboard |
+| Updates and backups | You | Archboard | Archboard |
+| Servers | Your own | Shared, with each district's data kept separate | Your own isolated servers and database |
+| Region | Wherever you host it | Chosen by Archboard | Your choice |
+| Setup | Install with Docker or on a VM, then run the `/install` wizard | Buy, then follow your setup link | Arranged with Archboard |
+| PowerSchool SSO and sync | Yes | Yes | Yes |
+| License | AGPL-3.0 | AGPL-3.0 | AGPL-3.0 |
+
+## Self-hosted
+
+Choose this if you have staff who can run a PHP application with PostgreSQL and Redis, and you want no subscription cost. You get the complete application. You are responsible for installing, updating, backing up and securing it.
+
+Start with [Requirements](/installation/requirements/), then install with [Docker](/installation/docker/), on a [VM](/installation/vm/) or on [DigitalOcean](/installation/digitalocean/).
+
+## Cloud
+
+Choose this if you want to start scheduling without running servers. Archboard creates your district when you buy, and you receive a setup link to connect PowerSchool and create the first admin. Your license covers a set number of schools.
+
+- [Setup links](/cloud/setup-links/) explains the first-time setup.
+- [School limits](/cloud/school-limits/) explains how the licensed school count works.
+- [Buying and renewing](/cloud/billing/) covers purchase and renewal.
+
+## Private dedicated
+
+Choose this if your district needs its own isolated servers or a specific hosting region, but you still want Archboard to run it.
+
+<Aside type="tip">
+To buy Cloud or Private dedicated hosting, go to the [billing portal](https://billing.archboard.io/get-started).
+</Aside>
+
+## Related
+
+- [Overview](/getting-started/overview/)
+- [Concepts](/getting-started/concepts/)
+- [Requirements](/installation/requirements/)
+- [Buying and renewing](/cloud/billing/)

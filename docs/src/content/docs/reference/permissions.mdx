@@ -1,0 +1,84 @@
+---
+title: Permissions
+description: Every Tidal PTC permission and role, which ones are district-wide or per school, and what each one unlocks in the app.
+sidebar:
+  order: 1
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Tidal PTC controls access with individual permissions that you grant per user on the user's **Permissions** page. Most permissions are scoped to a school; two apply to the whole district. This page lists every permission, where it applies and what it unlocks. For the step-by-step process of granting them, see [Users and permissions](/district-admin/users-and-permissions/).
+
+## Roles
+
+Roles are defined in `app/Enums/Role.php`. Only one is used by the app today.
+
+| Role | Value | Used for |
+| --- | --- | --- |
+| District admin | `district admin` | Assigned to the first user created during installation or cloud setup. The role is granted every permission in the district. A tenant with a district admin counts as set up, which closes its [setup links](/cloud/setup-links/). |
+| School admin | `school admin` | Defined, not assigned anywhere. |
+| Guardian | `guardian` | Defined, not assigned anywhere. |
+| Teacher | `teacher` | Defined, not assigned anywhere. |
+| Staff | `staff` | Defined, not assigned anywhere. |
+
+Everyone else starts with no permissions. What a user sees without permissions depends on their user type (Staff, Contact/Guardian or Student, see [Glossary](/reference/glossary/)) and on what they own, for example their own time slots or their own students.
+
+## General permissions
+
+These apply to the whole district, not one school. They appear under **General Permissions** on a user's Permissions page, and only users who themselves have **Manages tenancy** see that section.
+
+| Label | Value | What it grants |
+| --- | --- | --- |
+| Manages tenancy | `*` | Gives the user full access to the entire tenancy with full permissions for everything. |
+| Edit tenant settings | `edit tenant settings` | Allows the user to edit all tenant settings: the **Tenant settings** page, SMTP settings and test email, the list of active schools, and the PowerSchool plugin download. Also lets the user grant permissions that are not tied to a school. When a cloud district is over its [school limit](/cloud/school-limits/), users with this permission see how to resolve it (with links to **Tenant settings** and **Request more licenses**) instead of a generic unavailable message. |
+
+## School permissions
+
+These are granted for one school at a time, the school currently selected on the Permissions page. **Grant all permissions for this school** grants everything for that school at once.
+
+| Label | Value | What it grants |
+| --- | --- | --- |
+| Edit school settings | `edit school settings` | Allows the user to edit all school settings: the **School settings** page, translator languages, and manual sync from the SIS. |
+| Edit user permissions | `edit permissions` | Opens the **Permissions** page for users and lets the user change permissions. |
+| Own time slots | `own time slots` | Allows the user to have reservable time slots. By default teachers with assigned sections will have this permission implicitly. |
+
+<Aside type="note">
+A teacher with at least one section can always own time slots, whether or not **Own time slots** is granted. Grant it to staff without sections (counselors, specialists) who also need to meet families.
+</Aside>
+
+## Model permissions
+
+Each school also has a permission set per record type. **Full access** on a record type grants every action on it, including any added later.
+
+| Label | Value | Meaning |
+| --- | --- | --- |
+| View list | `viewAny` | View resource listing |
+| View | `view` | View individual resource details |
+| Create | `create` | Create records |
+| Update | `update` | Change records |
+| Delete | `delete` | Delete records |
+
+Records that come from the SIS (Users, Courses, Sections, Students) only offer **View list**, **View** and **Update**, because they are created and deleted by sync. Time Slots offer all five.
+
+### What each model permission unlocks
+
+| Record type | Permission | Unlocks |
+| --- | --- | --- |
+| Time Slots | View list | **Time Slots** and **Activity** in the menu, the batches list, the **Translators** page (when the school allows translator requests), translator profiles, and other users' calendars. |
+| Time Slots | Create | Creating batches of time slots for teachers, editing any teacher's time slots, and setting a batch on a slot. |
+| Time Slots | Update | Editing any time slot or batch, booking, rescheduling and cancelling on behalf of families, booking inside the school's booking buffer, deleting reserved slots, assigning translators and editing translator profiles. |
+| Time Slots | Delete | Deleting time slots in a batch, and deleting other users' unreserved slots. |
+| Users | View list | **Teachers** and **Users** in the menu. |
+| Students | View list | **Students** in the menu. |
+| Sections | View list | **Sections** in the menu and the sections list. |
+| Sections | View | A section's detail page. |
+| Sections | Update | Editing a section, including the teacher override. |
+| Courses | View list | **Courses** in the menu. |
+
+**Update** on a record type also lets the user hide or show records of that type.
+
+## Related
+
+- [Users and permissions](/district-admin/users-and-permissions/)
+- [Concepts](/getting-started/concepts/)
+- [Glossary](/reference/glossary/)

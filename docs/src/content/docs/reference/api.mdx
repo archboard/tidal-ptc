@@ -1,0 +1,142 @@
+---
+title: API
+description: "Tidal PTC's machine endpoints: the cloud tenant provisioning API and the PowerSchool plugin registration callback, with fields and responses."
+sidebar:
+  order: 5
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Tidal PTC has two machine-facing HTTP interfaces: the tenant API that the billing portal uses to provision cloud districts, and the registration callback that PowerSchool calls when the plugin is enabled. There is no general-purpose public API for conferences, users or time slots.
+
+## Tenant API
+
+The tenant API creates, renews and lists cloud tenants (districts). It exists only in cloud mode (`IS_CLOUD=true`); on a self-hosted install these routes return `404`.
+
+### Authentication
+
+Requests use the machine token generated with [`php artisan make:token`](/reference/artisan-commands/#maketoken). Send it as a bearer token:
+
+```http
+Authorization: Bearer <token>
+Accept: application/json
+```
+
+The token can also be sent as an `api_token` query string or form field. Only one machine token is valid at a time. Send `Accept: application/json` so authentication and validation errors come back as JSON (`401` and `422`) rather than redirects.
+
+### List tenants
+
+```http
+GET /api/tenants
+```
+
+Returns all tenants, oldest first, paginated (15 per page; pass `?page=2` for more). The response has `data`, `links` and `meta` keys, and each item in `data` is a [tenant object](#tenant-object).
+
+### Create or update a tenant
+
+```http
+PUT /api/tenants/{license}
+```
+
+Creates or updates the tenant for a billing license. `{license}` is the license UUID. Provisioning, retries and renewals are all this one call: if no tenant has that license it is created and the response status is `201`; otherwise the existing tenant is updated and the status is `200`.
+
+| Field | Required | Rules |
+| --- | --- | --- |
+| `name` | Yes | String, at most 255 characters. The district name. |
+| `code` | No | Exactly 4 uppercase ASCII letters or digits, unique. The code districts enter at [district lookup](/cloud/district-lookup/). Generated automatically when a tenant is created without one. |
+| `domain` | Yes | String, at most 255 characters, unique. Cannot change once the district has an admin. |
+| `custom_domain` | No | String, at most 255 characters, unique, or `null`. |
+| `school_limit` | Yes | Integer, at least 1. The number of licensed schools (see [School limits](/cloud/school-limits/)). |
+| `subscription_started_at` | Yes | Date. |
+| `subscription_expires_at` | Yes | Date, after `subscription_started_at`. |
+
+Example:
+
+```bash
+curl -X PUT "https://app.example.com/api/tenants/0b6f2c9e-4a51-4e7d-9a0b-2f6c1d3e8a77" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Example School District",
+    "domain": "district.example.com",
+    "school_limit": 3,
+    "subscription_started_at": "2026-08-01",
+    "subscription_expires_at": "2027-08-01"
+  }'
+```
+
+The response is a tenant object plus two top-level keys:
+
+| Key | Value |
+| --- | --- |
+| `setup_url` | A signed link to start district setup, valid for 14 days. `null` once the district has an admin. |
+| `plugin_url` | A signed link to download the PowerSchool plugin, valid for 14 days. `null` once the district has an admin. |
+
+Calling the endpoint again before the district has an admin issues fresh links. See [Setup links](/cloud/setup-links/).
+
+<Aside type="caution">
+A tenant whose `subscription_expires_at` has passed is permanently deleted by the [scheduled purge](/reference/scheduled-tasks/). Send the renewal before the old date.
+</Aside>
+
+### Tenant object
+
+| Key | Description |
+| --- | --- |
+| `id` | Tenant ID. |
+| `name` | District name. |
+| `domain` | Domain the district is served on. |
+| `code` | Four-character district code. |
+| `license` | License UUID. |
+| `school_limit` | Licensed school count. |
+| `subscription_started_at` | Subscription start. |
+| `subscription_expires_at` | Subscription end. |
+| `allow_oidc_login` | Whether OIDC sign-in is allowed. |
+| `allow_password_auth` | Whether password sign-in is allowed. |
+| `sis` | Label of the connected SIS, or `null` before one is connected. |
+
+## PowerSchool plugin registration
+
+```http
+POST /api/powerschool/registration
+```
+
+PowerSchool posts the plugin's OAuth credentials here when an administrator enables the Tidal PTC plugin. The URL and key are written into the plugin you download from **Tenant settings** (or a cloud plugin link), so you never call this yourself. It exists in every mode. See [PowerSchool](/integrations/powerschool/).
+
+| Field | Description |
+| --- | --- |
+| `verify_url` | A PowerSchool URL that Tidal PTC requests to confirm the server is reachable. Its host becomes the SIS URL. |
+| `credentials.client_id` | The plugin's OAuth client ID. |
+| `credentials.client_secret` | The plugin's OAuth client secret. |
+| `callback_data` | The registration key from the plugin, an HMAC of the app's host signed with `APP_KEY`. |
+
+When all fields are present the response is always HTTP `200`, with the outcome in the body:
+
+```json
+{
+  "callback_result": "200",
+  "message": "SUCCESS",
+  "time": "2026-10-30T15:04:05.000Z"
+}
+```
+
+| `callback_result` | `message` | Meaning |
+| --- | --- | --- |
+| `200` | `SUCCESS` | Credentials saved to the district's SIS settings. |
+| `500` | `Invalid registration key` | `callback_data` does not match this host and `APP_KEY`. Download the plugin again from the same URL the app is served on. |
+| `500` | `Unknown district` | Cloud only: no tenant exists for this domain. Cloud districts must be provisioned before the plugin is installed. |
+| `500` | `INVALID_CERTIFICATE` | Tidal PTC could not verify PowerSchool's TLS certificate. |
+| `500` | `HOST_UNKNOWN` | Tidal PTC could not reach the PowerSchool server. |
+| `500` | Other text | PowerSchool answered the `verify_url` request with an error; the message is the HTTP error. |
+
+On a self-hosted install with no district yet, a successful registration creates the tenant and fills in the [first-run](/installation/first-run/) install form. A request missing a required field is rejected with a validation error instead.
+
+<Aside type="note">
+Because the registration key is derived from `APP_KEY`, a plugin downloaded before a [key rotation](/installation/rotating-app-key/) fails with `Invalid registration key` if it is enabled afterward. Download it again after rotating.
+</Aside>
+
+## Related
+
+- [Artisan commands](/reference/artisan-commands/)
+- [Setup links](/cloud/setup-links/)
+- [PowerSchool](/integrations/powerschool/)

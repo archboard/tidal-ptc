@@ -1,0 +1,69 @@
+---
+title: Rotating the app key
+description: Rotate APP_KEY on a Tidal PTC install without breaking stored PowerSchool and SMTP credentials, using APP_PREVIOUS_KEYS and key:reencrypt.
+sidebar:
+  order: 9
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+`APP_KEY` encrypts every tenant's PowerSchool and SMTP credentials, and it signs sessions and cloud setup links. If it leaks, or on a schedule, rotate it in three steps: add a new key while keeping the old one, re-encrypt the stored secrets, then drop the old key. Nothing breaks until the last step, which signs everyone out.
+
+## Who this is for
+
+Server administrators of a self-hosted install.
+
+## Before you start
+
+- Take a [backup](/installation/backups/) of the database and `.env`.
+- Keep `APP_KEY` only in your host's secret store (or the `.env` file with restricted permissions). Don't commit it or share it.
+
+## Rotate the key
+
+<Steps>
+1. Generate a new key:
+
+   ```sh
+   php artisan key:generate --show
+   ```
+
+   On Docker, run it as `docker compose exec app php artisan key:generate --show`. On a VM, run it as `sudo -u tidal php /var/www/tidal-ptc/artisan key:generate --show`. The command prints the key and changes nothing.
+
+2. In `.env`, set the new key as `APP_KEY` and move the old key to `APP_PREVIOUS_KEYS`. If there's already a value there, separate the keys with commas.
+
+   ```ini
+   APP_KEY=base64:NEW_KEY
+   APP_PREVIOUS_KEYS=base64:OLD_KEY
+   ```
+
+   Apply the change (see [Applying a change](/installation/configuration/#applying-a-change)). Existing secrets, sessions and links keep working, because the app can still decrypt with the old key.
+
+3. Re-encrypt the tenant secrets with the new key:
+
+   ```sh
+   php artisan key:reencrypt
+   ```
+
+   Use the same Docker or VM prefix as in step 1. This rewrites each tenant's encrypted PowerSchool (`sis_config`) and SMTP (`smtp_config`) settings and prints how many tenants it updated, for example "Re-encrypted secrets for 1 tenant(s)."
+
+4. Remove `APP_PREVIOUS_KEYS` from `.env` and apply the change again. Everyone is signed out. In the cloud edition, unused setup links stop working; reissue them with `php artisan tenant:setup-link`.
+</Steps>
+
+<Aside type="caution">
+Run step 3 before step 4. If you remove the old key first, the stored PowerSchool and SMTP credentials can no longer be decrypted, and you'll have to enter them again.
+</Aside>
+
+## The PowerSchool plugin
+
+The registration key inside the PowerSchool plugin is derived from `APP_KEY`. An installed, enabled plugin keeps working after a rotation, because its credentials are stored on the tenant. If you later reinstall or re-enable the plugin in PowerSchool, download a fresh copy from the [tenant settings](/district-admin/tenant-settings/) page first, so its registration key matches the new `APP_KEY`.
+
+## If there's no key at all
+
+`php artisan key:check` generates an app key only if none is set. It does nothing when `APP_KEY` already has a value, so it is not a way to rotate.
+
+## Related
+
+- [Configuration](/installation/configuration/)
+- [Backups](/installation/backups/)
+- [PowerSchool](/integrations/powerschool/)
+- [Artisan commands](/reference/artisan-commands/)

@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# LLM crawlers are welcome; see /llms.txt
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: Claude-Web
+User-agent: anthropic-ai
+User-agent: PerplexityBot
+User-agent: Google-Extended
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://docs.tidalptc.com/sitemap-index.xml

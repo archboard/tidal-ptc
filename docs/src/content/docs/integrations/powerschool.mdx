@@ -1,0 +1,128 @@
+---
+title: PowerSchool
+description: How Tidal PTC connects to PowerSchool, from installing the plugin and its registration to single sign-on and syncing schools, staff, students and sections.
+sidebar:
+  order: 1
+---
+
+import Screenshot from '../../../components/Screenshot.astro';
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+Tidal PTC gets its people and classes from PowerSchool through a PowerSchool plugin. The plugin gives Tidal PTC read-only API access (a client ID and secret), adds a **Tidal PTC** sign-in link inside PowerSchool, and lets people sign in from Tidal PTC's own login page with their PowerSchool account. This page covers installing the plugin, how registration works, the sign-in options and how data is synced.
+
+## Who this is for
+
+District admins and IT staff connecting Tidal PTC to PowerSchool.
+
+## Before you start
+
+- PowerSchool admin access, to install and enable plugins.
+- A running Tidal PTC install on its final domain. See [Requirements](/installation/requirements/).
+- PowerSchool and Tidal PTC must be able to reach each other over HTTPS: PowerSchool calls Tidal PTC to register the plugin, and Tidal PTC calls PowerSchool's API.
+- To download the plugin after installing, you need the **edit tenant settings** permission.
+
+## What the plugin contains
+
+The plugin is a zip file, `tidal-ptc-plugin.zip`, built for one domain. It sets up:
+
+- **Registration**: a callback to `https://<your-domain>/api/powerschool/registration`, so PowerSchool can send the plugin's credentials to Tidal PTC when you enable it.
+- **OAuth**: read-only API access (`accessLevelV1Api="READ"`) for the staff, parent and teacher personas, with the redirect URI `/auth/powerschool/oidc`.
+- **OpenID links**: a **Tidal PTC** link ("Sign in to Tidal PTC") in the admin header, the admin left navigation, the teacher header and the guardian header, pointing at `/auth/powerschool/openid`.
+- **Data access**: view-only access to the PowerSchool fields Tidal PTC syncs (users, students, schools, staff, courses, sections, terms and contact tables).
+- **PowerQueries** that Tidal PTC uses for things such as searching users.
+
+Each download gets a higher version number (`1.0.0`, `1.0.1`, `1.0.2`, and so on), because PowerSchool only accepts an updated plugin with a higher version. That means you can install a new download over the previous one.
+
+## Install the plugin
+
+<Steps>
+1. Download the plugin from Tidal PTC, on the domain people will use:
+   - During installation: select **Download plugin** on the `/install` page.
+   - After installation: on the [tenant settings](/district-admin/tenant-settings/) page, find the **PowerSchool plugin** card and select **Download plugin**.
+
+   <Screenshot name="settings-tenant" alt="Tenant settings page with the Tenant Settings, SMTP Settings, PowerSchool plugin and Active schools cards" />
+
+2. In PowerSchool, install the zip from plugin management, then enable the plugin.
+
+3. When you enable it, PowerSchool registers the plugin with Tidal PTC (see below). On a new install, the **PowerSchool URL**, **PowerSchool Client ID** and **PowerSchool Client Secret** fields on the installer fill in automatically. You can also copy the client ID and secret from the plugin's page in PowerSchool.
+</Steps>
+
+<Aside type="caution">
+The plugin is built for the domain you downloaded it from. If you change your domain, download the plugin again and install it over the old one.
+</Aside>
+
+## How registration works
+
+When you enable the plugin, PowerSchool sends a `POST` to `/api/powerschool/registration` with the plugin's client ID and secret, a URL on the PowerSchool server to verify, and the plugin's registration key. Tidal PTC then:
+
+1. Checks the registration key. It is derived from your domain and `APP_KEY`, so only a plugin downloaded from this install for this domain is accepted.
+2. Calls the PowerSchool verify URL to confirm the server is reachable.
+3. Saves the PowerSchool URL, client ID and secret on the tenant, encrypted. On a self-hosted install with no tenant yet, it starts one for the requesting domain.
+
+Tidal PTC always answers with HTTP 200 and reports the outcome in the response body:
+
+| Message | Meaning |
+| --- | --- |
+| `SUCCESS` | The credentials were saved. |
+| `Invalid registration key` | The plugin was built for another domain or another `APP_KEY`. Download it again from this install. |
+| `Unknown district` | Cloud only: no district exists for this domain. |
+| `INVALID_CERTIFICATE` | Tidal PTC couldn't verify PowerSchool's TLS certificate. |
+| `HOST_UNKNOWN` | Tidal PTC couldn't reach the PowerSchool server. |
+
+## Single sign-on
+
+People sign in with their PowerSchool accounts in one of two ways. Both need the tenant's PowerSchool URL, client ID and secret; until they're set, the sign-in routes show "SIS is not configured. Please contact your systems administrator."
+
+### From PowerSchool (OpenID)
+
+Admins, teachers and guardians select the **Tidal PTC** link in PowerSchool's header (or the admin left navigation). PowerSchool signs them in to Tidal PTC through `/auth/powerschool/openid`.
+
+- Admins get access to the schools PowerSchool lists as their admin schools.
+- Guardians have their account and linked students synced from PowerSchool as they sign in.
+
+### From the Tidal PTC login page (OpenID Connect)
+
+When **Allow OpenID Connect login** is on in [tenant settings](/district-admin/tenant-settings/) (it is on by default), the login page shows **Sign in with PowerSchool**. It starts at `/auth/powerschool/oidc/authenticate`, and PowerSchool returns the user to `/auth/powerschool/oidc`. Each user is synced from PowerSchool after signing in.
+
+<Screenshot name="login" alt="Tidal PTC login page with the Sign in with PowerSchool button" />
+
+**Allow password authentication** is a separate setting, off by default. When both are on, the login page shows **Sign in with PowerSchool** and an email and password form, separated by "Or continue with".
+
+## Sync
+
+Tidal PTC copies data from PowerSchool into its own database. Syncs run in the background on the `sis_sync` queue, after mail and notifications on the `default` queue, so the queue worker must be running with `--queue=default,sis_sync`.
+
+### What gets synced
+
+| Data | When |
+| --- | --- |
+| Schools | When you finish the installer. New schools are active by default; choose which are active under **Active schools** on the tenant settings page. |
+| Staff, students, courses, sections | When you sync a school from its school settings page. |
+| Section enrollment | After sections sync, one background job per section. |
+| Guardians and their students | When each guardian signs in with PowerSchool. |
+| A single record | From **Sync from SIS** in the record's action menu (for example, a student). |
+
+### Sync a school
+
+<Steps>
+1. Switch to the school, then open its [school settings](/district-admin/school-settings/) page. You need the **edit school settings** permission.
+
+   <Screenshot name="settings-school" alt="School settings page with Total staff, Total students, Total courses and Total sections cards, each with a Sync action" />
+
+2. Choose what to sync:
+   - **Sync** at the top of the page syncs the whole school, in order: the school itself, staff, students, courses, then sections.
+   - **Sync** on the **Total staff**, **Total students**, **Total courses** or **Total sections** card syncs only that item.
+
+3. Tidal PTC shows "Sync started. You will be notified when it finishes." When the sync finishes, you get a notification and the page refreshes its counts. While sections enroll, the **Total sections** card shows **Enrollment** with a processed and total count.
+</Steps>
+
+Sections depend on staff and courses, so sync those first if you sync items one at a time. Notifications arrive over websockets, so [Reverb](/integrations/real-time/) must be running to see them.
+
+## Related
+
+- [First run](/installation/first-run/)
+- [Tenant settings](/district-admin/tenant-settings/)
+- [School settings](/district-admin/school-settings/)
+- [Teachers: signing in](/teachers/signing-in/)
+- [Guardians: signing in](/guardians/signing-in/)
+- [API](/reference/api/)

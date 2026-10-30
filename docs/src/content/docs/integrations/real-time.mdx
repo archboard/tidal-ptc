@@ -1,0 +1,69 @@
+---
+title: Real-time updates
+description: How Tidal PTC uses Laravel Reverb websockets, how each install method runs it, the proxy routes it needs and how to check the connection.
+sidebar:
+  order: 3
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Tidal PTC uses [Laravel Reverb](https://reverb.laravel.com), a websocket server that runs alongside the app, to push updates to open pages. Every install method sets it up for you. This page explains what it's used for, how it's wired up and how to check it works.
+
+## Who this is for
+
+Server administrators of a self-hosted install.
+
+## What uses websockets
+
+- **The installer.** When you enable the PowerSchool plugin, the PowerSchool fields on `/install` fill in by themselves. This uses a public `install` channel, because no user exists yet.
+- **Sync notifications.** When a PowerSchool sync finishes, the admin who started it gets a notification, and the school settings page and affected lists (students, courses, sections, teachers, users) reload. This uses each user's private channel.
+
+If Reverb isn't reachable, the rest of the app keeps working: you just won't see these updates until you reload the page.
+
+## How it's wired up
+
+Browsers connect to `wss://<your-domain>/app/<REVERB_APP_KEY>`. Your reverse proxy sends `/app` and `/apps` to Reverb on port `8080` and everything else to the app. The front end reads the connection details (key, host, port and scheme) from the server on each page load, so changing them doesn't need a front-end rebuild.
+
+Two sets of settings matter:
+
+| Settings | What they are |
+| --- | --- |
+| `REVERB_HOST`, `REVERB_PORT`, `REVERB_SCHEME` | Where **browsers** connect: your public hostname, `443` and `https`. |
+| `REVERB_SERVER_HOST`, `REVERB_SERVER_PORT` | Where the **Reverb server** listens: `127.0.0.1` (VM) or `0.0.0.0` (inside the Docker container), port `8080`. |
+
+`REVERB_APP_ID`, `REVERB_APP_KEY` and `REVERB_APP_SECRET` are shared between the app and Reverb. The install scripts generate them once and keep them on re-runs. See [Configuration](/installation/configuration/#reverb-websockets).
+
+## By install method
+
+| Install | How Reverb runs |
+| --- | --- |
+| Docker | The `reverb` service runs `php artisan reverb:start --host=0.0.0.0 --port=8080`, published on `127.0.0.1:8080`. Caddy or Nginx proxies `/app` and `/apps` to it. |
+| VM | The `tidal-ptc-reverb` systemd service runs `php artisan reverb:start --host=127.0.0.1 --port=8080`. Nginx proxies `/app` and `/apps` to it. |
+| DigitalOcean | Reverb runs inside the single container on `127.0.0.1:8080`, and the container's Caddy sends `/app/*` and `/apps/*` to it. Leave the Reverb credentials blank to have them generated at boot. |
+
+The proxy must pass the `Upgrade` and `Connection` headers for websockets. Caddy does this without extra configuration; the Nginx configs in the [Docker](/installation/docker/#option-b-nginx) and [VM](/installation/vm/#11-nginx) guides include them, with a long `proxy_read_timeout` so idle connections stay open.
+
+## Check the connection
+
+1. Open any Tidal PTC page and the browser's dev tools.
+2. On the network tab, filter by websockets (WS).
+3. Look for a connection to `wss://<your-domain>/app/<REVERB_APP_KEY>` with status `101`.
+
+If it fails:
+
+- `REVERB_HOST`, `REVERB_PORT` or `REVERB_SCHEME` don't match the public URL. `REVERB_HOST` must be the hostname browsers use, not the container or `localhost`.
+- The proxy isn't forwarding `Upgrade` and `Connection`, or isn't routing `/app` to Reverb.
+- Reverb isn't running: check `docker compose ps` or `systemctl status tidal-ptc-reverb`.
+- On a VM, you edited `.env` without rerunning `php artisan optimize`.
+
+<Aside type="tip">
+After updating Tidal PTC, restart Reverb along with the queue worker. The update scripts do this for you.
+</Aside>
+
+## Related
+
+- [Configuration](/installation/configuration/)
+- [Install with Docker](/installation/docker/)
+- [Install on a VM](/installation/vm/)
+- [Troubleshooting](/installation/troubleshooting/#websockets-dont-connect)
+- [PowerSchool sync](/integrations/powerschool/#sync)

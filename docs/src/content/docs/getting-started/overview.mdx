@@ -1,0 +1,48 @@
+---
+title: Overview
+description: Tidal PTC is an open source web app for scheduling parent-teacher conferences, with PowerSchool sync and single sign-on.
+sidebar:
+  order: 1
+---
+
+import Screenshot from '../../../components/Screenshot.astro';
+
+Tidal PTC (parent-teacher conferences) is a web application for scheduling parent-teacher conferences. Admins and teachers create time slots, and parents and guardians sign in to book them. It is built by Archboard, licensed under AGPL-3.0, and the source is on [GitHub](https://github.com/archboard/tidal-ptc). This page explains who uses it, what it does, and where to go next.
+
+<Screenshot name="dashboard-guardian" alt="A guardian's dashboard listing each student's teachers with a Book link next to every teacher who has open time slots" />
+
+## Who uses it
+
+| Role | What they do |
+| --- | --- |
+| District admin | Connects PowerSchool, chooses the active schools, configures email, and manages users and permissions across the district. |
+| School staff | Create and manage time slots for their school, book conferences on behalf of families, handle translator requests, and review activity. |
+| Teacher | Signs in with PowerSchool, sees their upcoming conferences, and (when allowed) creates their own time slots. |
+| Guardian | Signs in, picks a student, and books, reschedules or cancels a conference with each of the student's teachers. |
+
+## Features
+
+- **PowerSchool integration.** Install the plugin and schools, sections, students, teachers and contacts sync automatically, with single sign-on for everyone. No CSV exports or temporary passwords.
+- **Flexible time slots.** Create single slots or batches, and control when booking opens and closes for families.
+- **Translators.** Families can request a translator, and staff assign translators to conferences.
+- **Online meetings.** Conferences can be held online as well as in person.
+- **Email reminders** for upcoming conferences.
+- **Multilingual.** The interface is available in English, Chinese, Korean, Japanese, Spanish and Arabic.
+- **Activity log.** A record of bookings and changes to time slots.
+- **Free to self-host**, or hosted for you by Archboard.
+
+## Where to go next
+
+- **Deciding how to run it:** [Choosing hosting](/getting-started/choosing-hosting/).
+- **Installing it yourself:** [Requirements](/installation/requirements/), then [Docker](/installation/docker/) or [VM](/installation/vm/).
+- **District admins:** [Concepts](/getting-started/concepts/), then [Tenant settings](/district-admin/tenant-settings/) and [PowerSchool](/integrations/powerschool/).
+- **School staff:** [Time slots](/staff/time-slots/) and [Reservations](/staff/reservations/).
+- **Teachers:** [Signing in](/teachers/signing-in/) and [Viewing bookings](/teachers/bookings/).
+- **Guardians:** [Signing in](/guardians/signing-in/) and [Booking a conference](/guardians/booking/).
+- **A quick look around first:** [Quick tour](/getting-started/quick-tour/).
+
+## Related
+
+- [Concepts](/getting-started/concepts/)
+- [Quick tour](/getting-started/quick-tour/)
+- [Glossary](/reference/glossary/)

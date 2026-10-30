@@ -1,0 +1,87 @@
+---
+title: Translators
+description: Track translator requests, manage translator profiles, assign translators to conferences and export schedules as CSV in Tidal PTC.
+sidebar:
+  order: 3
+---
+
+import Screenshot from '../../../components/Screenshot.astro';
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+When a school allows translator requests, families can ask for a translator in a specific language when they book a conference. The **Translators** pages let staff see every request, track capacity per language, keep a list of translators, assign them to conferences without double-booking, and export schedules as CSV.
+
+## Who this is for
+
+Office staff and administrators who coordinate translators for conferences.
+
+## Before you start
+
+- In [school settings](/district-admin/school-settings/), check **Allow contacts to request a translator** and add at least one language under **Translator settings**. The **Translators** menu item only appears when translator requests are allowed.
+- You need **View list** on **Time Slots** to see requests. Adding, editing, removing and assigning translators needs **Update** on **Time Slots**. See [Users and permissions](/district-admin/users-and-permissions/).
+- Each time slot must also allow translator requests (**Allow translator request** in the [time slot options](/staff/time-slots/#time-slot-options)).
+
+## Review translator requests
+
+Select **Translators** in the navigation to open **Translator requests**.
+
+<Screenshot name="translator-requests" alt="Translator requests page with per-language capacity cards, filters and a table of requests" />
+
+At the top, one card per school language shows the number of upcoming requests (against **Maximum requests**, if set), how many are assigned, and the **Maximum overlaps** limit if set, for example "2 of 5 assigned · 1 at a time".
+
+The table lists every booked conference with a translator request: **When**, **Language**, **Staff**, **Student**, **Contact** (name and email), **Where** (the location, or "Online"), **Notes** (the family's notes and any translator notes) and **Translator**.
+
+To filter the list:
+
+<Steps>
+1. Check one or more languages under **Language**.
+2. Under **Assigned to**, choose **Any translator**, **Unassigned**, or a specific translator.
+3. Optionally set **From** and **To** dates.
+4. Select **Filter**. Select **Reset** to clear the filters.
+</Steps>
+
+## Add a translator
+
+<Steps>
+1. On **Translator requests**, select **Manage translators**.
+   <Screenshot name="translator-profiles" alt="Translators table with names, languages, contact details and upcoming assignment counts" />
+2. Select **Add translator**.
+3. Enter the **Name** (required), and optionally **Email**, **Phone** and **Notes**.
+4. Check the **Languages** they translate. At least one is required, and only the school's configured languages are offered.
+5. Leave **Active** checked so they can be assigned.
+6. Select **Save**. You see "Translator added."
+</Steps>
+
+Translators belong to the current school. The table shows each translator's languages, contact details and number of **Upcoming** assignments. Inactive translators are labeled **Inactive**.
+
+To change a translator, open the row menu and select **Edit**. To remove one, select **Remove**, then **Remove translator** to confirm.
+
+## Assign a translator to a conference
+
+<Steps>
+1. On **Translator requests**, find the request. Filter by **Unassigned** to see what still needs a translator.
+2. In the **Translator** column, choose a translator. Choose **Unassigned** to remove the assignment.
+</Steps>
+
+You see "Translator assigned." or "Translator unassigned." The change is recorded in the [activity log](/district-admin/activity-log/).
+
+The assignment is refused if:
+
+- the translator is inactive: "This translator is not active.";
+- they do not speak the requested language: "This translator does not speak the requested language.";
+- they are already assigned to an overlapping conference: "This translator is already assigned to an overlapping conference."
+
+You can also assign a translator from the **Edit time slot** window on a booked slot, and add **Translator notes** there for the translator.
+
+## Export to CSV
+
+- **Export CSV** on **Translator requests** downloads the requests matching the current filters as `translator-requests-<date>.csv`.
+- **Schedule CSV** in a translator's row menu on the **Translators** page downloads that translator's assignments as `translator-schedule-<name>-<date>.csv`.
+
+The columns are Date, Start, End, Language, Translator (all-requests export only), Staff, Student, Contact, Contact email, Where, Contact notes and Translator notes. Times are in the school's timezone.
+
+## Related
+
+- [School settings](/district-admin/school-settings/)
+- [Booking for families](/staff/reservations/)
+- [Guardians: requesting a translator](/guardians/translators/)
+- [Languages](/reference/languages/)

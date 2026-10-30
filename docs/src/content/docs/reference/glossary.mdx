@@ -1,0 +1,50 @@
+---
+title: Glossary
+description: Definitions of the terms used across the Tidal PTC docs and interface, from tenant and batch to setup link and booking buffer.
+sidebar:
+  order: 8
+---
+
+Definitions of the terms used in Tidal PTC's interface and in these docs, in alphabetical order.
+
+| Term | Definition |
+| --- | --- |
+| **Activity log** | A record of changes and events in the current school: conferences booked, rescheduled and cancelled, time slot batches, SMTP changes, notifications sent and translator assignments. Entries are kept for 365 days. See [Activity log](/district-admin/activity-log/). |
+| **APP_KEY** | The secret key the app encrypts stored secrets and signs links with. Losing it makes tenant SIS and SMTP settings unreadable. See [Rotating the app key](/installation/rotating-app-key/). |
+| **Batch** | A set of time slots created at once for one or more teachers. Editing a batch can update all of its slots together. See [Time slots](/staff/time-slots/). |
+| **Booking buffer** | The number of hours before a time slot that a contact cannot book it. Staff with the Time Slots **Update** permission can still book inside it. Set in [School settings](/district-admin/school-settings/). |
+| **Cloud** | The Archboard-hosted version of Tidal PTC (`IS_CLOUD=true`), where many districts share one installation. See [Choosing hosting](/getting-started/choosing-hosting/). |
+| **Conference** | A meeting between a teacher (or other staff member) and a student's guardian. In the app, a conference is a reserved time slot. |
+| **Contact/Guardian** | The user type for parents and other student contacts synced from the SIS. Contacts book conferences for their own students. |
+| **Current school** | The school a staff user is working in. Most pages and all school-scoped permissions apply to it. Staff with more than one school switch it from the sidebar or the **Select school** page. |
+| **Demo mode** | A public demonstration install (`DEMO_MODE=true`) with one-click logins and read-only settings, reset from seed data every hour. |
+| **District** | The organization that uses Tidal PTC, such as a school district. Each district is one tenant. |
+| **District admin** | The role given to the first user who completes setup. It has every permission in the district. See [Permissions](/reference/permissions/#roles). |
+| **District code** | A four-character code a cloud district's users enter on the cloud root domain to find their district's sign-in page. See [District lookup](/cloud/district-lookup/). |
+| **License** | The UUID that identifies a cloud district's subscription in the billing portal. The tenant API creates and renews tenants by license. See [API](/reference/api/). |
+| **Machine token** | The single API token, created with `php artisan make:token`, that authenticates the cloud tenant API. |
+| **Notification preferences** | Per-user email settings: which [notification events](/reference/notification-events/) to receive and the reminder lead time. |
+| **Permission** | A single grant of access, such as **Edit school settings** or Time Slots **Update**. Most are granted per school. See [Permissions](/reference/permissions/). |
+| **PowerSchool plugin** | The plugin a district installs in PowerSchool so Tidal PTC can sign users in and sync data. It is downloaded from **Tenant settings** and registers itself with the app when enabled. See [PowerSchool](/integrations/powerschool/). |
+| **Reminder lead time** | How many hours before their first upcoming conference a user is emailed a reminder digest. Defaults to 24, from 1 to 168. |
+| **Reservation** | A booking of a time slot for a specific student. Reservations can be booked, rescheduled and cancelled. See [Reservations](/staff/reservations/). |
+| **Reverb** | The WebSocket server that pushes live updates (for example finished syncs) to the browser. See [Real-time](/integrations/real-time/). |
+| **School limit** | The number of active schools a cloud license covers. When a district has more active schools than its limit, staff cannot use the app until it is resolved. See [School limits](/cloud/school-limits/). |
+| **Section** | A class taught by a teacher, synced from the SIS. A teacher with sections can own time slots, and guardians book with their students' section teachers. |
+| **Self-hosted** | Tidal PTC running on your own server, free under AGPL-3.0. See [Installation requirements](/installation/requirements/). |
+| **Setup link** | A signed link, valid for 14 days, that lets a new cloud district create its first district admin (with a companion link to download the PowerSchool plugin). It stops working once the district has an admin. See [Setup links](/cloud/setup-links/). |
+| **SIS** | Student information system. Tidal PTC supports PowerSchool. Schools, sections, courses, students, staff and contacts come from the SIS. |
+| **Staff** | The user type for teachers, administrators and other school employees. What a staff user can do depends on their [permissions](/reference/permissions/). |
+| **Student** | The user type for students. Students sign in only through the SIS and cannot use a password. |
+| **Sync** | Copying schools, sections, students and contacts from the SIS into Tidal PTC. It runs on the `sis_sync` queue and can be started manually from [School settings](/district-admin/school-settings/). |
+| **Tenant** | The app's term for a district. A tenant has its own users, schools, settings, SIS connection and SMTP settings. A self-hosted install has one tenant. |
+| **Time slot** | A block of time a teacher or staff member is available for a conference. An unreserved slot can be booked; a booked slot becomes a reservation. See [Time slots](/staff/time-slots/). |
+| **Translator profile** | A record of a translator the school can assign to conferences. See [Translators](/staff/translators/). |
+| **Translator request** | A guardian's request, made when booking, for a translator in a language the school offers. See [Requesting a translator](/guardians/translators/). |
+| **User type** | Whether a user is Staff, Contact/Guardian or Student. It comes from the SIS and decides which parts of the app the user sees. |
+
+## Related
+
+- [Concepts](/getting-started/concepts/)
+- [Permissions](/reference/permissions/)
+- [FAQ](/reference/faq/)

@@ -1,0 +1,78 @@
+---
+title: Booking for families
+description: Book, reschedule and cancel parent-teacher conferences on behalf of families from a student's page in Tidal PTC.
+sidebar:
+  order: 2
+---
+
+import Screenshot from '../../../components/Screenshot.astro';
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+Office staff can book a conference for a student with any of their teachers, for example when a parent calls the school. Staff bookings are not limited by the booking window or booking buffer, and can use slots that families cannot reserve themselves. This page covers booking, rescheduling and cancelling on a family's behalf.
+
+## Who this is for
+
+Office staff and administrators who handle conference bookings for families.
+
+## Before you start
+
+- You need **Update** on **Time Slots** to book for families, plus **View list** and **View** on **Students** to find the student. See [Users and permissions](/district-admin/users-and-permissions/).
+- The teacher must have time slots. See [Time slots and batches](/staff/time-slots/).
+- The student, the section and the course must all have booking enabled. See [Directory](/staff/directory/).
+
+## Book a conference
+
+<Steps>
+1. Select **Students** and open the student.
+   <Screenshot name="student-show" alt="A student's page listing enrolled courses, sections and teachers with Book conference links" />
+2. In the **Enrollment** table, select **Book conference** on the row for the teacher. If the section has an override teacher, you book with them.
+3. Pick a time. Use **List** or **Calendar** to switch views. Booked times and times that overlap the student's other conferences cannot be chosen.
+4. Optionally add **Notes**, check **I would like to meet online**, or choose a language under **Translator**. These options only appear when the school and the time slot allow them.
+5. Select **Book conference**. You return to the dashboard and see "Conference booked successfully."
+</Steps>
+
+The teacher and the person who made the booking receive a confirmation, and "Conference booked" is recorded in the [activity log](/district-admin/activity-log/).
+
+<Aside type="caution">
+The booking is recorded as made by you, so the confirmation email goes to you and the teacher, not to the family. Let the family know the time yourself.
+</Aside>
+
+### What staff bookings skip
+
+Compared with a family booking, a staff booking:
+
+- shows every upcoming slot for the teacher, including slots with **Allow contacts to reserve the time slot** unchecked;
+- ignores the booking window and the booking buffer.
+
+These rules still apply:
+
+- A student can have only one upcoming conference with each staff member: "This student already has an upcoming conference with this staff member."
+- A slot cannot overlap the student's other conferences: "This time slot overlaps with another reservation."
+- Translator requests respect the language limits in [school settings](/district-admin/school-settings/#configure-translator-languages).
+
+## Reschedule a conference
+
+<Steps>
+1. Open the student and select **Book conference** for the same teacher again.
+2. The page says "Currently booked for" followed by the current time. Pick a new time.
+3. Select **Move conference**. You see "Conference rescheduled successfully."
+</Steps>
+
+A conference can only move to another slot of the same staff member. Any translator notes move with it. The teacher and the person who booked are notified.
+
+## Cancel a conference
+
+<Steps>
+1. Open the teacher's time slots (from **Users** or **Teachers**, select **Edit time slots**).
+2. Click the booked slot to open **Edit time slot**.
+3. Select **Cancel reservation** and confirm.
+</Steps>
+
+The slot becomes available again, the teacher and the person who booked are notified, and "Conference cancelled" is recorded in the activity log. Families cancelling their own booking cannot do so within the booking buffer; staff can.
+
+## Related
+
+- [Time slots and batches](/staff/time-slots/)
+- [Directory](/staff/directory/)
+- [Translators](/staff/translators/)
+- [Guardians: booking](/guardians/booking/)

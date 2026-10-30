@@ -1,0 +1,47 @@
+---
+title: Notification events
+description: The five email notifications Tidal PTC sends about conferences, what triggers each one, who receives it and how users turn them off.
+sidebar:
+  order: 2
+---
+
+Tidal PTC sends email notifications when a conference (a reserved time slot) is booked, changed or coming up. This page lists each event from `app/Enums/NotificationEvent.php`, what triggers it and who receives it. Users choose which ones they get under **Notification preferences** in **Personal settings**.
+
+## Events
+
+| Preference label | Key | Description | Triggered when |
+| --- | --- | --- | --- |
+| Reservation booked | `slot_booked` | Sent when a reservation is booked | A guardian books a conference, or staff book one on a family's behalf. |
+| Reservation cancelled | `slot_cancelled` | Sent when a reservation is cancelled | A reservation is cancelled, or staff delete a reserved time slot. |
+| Reservation rescheduled | `slot_rescheduled` | Sent when a reservation is rescheduled | A reservation is moved to a different time slot. |
+| Reservation updated | `slot_updated` | Sent when a reservation has updated details | A reserved slot's start time, end time, location, meeting URL, online setting or teacher notes change, including through a batch edit. |
+| Reservation reminder | `slot_reminder` | Sent as a reminder for a reservation | The hourly reminder task finds a conference starting within the user's reminder lead time. See [Reminders](#reminders). |
+
+## Recipients
+
+- Each event goes to both participants: the teacher or staff member who owns the time slot, and the guardian who reserved it.
+- Only Staff and Contact/Guardian users receive notifications. Students do not.
+- A user without an email address receives nothing.
+- Every event is on by default. A user who clears a checkbox under **Notification preferences** stops receiving that event.
+- Emails are sent in the recipient's chosen [interface language](/reference/languages/).
+- Notifications are sent by email only, through the district's mail settings (see [Email](/integrations/email/)).
+
+## Reminders
+
+Reminders are a digest, not one email per conference.
+
+- The [scheduled task](/reference/scheduled-tasks/) `ptc:send-reminders` runs hourly.
+- A user is due a reminder when any of their upcoming conferences starts within their **Reminder lead time (hours)** and has not been included in a reminder to them yet.
+- The email lists all of that user's upcoming conferences, and each one is marked as reminded for that user.
+- The lead time defaults to 24 hours and can be set from 1 to 168 hours (one week).
+- When a conference is rescheduled, newly booked or its details change (a **Reservation updated** event), it is reminded again.
+
+## Activity log
+
+Each booked, cancelled, rescheduled, updated or reminder email that is sent is recorded in the [activity log](/district-admin/activity-log/) as "*Notification* email sent", for example "Reservation booked email sent".
+
+## Related
+
+- [Teacher notifications](/teachers/notifications/)
+- [Guardian reminders](/guardians/reminders/)
+- [Scheduled tasks](/reference/scheduled-tasks/)

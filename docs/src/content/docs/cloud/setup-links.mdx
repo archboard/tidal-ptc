@@ -1,0 +1,61 @@
+---
+title: Setup links
+description: How a new Cloud district uses its setup and plugin links to connect PowerSchool and create the first district admin.
+sidebar:
+  order: 2
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+When a Cloud district is created, Archboard issues two signed links: a **setup link** that opens the installation wizard, and a **plugin link** that downloads the PowerSchool plugin built for your district. Together they let you connect PowerSchool and create the first district admin. This page explains how to use them and what to do if they expire.
+
+## Who this is for
+
+The person setting up a new Cloud district, usually a district IT admin with PowerSchool administrator access.
+
+## Before you start
+
+- Your district has been purchased and created, and you have received its setup link and plugin link. See [Buying and renewing](/cloud/billing/).
+- You can install plugins in PowerSchool.
+- Your own account exists in PowerSchool as a staff member, so you can import it as the first admin.
+
+## How the links work
+
+- Both links only work on your district's own address.
+- They expire 14 days after they are issued.
+- They stop working as soon as the district has a district admin. After that, setup is closed and everyone signs in normally.
+
+## Set up the district
+
+<Steps>
+1. Open the **plugin link** to download `tidal-ptc-plugin.zip`. The plugin is built for your district's address.
+2. Install and enable the plugin in PowerSchool. When it is enabled, PowerSchool registers it with Tidal PTC, which saves the PowerSchool URL, client ID and client secret for you. See [PowerSchool](/integrations/powerschool/).
+3. Open the **setup link**. It opens the installation wizard for your district.
+4. If PowerSchool hasn't registered the plugin, you see the **Installation** form. Enter the **Tenant name**, **PowerSchool URL**, **PowerSchool Client ID** and **PowerSchool Client Secret**, then select **Install**. The form also has a **Download plugin** link if you need the plugin again. On Cloud there is no domain field: your address is set when the district is created.
+5. On **Add your user account**, search for yourself under **Import SIS User** (type at least three characters of your name or email), then select **Add user and log in**. That user gets full permissions for the district and you are signed in.
+</Steps>
+
+Installing starts a sync of your schools from PowerSchool. Next, choose which schools are active in [Tenant settings](/district-admin/tenant-settings/).
+
+<Aside type="caution">
+Anyone with the setup link can create the first district admin until one exists. Don't forward it, and finish setup soon after you receive it.
+</Aside>
+
+## Get new links
+
+If your links have expired, ask Archboard support for new ones. Each new pair is valid for another 14 days. New links can only be issued while the district has no district admin.
+
+Operators running Cloud issue fresh links with:
+
+```sh
+php artisan tenant:setup-link <tenant id or domain>
+```
+
+The command prints the **Setup link** and **Plugin link**. It fails if the district already has a district admin, and it only runs when `IS_CLOUD=true`. Rotating the app key also invalidates unused setup links; see [Rotating the app key](/installation/rotating-app-key/).
+
+## Related
+
+- [First run](/installation/first-run/)
+- [PowerSchool](/integrations/powerschool/)
+- [Tenant settings](/district-admin/tenant-settings/)
+- [Artisan commands](/reference/artisan-commands/)

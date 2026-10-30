@@ -1,0 +1,8 @@
+---
+import { compiledContent } from '../../../CHANGELOG.md';
+
+// Drop the file's own "# Changelog" so the page keeps one h1
+const html = (await compiledContent()).replace(/<h1[^>]*>.*?<\/h1>/s, '');
+---
+
+<Fragment set:html={html} />

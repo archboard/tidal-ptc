@@ -1,0 +1,59 @@
+---
+title: Requirements
+description: The server, DNS, software and PowerSchool access you need before installing a self-hosted copy of Tidal PTC.
+sidebar:
+  order: 1
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Tidal PTC runs on a single Linux server with PostgreSQL and Redis, plus a websocket server (Reverb), a queue worker and the Laravel scheduler. This page lists what you need before you start, whichever install method you choose.
+
+## Who this is for
+
+District IT staff installing a self-hosted copy. If Archboard hosts Tidal PTC for you, you don't need any of this; see [Choosing hosting](/getting-started/choosing-hosting/).
+
+## Server
+
+- A **Debian 12+ or Ubuntu 24.04+** server with a public IP and `sudo`. The VM install script supports Debian 12/13 and Ubuntu 24.04/26.04.
+- **2 GB of RAM** is plenty to start. The Docker setup script adds a 2 GB swap file at `/swapfile` if the server has less than about 1.5 GB of RAM and no swap.
+- Ports **`80` and `443`** reachable from the internet, for Let's Encrypt and for visitors. Nothing else needs to be public.
+
+Both install scripts only support Debian and Ubuntu. On other distributions, follow the manual steps in the [Docker](/installation/docker/) or [VM](/installation/vm/) guides and adapt the package commands.
+
+## DNS
+
+- A DNS `A` record for your domain (for example `ptc.example.org`) pointing at the server. Create it before running an install script so the Let's Encrypt certificate request succeeds.
+
+## Software
+
+The install scripts install everything for you. If you install by hand, these are the versions the project uses:
+
+| Component | Version |
+| --- | --- |
+| PHP | 8.5, with the `pgsql`, `redis`, `intl`, `zip`, `mbstring`, `xml`, `curl` and `bcmath` extensions |
+| PostgreSQL | 18 (the VM guide and the Compose file both use 18) |
+| Redis | Any current release (the Compose file uses `redis:7-alpine`) |
+| Node.js | 20 or newer, only to build front-end assets on a VM install (the VM script installs 24) |
+| Composer | 2 |
+| Docker | Docker Engine with the Compose plugin, for the Docker install |
+
+## PowerSchool
+
+- **PowerSchool admin access**, to install the Tidal PTC plugin and get its client ID and secret. You can do this after the app is running: the installer at `/install` lets you download the plugin. See [PowerSchool](/integrations/powerschool/).
+- PowerSchool and your Tidal PTC server must be able to reach each other over HTTPS. When the plugin is enabled, PowerSchool calls your server, and your server calls PowerSchool back to verify it.
+
+## Email
+
+- An SMTP server or provider for notification and reminder emails. You set it on the tenant settings page after installing, not in `.env`. See [Email](/integrations/email/).
+
+<Aside type="tip">
+Not sure which install method to pick? The [Docker install](/installation/docker/) is recommended: one script sets up the whole stack. Use the [VM install](/installation/vm/) if you prefer system packages, or [DigitalOcean App Platform](/installation/digitalocean/) if you want a managed platform.
+</Aside>
+
+## Related
+
+- [Install with Docker](/installation/docker/)
+- [Install on a VM](/installation/vm/)
+- [Deploy to DigitalOcean](/installation/digitalocean/)
+- [First run](/installation/first-run/)

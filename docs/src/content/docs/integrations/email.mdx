@@ -1,0 +1,88 @@
+---
+title: Email
+description: Set up SMTP for Tidal PTC on the tenant settings page, send a test email, and configure the app-wide fallback mailer or Postmark in .env.
+sidebar:
+  order: 2
+---
+
+import Screenshot from '../../../components/Screenshot.astro';
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+Tidal PTC sends email for booking confirmations, changes, cancellations and reminder digests. You give each tenant its own SMTP server on the tenant settings page, and Tidal PTC sends that tenant's mail through it. A server-wide mailer in `.env` is the fallback when no SMTP host is saved.
+
+## Who this is for
+
+District admins setting up email, and server administrators configuring the fallback mailer.
+
+## Before you start
+
+- The **edit tenant settings** permission.
+- An SMTP server or provider: host, port, and usually a username and password.
+- A running queue worker. Booking emails and reminders are queued, so they aren't sent without one.
+
+## Set up SMTP for the tenant
+
+<Steps>
+1. Open the [tenant settings](/district-admin/tenant-settings/) page and find the **SMTP Settings** card.
+
+   <Screenshot name="settings-tenant" alt="Tenant settings page showing the SMTP Settings card with host, port, username, password, sender and encryption fields" />
+
+2. Fill in the fields:
+   - **Host** (required): the IP address or domain name of the SMTP server.
+   - **Port** (required): for example `587`.
+   - **Username** and **Password**: if your server needs them.
+   - **From name** (required) and **From address** (required): the sender families see.
+   - **Encryption**: **TLS** or **SSL**, or leave it empty.
+
+3. Select **Save**. Tidal PTC shows "SMTP settings updated." The settings are stored encrypted with `APP_KEY`, and the change is recorded in the [activity log](/district-admin/activity-log/).
+
+4. Select **Send test**. Tidal PTC emails a test message to your own account's email address using the saved settings. Save your changes before testing.
+</Steps>
+
+<Aside type="note">
+**Send test** uses the settings already saved, not what's in the form. The test is sent right away instead of being queued, so it checks the SMTP settings directly. If the test arrives but booking emails don't, check the queue worker; see [Troubleshooting](/installation/troubleshooting/#syncs-emails-or-reminders-never-happen).
+</Aside>
+
+## Cloud districts
+
+In the cloud edition, the card says "Emails are sent through our email service unless you use your own provider." The SMTP fields stay disabled until you opt in. To use your own provider, check **I want to use my own email provider.** and fill in the fields as above.
+
+## App-wide mailer (self-hosted)
+
+On a self-hosted install, a tenant with an SMTP **Host** saved always uses its own settings. If no host is saved, Tidal PTC falls back to the `MAIL_*` values in `.env`.
+
+For SMTP:
+
+```ini
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.example.org
+MAIL_PORT=587
+MAIL_USERNAME=user
+MAIL_PASSWORD=secret
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=ptc@example.org
+MAIL_FROM_NAME="Tidal PTC"
+```
+
+For Postmark:
+
+```ini
+MAIL_MAILER=postmark
+POSTMARK_TOKEN=your-server-token
+MAIL_FROM_ADDRESS=ptc@example.org
+MAIL_FROM_NAME="Tidal PTC"
+```
+
+After editing `.env`, apply the change; see [Applying a change](/installation/configuration/#applying-a-change).
+
+## Reminders
+
+Reminder digests are sent by the `ptc:send-reminders` command, which the scheduler runs every hour. Each user gets one email listing their upcoming conferences at their chosen lead time. The scheduler must be running: the `scheduler` service on Docker, or the cron entry on a VM. See [Scheduled tasks](/reference/scheduled-tasks/).
+
+## Related
+
+- [Tenant settings](/district-admin/tenant-settings/)
+- [Configuration](/installation/configuration/#mail)
+- [Notification events](/reference/notification-events/)
+- [Teachers: notifications](/teachers/notifications/)
+- [Guardians: reminders](/guardians/reminders/)

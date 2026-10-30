@@ -1,0 +1,57 @@
+---
+title: Notification preferences
+description: Choose which conference emails you get as a teacher and how many hours before your first conference the reminder email is sent.
+sidebar:
+  order: 4
+---
+
+import Screenshot from '../../../components/Screenshot.astro';
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+Tidal PTC emails you when a family books, moves or cancels a conference with you, when a booked conference's details change, and before your conferences start. You can turn each email on or off and set how early the reminder arrives.
+
+## Who this is for
+
+Teachers and staff with conference time slots.
+
+## Before you start
+
+- Emails go to the email address on your account, which syncs from PowerSchool. If your account has no email, you get no notifications.
+- Every email type is on by default.
+
+## Change your notification preferences
+
+<Steps>
+1. Open **Personal settings** from the sidebar.
+   <Screenshot name="settings-personal-staff" alt="Personal settings for a teacher showing Personal details and the Notification preferences section" />
+2. Scroll to **Notification preferences**.
+3. Set **Reminder lead time (hours)**, from 1 to 168. The default is 24.
+4. Check or uncheck each email type.
+5. Select **Save**.
+</Steps>
+
+## Email types
+
+| Setting | Sent when |
+| --- | --- |
+| **Reservation booked** | A conference with you is booked. |
+| **Reservation cancelled** | A conference with you is cancelled, by the family, by you or by the school. |
+| **Reservation rescheduled** | A family moves their conference to a different one of your slots. |
+| **Reservation updated** | The time, location, meeting link, online setting or teacher notes of a booked slot change. |
+| **Reservation reminder** | Your reminder lead time is reached before a booked conference. |
+
+Each email names the student and teacher, gives the time in your timezone, and lists the location or meeting link and any translator request. It has an **Open dashboard** button.
+
+## How reminders work
+
+Reminders are checked every hour. When one of your booked conferences starts within your lead time, you get one email that lists all of your upcoming conferences, with a `conferences.ics` calendar file attached. Each conference is included in a reminder once; if it is rescheduled or its details change, it can be reminded again.
+
+<Aside type="note">
+Families get the same kinds of emails and set their own preferences. See [Reminders](/guardians/reminders/).
+</Aside>
+
+## Related
+
+- [Viewing your bookings](/teachers/bookings/)
+- [Notification events reference](/reference/notification-events/)
+- [Scheduled tasks](/reference/scheduled-tasks/)

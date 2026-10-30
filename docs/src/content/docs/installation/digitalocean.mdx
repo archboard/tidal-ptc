@@ -1,0 +1,74 @@
+---
+title: Deploy to DigitalOcean
+description: Run Tidal PTC on DigitalOcean App Platform from the repository's deploy template, with a managed PostgreSQL database and one container.
+sidebar:
+  order: 4
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+The repository includes a DigitalOcean App Platform template, `.do/deploy.template.yaml`. It builds one container from the `Dockerfile` and adds a dev PostgreSQL database. That single container runs the app (Octane on FrankenPHP), Reverb, the queue worker and the scheduler together, because App Platform runs no sidecars. You don't manage a server, and there is no Redis: cache, sessions and the queue use the database.
+
+## Who this is for
+
+District IT staff who want a managed platform instead of their own Linux server.
+
+## Before you start
+
+- A DigitalOcean account.
+- A value for `APP_KEY`. Generate one on any machine with OpenSSL:
+
+  ```sh
+  echo "base64:$(openssl rand -base64 32)"
+  ```
+
+  Store it somewhere safe. It encrypts your PowerSchool and SMTP credentials; see [Rotating the app key](/installation/rotating-app-key/).
+
+## Deploy
+
+<Steps>
+1. Create an App Platform app from the template. The template deploys the `main` branch of `https://github.com/archboard/tidal-ptc.git` as a service called `app` in the `nyc` region, on an `apps-s-1vcpu-1gb` instance, with a PostgreSQL database called `db`.
+
+2. When App Platform asks for environment variables, set `APP_KEY` to the value you generated. Leave the others at their template values unless you need to change them (see the table below).
+
+3. Deploy. On each start the container runs `php artisan optimize` and `php artisan migrate --force`, then starts Reverb, the queue worker, the scheduler and Octane. App Platform checks `/up` for health.
+
+4. Open the app's URL and go to `/install` to finish the installation. See [First run](/installation/first-run/).
+</Steps>
+
+<Aside type="caution">
+The template creates a dev PostgreSQL database. All of Tidal PTC's data lives there, so plan how you will back it up. See [Backups](/installation/backups/).
+</Aside>
+
+## Environment variables
+
+The template sets these for you. Values in the form `${...}` are filled in by App Platform.
+
+| Variable | Template value | Notes |
+| --- | --- | --- |
+| `APP_KEY` | empty, secret | Required. Set it before the first deploy. |
+| `APP_URL` | `${APP_URL}` | The app's public URL. |
+| `APP_ENV` / `APP_DEBUG` | `production` / `false` | |
+| `IS_CLOUD` | `false` | Runs the self-hosted edition. |
+| `DB_*` | `${db.HOSTNAME}`, `${db.PORT}`, and so on | From the attached `db` database. |
+| `CACHE_DRIVER`, `QUEUE_CONNECTION`, `SESSION_DRIVER` | `database` | No Redis is needed. |
+| `BROADCAST_CONNECTION` | `reverb` | |
+| `REVERB_APP_ID`, `REVERB_APP_KEY`, `REVERB_APP_SECRET` | empty | Leave blank to have them generated at boot. |
+| `REVERB_HOST` | `${APP_DOMAIN}` | The public hostname browsers connect to. |
+| `REVERB_PORT` / `REVERB_SCHEME` | `443` / `https` | |
+| `MAIL_*` | SMTP placeholders | Optional. SMTP is normally configured on the tenant settings page. |
+| `POWERSCHOOL_*` | empty | Optional. The installer stores the PowerSchool URL, client ID and secret per tenant. |
+| `LOG_CHANNEL` / `LOG_LEVEL` | `stderr` / `info` | Logs appear in App Platform's runtime logs. |
+
+App Platform exposes a single port, so websockets share it with the app: the container's Caddy config sends `/app/*` and `/apps/*` to Reverb on `127.0.0.1:8080` and everything else to the app. You don't need to configure a proxy.
+
+## Running Artisan
+
+Use the App Platform console for the `app` component to run commands such as `php artisan key:reencrypt`. The working directory is `/app`.
+
+## Related
+
+- [Requirements](/installation/requirements/)
+- [First run](/installation/first-run/)
+- [Configuration](/installation/configuration/)
+- [Updating](/installation/updating/)

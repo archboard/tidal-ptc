@@ -1,0 +1,107 @@
+---
+title: Time slots and batches
+description: Create, edit and delete conference time slots for one staff member, or for many teachers at once with batches, in Tidal PTC.
+sidebar:
+  order: 1
+---
+
+import Screenshot from '../../../components/Screenshot.astro';
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+Time slots are the conference times families can book. Office staff and administrators can create time slots for a single staff member, or create the same times for many teachers at once with a batch. This page covers both, plus the rules for editing and deleting slots that are already booked.
+
+## Who this is for
+
+School staff and administrators who set up conference schedules. Teachers managing their own slots should read [Creating slots](/teachers/creating-slots/).
+
+## Before you start
+
+- You need **Create** on **Time Slots** to create slots for other people and to create batches. Editing batches needs **Update**, and deleting batch times needs **Delete**. See [Users and permissions](/district-admin/users-and-permissions/).
+- Check the school's [time slot settings](/district-admin/school-settings/#configure-time-slot-settings): online meetings, translator requests and the booking windows affect what you see here.
+- Staff only appear as bookable if they can own time slots: teachers with sections from the SIS, or anyone granted **Own time slots**.
+
+## The time slots calendar
+
+Select **Time Slots** in the navigation to see a calendar of your own time slots.
+
+<Screenshot name="time-slots" alt="Time slots calendar in week view with the actions menu open" />
+
+The actions menu at the top has:
+
+- **Manage batches**: the list of batches (needs **View list** on **Time Slots**).
+- **Manage my time slots**: create and edit your own slots.
+
+## Create time slots for one staff member
+
+<Steps>
+1. Go to **Users** or **Teachers**, open the person's row menu and select **Edit time slots**. You can also select **Manage time slots** on their user page.
+2. In the **Default settings** card, set the options that new slots should use. Select **Hide time slot details** to collapse the card.
+   <Screenshot name="time-slots-create" alt="Manage time slots page with the Default settings card above a week calendar" />
+3. On the calendar, click and drag across the times you want. Each selection creates one time slot with the default settings.
+4. Drag a slot to move it, or drag its edge to change its length.
+5. Click a slot to open **Edit time slot**, change its settings, and select **Save**.
+</Steps>
+
+Times on this page are in your own timezone, as the note above the calendar says.
+
+### Time slot options
+
+| Option | What it does |
+| --- | --- |
+| **Teacher notes** | Shown to contacts when they view the time slot. |
+| **Location** | The physical location, such as a room number. If empty, the teacher's configured room number is used. Hidden when the slot is online-only. |
+| **Allow online meetings** | The slot can be requested to be online. Only shown when the school allows online meetings. |
+| **Online meeting** | The slot is online-only. |
+| **Meeting URL** | The link for an online slot. When you edit an online slot, it is required unless you have a default meeting URL in your personal settings. |
+| **Allow contacts to reserve the time slot** | If unchecked, only staff can reserve the slot for students and contacts. |
+| **Allow translator request** | Contacts can request a translator, based on the school's language settings. Only shown when the school allows translator requests. |
+
+## Create time slots for many teachers (batches)
+
+A batch creates the same time slots for every teacher you select, so you can set up a conference evening in one pass.
+
+<Steps>
+1. Select **Teachers** in the navigation.
+   <Screenshot name="teachers" alt="Teachers list with checkboxes, section counts and upcoming time slot counts" />
+2. Check the teachers you want. Use the filters to narrow the list first if needed.
+3. Open **Actions** above the table and select **Create time slots**.
+4. On the **Edit time slot batch** page, set the **Default settings**. An alert shows how many people the batch covers; select **View list** to see them.
+5. Click and drag on the calendar to add a time. Tidal PTC creates that time slot for every selected teacher.
+</Steps>
+
+Times on the batch page are in the school's timezone.
+
+<Aside type="note">
+Teachers with booking disabled are skipped when slots are created. Enable booking for them on the **Teachers** page first if you want them included.
+</Aside>
+
+### Edit or delete a batch time
+
+Click a time on the batch calendar to open **Edit time slot**.
+
+- **Save** applies the changed settings to every slot in the batch at that start and end time, including booked ones. Families are not notified of batch edits, so edit booked slots individually if the change matters to them.
+- **Delete** removes every slot in the batch at that time that has not been booked. Booked slots are kept.
+
+### Find an existing batch
+
+Select **Manage batches** from the time slots calendar to open the batch list. It shows when each batch was created, who created it, the number of time slots per teacher, the total number of time slots and the number of teachers. Select **Edit** to reopen a batch.
+
+<Screenshot name="batches" alt="Time slot batches table with created date, creator, slot counts and teachers" />
+
+## Rules for booked slots
+
+- New and edited slots must start in the future, and the end must be after the start.
+- Only staff with **Update** on **Time Slots** can move a booked slot to a different time. Others see "Reserved time slots cannot be moved."
+- Only staff with **Update** on **Time Slots** can delete a booked slot. Others see "Reserved time slots cannot be deleted." Deleting a booked slot cancels the conference, notifies the family and the teacher, and records "Conference cancelled" in the [activity log](/district-admin/activity-log/).
+- When you change the time, location, meeting URL, online setting or teacher notes of a booked slot, the family and teacher are notified, and reminders are sent again before the new time.
+- Teachers can always edit and delete their own unbooked slots.
+
+When a slot is booked, **Edit time slot** also shows the reservation: the student, who booked it and when, their notes, whether they asked to meet online, and any translator request. From there you can select **Cancel reservation**, assign a translator, or add **Translator notes** (visible to staff only). Expand **History** to see the slot's recent activity.
+
+## Related
+
+- [Booking for families](/staff/reservations/)
+- [Translators](/staff/translators/)
+- [School settings](/district-admin/school-settings/)
+- [Teachers: creating slots](/teachers/creating-slots/)
+- [Directory](/staff/directory/)

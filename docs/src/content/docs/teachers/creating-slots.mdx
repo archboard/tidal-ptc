@@ -1,0 +1,79 @@
+---
+title: Creating your time slots
+description: Add, edit and delete your own conference time slots on the calendar when your school has opened slot editing for teachers.
+sidebar:
+  order: 2
+---
+
+import Screenshot from '../../../components/Screenshot.astro';
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+Teachers can add their own conference time slots by dragging across a calendar, as long as the school has opened slot editing for teachers. This page covers creating slots, setting their details, and changing or removing them.
+
+## Who this is for
+
+Teachers who set their own conference availability. If your school office creates slots for you, see [Time slots and batches](/staff/time-slots/) instead.
+
+## Before you start
+
+- Your school must have an editing window open. An administrator sets **Open slot editing for teachers** and **Close slot editing for teachers** in [school settings](/district-admin/school-settings/). Outside that window the **Manage time slots** link does not appear.
+- You need to teach at least one section at the school, or have the permission to own time slots.
+- Times on the calendar use the **Timezone** in your **Personal settings**. The page reminds you which one with "All times are based on your timezone".
+- Optionally set your **Room** in **Personal settings**. It is used as the conference location when a time slot has none.
+
+## Open your time slot calendar
+
+<Steps>
+1. On the dashboard, select **Manage time slots** in the **My conferences** card. You can also open **Time Slots** in the sidebar and choose **Manage my time slots** from the actions menu.
+   <Screenshot name="time-slots-teacher" alt="The teacher's Time slots calendar showing open and booked conference slots" />
+2. The **Manage my time slots** page shows a **Default settings** card and your calendar. The calendar shows **3 days** at a time; switch to a single day with the toolbar and use the arrows to move between dates.
+</Steps>
+
+## Set the default details
+
+The **Default settings** apply to every slot you create on this page. Select **Show time slot details** or **Hide time slot details** to toggle the form.
+
+| Field | What it does |
+| --- | --- |
+| **Teacher notes** | A note for families about the slot. |
+| **Location** | The room or place of the meeting. If empty, your **Room** from personal settings is used. Hidden when **Online meeting** is checked. |
+| **Allow online meetings** | Lets families ask for this slot to be online. Only shown when the school allows online meetings. |
+| **Online meeting** | Makes the slot online-only. Shown after **Allow online meetings** is checked. |
+| **Meeting URL** | The video call link for an online slot. |
+| **Allow contacts to reserve the time slot** | If unchecked, only admins can book the slot for a family. |
+| **Allow translator request** | Lets families ask for a translator. Only shown when the school allows translator requests. |
+
+## Create time slots
+
+<Steps>
+1. Set the default details you want.
+2. On the calendar, click and drag from the start time to the end time of a slot. The calendar moves in 5-minute steps.
+3. Release the mouse. The slot is saved right away with the default details.
+4. Repeat for each conference slot you want to offer.
+</Steps>
+
+<Aside type="tip">
+Create one slot per conference. For example, for 10-minute conferences from 3:00 to 4:00, drag six separate 10-minute slots.
+</Aside>
+
+You cannot drag a new slot over an existing one, and slots must start in the future.
+
+## Edit or delete a slot
+
+<Steps>
+1. Click a slot on the **Manage my time slots** calendar to open **Edit time slot**.
+2. Change any of the details, then select **Save**.
+3. To remove the slot, select **Delete**.
+</Steps>
+
+To change only the time of an open slot, drag it to a new time or drag its bottom edge to resize it.
+
+<Aside type="caution">
+Once a family books a slot, you cannot move it or delete it. You can still change its details, such as the location or meeting link, and the family is emailed about the change. To free the slot, cancel the reservation first (see [Viewing your bookings](/teachers/bookings/#cancel-a-conference)).
+</Aside>
+
+## Related
+
+- [Viewing your bookings](/teachers/bookings/)
+- [Notification preferences](/teachers/notifications/)
+- [Time slots and batches](/staff/time-slots/)

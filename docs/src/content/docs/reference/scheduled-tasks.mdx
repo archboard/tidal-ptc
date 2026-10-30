@@ -1,0 +1,51 @@
+---
+title: Scheduled tasks
+description: The recurring jobs Tidal PTC runs through the Laravel scheduler, how often each runs, and how the scheduler is started on Docker and VM installs.
+sidebar:
+  order: 3
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Tidal PTC runs a few recurring tasks through the Laravel scheduler, defined in `routes/console.php`. This page lists each task, how often it runs and when it is active, and how the scheduler itself is started.
+
+## Tasks
+
+| Command | Frequency | Runs when | What it does |
+| --- | --- | --- | --- |
+| `ptc:send-reminders` | Hourly | Always | Emails each user a digest of their upcoming conferences once one falls within their reminder lead time. See [Notification events](/reference/notification-events/#reminders). |
+| `activitylog:clean` | Daily | Always | Deletes [activity log](/district-admin/activity-log/) entries older than 365 days. |
+| `tenant:purge-expired` | Every five minutes, without overlapping | Cloud mode only | Permanently deletes cloud tenants whose subscription has expired, along with all of their data. |
+| `migrate:fresh --force --seed --seeder=DemoSeeder` | Hourly | Demo mode only | Wipes the database and reseeds the demo data. |
+
+<Aside type="danger">
+The demo reset drops every table. It only runs when `DEMO_MODE` is true; never set that on an install with real data.
+</Aside>
+
+## Running the scheduler
+
+The tasks only run if the scheduler is running.
+
+| Install | How the scheduler runs |
+| --- | --- |
+| Docker Compose | The `scheduler` service runs `php artisan schedule:work`. No host cron entry is needed. |
+| VM | `install-vm.sh` adds a cron entry for the app user that runs `php artisan schedule:run` every minute. |
+| DigitalOcean App Platform | The container start script runs `php artisan schedule:work` in the background. |
+
+For a manual VM install, add the cron entry yourself:
+
+```bash
+echo '* * * * * cd /var/www/tidal-ptc && php artisan schedule:run >> /dev/null 2>&1' | sudo crontab -u tidal -
+```
+
+To see the schedule and when each task runs next:
+
+```bash
+php artisan schedule:list
+```
+
+## Related
+
+- [Artisan commands](/reference/artisan-commands/)
+- [Docker installation](/installation/docker/)
+- [VM installation](/installation/vm/)

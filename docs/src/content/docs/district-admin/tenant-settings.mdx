@@ -1,0 +1,93 @@
+---
+title: Tenant settings
+description: Configure your district's name, domain, SIS provider, sign-in options, SMTP email, PowerSchool plugin and active schools in Tidal PTC.
+sidebar:
+  order: 1
+---
+
+import Screenshot from '../../../components/Screenshot.astro';
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+The tenant settings page holds the settings that apply to your whole district (the tenant): its name and domain, the SIS that provides your data, which sign-in methods are allowed, the SMTP server used for email, the PowerSchool plugin download, and which schools are active. This page walks through each card on the page and what saving it changes.
+
+## Who this is for
+
+District administrators, or anyone granted the **Edit tenant settings** permission.
+
+## Before you start
+
+- You need the **Edit tenant settings** permission. District admins have every permission. See [Users and permissions](/district-admin/users-and-permissions/).
+- Open the page from the user menu: **Tenant settings** (the address is `/settings/tenant/edit`).
+
+<Screenshot name="settings-tenant" alt="Tenant settings page with the Tenant Settings, SMTP Settings, PowerSchool plugin and Active schools cards" />
+
+## Update the district details
+
+The **Tenant Settings** card has these fields:
+
+| Field | What it does |
+| --- | --- |
+| **Tenant name** | Your district's name. Required. |
+| **Domain** | The domain the app is served from. Required and must be unique. On Tidal PTC Cloud this field is read-only: contact support to change it. |
+| **SIS data provider** | The student information system your data comes from: **PowerSchool SIS** or **ClassLink**. ClassLink sync is not implemented yet, so use PowerSchool SIS. |
+| **Allow password authentication** | Lets users sign in with their email and password. |
+| **Allow OpenID Connect login** | Lets users sign in with OpenID Connect through the SIS. |
+
+<Steps>
+1. Change the fields you need.
+2. Select **Save**. You see "Settings updated successfully."
+</Steps>
+
+<Aside type="caution">
+Changing the domain on a self-hosted install can break access. Configure DNS and a valid certificate for the new domain first.
+
+Changing the SIS provider requires reconfiguration and a resync. Existing data will likely be disrupted, become invalid or disappear.
+</Aside>
+
+## Configure SMTP email
+
+Tidal PTC sends booking confirmations, reminders and other notifications by email. The **SMTP Settings** card sets the mail server for your district.
+
+On Tidal PTC Cloud, emails go through the Cloud email service unless you check **I want to use my own email provider.** The SMTP fields stay disabled until you check it.
+
+<Steps>
+1. Fill in the server details:
+   - **Host**: IP address or domain name of the SMTP server (required).
+   - **Port**: for example `587` (required).
+   - **Username** and **Password**: if your server requires authentication.
+   - **From name** and **From address**: the sender shown on outgoing email (both required).
+   - **Encryption**: **TLS**, **SSL** or none.
+2. Select **Save**. You see "SMTP settings updated." The change is recorded in the [activity log](/district-admin/activity-log/) as "SMTP settings updated".
+3. Select **Send test** to send a test email to your own account's email address. It reads "If you're reading this, your email settings are working correctly."
+</Steps>
+
+<Aside type="tip">
+**Send test** does not save the form. Save your changes first, then send the test.
+</Aside>
+
+For provider-specific advice, see [Email](/integrations/email/).
+
+## Download the PowerSchool plugin
+
+On self-hosted installs, the **PowerSchool plugin** card has a **Download plugin** button. The plugin is built for your current domain, and each download has a higher version number so you can install it over the previous one in PowerSchool. The file is named `tidal-ptc-plugin.zip`.
+
+The card is not shown on Tidal PTC Cloud. See [PowerSchool](/integrations/powerschool/) for installing the plugin.
+
+## Choose the active schools
+
+The **Active schools** card lists every school synced from your SIS. Only active schools are available in the app: users cannot select or work in an inactive school.
+
+<Steps>
+1. Check the schools you want to use. Use **Select all** or **Select none** to change the whole list.
+2. Select **Save**. You see "Schools updated successfully."
+</Steps>
+
+On Tidal PTC Cloud, the card shows how many schools you have selected against your license, for example "3 of 5 licensed schools selected". You cannot save more schools than your plan covers; the error reads, for example, "Your plan covers 5 schools. Contact us to add more." See [School limits](/cloud/school-limits/).
+
+## Related
+
+- [School settings](/district-admin/school-settings/)
+- [Users and permissions](/district-admin/users-and-permissions/)
+- [Email](/integrations/email/)
+- [PowerSchool](/integrations/powerschool/)
+- [School limits](/cloud/school-limits/)

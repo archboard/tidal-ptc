@@ -1,0 +1,44 @@
+---
+title: District lookup
+description: How the four character district code sends users to their district's Tidal PTC login page on Cloud hosting.
+sidebar:
+  order: 1
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+On Cloud hosting, every district has its own address and a four character **district code**. Anyone who lands on the main Tidal PTC address instead of their district's address can enter the code on the **Find your district** page and continue to their district's login page. This page explains where to find the code and how the lookup works.
+
+## Who this is for
+
+District admins sharing the app with staff and families, and anyone who needs to find their district's login page. This only applies to Cloud hosting; self-hosted installs have no district code.
+
+## Find your district code
+
+The code is shown at the bottom of the sidebar under **District code** for every signed-in user. Share it with staff and families along with your district's address.
+
+Codes are four letters or numbers, assigned when the district is created, and unique across all Cloud districts.
+
+## Look up a district
+
+<Steps>
+1. Go to the main Tidal PTC address, or to `/district` on it. Any address that doesn't belong to a district also sends you to this page.
+2. On **Find your district**, type the code in **District code**. Case and surrounding spaces don't matter.
+3. Select **Continue**. You are sent to your district's login page.
+</Steps>
+
+If the code doesn't match a district, the page shows "No district was found with that code."
+
+<Aside type="note">
+To limit guessing, each visitor can try 10 codes a minute. After that the page shows "Too many attempts. Please try again in a minute."
+</Aside>
+
+## A district that isn't set up yet
+
+If you reach a district's address before its admin has finished setup, you see "This district is still being set up. Please contact your administrator." The admin finishes setup with the district's [setup link](/cloud/setup-links/).
+
+## Related
+
+- [Setup links](/cloud/setup-links/)
+- [Concepts](/getting-started/concepts/)
+- [Signing in (guardians)](/guardians/signing-in/)

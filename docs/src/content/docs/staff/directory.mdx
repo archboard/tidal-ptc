@@ -1,0 +1,101 @@
+---
+title: Directory
+description: Browse students, sections, courses and teachers synced from your SIS, override section teachers and control who can be booked in Tidal PTC.
+sidebar:
+  order: 4
+---
+
+import Screenshot from '../../../components/Screenshot.astro';
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+The directory pages (**Students**, **Sections**, **Courses** and **Teachers**) show the records synced from your SIS for the current school. You use them to look people up, start bookings, set a different teacher for a section, and turn booking on or off for a student, section or course. The data itself comes from the SIS and is not edited here.
+
+## Who this is for
+
+Office staff and administrators.
+
+## Before you start
+
+- Each menu item appears when you have **View list** on that record type (**Teachers** uses **View list** on **Users**). Changing booking status or section teachers needs **Update** on that record type. See [Users and permissions](/district-admin/users-and-permissions/).
+- Records must be synced from the SIS first. See [School settings](/district-admin/school-settings/#sync-data-from-the-sis).
+
+## How booking status works
+
+Families can only book a conference with a teacher for a student when all of these have booking enabled:
+
+- the **student**,
+- the **section** the student is enrolled in with that teacher,
+- the section's **course**.
+
+Anything with booking disabled shows a **Booking disabled** label. Staff who own time slots outright through the **Own time slots** permission can be booked by any student whose booking is enabled, regardless of sections.
+
+## Students
+
+<Steps>
+1. Select **Students**. The list shows each student's **Number**, **Grade** and **Name**, sorted by last name.
+   <Screenshot name="students" alt="Students list with number, grade and name columns" />
+2. Search by name or email, or filter by **First name**, **Last name**, **Email**, **Grade level** or **Booking status**.
+3. Select a student to see their **Enrollment**: each **Course**, **Section** and **Teacher**, with booking status for each.
+   <Screenshot name="student-show" alt="A student's enrollment table with course, section and teacher columns" />
+</Steps>
+
+From a student's page:
+
+- **Book conference** on a row books with that section's teacher. See [Booking for families](/staff/reservations/).
+- **Actions** (with **Update** on **Students**) has **Disable booking** or **Enable booking** and **Sync from SIS**, which refreshes the student from the SIS right away.
+
+To change booking for many students, check them in the list, open **Actions** above the table, and select **Disable booking** or **Enable booking**.
+
+## Sections
+
+Select **Sections** to see every section with its **Course**, **Section** number, **Teacher** and **Enrollment** count. Search by course. If you have **Edit school settings**, **Sync from SIS** at the top syncs all sections in the background.
+
+<Screenshot name="sections" alt="Sections list with course, section, teacher and enrollment columns" />
+
+Select a section number to see its enrolled students. The row menu (or **Actions** on the section page) has:
+
+- **Edit section**
+- **Remove teacher override**, when an override is set
+- **Disable section booking** or **Enable section booking**
+- **Disable course booking** or **Enable course booking** (needs **Update** on **Courses**)
+- **Sync from SIS**
+
+### Override a section's teacher
+
+Use an override when someone other than the SIS teacher holds conferences for a section, such as a long-term substitute.
+
+<Steps>
+1. Open the section's menu and select **Edit section**.
+2. Under **Override teacher**, search for and choose the staff member.
+3. Optionally uncheck **Section accepts bookings** to stop bookings for this section.
+4. Select **Save**. You see "Section updated successfully."
+</Steps>
+
+The section then shows the override teacher with the original teacher in parentheses, and **Book conference** on a student's page books with the override teacher. To undo it, select **Remove teacher override**.
+
+## Courses
+
+Select **Courses** to see each course's **Name**, **Number** and number of **Sections**. Search by course name. If you have **Edit school settings**, **Sync from SIS** at the top syncs all courses in the background.
+
+<Screenshot name="courses" alt="Courses list with name, number and section count columns" />
+
+Select a course to see each of its sections with the teacher and enrolled students. Use the row menu or **Actions** to disable or enable booking for the course, or for a single section. Disabling a course stops bookings for all of its sections.
+
+## Teachers
+
+Select **Teachers** to see staff who teach a section or are the override teacher for one, with their **Email**, number of **Sections** and number of upcoming **Time slots**.
+
+<Screenshot name="teachers" alt="Teachers list with checkboxes, section counts and upcoming time slot counts" />
+
+From here you can:
+
+- check teachers and select **Actions**, then **Create time slots** to start a [batch](/staff/time-slots/#create-time-slots-for-many-teachers-batches);
+- check teachers and select **Disable booking** or **Enable booking**, which controls whether they are included in new batches;
+- use a teacher's row menu to **View** them, **Edit time slots**, **Edit permissions** or **Sync from SIS**.
+
+## Related
+
+- [Time slots and batches](/staff/time-slots/)
+- [Booking for families](/staff/reservations/)
+- [Users and permissions](/district-admin/users-and-permissions/)
+- [PowerSchool](/integrations/powerschool/)

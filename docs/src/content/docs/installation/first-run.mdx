@@ -1,0 +1,69 @@
+---
+title: First run
+description: Finish a new Tidal PTC install at /install by connecting PowerSchool, naming the tenant and creating the first district administrator.
+sidebar:
+  order: 5
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+After the server is running, you finish the install in the browser at `/install`. The installer has two screens: **Installation**, where you connect PowerSchool and name your tenant (district), and **Add your user account**, where you pick yourself from PowerSchool and become the district admin. When you're done, Tidal PTC syncs your schools from PowerSchool and signs you in.
+
+## Who this is for
+
+The person setting up a new self-hosted copy. Cloud districts reach the same screens through a setup link instead; see [Setup links](/cloud/setup-links/).
+
+## Before you start
+
+- The app is running and `https://<your-domain>/up` returns `200`. See [Install with Docker](/installation/docker/), [Install on a VM](/installation/vm/) or [Deploy to DigitalOcean](/installation/digitalocean/).
+- The queue worker and Reverb are running. The school sync runs on the queue, and the installer fills in the PowerSchool credentials over a websocket.
+- PowerSchool admin access, to install the plugin.
+
+## Connect PowerSchool and name the tenant
+
+<Steps>
+1. Visit `https://ptc.example.org/install`, using the domain you will serve Tidal PTC on. The page is titled **Installation**.
+
+2. Select **Download plugin** in the alert at the top. This downloads `tidal-ptc-plugin.zip`, built for the domain in your browser's address bar. Its registration URL, single sign-on links and OAuth redirect all point at that domain, so download it from the final domain.
+
+3. In PowerSchool, install and enable the plugin. See [PowerSchool](/integrations/powerschool/#install-the-plugin) for what the plugin does.
+
+   When you enable it, PowerSchool sends the plugin's client ID and secret to Tidal PTC. If the installer page is still open, the **PowerSchool URL**, **PowerSchool Client ID** and **PowerSchool Client Secret** fields fill in by themselves. If they don't, copy the client ID and secret from the plugin's page in PowerSchool and paste them in.
+
+4. Fill in the remaining fields:
+   - **Tenant name**: your district's name.
+   - **Domain**: the hostname people use to reach Tidal PTC, for example `ptc.example.org`. Tidal PTC finds the tenant by matching the request's host against this value.
+   - **PowerSchool URL**: the address of your PowerSchool server, for example `https://powerschool.example.org`.
+   - **PowerSchool Client ID** and **PowerSchool Client Secret**: from the plugin. Both are UUIDs.
+
+5. Select **Install**. Tidal PTC saves the tenant, starts syncing your schools from PowerSchool in the background and shows "Installation complete. Sync has been started."
+</Steps>
+
+## Create the first administrator
+
+<Steps>
+1. On **Add your user account**, start typing your name or email in **Import SIS User**. Tidal PTC searches PowerSchool and lists matching users with their SIS ID.
+
+2. Pick yourself. The user you select gets full permissions for the district (the district admin role).
+
+3. Select **Add user and log in**. Tidal PTC imports the user from PowerSchool, signs you in and takes you to school selection.
+</Steps>
+
+<Aside type="note">
+The installer only works until a district admin exists. Once you've added yourself, `/install` and `/install/user` are no longer available, and you manage the tenant from the tenant settings page instead.
+</Aside>
+
+## After installing
+
+- Check the schools that synced and choose which are active on the [tenant settings](/district-admin/tenant-settings/) page.
+- Set up [email](/integrations/email/) so families get confirmations and reminders.
+- Sync staff, students, courses and sections for each school from its [school settings](/district-admin/school-settings/) page. See [PowerSchool sync](/integrations/powerschool/#sync).
+- Decide who can sign in with a password or with PowerSchool. See [PowerSchool single sign-on](/integrations/powerschool/#single-sign-on).
+
+## Related
+
+- [PowerSchool](/integrations/powerschool/)
+- [Email](/integrations/email/)
+- [Tenant settings](/district-admin/tenant-settings/)
+- [Users and permissions](/district-admin/users-and-permissions/)
+- [Troubleshooting](/installation/troubleshooting/)

@@ -1,0 +1,78 @@
+---
+title: Concepts
+description: The building blocks of Tidal PTC, including districts, schools, the current school, user types, roles, and the self-hosted, cloud and demo modes.
+sidebar:
+  order: 2
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Tidal PTC organizes everything around a district, its schools and the people who belong to them. This page explains those building blocks, how the current school works, the kinds of users, and the three modes the app can run in. Read it before you set up a district or follow the role guides.
+
+## Who this is for
+
+Anyone setting up or administering Tidal PTC. Teachers and guardians can skip to their own guides.
+
+## District (tenant)
+
+A district is called a **tenant** in the app and in settings (for example, **Tenant settings**). Each tenant is identified by the domain it is served on, and it holds:
+
+- The PowerSchool connection (URL, client ID and client secret).
+- Email (SMTP) settings.
+- Its schools, users, students, sections and courses, all synced from PowerSchool.
+
+A tenant counts as installed once its PowerSchool connection is configured. Until then, visitors are sent to setup instead of the login page.
+
+## Schools
+
+Schools sync from PowerSchool. A district admin chooses which schools are **active** in **Tenant settings** under **Active schools**. Only active schools appear in the app. Time slots, booking rules, languages and translator settings are configured per school in **School settings**.
+
+## The current school
+
+Most screens (dashboard, time slots, students, sections, and so on) show data for one school at a time: your **current school**.
+
+- After signing in, if you have access to exactly one school it is selected for you. If you have more than one, you choose on the **Select school** page.
+- To switch later, use the **Current school** menu at the top of the sidebar. It only appears when you have access to more than one school.
+
+Which schools you can switch between depends on who you are:
+
+| User | Schools available |
+| --- | --- |
+| District admin | Every active school in the district |
+| Guardian | The active schools their linked students attend |
+| Other staff | The active schools they are assigned to |
+
+## User types
+
+Every user has one of three types, synced from PowerSchool:
+
+| Type | Label in the app | Notes |
+| --- | --- | --- |
+| `staff` | Staff | Admins, teachers and other school staff. |
+| `guardian` | Contact/Guardian | Parents and other contacts who book conferences. |
+| `student` | Student | Students sign in only through PowerSchool, never with a password. |
+
+## Roles and permissions
+
+On top of the user type, each user can have roles: **district admin**, **school admin**, **teacher**, **staff** and **guardian**. Roles grant permissions such as editing tenant settings, editing school settings, managing time slots or editing other users' permissions. Permissions are scoped to a school, so someone can manage one school without seeing another. See [Users and permissions](/district-admin/users-and-permissions/) and the full [Permissions reference](/reference/permissions/).
+
+## Modes: self-hosted, cloud and demo
+
+The same code runs in three modes, chosen by environment variables:
+
+| Mode | Turned on by | What changes |
+| --- | --- | --- |
+| Self-hosted | Default (`IS_CLOUD` unset or `false`) | You install it yourself and finish setup at `/install`. You can change the tenant's domain and SMTP settings freely. |
+| Cloud | `IS_CLOUD=true` | Archboard hosts it. Districts are created at purchase and set up through [setup links](/cloud/setup-links/). Each district gets a four character [district code](/cloud/district-lookup/), active schools are capped by the [school limit](/cloud/school-limits/), and the domain can only be changed by support. |
+| Demo | `DEMO_MODE=true` | The login page offers one-click **Log in as admin/staff** and **Log in as contact/guardian** buttons. Settings, passwords and permissions are read-only, and the data resets every hour. |
+
+<Aside type="note">
+Demo mode is separate from the other two: it can be turned on alongside either. Do not enable it on a real district, because the hourly reset wipes the database.
+</Aside>
+
+## Related
+
+- [Choosing hosting](/getting-started/choosing-hosting/)
+- [Users and permissions](/district-admin/users-and-permissions/)
+- [School settings](/district-admin/school-settings/)
+- [Glossary](/reference/glossary/)

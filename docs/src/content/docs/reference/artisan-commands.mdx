@@ -1,0 +1,117 @@
+---
+title: Artisan commands
+description: Tidal PTC's own Artisan commands for app keys, cloud tenants, setup links, machine API tokens and reminders, with arguments and options.
+sidebar:
+  order: 4
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Tidal PTC adds its own Artisan commands (in `app/Console/Commands`) on top of Laravel's. This page lists each one with its arguments, options and the mode it works in. Several commands only work in cloud mode (`IS_CLOUD=true`) and print an error otherwise.
+
+Run commands from the app directory with `php artisan <command>`. On Docker, run them inside the `app` container:
+
+```bash
+docker compose exec app php artisan <command>
+```
+
+## Summary
+
+| Command | Mode | Purpose |
+| --- | --- | --- |
+| `key:check` | Any | Generate an app key if none is set. |
+| `key:reencrypt` | Any | Re-encrypt tenant secrets with the current app key after a rotation. |
+| `ptc:send-reminders` | Any | Send due reminder emails now. |
+| `tenant:create` | Cloud | Create a cloud tenant and print its setup links. |
+| `tenant:setup-link` | Cloud | Print fresh setup links for a tenant that has no district admin. |
+| `tenant:purge-expired` | Cloud | Permanently delete tenants whose subscription has expired. |
+| `make:token` | Cloud | Generate the machine-to-machine API token. |
+
+## key:check
+
+```bash
+php artisan key:check
+```
+
+Checks if there is an app key and generates one if it does not exist (runs `key:generate --force`). If `APP_KEY` is already set, it does nothing, so it is safe to run repeatedly.
+
+## key:reencrypt
+
+```bash
+php artisan key:reencrypt
+```
+
+Re-encrypts each tenant's stored secrets (the SIS configuration and SMTP settings) with the current `APP_KEY`. This is step two of a key rotation: run it after the new key is in `APP_KEY` and the old key is in `APP_PREVIOUS_KEYS`, then remove the old key. It prints how many tenants were re-encrypted. See [Rotating the app key](/installation/rotating-app-key/).
+
+## ptc:send-reminders
+
+```bash
+php artisan ptc:send-reminders
+```
+
+Emails each user a digest of their upcoming conferences, at their configured lead time. The scheduler runs it hourly; running it by hand only sends reminders that are already due. It prints how many reminders were sent. See [Notification events](/reference/notification-events/#reminders).
+
+## tenant:create
+
+```bash
+php artisan tenant:create "Example School District" district.example.com 0b6f2c9e-4a51-4e7d-9a0b-2f6c1d3e8a77 3 --expires="2027-08-01"
+```
+
+Creates a cloud tenant and prints its setup link and plugin link.
+
+| Argument or option | Required | Description |
+| --- | --- | --- |
+| `name` | Yes | The district name (at most 255 characters). |
+| `domain` | Yes | The domain the district is served on. Must be unique. |
+| `license` | Yes | The license UUID from the billing portal. Must be unique. |
+| `schools` | Yes | How many schools the license covers (at least 1). |
+| `--expires=` | No | When the subscription expires. Defaults to a year from now. Must be after the start date, which is now. |
+
+It uses the same validation as the [tenant API](/reference/api/#create-or-update-a-tenant). A four-character district code is generated automatically. The setup links expire after 14 days; use `tenant:setup-link` to issue new ones.
+
+## tenant:setup-link
+
+```bash
+php artisan tenant:setup-link district.example.com
+```
+
+Prints fresh setup links for a cloud tenant that has no district admin yet.
+
+| Argument | Required | Description |
+| --- | --- | --- |
+| `tenant` | Yes | The tenant ID or domain. |
+
+It fails if no tenant matches, or if the tenant already has a district admin (setup is closed). The links are valid for 14 days. See [Setup links](/cloud/setup-links/).
+
+## tenant:purge-expired
+
+```bash
+php artisan tenant:purge-expired
+```
+
+Permanently deletes cloud tenants whose subscription has expired, with their users, sessions, permissions and activity log entries. It prints each tenant it purged. The scheduler runs it every five minutes in cloud mode.
+
+<Aside type="danger">
+Purging cannot be undone. Extend a tenant's `subscription_expires_at` (through the [API](/reference/api/) or the billing portal) before it lapses if the district is renewing.
+</Aside>
+
+## make:token
+
+```bash
+php artisan make:token
+php artisan make:token --token=your-own-long-random-string
+```
+
+Generates a machine-to-machine API token for the [tenant API](/reference/api/) and prints it once. Only a SHA-256 hash is stored, so copy the output.
+
+| Option | Description |
+| --- | --- |
+| `--token=` | Use this token instead of a random 60-character one. |
+
+Running it deletes every existing machine token first, so only one token is valid at a time. On a self-hosted install it prints an error and creates nothing.
+
+## Related
+
+- [Scheduled tasks](/reference/scheduled-tasks/)
+- [API](/reference/api/)
+- [Rotating the app key](/installation/rotating-app-key/)

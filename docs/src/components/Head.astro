@@ -1,0 +1,46 @@
+---
+import Default from '@astrojs/starlight/components/Head.astro';
+import { SITE_URL } from '../config';
+
+const { entry, id } = Astro.locals.starlightRoute;
+const url = new URL(Astro.url.pathname, SITE_URL).href;
+const segments = id.split('/').filter(Boolean);
+const titleCase = (s: string) => s.replace(/-/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
+
+const graph: Record<string, unknown>[] = [
+  {
+    '@type': 'TechArticle',
+    headline: entry.data.title,
+    description: entry.data.description,
+    url,
+    inLanguage: 'en',
+    isPartOf: { '@type': 'WebSite', name: 'Tidal PTC documentation', url: SITE_URL },
+    publisher: { '@type': 'Organization', name: 'Archboard', url: 'https://archboard.io' },
+    ...(entry.data.lastUpdated instanceof Date ? { dateModified: entry.data.lastUpdated.toISOString() } : {}),
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Tidal PTC', item: `${SITE_URL}/` },
+      ...segments.map((segment, i) => ({
+        '@type': 'ListItem',
+        position: i + 2,
+        name: i === segments.length - 1 ? entry.data.title : titleCase(segment),
+        ...(i === segments.length - 1 ? { item: url } : {}),
+      })),
+    ],
+  },
+];
+
+// The FAQ page renders the same list via <Faq />
+if (id === 'reference/faq') {
+  const { faq } = await import('../faq');
+  graph.push({
+    '@type': 'FAQPage',
+    mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+  });
+}
+---
+
+<Default />
+<script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@graph': graph })} />

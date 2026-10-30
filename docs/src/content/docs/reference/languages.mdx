@@ -1,0 +1,50 @@
+---
+title: Languages
+description: The six languages Tidal PTC's interface supports, right-to-left Arabic, and how the same list drives translator request languages per school.
+sidebar:
+  order: 6
+---
+
+Tidal PTC uses one list of languages (`app/Enums/Language.php`) for two separate things: the language each user reads the interface in, and the languages a school offers translators for at conferences. This page covers both.
+
+## Supported languages
+
+| Language | Code | Shown in the language menu as | Direction |
+| --- | --- | --- | --- |
+| English | `en` | English | Left to right |
+| Chinese (Mandarin) | `zh-CN` | 简体中文 | Left to right |
+| Japanese | `ja` | 日本語 | Left to right |
+| Korean | `ko` | 한국어 | Left to right |
+| Spanish | `es` | Español | Left to right |
+| Arabic | `ar` | العربية | Right to left |
+
+English is the source language and the default: new users start in English, and signed-out pages are in English. Every other language has a full translation file in `lang/<code>.json`. The Chinese translation is Simplified Chinese.
+
+## Interface language
+
+Each user picks their own interface language. It is stored on the user, not the school or district.
+
+- Change it from the **Language** menu in the sidebar (each language is listed by its native name), or from **Language** in **Personal settings**.
+- The page reloads in the new language.
+- [Email notifications](/reference/notification-events/) are sent in the recipient's language.
+- When Arabic is selected the whole interface switches to right-to-left layout.
+
+See [Language and timezone](/guardians/language-and-timezone/) for the guardian walkthrough.
+
+## Translator languages
+
+Translator languages are configured per school, under **Translator settings** in [School settings](/district-admin/school-settings/), and are independent of anyone's interface language. Any language from the table above can be added. For each one you set:
+
+| Setting | Meaning |
+| --- | --- |
+| **Language** | The language translators are offered for. Each language can be added once per school. |
+| **Maximum requests** | The most active translator requests for this language across the school. `0` or empty means no limit. |
+| **Maximum overlaps** | The most translator requests for this language that can overlap in time. `0` or empty means no limit. |
+
+When booking, a guardian can only request a translator in a language the school has added. If a limit is reached, the booking is rejected with "No more translator requests are available for this language." or "No translator is available for this language at that time." See [Requesting a translator](/guardians/translators/) and [Translators](/staff/translators/).
+
+## Related
+
+- [Language and timezone](/guardians/language-and-timezone/)
+- [School settings](/district-admin/school-settings/)
+- [Translators](/staff/translators/)

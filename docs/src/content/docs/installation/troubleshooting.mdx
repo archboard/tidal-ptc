@@ -1,0 +1,99 @@
+---
+title: Troubleshooting
+description: Fix common self-hosted Tidal PTC problems, from failed certificates and unhealthy containers to websockets, sync and PowerSchool registration.
+sidebar:
+  order: 10
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+This page collects the problems people hit most often when installing or running a self-hosted Tidal PTC, with the checks and fixes the install guides point to. Start with the logs: they usually name the problem.
+
+## Who this is for
+
+Server administrators of a self-hosted install.
+
+## Where the logs are
+
+| Install | Command |
+| --- | --- |
+| Docker | `docker compose logs -f app queue reverb` (from `/opt/tidal-ptc`) |
+| VM, app | `tail -f /var/www/tidal-ptc/storage/logs/laravel-*.log` |
+| VM, services | `journalctl -fu tidal-ptc-queue -u tidal-ptc-reverb` |
+| VM, web server | `/var/log/nginx/error.log` |
+| Reverse proxy (Docker) | `journalctl -u caddy` or `journalctl -u nginx` |
+
+## The certificate request failed
+
+The scripts print "Could not get a certificate for `<domain>`" and continue over plain HTTP. Check that the domain's DNS `A` record points at this server and that ports `80` and `443` are open, then re-run the script. It keeps your settings and tries again.
+
+## The stack did not become healthy (Docker)
+
+The setup script waits up to five minutes for the `app` container to pass its health check, which only happens after migrations have run. If it gives up, check:
+
+```sh
+docker compose -f /opt/tidal-ptc/docker-compose.yml logs app
+```
+
+- If Compose refuses to start with `DB_PASSWORD is required`, set `DB_PASSWORD` in `.env`.
+- "address already in use" when binding ports usually means `docker-compose.override.yml` appends ports instead of replacing them. Use `ports: !override`, as shown in [Install with Docker](/installation/docker/#bind-the-published-ports-to-localhost).
+- On a server with 1 GB of RAM or less and no swap, the stack can run out of memory. The setup script adds a swap file in that case; on a manual install, add one yourself or use a 2 GB server.
+
+## `/up` doesn't return 200
+
+- **Docker**: check `docker compose ps` and the `app` logs, and that the reverse proxy is running.
+- **VM**: check `/var/www/tidal-ptc/storage/logs` and `/var/log/nginx/error.log`, and that `php8.5-fpm` is running.
+
+## Websockets don't connect
+
+In the browser dev tools on any page, look for a websocket connection to `wss://<domain>/app/<REVERB_APP_KEY>` with status `101`. If it fails:
+
+- `REVERB_HOST`, `REVERB_PORT` or `REVERB_SCHEME` don't match the public URL. `REVERB_HOST` must be the public hostname, not the container or `localhost`.
+- The proxy isn't forwarding `/app` and `/apps` to Reverb with the `Upgrade` and `Connection` headers.
+- On a VM, `php artisan optimize` wasn't rerun after editing `.env`, or Reverb isn't running (`systemctl status tidal-ptc-reverb`).
+
+See [Real-time updates](/integrations/real-time/).
+
+## A setting in `.env` has no effect
+
+Config is cached at start. On Docker, run `docker compose up -d` after editing. On a VM, run `php artisan optimize` as the `tidal` user and restart the services. See [Applying a change](/installation/configuration/#applying-a-change).
+
+## Syncs, emails or reminders never happen
+
+These run in the background.
+
+- **Queue worker**: syncs run on the `sis_sync` queue and email on `default`. Check the `queue` container or `systemctl status tidal-ptc-queue`. The worker must listen to both queues: `--queue=default,sis_sync`.
+- **Scheduler**: reminders and activity log cleanup run from the scheduler. Docker runs it in the `scheduler` service. On a VM, check the `tidal` user's crontab with `sudo crontab -u tidal -l`.
+- **After an update**, restart the queue worker and Reverb. They keep the old code in memory until restarted.
+
+## Plugin registration fails in PowerSchool
+
+When you enable the plugin, PowerSchool calls `/api/powerschool/registration` on your server, and Tidal PTC answers with a message:
+
+| Message | Meaning |
+| --- | --- |
+| `Invalid registration key` | The plugin was built for a different hostname or a different `APP_KEY`. Download the plugin again from the domain you serve Tidal PTC on, and reinstall it. |
+| `INVALID_CERTIFICATE` | Tidal PTC couldn't verify PowerSchool's TLS certificate. |
+| `HOST_UNKNOWN` | Tidal PTC couldn't reach the PowerSchool server. Check DNS and firewalls between the two. |
+
+See [PowerSchool](/integrations/powerschool/).
+
+## "SIS is not configured"
+
+The PowerSchool sign-in routes show "SIS is not configured. Please contact your systems administrator." until the tenant has a PowerSchool URL, client ID and secret. Finish the [installer](/installation/first-run/), or check the PowerSchool fields on the tenant.
+
+## "No authentication methods are available."
+
+The login page shows this when both password sign-in and PowerSchool sign-in are turned off for the tenant. Sign in with the **Tidal PTC** link in PowerSchool's header instead, then turn one on under **Allow password authentication** or **Allow OpenID Connect login** on the [tenant settings](/district-admin/tenant-settings/) page.
+
+## `/install` returns 404
+
+The installer closes once the tenant is installed and has users. Manage the tenant from the [tenant settings](/district-admin/tenant-settings/) page instead.
+
+## Related
+
+- [Install with Docker](/installation/docker/)
+- [Install on a VM](/installation/vm/)
+- [Configuration](/installation/configuration/)
+- [PowerSchool](/integrations/powerschool/)
+- [FAQ](/reference/faq/)

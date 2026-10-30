@@ -1,0 +1,73 @@
+---
+title: Backups
+description: What to back up on a self-hosted Tidal PTC install (the PostgreSQL database and the .env file with APP_KEY) and how to restore it.
+sidebar:
+  order: 8
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+A Tidal PTC backup has two parts: the PostgreSQL database, which holds every tenant, school, user, time slot and reservation, and the `.env` file, which holds `APP_KEY`. You need both. The tenant's PowerSchool and SMTP credentials are encrypted in the database with `APP_KEY`, so a database restored without its key can't connect to PowerSchool or send email.
+
+## Who this is for
+
+Anyone running a self-hosted install.
+
+## What to back up
+
+| What | Where | Why |
+| --- | --- | --- |
+| Database | The `postgres` Docker volume, or the `tidal_ptc` database on a VM | All application data |
+| `.env` | `/opt/tidal-ptc/.env` (Docker) or `/var/www/tidal-ptc/.env` (VM) | `APP_KEY`, database password and Reverb credentials |
+
+Keep the `.env` backup somewhere as safe as a password store: anyone with `APP_KEY` and a copy of the database can decrypt the tenant secrets.
+
+You don't need to back up the rest of the install directory. The code comes from the image or Git, and `storage/` only holds logs and caches. Redis holds sessions, cache and queued jobs; losing it signs everyone out and drops any jobs still waiting, but loses no records.
+
+## Back up the database
+
+**Docker**, from `/opt/tidal-ptc`:
+
+```sh
+docker compose exec -T postgres sh -c 'pg_dump -U $POSTGRES_USER $POSTGRES_DB' | gzip > ptc-$(date +%F).sql.gz
+```
+
+**VM**:
+
+```sh
+sudo -u postgres pg_dump tidal_ptc | gzip > ptc-$(date +%F).sql.gz
+```
+
+Each command writes a compressed dump named after today's date to the current directory. Copy it off the server. To run it nightly, add the command to a cron job on the host.
+
+**DigitalOcean**: run `pg_dump` against the connection details of the app's `db` database.
+
+## Restore a backup
+
+<Aside type="caution">
+The dump is plain SQL, so restore it into an empty database (one that migrations have not run on yet). Use the same `APP_KEY` the backup was taken with.
+</Aside>
+
+**Docker**:
+
+```sh
+gunzip -c ptc-YYYY-MM-DD.sql.gz | docker compose exec -T postgres sh -c 'psql -U $POSTGRES_USER $POSTGRES_DB'
+```
+
+**VM**:
+
+```sh
+gunzip -c ptc-YYYY-MM-DD.sql.gz | sudo -u postgres psql tidal_ptc
+```
+
+Restore `.env` before you start the app, so `APP_KEY` matches the data.
+
+## Docker volumes
+
+Data lives in the `postgres` and `redis` Docker volumes. `docker compose down` keeps them; `docker compose down -v` deletes them.
+
+## Related
+
+- [Rotating the app key](/installation/rotating-app-key/)
+- [Updating](/installation/updating/)
+- [Configuration](/installation/configuration/)

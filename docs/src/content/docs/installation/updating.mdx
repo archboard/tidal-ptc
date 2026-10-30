@@ -1,0 +1,107 @@
+---
+title: Updating
+description: Update a self-hosted Tidal PTC install to a new version with Docker image tags, the VM update script or DigitalOcean redeploys.
+sidebar:
+  order: 7
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+Updating Tidal PTC means getting the new code, running database migrations and restarting the long-running processes (the queue worker and Reverb). The install scripts and the VM update script do all of this for you. Migrations run automatically in every method.
+
+## Who this is for
+
+Anyone maintaining a self-hosted install.
+
+## Before you start
+
+- Take a [backup](/installation/backups/) of the database.
+- Read the [changelog](/reference/changelog/) for the version you're moving to. To hear about new versions, watch the repository's releases on GitHub (**Watch → Custom → Releases**).
+
+## Image tags
+
+Docker images are published to `ghcr.io/archboard/tidal-ptc` for `amd64` and `arm64`. Each push to `main` and each `v*` release tag publishes these tags:
+
+| Tag | Points to |
+| --- | --- |
+| `latest` | The newest build of `main`. The default. |
+| `stable` | The newest tagged release. |
+| `1.2.3` | An exact release (from the Git tag `v1.2.3`). |
+| `1.2` | The newest patch release of `1.2`. |
+| `main` | The newest build of `main`, same as `latest`. |
+| `sha-<commit>` | One specific commit. |
+
+The Compose file runs `ghcr.io/archboard/tidal-ptc:${TIDAL_PTC_VERSION:-latest}`, so the tag comes from `TIDAL_PTC_VERSION` in `.env`. If you'd rather only take releases, set it to `stable`, or pin an exact version.
+
+## Update a Docker install
+
+<Steps>
+1. Re-run the setup script with the same command you installed with:
+
+   ```sh
+   curl -fsSL https://raw.githubusercontent.com/archboard/tidal-ptc/main/setup-docker.sh \
+     | sudo bash -s -- --domain ptc.example.org --email you@example.org
+   ```
+
+   Add `--version TAG` to switch tags; the script saves it as `TIDAL_PTC_VERSION` in `.env`. Existing secrets and `.env` values are kept.
+
+2. The script fetches the latest Compose file, pulls new images, restarts the stack and waits until it is healthy. The `app` container runs migrations as it starts.
+</Steps>
+
+Or do it by hand from `/opt/tidal-ptc`:
+
+```sh
+curl -fsSLO https://raw.githubusercontent.com/archboard/tidal-ptc/main/docker-compose.yml && docker compose pull && docker compose up -d
+```
+
+If you built from source, `git pull` in your checkout and run `docker compose up -d --build` instead.
+
+## Update a VM install
+
+<Steps>
+1. Run the update script from the install directory:
+
+   ```sh
+   cd /var/www/tidal-ptc && sudo ./update-vm.sh
+   ```
+
+   Add `--version v1.2.3` to deploy a tag, or `--dir PATH` if you're running it from somewhere else.
+
+2. The script puts the site in maintenance mode, fetches the code, runs `composer install`, rebuilds the front end, runs migrations, re-caches config, restarts Reverb and the queue worker, reloads PHP-FPM and brings the site back up. If anything fails, the site still comes back out of maintenance mode.
+</Steps>
+
+`update-vm.sh` leaves Nginx, PostgreSQL, the systemd units and `.env` alone. To update those too, re-run `install-vm.sh`, which also pulls, rebuilds and migrates.
+
+To update by hand:
+
+```sh
+sudo -iu tidal
+cd /var/www/tidal-ptc
+php artisan down
+git pull                      # or: git fetch --tags && git checkout v1.2.3
+composer install --no-dev --optimize-autoloader --no-interaction
+npm ci && npm run build
+php artisan migrate --force
+php artisan optimize
+php artisan up
+exit
+
+sudo systemctl reload php8.5-fpm
+sudo systemctl restart tidal-ptc-queue tidal-ptc-reverb
+```
+
+<Aside type="caution">
+Restarting the queue worker and Reverb is required. They are long-running processes and keep the old code in memory until restarted.
+</Aside>
+
+## Update on DigitalOcean
+
+The template deploys the `main` branch of the repository. Redeploy the app in App Platform to build and run the latest `main`. The container runs migrations every time it starts.
+
+## Related
+
+- [Backups](/installation/backups/)
+- [Changelog](/reference/changelog/)
+- [Install with Docker](/installation/docker/)
+- [Install on a VM](/installation/vm/)
+- [Troubleshooting](/installation/troubleshooting/)

@@ -1,0 +1,306 @@
+---
+title: Install with Docker
+description: Install Tidal PTC on a Debian or Ubuntu server with Docker Compose, a reverse proxy and a Let's Encrypt certificate, using one setup script.
+sidebar:
+  order: 2
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+The Docker install takes a fresh Linux server to a running Tidal PTC behind HTTPS. The Compose stack runs everything the app needs: the app on Octane (FrankenPHP), Reverb for websockets, a queue worker, the scheduler, PostgreSQL and Redis. One setup script installs Docker, configures the stack and puts a reverse proxy with a Let's Encrypt certificate in front of it. This is the recommended way to self-host.
+
+## Who this is for
+
+District IT staff self-hosting Tidal PTC on their own Linux server.
+
+## Before you start
+
+- Check the [requirements](/installation/requirements/): a Debian 12+ or Ubuntu 24.04+ server with `sudo`, a DNS `A` record pointing at it, and ports `80` and `443` open.
+- Have your domain (for example `ptc.example.org`) and, optionally, an email address for Let's Encrypt expiry notices.
+
+## Run the setup script
+
+<Steps>
+1. On the server, run the setup script with your domain and email:
+
+   ```sh
+   curl -fsSL https://raw.githubusercontent.com/archboard/tidal-ptc/main/setup-docker.sh \
+     | sudo bash -s -- --domain ptc.example.org --email you@example.org
+   ```
+
+   If you leave out `--domain`, the script prompts for it. It also prompts for the reverse proxy (Caddy by default).
+
+2. Wait for the script to finish. From start to finish, it:
+   - Installs Docker Engine and the Compose plugin from Docker's official apt repository, if `docker compose` isn't already available.
+   - Downloads `docker-compose.yml` into `/opt/tidal-ptc` and adds a `docker-compose.override.yml` that binds the app and Reverb ports to localhost.
+   - Writes `.env`: generates the app key, database password and Reverb credentials, and sets the production URL and Reverb host from your domain.
+   - Installs a reverse proxy and gets a Let's Encrypt certificate: Caddy (the default) or Nginx with Certbot.
+   - Pulls the published images from `ghcr.io/archboard/tidal-ptc`, starts the stack and waits for it to be healthy. Migrations run automatically.
+   - Checks that `https://<domain>/up` responds.
+
+3. Log out and back in. The script adds your user to the `docker` group, so after that you can run `docker compose` from `/opt/tidal-ptc` without `sudo`.
+
+4. Visit `https://ptc.example.org/install` to finish the installation. See [First run](/installation/first-run/).
+</Steps>
+
+<Aside type="note">
+The PowerSchool client ID and secret are entered in the installer, not in `.env`. Email (SMTP) is configured later on the tenant settings page.
+</Aside>
+
+## Script options
+
+| Option | Description |
+| --- | --- |
+| `--domain` | Public hostname. Prompted for if omitted. |
+| `--email` | Let's Encrypt expiry notices (optional). |
+| `--proxy caddy` or `--proxy nginx` | Reverse proxy to install. Default `caddy`; a re-run keeps the one already set up. |
+| `--powerschool URL` | PowerSchool address, for example `https://powerschool.example.org`. |
+| `--version TAG` | Pin an image tag (matches the GitHub releases). Default `latest`, which tracks `main`. See [Updating](/installation/updating/#image-tags). |
+| `--dir PATH` | Install directory. Default `/opt/tidal-ptc`. |
+| `--no-tls` | Skip Let's Encrypt and serve plain HTTP. |
+
+The script is safe to re-run: existing secrets and `.env` values are kept, and a re-run fetches the latest Compose file, pulls new images and restarts the stack.
+
+## What the stack runs
+
+| Service | What it does |
+| --- | --- |
+| `app` | Runs `php artisan migrate --force`, then serves the app with Octane (FrankenPHP) on port `8000`. |
+| `reverb` | The Reverb websocket server on port `8080`. |
+| `queue` | `php artisan queue:work redis --queue=default,sis_sync --tries=3 --max-time=3600` |
+| `scheduler` | `php artisan schedule:work`, which sends reminders and runs cleanup. No host cron entry is needed. |
+| `postgres` | PostgreSQL 18, data in the `postgres` volume. |
+| `redis` | Redis 7, data in the `redis` volume. |
+
+The background services start only after `app` is healthy, that is, after migrations have run.
+
+## Verify
+
+- `https://ptc.example.org/up` returns `200` (the script checks this for you).
+- Open the browser dev tools on any page: there should be a websocket connection to `wss://ptc.example.org/app/<REVERB_APP_KEY>` with status `101`. If it fails, `REVERB_HOST`, `REVERB_PORT` or `REVERB_SCHEME` don't match the public URL, or the proxy isn't forwarding `Upgrade`. See [Real-time updates](/integrations/real-time/).
+
+## Install by hand
+
+If you'd rather not pipe a script into `bash`, these are the same steps done manually.
+
+### Install Docker
+
+Skip this if `docker compose version` already works. These steps use Docker's official apt repository, which ships the Compose plugin; the `docker.io` package in the distro repositories does not.
+
+```sh
+# Remove any distro-packaged Docker that may conflict
+sudo apt-get remove -y docker.io docker-doc docker-compose podman-docker containerd runc 2>/dev/null
+
+# Add Docker's GPG key and apt repository
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+. /etc/os-release
+sudo curl -fsSL "https://download.docker.com/linux/$ID/gpg" -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/$ID $VERSION_CODENAME stable" \
+  | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Install Docker Engine and the Compose plugin
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Start on boot and let your user run docker without sudo
+sudo systemctl enable --now docker
+sudo usermod -aG docker "$USER"
+```
+
+Log out and back in for the group change to take effect, then verify:
+
+```sh
+docker compose version
+docker run --rm hello-world
+```
+
+`$ID` resolves to `debian` or `ubuntu`. On derivatives (Linux Mint, Pop!_OS, Raspberry Pi OS), set `ID` and `VERSION_CODENAME` by hand to the upstream Debian or Ubuntu release they are based on.
+
+### Get the Compose file
+
+```sh
+sudo mkdir -p /opt/tidal-ptc && sudo chown "$USER" /opt/tidal-ptc
+cd /opt/tidal-ptc
+curl -fsSLO https://raw.githubusercontent.com/archboard/tidal-ptc/main/docker-compose.yml
+curl -fsSL -o .env https://raw.githubusercontent.com/archboard/tidal-ptc/main/.env.example
+chmod 600 .env
+```
+
+### Configure `.env`
+
+Generate the app key:
+
+```sh
+sed -i "s|^APP_KEY=.*|APP_KEY=base64:$(openssl rand -base64 32)|" .env
+```
+
+Then edit `.env` and set the values listed in [Configuration](/installation/configuration/#docker). Everything not listed keeps a working default, and the Compose file sets the database, Redis, cache, session and queue hosts for you.
+
+### Pull and start
+
+```sh
+docker compose pull
+docker compose up -d
+```
+
+Migrations run automatically when the `app` service starts. Check that everything is healthy:
+
+```sh
+docker compose ps
+docker compose logs -f app
+```
+
+The app now listens on `http://<server-ip>:8000` and Reverb on `:8080`. Don't expose those publicly; bind them to localhost and put a reverse proxy in front of them.
+
+### Bind the published ports to localhost
+
+By default Compose publishes ports `8000` and `8080` on every interface. Create `docker-compose.override.yml` so they are only reachable by the reverse proxy on the same host. Compose merges this file automatically. `!override` replaces the default port list instead of appending to it, which would bind each port twice and fail with "address already in use".
+
+```yaml
+services:
+  app:
+    ports: !override
+      - "127.0.0.1:8000:8000"
+  reverb:
+    ports: !override
+      - "127.0.0.1:8080:8080"
+```
+
+Then run `docker compose up -d` to apply it.
+
+<Aside type="caution">
+This matters. The Compose file sets `TRUSTED_PROXIES=*` so the app reads client IPs from `X-Forwarded-For`, which is only safe when the ports can't be reached except through your proxy. If your firewall (`ufw`, security groups and so on) is on, only ports `80` and `443` need to be open.
+</Aside>
+
+### Reverse proxy
+
+Two paths need routing:
+
+| Public path | Upstream | Notes |
+| --- | --- | --- |
+| `/app`, `/apps` | `127.0.0.1:8080` (Reverb) | Websockets: the proxy must pass the `Upgrade` and `Connection` headers |
+| everything else | `127.0.0.1:8000` (app) | |
+
+#### Option A: Caddy (recommended)
+
+Caddy obtains and renews the Let's Encrypt certificate itself and proxies websockets without extra configuration. Install it from Caddy's official apt repository, per [caddyserver.com/docs/install](https://caddyserver.com/docs/install#debian-ubuntu-raspbian):
+
+```sh
+sudo apt-get install -y debian-keyring debian-archive-keyring apt-transport-https curl
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+sudo apt-get update
+sudo apt-get install -y caddy
+```
+
+Replace `/etc/caddy/Caddyfile` with:
+
+```caddyfile
+ptc.example.org {
+    @reverb path /app /app/* /apps /apps/*
+    reverse_proxy @reverb 127.0.0.1:8080
+    reverse_proxy 127.0.0.1:8000
+}
+```
+
+```sh
+sudo systemctl reload caddy
+```
+
+#### Option B: Nginx
+
+Install Nginx and Certbot:
+
+```sh
+sudo apt-get update
+sudo apt-get install -y nginx certbot python3-certbot-nginx
+sudo systemctl enable --now nginx
+```
+
+Certbot's package installs a systemd timer that renews certificates automatically; `sudo certbot renew --dry-run` confirms it works once the site below is set up.
+
+Create `/etc/nginx/sites-available/tidal-ptc`:
+
+```nginx
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+server {
+    listen 80;
+    server_name ptc.example.org;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name ptc.example.org;
+
+    # Filled in by certbot
+    ssl_certificate     /etc/letsencrypt/live/ptc.example.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/ptc.example.org/privkey.pem;
+
+    client_max_body_size 20m;
+
+    # Reverb websockets
+    location ~ ^/apps?(/|$) {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 86400;
+    }
+
+    # Application
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
+    }
+}
+```
+
+```sh
+sudo ln -s /etc/nginx/sites-available/tidal-ptc /etc/nginx/sites-enabled/
+sudo certbot --nginx -d ptc.example.org
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+## Build from source
+
+Clone the repository into `/opt/tidal-ptc` and run the setup script there (or pass `--dir`). When a `Dockerfile` is present, the script builds the images instead of pulling them and keeps your checkout's `docker-compose.yml`. When doing it by hand, use `docker compose build` and `docker compose up -d --build` wherever this guide says `pull`.
+
+## Day-to-day operations
+
+Run these from `/opt/tidal-ptc`.
+
+| Task | Command |
+| --- | --- |
+| Run Artisan | `docker compose exec app php artisan <command>` |
+| Tail logs | `docker compose logs -f app queue reverb` |
+| Change `.env` | Edit, then `docker compose up -d` (containers are recreated with the new values) |
+| Stop the stack | `docker compose down` (keeps the `postgres` and `redis` volumes) |
+
+<Aside type="danger">
+`docker compose down -v` deletes the `postgres` and `redis` volumes, and with them all your data. Take a [backup](/installation/backups/) first.
+</Aside>
+
+## Related
+
+- [First run](/installation/first-run/)
+- [Configuration](/installation/configuration/)
+- [Updating](/installation/updating/)
+- [Backups](/installation/backups/)
+- [Troubleshooting](/installation/troubleshooting/)

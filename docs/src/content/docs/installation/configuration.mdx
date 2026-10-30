@@ -1,0 +1,173 @@
+---
+title: Configuration
+description: The .env settings a self-hosted Tidal PTC install needs, for the app URL, database, Redis, mail and Reverb websockets.
+sidebar:
+  order: 6
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Tidal PTC reads its server settings from the `.env` file in the install directory. The install scripts write it for you, so most installs never need to touch it. This page lists the keys an installer sets, what each install method expects, and how to apply a change. It is not a full reference of every Laravel setting.
+
+## Who this is for
+
+Anyone installing by hand or changing a running install's domain, database, mail or websocket settings.
+
+## Before you start
+
+- Know where your `.env` is: `/opt/tidal-ptc/.env` for Docker, `/var/www/tidal-ptc/.env` for a VM. On [DigitalOcean](/installation/digitalocean/), the same keys are App Platform environment variables.
+- PowerSchool credentials and per-tenant SMTP settings are **not** in `.env`. They are stored, encrypted, on the tenant: PowerSchool through the [installer](/installation/first-run/), SMTP on the [tenant settings](/district-admin/tenant-settings/) page.
+
+## App
+
+| Variable | Value |
+| --- | --- |
+| `APP_ENV` | `production` |
+| `APP_DEBUG` | `false` |
+| `APP_URL` | Your public URL, for example `https://ptc.example.org` |
+| `APP_KEY` | Generated once by the install scripts. Encrypts tenant secrets and signs sessions. See [Rotating the app key](/installation/rotating-app-key/). |
+| `APP_PREVIOUS_KEYS` | Comma-separated old keys, only while [rotating the app key](/installation/rotating-app-key/). |
+
+Leave `IS_CLOUD` unset (or `false`) for a self-hosted install.
+
+## Database
+
+Tidal PTC uses PostgreSQL (`DB_CONNECTION=pgsql`).
+
+| Variable | Value |
+| --- | --- |
+| `DB_HOST` | `127.0.0.1` on a VM. Docker Compose sets it to `postgres` for you. |
+| `DB_PORT` | `5432` |
+| `DB_DATABASE` | `tidal_ptc` on a VM (the Docker default is `laravel`) |
+| `DB_USERNAME` | `tidal` on a VM (the Docker default is `laravel`) |
+| `DB_PASSWORD` | A long random password, for example from `openssl rand -hex 24`. Required for Docker: Compose refuses to start without it. |
+
+## Redis, cache, sessions and queue
+
+| Variable | Value |
+| --- | --- |
+| `CACHE_DRIVER` / `SESSION_DRIVER` / `QUEUE_CONNECTION` | `redis` |
+| `REDIS_HOST` | `127.0.0.1` on a VM. Docker Compose sets it to `redis`. |
+| `REDIS_PORT` | `6379` |
+| `REDIS_PASSWORD` | `null` for a local Redis bound to `127.0.0.1` |
+
+The DigitalOcean template uses `database` for all three drivers instead, so it needs no Redis.
+
+## Reverb (websockets)
+
+| Variable | Value |
+| --- | --- |
+| `BROADCAST_CONNECTION` | `reverb` |
+| `REVERB_APP_ID` | Any number, for example `100001` |
+| `REVERB_APP_KEY` | `openssl rand -hex 16` |
+| `REVERB_APP_SECRET` | `openssl rand -hex 32` |
+| `REVERB_HOST` | The public hostname browsers connect to, for example `ptc.example.org`. **Not** the container or `localhost`. |
+| `REVERB_PORT` | `443` |
+| `REVERB_SCHEME` | `https` |
+| `REVERB_SERVER_HOST` | Where the Reverb server listens. `127.0.0.1` on a VM, so it stays off the public interface. Docker Compose sets `0.0.0.0` inside the container. |
+| `REVERB_SERVER_PORT` | `8080` |
+
+See [Real-time updates](/integrations/real-time/) for what Reverb is used for.
+
+## Mail
+
+Leave these at their defaults if you set SMTP on the tenant settings page, which is the usual setup. The `MAIL_*` values are the app-wide fallback mailer, used when the tenant has no SMTP host saved.
+
+| Variable | Value |
+| --- | --- |
+| `MAIL_MAILER` | `smtp` (default) or `postmark` |
+| `MAIL_HOST` / `MAIL_PORT` | Your SMTP server and port |
+| `MAIL_USERNAME` / `MAIL_PASSWORD` | SMTP credentials |
+| `MAIL_ENCRYPTION` | `tls`, `ssl` or `null` |
+| `MAIL_FROM_ADDRESS` / `MAIL_FROM_NAME` | The sender |
+| `POSTMARK_TOKEN` | Your Postmark server token, when `MAIL_MAILER=postmark` |
+
+See [Email](/integrations/email/).
+
+## Logging
+
+| Variable | Value |
+| --- | --- |
+| `LOG_CHANNEL` | `daily` on a VM (rotates `storage/logs` and keeps 14 days). Docker Compose sets `stderr`, so logs go to `docker compose logs`. |
+| `LOG_LEVEL` | `warning` on a VM |
+
+## Docker
+
+For a manual Docker install, set these in `/opt/tidal-ptc/.env`. Everything else keeps a working default, and the Compose file overrides the database, Redis, cache, session and queue hosts for you.
+
+| Variable | Value |
+| --- | --- |
+| `APP_ENV` | `production` |
+| `APP_DEBUG` | `false` |
+| `APP_URL` | `https://ptc.example.org` |
+| `DB_PASSWORD` | A long random password (`openssl rand -hex 24`). Required. |
+| `REVERB_APP_ID` | Any number, for example `100001` |
+| `REVERB_APP_KEY` | `openssl rand -hex 16` |
+| `REVERB_APP_SECRET` | `openssl rand -hex 32` |
+| `REVERB_HOST` | `ptc.example.org` |
+| `REVERB_PORT` | `443` |
+| `REVERB_SCHEME` | `https` |
+| `POWERSCHOOL_ADDRESS` | `https://powerschool.example.org` |
+| `TIDAL_PTC_VERSION` | Optional image tag to run. Default `latest`. See [Updating](/installation/updating/#image-tags). |
+
+The Compose file also sets `OCTANE_SERVER=frankenphp`, `LOG_CHANNEL=stderr` and `TRUSTED_PROXIES='*'` on every app container. `TRUSTED_PROXIES=*` is only safe when ports `8000` and `8080` are bound to localhost; see [Install with Docker](/installation/docker/#bind-the-published-ports-to-localhost).
+
+## VM
+
+For a manual VM install, set these in `/var/www/tidal-ptc/.env`:
+
+| Variable | Value |
+| --- | --- |
+| `APP_ENV` | `production` |
+| `APP_DEBUG` | `false` |
+| `APP_URL` | `https://ptc.example.org` |
+| `LOG_CHANNEL` | `daily` |
+| `LOG_LEVEL` | `warning` |
+| `DB_DATABASE` / `DB_USERNAME` | `tidal_ptc` / `tidal` |
+| `DB_PASSWORD` | The password you created for the `tidal` database role |
+| `CACHE_DRIVER` / `SESSION_DRIVER` / `QUEUE_CONNECTION` | `redis` |
+| `REVERB_APP_ID` | Any number, for example `100001` |
+| `REVERB_APP_KEY` | `openssl rand -hex 16` |
+| `REVERB_APP_SECRET` | `openssl rand -hex 32` |
+| `REVERB_HOST` | `ptc.example.org` |
+| `REVERB_PORT` | `443` |
+| `REVERB_SCHEME` | `https` |
+| `REVERB_SERVER_HOST` | `127.0.0.1` (add this line) |
+| `POWERSCHOOL_ADDRESS` | `https://powerschool.example.org` |
+
+Leave `TRUSTED_PROXIES` unset on a VM: Nginx talks to PHP-FPM directly over FastCGI, so the app already sees the real client IP and HTTPS.
+
+## Applying a change
+
+Config is cached, so a change to `.env` does nothing until you apply it.
+
+**Docker**, from `/opt/tidal-ptc`:
+
+```sh
+docker compose up -d
+```
+
+Containers are recreated with the new values, and each one rebuilds its config cache on start.
+
+**VM**:
+
+```sh
+sudo -u tidal php /var/www/tidal-ptc/artisan optimize
+sudo systemctl reload php8.5-fpm && sudo systemctl restart tidal-ptc-queue tidal-ptc-reverb
+```
+
+Re-running `install-vm.sh` also works; it keeps your values and re-caches everything.
+
+**DigitalOcean**: change the environment variables in App Platform and redeploy. The container runs `php artisan optimize` each time it starts.
+
+<Aside type="caution">
+If you change the public domain, update `APP_URL` and `REVERB_HOST` together, change the **Domain** on the [tenant settings](/district-admin/tenant-settings/) page to match, and download and reinstall the PowerSchool plugin, which is built for one domain.
+</Aside>
+
+## Related
+
+- [Install with Docker](/installation/docker/)
+- [Install on a VM](/installation/vm/)
+- [Email](/integrations/email/)
+- [Real-time updates](/integrations/real-time/)
+- [Rotating the app key](/installation/rotating-app-key/)

@@ -1,0 +1,80 @@
+---
+title: Quick tour
+description: A screenshot tour of Tidal PTC's main screens for admins, teachers and guardians, from signing in to settings.
+sidebar:
+  order: 4
+---
+
+import Screenshot from '../../../components/Screenshot.astro';
+
+This tour walks through the main screens of Tidal PTC so you know what to expect before you set anything up. What you see depends on your role and permissions: the sidebar only shows the pages you can use. The screenshots come from the demo data.
+
+## Signing in
+
+The login page offers **Sign in with PowerSchool**, and, when the district allows it, an email and password form. Most users sign in with PowerSchool.
+
+<Screenshot name="login" alt="The login page with a Sign in with PowerSchool button above an email and password form" />
+
+## Choosing a school
+
+If you have access to more than one school, you pick one on the **Select school** page. You can switch later from the **Current school** menu at the top of the sidebar. See [Concepts](/getting-started/concepts/#the-current-school).
+
+<Screenshot name="select-school" alt="The Select school page listing the district's schools with a Save button" />
+
+## Dashboard
+
+Everyone lands on the **Dashboard**, but it looks different for each kind of user.
+
+Admins see whether booking is open, the school's booking settings, and counts of **Upcoming time slots**, **Reserved** slots and translators by language.
+
+<Screenshot name="dashboard-admin" alt="The admin dashboard with booking status, booking settings and counts of upcoming and reserved time slots" />
+
+Teachers see **My conferences**, a list of their upcoming booked conferences, with a **Manage time slots** link when they can create their own slots.
+
+<Screenshot name="dashboard-teacher" alt="The teacher dashboard listing upcoming conferences with the student, contact and notes for each" />
+
+Guardians see **Your conferences** and, for each student, a list of teachers with a **Book** link for each one that has open time slots.
+
+<Screenshot name="dashboard-guardian" alt="The guardian dashboard listing each student's courses and teachers with Book links" />
+
+## Time slots
+
+**Time Slots** shows the school's conference slots on a calendar. The actions menu links to **Manage batches**, where staff create many slots at once, and **Manage my time slots**, where users who own slots create their own. See [Time slots](/staff/time-slots/).
+
+<Screenshot name="time-slots" alt="The Time slots page showing conference slots on a calendar" />
+
+<Screenshot name="batches" alt="The Time Slot Batches page listing batches of time slots" />
+
+## Directory
+
+**Students**, **Sections**, **Courses**, **Teachers** and **Users** list the people and classes synced from PowerSchool. From a student's page, staff can book a conference on behalf of a family. See [Directory](/staff/directory/).
+
+<Screenshot name="students" alt="The Students page listing students with their number, grade and name" />
+
+## Translators
+
+When a school allows translator requests, **Translators** lists the conferences where families asked for one, so staff can assign a translator. See [Translators](/staff/translators/).
+
+<Screenshot name="translator-requests" alt="The Translator requests page listing conferences that need a translator" />
+
+## Activity
+
+**Activity** shows a log of bookings and time slot changes. See [Activity log](/district-admin/activity-log/).
+
+<Screenshot name="activity" alt="The Activity page listing recent bookings and changes with who made them and when" />
+
+## Settings
+
+Under **Settings** in the sidebar:
+
+- **Personal settings**: your name, email, timezone, language, time format and **Notification preferences**. Everyone has this.
+- **School settings**: booking rules, languages and sync for the current school. See [School settings](/district-admin/school-settings/).
+- **Tenant settings**: PowerSchool, email, the PowerSchool plugin and active schools for the whole district. See [Tenant settings](/district-admin/tenant-settings/).
+
+<Screenshot name="settings-tenant" alt="The Tenant settings page with district details, SMTP settings, the PowerSchool plugin download and the active schools list" />
+
+## Related
+
+- [Overview](/getting-started/overview/)
+- [Concepts](/getting-started/concepts/)
+- [Booking a conference](/guardians/booking/)

@@ -1,0 +1,30 @@
+---
+import Default from '@astrojs/starlight/components/Footer.astro';
+import archboard from '../assets/archboard.svg?raw';
+---
+
+<Default />
+<a class="by-archboard" href="https://archboard.io">
+  <span set:html={archboard} aria-hidden="true" />
+  Tidal PTC by Archboard
+</a>
+
+<style>
+  .by-archboard {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 2rem auto 0;
+    width: fit-content;
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+    text-decoration: none;
+  }
+  .by-archboard:hover {
+    color: var(--sl-color-white);
+  }
+  .by-archboard :global(svg) {
+    width: 1rem;
+    height: 1rem;
+  }
+</style>
