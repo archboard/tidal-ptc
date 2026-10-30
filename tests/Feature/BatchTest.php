@@ -113,6 +113,7 @@ it('does not delete booked batch time slots', function () {
 });
 
 it('returns batch event source', function () {
+    fullPermissions();
     $batch = seedBatch();
 
     $response = $this->getJson(route('batches.event-source', $batch).'?start=2024-01-01&end=2024-12-31')

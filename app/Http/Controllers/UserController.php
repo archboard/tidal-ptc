@@ -19,6 +19,8 @@ class UserController extends Controller
      */
     public function index(Request $request, School $school): Response
     {
+        $this->authorize(Permission::viewAny, User::class);
+
         $title = __('Users');
         $filters = $request->currentFilters();
         $users = $school->users()
@@ -45,6 +47,8 @@ class UserController extends Controller
      */
     public function show(User $user): Response
     {
+        $this->authorize(Permission::view, $user);
+
         $title = $user->name;
 
         $user->load('students');
