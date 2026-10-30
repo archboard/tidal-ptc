@@ -93,6 +93,19 @@ it('allows booking with staff who own time slots', function () {
     expect($slot->refresh()->student_id)->toBe($this->student->id);
 });
 
+it('rejects booking with a teacher who has booking disabled', function () {
+    $this->teacher->update(['can_book' => false]);
+
+    book($this->slot)->assertUnprocessable()->assertJsonValidationErrors('student_id');
+});
+
+it('rejects booking with staff who own time slots but have booking disabled', function () {
+    $counselor = seedUser(['can_book' => false]);
+    BouncerFacade::scope()->onceTo($this->school->id, fn () => BouncerFacade::allow($counselor)->to(Permission::ownTimeSlots->value));
+
+    book(seedBookableSlot($counselor))->assertUnprocessable()->assertJsonValidationErrors('student_id');
+});
+
 it('rejects a second reservation with the same teacher', function () {
     seedBookableSlot($this->teacher, ['student_id' => $this->student->id, 'starts_at' => now()->addDays(2), 'ends_at' => now()->addDays(2)->addMinutes(15)]);
 

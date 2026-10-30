@@ -13,6 +13,7 @@ use App\Navigation\NavigationItem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Inertia\Response;
 use stdClass;
@@ -117,7 +118,17 @@ class BatchController extends Controller
      */
     public function update(CreateTimeSlotRequest $request, Batch $batch): JsonResponse
     {
-        $batch->updateTimeSlots($request->getTimeSlotAttributes(false));
+        $batch->updateTimeSlotsAndNotify(Arr::only($request->getTimeSlotAttributes(false), [
+            'starts_at',
+            'ends_at',
+            'teacher_notes',
+            'location',
+            'allow_online_meetings',
+            'is_online',
+            'meeting_url',
+            'contact_can_book',
+            'allow_translator_requests',
+        ]));
 
         return response()->json([
             'level' => 'success',

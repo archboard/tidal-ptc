@@ -290,11 +290,29 @@ it('does not overwrite translator notes when updating a batch', function () {
     $batch = seedBatch();
     $slot = $batch->timeSlots()->first();
     $slot->update(['student_id' => Student::factory()->create()->id, 'translator_notes' => 'keep']);
-    $data = makeTimeSlotRequest(['batch_id' => $batch->id, 'update_batch' => true, 'translator_notes' => '']);
+    $data = makeTimeSlotRequest([
+        'batch_id' => $batch->id,
+        'starts_at' => $slot->starts_at->toIso8601ZuluString(),
+        'ends_at' => $slot->ends_at->toIso8601ZuluString(),
+        'translator_notes' => '',
+    ]);
 
     $this->givePermission(Permission::update, TimeSlot::class)
-        ->putJson(route('time-slots.update', $slot), $data)
+        ->putJson(route('batches.update', $batch), $data)
         ->assertOk();
 
     expect($slot->refresh()->translator_notes)->toBe('keep');
+});
+
+it('allows an online slot without a URL once the user has a default meeting URL', function () {
+    $this->user->school->update(['allow_online_meetings' => true]);
+    $timeSlot = TimeSlot::factory()->for($this->user)->create();
+    $data = makeTimeSlotRequest(['is_online' => true, 'meeting_url' => null]);
+
+    $this->putJson(route('time-slots.update', $timeSlot), $data)
+        ->assertJsonValidationErrors('meeting_url');
+
+    $this->user->update(['meeting_url' => 'https://meet.example.com/room']);
+
+    $this->putJson(route('time-slots.update', $timeSlot), $data)->assertOk();
 });

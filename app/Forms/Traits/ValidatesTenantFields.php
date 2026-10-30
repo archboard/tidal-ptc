@@ -2,6 +2,7 @@
 
 namespace App\Forms\Traits;
 
+use App\Enums\Sis;
 use App\Models\Tenant;
 use App\Rules\ValidLicense;
 use Illuminate\Validation\Rule;
@@ -22,7 +23,7 @@ trait ValidatesTenantFields
     /** @return array<int, mixed> */
     public function sisProviderRules(): array
     {
-        return ['required'];
+        return ['required', Rule::enum(Sis::class)->except(Sis::CLASS_LINK)];
     }
 
     /** @return array<int, mixed> */

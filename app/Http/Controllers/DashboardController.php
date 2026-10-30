@@ -53,6 +53,7 @@ class DashboardController extends Controller
         $otherStaff = User::query()
             ->where('school_id', $school->id)
             ->whereKeyNot($teacherIds)
+            ->where('can_book', true)
             ->whereCan(Permission::ownTimeSlots->value)
             ->whereHas('timeSlots', fn (Builder $query) => $query
                 ->whereNull('student_id')

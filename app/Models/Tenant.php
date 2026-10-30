@@ -80,6 +80,7 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
  *
  * @method static Builder<static>|Tenant wherePluginDownloads($value)
  * @method static Builder<static>|Tenant whereSchoolLimit($value)
+ * @method static Builder<static>|Tenant whereCode($value)
  *
  * @mixin \Eloquent
  */

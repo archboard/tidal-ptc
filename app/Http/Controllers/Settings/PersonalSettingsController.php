@@ -56,6 +56,7 @@ class PersonalSettingsController extends Controller
             'is_24h' => ['required', 'boolean'],
             'locale' => ['required', Rule::enum(Language::class)],
             'room' => ['nullable', 'string', 'max:255'],
+            'meeting_url' => ['nullable', 'url', 'max:255'],
         ]);
 
         /** @var User $user */

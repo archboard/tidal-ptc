@@ -23,7 +23,7 @@
             </div>
             <div class="order-2 shrink-0 sm:order-3 sm:ml-3">
               <button @click.prevent="manualShow = false" type="button" class="-mr-1 flex p-2 rounded-md hover:bg-yellow-500 focus:outline-hidden focus:ring-2 focus:ring-white sm:-mr-2">
-                <span class="sr-only">Dismiss</span>
+                <span class="sr-only">{{ __('Dismiss') }}</span>
                 <XMarkIcon class="h-6 w-6 text-white" aria-hidden="true" />
               </button>
             </div>

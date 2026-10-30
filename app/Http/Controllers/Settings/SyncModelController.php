@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Settings;
 
+use App\Enums\Permission;
 use App\Http\Controllers\Controller;
 use App\Jobs\SyncSchoolItem;
 use App\Models\Contracts\ExistsInSis;
 use App\Models\School;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,17 +23,22 @@ class SyncModelController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        if ($className = Relation::getMorphedModel($model)) {
-            $instance = $className::find($id);
+        $className = Relation::getMorphedModel($model);
+        $instance = $className ? $className::find($id) : null;
 
-            if ($instance instanceof School) {
-                // Whole-school syncs are slow; queue them and notify on completion
-                SyncSchoolItem::start($instance, 'school', $user);
-                session()->flash('success', __('Sync started. You will be notified when it finishes.'));
-            } elseif ($instance instanceof ExistsInSis) {
-                $instance->syncFromSis();
-                session()->flash('success', __('Sync successful.'));
+        abort_unless($instance instanceof Model, 404);
+
+        if ($instance instanceof School) {
+            $this->authorize(Permission::editSchoolSettings);
+            // Whole-school syncs are slow; queue them and notify on completion
+            SyncSchoolItem::start($instance, 'school', $user);
+            session()->flash('success', __('Sync started. You will be notified when it finishes.'));
+        } elseif ($instance instanceof ExistsInSis) {
+            if (! $instance->is($user)) {
+                $this->authorize(Permission::update, $instance);
             }
+            $instance->syncFromSis();
+            session()->flash('success', __('Sync successful.'));
         }
 
         return back();

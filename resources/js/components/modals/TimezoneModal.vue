@@ -5,7 +5,7 @@
     :action-loading="form.processing"
     :auto-close="false"
     :headline="__('Update your timezone')"
-    action-text="Ok"
+    :action-text="__('Ok')"
   >
     <div v-if="showForm">
       <p class="text-sm mb-4">{{ __("Your current timezone doesn't match the one in your settings. Update your timezone if it has changed.") }}</p>

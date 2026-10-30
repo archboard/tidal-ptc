@@ -17,7 +17,7 @@
 
     <div class="absolute right-0 inset-y-0 flex items-center justify-center" :class="{ 'pr-4': !hasError, 'pr-10': hasError }">
       <button @click.prevent="clearValue" class="flex items-center justify-center">
-        <span class="sr-only">Clear date</span>
+        <span class="sr-only">{{ __('Clear date') }}</span>
         <TrashIcon class="text-red-500 h-4 w-4" />
       </button>
     </div>

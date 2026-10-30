@@ -22,12 +22,12 @@
               </div>
               <div class="space-x-3 flex items-center">
                 <button @click.prevent="removeFilter(id)">
-                  <span class="sr-only">Delete filter</span>
+                  <span class="sr-only">{{ __('Delete filter') }}</span>
                   <TrashIcon class="w-5 h-5 text-red-500 dark:text-red-400" />
                 </button>
 
                 <button @click.prevent="toggleExpansion(id)">
-                  <span class="sr-only">Show or hide filter</span>
+                  <span class="sr-only">{{ __('Show or hide filter') }}</span>
                   <ChevronUpIcon v-if="expandedFilters[id]" class="w-5 h-5 text-gray-500 dark:text-gray-300" />
                   <ChevronDownIcon v-else class="w-5 h-5 text-gray-500 dark:text-gray-300" />
                 </button>
@@ -77,12 +77,12 @@
     </FadeIn>
     <div class="px-4 py-3 sm:flex sm:items-center sm:justify-between">
       <div class="relative w-full sm:w-[350px]">
-        <label for="search-filter" class="sr-only">Search results</label>
+        <label for="search-filter" class="sr-only">{{ __('Search results') }}</label>
         <SearchInput v-model="localSearch" id="search-filter" :placeholder="searchPlaceholder" />
       </div>
       <div class="flex w-full justify-end space-x-2 mt-4 sm:mt-0">
         <button v-if="Object.keys(localValue).length > 0" @click.prevent="reset">
-          <span class="sr-only">Reset filters</span>
+          <span class="sr-only">{{ __('Reset filters') }}</span>
           <TrashIcon class="h-5 w-5 text-red-500 dark:text-red-400" />
         </button>
         <button v-if="availableFilters.length > 0" class="relative block" @click.prevent="showFilters = !showFilters">

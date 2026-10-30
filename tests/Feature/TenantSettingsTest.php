@@ -99,13 +99,20 @@ it('rejects activating more schools than the limit in the cloud', function () {
     expect($this->tenant->schools()->where('active', true)->exists())->toBeFalse();
 });
 
+it('rejects the unimplemented ClassLink provider', function () {
+    fullPermissions();
+
+    $this->put(route('settings.tenant.update'), ['sis_provider' => Sis::CLASS_LINK->value])
+        ->assertSessionHasErrors('sis_provider');
+});
+
 it('can update tenant settings', function () {
     fullPermissions();
 
     $data = [
         'name' => fake()->company(),
         'domain' => fake()->domainName(),
-        'sis_provider' => fake()->randomElement(Sis::cases())->value,
+        'sis_provider' => Sis::PS->value,
         'allow_password_auth' => fake()->boolean(),
         'allow_oidc_login' => fake()->boolean(),
     ];

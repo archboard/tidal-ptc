@@ -513,5 +513,20 @@
     "Enter the four character code your district gave you to continue to its login page.": "请输入学区提供给您的四位代码，以前往其登录页面。",
     "District code": "学区代码",
     "Continue": "继续",
-    "Too many attempts. Please try again in a minute.": "尝试次数过多。请一分钟后再试。"
+    "Too many attempts. Please try again in a minute.": "尝试次数过多。请一分钟后再试。",
+    "Default meeting URL": "默认会议链接",
+    "Used for online conferences when a time slot has no meeting URL.": "当时间段没有会议链接时，用于在线会议。",
+    "Notes: :notes": "备注: :notes",
+    "Ok": "确定",
+    "Dismiss": "忽略",
+    "Breadcrumb": "面包屑导航",
+    "Home": "首页",
+    "Sidebar": "侧边栏",
+    "Remove filter": "移除筛选",
+    "Delete filter": "删除筛选",
+    "Show or hide filter": "显示或隐藏筛选",
+    "Search results": "搜索结果",
+    "Reset filters": "重置筛选",
+    "Clear date": "清除日期",
+    "Clear selection": "清除选择"
 }
