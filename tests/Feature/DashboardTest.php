@@ -34,6 +34,18 @@ it('shows a guardian their students, teachers, other staff and reservations', fu
             ->missing('schoolStats'));
 });
 
+it('leaves out other staff with booking disabled', function () {
+    $student = seedSection(seedUser(['user_type' => UserType::staff]))->students->first();
+    $guardian = seedGuardian($student);
+    $counselor = seedUser(['user_type' => UserType::staff, 'can_book' => false]);
+    BouncerFacade::scope()->onceTo($this->school->id, fn () => BouncerFacade::allow($counselor)->to(Permission::ownTimeSlots->value));
+    seedBookableSlot($counselor);
+
+    $this->actingAs($guardian)
+        ->get(route('home'))
+        ->assertInertia(fn (AssertableInertia $page) => $page->has('otherStaff', 0));
+});
+
 it('tells a guardian whether each teacher has open slots, is fully booked, or has none', function () {
     $open = seedUser(['user_type' => UserType::staff]);
     $full = seedUser(['user_type' => UserType::staff]);

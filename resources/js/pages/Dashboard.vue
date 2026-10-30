@@ -212,7 +212,7 @@ const teacherRows = (student) => {
       bookable: false,
     }).get(teacher.id)
     row.courses.push(section.course?.name)
-    row.bookable ||= section.can_book && section.course?.can_book
+    row.bookable ||= section.can_book && section.course?.can_book && section.teacher_can_book
   })
   props.otherStaff.forEach(staff => rows.set(`staff-${staff.id}`, { key: `staff-${staff.id}`, courses: [], teacher: staff, label: staff.name, bookable: true }))
   return [...rows.values()]
