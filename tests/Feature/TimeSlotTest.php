@@ -290,10 +290,15 @@ it('does not overwrite translator notes when updating a batch', function () {
     $batch = seedBatch();
     $slot = $batch->timeSlots()->first();
     $slot->update(['student_id' => Student::factory()->create()->id, 'translator_notes' => 'keep']);
-    $data = makeTimeSlotRequest(['batch_id' => $batch->id, 'update_batch' => true, 'translator_notes' => '']);
+    $data = makeTimeSlotRequest([
+        'batch_id' => $batch->id,
+        'starts_at' => $slot->starts_at->toIso8601ZuluString(),
+        'ends_at' => $slot->ends_at->toIso8601ZuluString(),
+        'translator_notes' => '',
+    ]);
 
     $this->givePermission(Permission::update, TimeSlot::class)
-        ->putJson(route('time-slots.update', $slot), $data)
+        ->putJson(route('batches.update', $batch), $data)
         ->assertOk();
 
     expect($slot->refresh()->translator_notes)->toBe('keep');

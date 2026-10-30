@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\Permission;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -19,10 +18,6 @@ class UpdateTimeSlotRequest extends FormRequest
         /** @var User $user */
         $user = $this->user();
         $timeSlot = $this->route('time_slot');
-
-        if ($this->updateBatch()) {
-            return $user->can(Permission::update, $timeSlot);
-        }
 
         return $user->can('updateOrForSelf', $timeSlot);
     }
@@ -82,11 +77,6 @@ class UpdateTimeSlotRequest extends FormRequest
         return [
             'meeting_url.required_if' => __('A meeting URL is required if the time slot is online and you do not have a default meeting URL in your personal settings.'),
         ];
-    }
-
-    public function updateBatch(): bool
-    {
-        return $this->input('batch_id') && $this->boolean('update_batch');
     }
 
     protected function dateInIsoFormat(string $date): bool

@@ -8,7 +8,6 @@ use App\Enums\Permission;
 use App\Http\Requests\CreateTimeSlotRequest;
 use App\Http\Requests\UpdateTimeSlotRequest;
 use App\Http\Resources\UserResource;
-use App\Models\Batch;
 use App\Models\School;
 use App\Models\TimeSlot;
 use App\Models\User;
@@ -19,9 +18,6 @@ use Inertia\Response;
 
 class TimeSlotController extends Controller
 {
-    /** Changes to a reserved slot that the contact should hear about. */
-    protected const array NOTIFIABLE_CHANGES = ['starts_at', 'ends_at', 'location', 'meeting_url', 'is_online', 'teacher_notes'];
-
     /**
      * Display a listing of the resource.
      */
@@ -119,25 +115,9 @@ class TimeSlotController extends Controller
             __('Reserved time slots cannot be moved.')
         );
 
-        if ($request->updateBatch()) {
-            unset($data['translator_notes']);
-            $data['starts_at'] = $timeSlot->starts_at->toDateTimeString();
-            $data['ends_at'] = $timeSlot->ends_at->toDateTimeString();
-            /** @var Batch $batch */
-            $batch = Batch::findOrFail($data['batch_id']);
-            $affected = $batch->timeSlots()
-                ->where('starts_at', $data['starts_at'])
-                ->where('ends_at', $data['ends_at'])
-                ->reserved()
-                ->get()
-                ->filter(fn (TimeSlot $slot) => $slot->fill($data)->isDirty(self::NOTIFIABLE_CHANGES));
-            $batch->updateTimeSlots($data);
-            ActivityEvent::batch_updated->log($batch, $data);
-        } else {
-            $affected = collect([$timeSlot->fill($data)])
-                ->filter(fn (TimeSlot $slot) => $slot->isReserved() && $slot->isDirty(self::NOTIFIABLE_CHANGES));
-            $timeSlot->save();
-        }
+        $affected = collect([$timeSlot->fill($data)])
+            ->filter(fn (TimeSlot $slot) => $slot->isReserved() && $slot->isDirty(TimeSlot::NOTIFIABLE_CHANGES));
+        $timeSlot->save();
 
         $affected->each(function (TimeSlot $slot) {
             $slot->refresh()->notifyReservation(NotificationEvent::slot_updated);

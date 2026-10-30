@@ -6,6 +6,7 @@ use App\Enums\Language;
 use App\Enums\NotificationEvent;
 use App\Enums\Permission;
 use App\Enums\UserType;
+use App\Models\Batch;
 use App\Models\TimeSlot;
 use App\Models\Translator;
 use App\Notifications\ReminderNotification;
@@ -28,6 +29,17 @@ function reserve(TimeSlot $slot): TimeSlot
     $slot->update(['student_id' => test()->student->id, 'reserved_by' => test()->guardian->id, 'reserved_at' => now()]);
 
     return $slot;
+}
+
+function batchWindowRequest(Batch $batch, TimeSlot $slot, array $attributes): array
+{
+    return makeTimeSlotRequest([
+        'batch_id' => $batch->id,
+        'starts_at' => $slot->starts_at->toIso8601ZuluString(),
+        'ends_at' => $slot->ends_at->toIso8601ZuluString(),
+        'allow_online_meetings' => $slot->allow_online_meetings,
+        ...$attributes,
+    ]);
 }
 
 function assertNotified(NotificationEvent $event, ...$users): void
@@ -104,16 +116,37 @@ it('does not notify when a reserved slot update changes nothing relevant', funct
     Notification::assertNothingSent();
 });
 
-it('notifies reserved slots updated through a batch', function () {
+it('notifies the teacher and booker and resets reminders when a batch with a booked slot is saved', function () {
     $batch = seedBatch();
     $slot = reserve($batch->timeSlots()->first());
-    $data = makeTimeSlotRequest(['batch_id' => $batch->id, 'update_batch' => true, 'location' => 'Gym']);
+    $slot->update(['user_id' => $this->teacher->id, 'contact_reminded_at' => now(), 'staff_reminded_at' => now()]);
+    $data = batchWindowRequest($batch, $slot, ['location' => 'Gym']);
 
     $this->givePermission(Permission::update, TimeSlot::class)
-        ->putJson(route('time-slots.update', $slot), $data)
+        ->putJson(route('batches.update', $batch), $data)
         ->assertOk();
 
-    assertNotified(NotificationEvent::slot_updated, $this->guardian);
+    assertNotified(NotificationEvent::slot_updated, $this->teacher, $this->guardian);
+    expect($slot->refresh()->contact_reminded_at)->toBeNull()
+        ->and($slot->staff_reminded_at)->toBeNull();
+    $this->assertDatabaseHas('activity_log', ['event' => 'batch_updated', 'subject_id' => $batch->id]);
+});
+
+it('does not notify when a batch is saved without notifiable changes', function () {
+    $batch = seedBatch();
+    $slot = reserve($batch->timeSlots()->first());
+    $data = batchWindowRequest($batch, $slot, [
+        'location' => $slot->location,
+        'meeting_url' => $slot->meeting_url,
+        'is_online' => $slot->is_online,
+        'teacher_notes' => $slot->teacher_notes,
+    ]);
+
+    $this->givePermission(Permission::update, TimeSlot::class)
+        ->putJson(route('batches.update', $batch), $data)
+        ->assertOk();
+
+    Notification::assertNothingSent();
 });
 
 it('blocks deleting a reserved slot without permission and notifies when an admin deletes', function () {

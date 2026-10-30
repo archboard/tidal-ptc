@@ -121,6 +121,9 @@ class TimeSlot extends Model
 
     use LogsActivity;
 
+    /** Changes to a reserved slot that the contact should hear about. */
+    public const array NOTIFIABLE_CHANGES = ['starts_at', 'ends_at', 'location', 'meeting_url', 'is_online', 'teacher_notes'];
+
     protected $guarded = [];
 
     protected $casts = [
