@@ -9,6 +9,7 @@
  */
 import { chromium, type Browser, type Page } from 'playwright';
 import { mkdir } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
 
 const BASE_URL = process.env.SCREENSHOT_URL ?? 'https://tidal-ptc.test';
 const OUT = new URL('../src/assets/screenshots/', import.meta.url);
@@ -29,7 +30,15 @@ type Shot = {
   path: string;
   /** Runs after the page loads, e.g. to open a modal or follow the first row. */
   action?: (page: Page) => Promise<void>;
+  /** Swaps the tenant to PowerSchool sign-in only for this shot. DemoSeeder has password on and OIDC off. */
+  ssoOnly?: boolean;
 };
+
+/** Needs the app's PHP CLI against the same database the target URL uses. */
+const setSsoOnly = (ssoOnly: boolean) => execFileSync('php', [
+  'artisan', 'tinker', '--execute',
+  `App\\Models\\Tenant::query()->update(["allow_oidc_login" => ${ssoOnly}, "allow_password_auth" => ${!ssoOnly}]);`,
+], { cwd: new URL('../../', import.meta.url) });
 
 const openFirst = (selector: string) => async (page: Page) => {
   await page.locator(selector).first().click();
@@ -44,7 +53,7 @@ const showSlots = async (page: Page) => {
 
 /** Names here are what docs pass to <Screenshot name="..." />. */
 export const SHOTS: Shot[] = [
-  { name: 'login', user: null, path: '/login' },
+  { name: 'login', user: null, path: '/login', ssoOnly: true },
   { name: 'dashboard-admin', user: 'admin', path: '/' },
   { name: 'dashboard-teacher', user: 'teacher', path: '/' },
   { name: 'dashboard-guardian', user: 'guardian', path: '/' },
@@ -114,6 +123,9 @@ for (const shot of shots) {
     const page = await context.newPage();
 
     try {
+      if (shot.ssoOnly) {
+        setSsoOnly(true);
+      }
       await page.goto(shot.path, { waitUntil: 'networkidle' });
       await shot.action?.(page);
       // Let transitions and fonts settle
@@ -124,6 +136,9 @@ for (const shot of shots) {
       console.error(`✗ ${shot.name}-${colorScheme}: ${(error as Error).message}`);
       process.exitCode = 1;
     } finally {
+      if (shot.ssoOnly) {
+        setSsoOnly(false);
+      }
       await context.close();
     }
   }

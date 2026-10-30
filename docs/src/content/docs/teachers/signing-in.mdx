@@ -1,6 +1,6 @@
 ---
 title: Signing in as a teacher
-description: Sign in to Tidal PTC as a teacher with PowerSchool or an email and password, and find your conferences on the dashboard.
+description: Sign in to Tidal PTC as a teacher with your PowerSchool account, and find your conferences on the dashboard.
 sidebar:
   order: 1
 ---
@@ -8,7 +8,7 @@ sidebar:
 import Screenshot from '../../../components/Screenshot.astro';
 import { Steps, Aside } from '@astrojs/starlight/components';
 
-Teachers sign in to Tidal PTC with their PowerSchool account or, if your district allows it, with an email and password. After you sign in you land on the dashboard, which lists your upcoming conferences.
+Teachers sign in to Tidal PTC with their PowerSchool account, either from PowerSchool or from your district's Tidal PTC address. After you sign in you land on the dashboard, which lists your upcoming conferences.
 
 ## Who this is for
 
@@ -17,28 +17,24 @@ Teachers and other staff who meet with families. Your account comes from PowerSc
 ## Before you start
 
 - Your district must have set up Tidal PTC and synced staff from PowerSchool.
-- The sign-in options you see depend on your district's settings: **Sign in with PowerSchool**, an email and password form, or both.
 - If your district uses the hosted version, you may first be asked for a **District code**. Ask your school office for it.
 
-## Sign in with PowerSchool
+## Sign in from PowerSchool
+
+While signed in to PowerSchool, select the **Tidal PTC** link in the header. Tidal PTC opens, already signed in.
+
+## Sign in from the Tidal PTC address
 
 <Steps>
 1. Open your district's Tidal PTC address.
-   <Screenshot name="login" alt="The Tidal PTC sign-in page with the Sign in with PowerSchool button above the email and password form" />
-2. Optionally check **Keep me logged in**.
-3. Select **Sign in with PowerSchool** and sign in with your PowerSchool staff account.
-4. You return to the Tidal PTC dashboard.
+   <Screenshot name="login" alt="The Tidal PTC sign-in page with a Sign in with PowerSchool button" />
+2. Select **Sign in with PowerSchool** and sign in with your PowerSchool staff account.
+3. You return to the Tidal PTC dashboard.
 </Steps>
 
-## Sign in with email and password
-
-<Steps>
-1. Under **Log in as**, choose **Staff**.
-2. Enter your **Email** and **Password**.
-3. Optionally check **Keep me logged in**, then select **Log in**.
-</Steps>
-
-If you forgot your password, select **Forgot your password?**, choose **Staff** under **Account type**, enter your email and select **Email Password Reset Link**.
+<Aside type="note">
+If your district also allows passwords, the sign-in page shows an email and password form below **Or continue with**. Choose **Staff** under **Log in as**. **Forgot your password?** sends a reset link.
+</Aside>
 
 <Aside type="note">
 Your name and email sync from PowerSchool. Changes you make to them in Tidal PTC may be overwritten on the next sync or the next time you sign in.

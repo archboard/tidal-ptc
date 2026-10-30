@@ -75,7 +75,9 @@ People sign in with their PowerSchool accounts in one of two ways. Both need the
 
 ### From PowerSchool (OpenID)
 
-Admins, teachers and guardians select the **Tidal PTC** link in PowerSchool's header (or the admin left navigation). PowerSchool signs them in to Tidal PTC through `/auth/powerschool/openid`.
+Admins, teachers and guardians select the **Tidal PTC** link in PowerSchool's header (or the admin left navigation). In the parent portal, the link is in the **Applications** panel. PowerSchool signs them in to Tidal PTC through `/auth/powerschool/openid`.
+
+<Screenshot name="powerschool-apps-list" alt="The PowerSchool parent portal Applications panel listing Tidal PTC" />
 
 - Admins get access to the schools PowerSchool lists as their admin schools.
 - Guardians have their account and linked students synced from PowerSchool as they sign in.
@@ -84,9 +86,9 @@ Admins, teachers and guardians select the **Tidal PTC** link in PowerSchool's he
 
 When **Allow OpenID Connect login** is on in [tenant settings](/district-admin/tenant-settings/) (it is on by default), the login page shows **Sign in with PowerSchool**. It starts at `/auth/powerschool/oidc/authenticate`, and PowerSchool returns the user to `/auth/powerschool/oidc`. Each user is synced from PowerSchool after signing in.
 
-<Screenshot name="login" alt="Tidal PTC login page with the Sign in with PowerSchool button" />
+<Screenshot name="login" alt="Tidal PTC login page with only the Sign in with PowerSchool button" />
 
-**Allow password authentication** is a separate setting, off by default. When both are on, the login page shows **Sign in with PowerSchool** and an email and password form, separated by "Or continue with".
+**Allow password authentication** is a separate setting, off by default, and we recommend leaving it off. When both are on, the login page also shows an email and password form below "Or continue with".
 
 ## Sync
 

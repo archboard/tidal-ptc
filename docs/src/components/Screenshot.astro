@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 
 interface Props {
-  /** Base name in src/assets/screenshots, without -light/-dark.png */
+  /** Base name in src/assets/screenshots, without -light/-dark.png. A plain <name>.png serves both themes. */
   name: string;
   alt: string;
   caption?: string;
@@ -11,8 +11,9 @@ interface Props {
 
 const { name, alt, caption } = Astro.props;
 const shots = import.meta.glob<{ default: ImageMetadata }>('../assets/screenshots/*.png', { eager: true });
-const light = shots[`../assets/screenshots/${name}-light.png`]?.default;
-const dark = shots[`../assets/screenshots/${name}-dark.png`]?.default;
+const single = shots[`../assets/screenshots/${name}.png`]?.default;
+const light = shots[`../assets/screenshots/${name}-light.png`]?.default ?? single;
+const dark = shots[`../assets/screenshots/${name}-dark.png`]?.default ?? single;
 ---
 
 <figure class="screenshot not-content">
