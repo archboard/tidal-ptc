@@ -5,6 +5,11 @@
 - Test the changed behavior and its important failure modes, but do not add tests beyond them.
 - Read the `testing-best-practices` skill before writing tests.
 
+# Documentation
+
+- When a change alters user-facing behavior, settings, permissions, integrations, or install/deploy steps, update the matching pages in `docs/src/content/docs/` (and `README.md`, `INSTALLATION.md`, or `INSTALLATION-VM.md` when they cover it) in the same change.
+- When a change alters a screen shown in the docs, regenerate its screenshots with `npm run screenshots` in `docs/`.
+
 <laravel-boost-guidelines>
 === foundation rules ===
 

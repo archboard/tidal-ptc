@@ -12,6 +12,11 @@ During local development, assume it's not running using docker or Octane/franken
 - When adding or changing a user-facing string wrapped in `__()` (PHP or Vue), add or update its translation in every `lang/*.json` file (`ar`, `es`, `ja`, `ko`, `zh-CN`), keyed by the English string.
 - `tests/Feature/TranslationTest.php` fails when a translation is missing; run it after changing strings.
 
+# Documentation
+
+- When a change alters user-facing behavior, settings, permissions, integrations, or install/deploy steps, update the matching pages in `docs/src/content/docs/` (and `README.md`, `INSTALLATION.md`, or `INSTALLATION-VM.md` when they cover it) in the same change.
+- When a change alters a screen shown in the docs, regenerate its screenshots with `npm run screenshots` in `docs/`.
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
