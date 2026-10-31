@@ -17,7 +17,7 @@ export const HOSTING_TIERS = [
   {
     name: 'Cloud',
     price: '$400 + $150 per school a year',
-    note: 'Up to $4,000 a year for a district. Single schools pay $450 a year.',
+    note: 'Up to $4,000 a year for a district. Single schools pay $450 a year. Prices go down as more districts join.',
     blurb: 'We host, update and back it up for you. Your schools are scheduling the same day.',
     features: ['Your own subdomain on tidalptc.app', 'Automatic updates and backups', 'PowerSchool SSO and sync'],
     cta: 'Buy hosting',
@@ -26,7 +26,8 @@ export const HOSTING_TIERS = [
   },
   {
     name: 'Private dedicated',
-    price: '[DEDICATED PRICE]',
+    price: '$880 + $150 per school a year',
+    note: 'Cloud pricing plus $480 a year for your own server, passed through at cost. Up to $4,480 a year for a district. Single schools pay $930 a year.',
     blurb: 'Your own isolated instance on servers reserved for your district. We run it for you.',
     features: ['Isolated servers and database', 'Choose your region', 'Usually ready within 15 minutes'],
     cta: 'Buy hosting',

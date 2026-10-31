@@ -6,6 +6,6 @@ export const faq = [
   { q: 'Can families request a translator?', a: 'Yes. Schools choose which languages they offer and set request limits. Families request a translator when booking, and staff assign translators to conferences.' },
   { q: 'Which languages does the interface support?', a: 'English, Spanish, Simplified Chinese, Korean, Japanese and Arabic, with right-to-left layout for Arabic. Each user picks their own language.' },
   { q: 'Can conferences be held online?', a: 'Yes. A time slot can be in person or online, and online slots show families the meeting link.' },
-  { q: 'What does Cloud hosting cost?', a: 'Cloud hosting for a district is $400 a year plus $150 per school, up to $4,000 a year. A single school pays $450 a year. Self-hosting is free.' },
+  { q: 'What does Cloud hosting cost?', a: 'Cloud hosting for a district is $400 a year plus $150 per school, up to $4,000 a year. A single school pays $450 a year. Private dedicated hosting is the Cloud price plus $480 a year for your own server, passed through at cost. Self-hosting is free.' },
   { q: 'Where is our data stored?', a: 'Self-hosted installs keep all data on your own servers. Cloud and Private dedicated installs are run by Archboard; dedicated hosting gives your district its own isolated servers in the region you choose.' },
 ];

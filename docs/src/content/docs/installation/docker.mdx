@@ -9,6 +9,15 @@ import { Steps, Aside } from '@astrojs/starlight/components';
 
 The Docker install takes a fresh Linux server to a running Tidal PTC behind HTTPS. The Compose stack runs everything the app needs: the app on Octane (FrankenPHP), Reverb for websockets, a queue worker, the scheduler, PostgreSQL and Redis. One setup script installs Docker, configures the stack and puts a reverse proxy with a Let's Encrypt certificate in front of it. This is the recommended way to self-host.
 
+<iframe
+  src="https://www.youtube-nocookie.com/embed/GofMYw_-8ek"
+  title="Install Tidal PTC with Docker"
+  style={{ width: '100%', aspectRatio: '16 / 9', border: 0 }}
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>
+
 ## Who this is for
 
 District IT staff self-hosting Tidal PTC on their own Linux server.
@@ -17,6 +26,10 @@ District IT staff self-hosting Tidal PTC on their own Linux server.
 
 - Check the [requirements](/installation/requirements/): a Debian 12+ or Ubuntu 24.04+ server with `sudo`, a DNS `A` record pointing at it, and ports `80` and `443` open.
 - Have your domain (for example `ptc.example.org`) and, optionally, an email address for Let's Encrypt expiry notices.
+
+Need a server? A DigitalOcean Droplet works well:
+
+[![DigitalOcean Referral Badge](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%203.svg)](https://www.digitalocean.com/?refcode=5902fc4786e5&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
 
 ## Run the setup script
 

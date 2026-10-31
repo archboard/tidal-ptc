@@ -9,6 +9,15 @@ import { Steps, Aside } from '@astrojs/starlight/components';
 
 The VM install puts every piece of Tidal PTC on the server as a regular system package: Nginx and PHP-FPM serve the app, PostgreSQL and Redis run locally, systemd keeps Reverb (websockets) and the queue worker running, and cron runs the scheduler. One script, `install-vm.sh`, does all of it. The manual steps below are the same install done by hand.
 
+<iframe
+  src="https://www.youtube-nocookie.com/embed/MvXwopfqGi4"
+  title="Install Tidal PTC on a VM"
+  style={{ width: '100%', aspectRatio: '16 / 9', border: 0 }}
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>
+
 ## Who this is for
 
 District IT staff who want to self-host without containers. If you're happy with Docker, the [Docker install](/installation/docker/) has fewer moving parts.
@@ -17,6 +26,10 @@ District IT staff who want to self-host without containers. If you're happy with
 
 - Check the [requirements](/installation/requirements/): a Debian 12/13 or Ubuntu 24.04/26.04 server, a DNS `A` record pointing at it, and ports `80` and `443` open.
 - Point your domain's DNS at the server before running the script, so the certificate request succeeds.
+
+Need a server? A DigitalOcean Droplet works well:
+
+[![DigitalOcean Referral Badge](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%203.svg)](https://www.digitalocean.com/?refcode=5902fc4786e5&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
 
 ## Quick install
 
