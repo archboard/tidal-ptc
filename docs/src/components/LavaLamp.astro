@@ -1,0 +1,188 @@
+---
+/**
+ * Vanilla port of ../../../resources/js/components/LavaLamp.vue (no mask overlay).
+ * Fills its positioned parent and follows the pointer anywhere over that parent.
+ */
+interface Props {
+  /** Any CSS color, including var(--color-…). */
+  colors: string[];
+  speed?: number;
+  class?: string;
+}
+
+const { colors, speed = 0.5, class: className } = Astro.props;
+---
+
+<lava-lamp class:list={['pointer-events-none absolute inset-0', className]} data-colors={JSON.stringify(colors)} data-speed={speed} aria-hidden="true">
+  <canvas class="absolute inset-0 size-full"></canvas>
+</lava-lamp>
+
+<script>
+  const MAX_BLOBS = 12;
+  // ponytail: blobs are soft, so rendering at half the device resolution is invisible and quarters the GPU work
+  const RENDER_SCALE = 0.5;
+
+  const vertexShader = `
+attribute vec2 position;
+void main() { gl_Position = vec4(position, 0.0, 1.0); }
+`;
+
+  /** Same metaballs shader as the app's LavaLamp.vue. */
+  const fragmentShader = `
+precision highp float;
+uniform vec2 resolution;
+uniform float time;
+uniform int count;
+uniform vec3 colors[${MAX_BLOBS}];
+uniform vec3 pointer;
+
+float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+
+void main() {
+  float aspect = resolution.x / resolution.y;
+  vec2 p = (gl_FragCoord.xy - 0.5 * resolution) / resolution.y;
+  p += 0.06 * vec2(sin(p.y * 3.0 + time * 0.5), sin(p.x * 3.0 - time * 0.4));
+
+  float field = 0.0;
+  vec3 color = vec3(0.0);
+  for (int i = 0; i < ${MAX_BLOBS}; i++) {
+    if (i >= count) break;
+    float f = float(i);
+    float lane = (f + 0.5) / float(count) - 0.5;
+    vec2 center = vec2(
+      lane * aspect * 0.9 + 0.12 * sin(time * 0.21 + f * 2.4),
+      0.55 * sin(time * (0.09 + 0.017 * f) + f * 1.9)
+    );
+    float radius = 0.18 + 0.04 * sin(time * 0.3 + f * 1.3);
+    vec2 d = p - center;
+    float falloff = max(0.0, 1.0 - dot(d, d) / (4.84 * radius * radius));
+    float weight = 1.6 * falloff * falloff;
+    field += weight;
+    color += colors[i] * weight;
+  }
+
+  vec2 d = p - pointer.xy;
+  float falloff = max(0.0, 1.0 - dot(d, d) / 0.06);
+  float weight = pointer.z * 1.2 * falloff * falloff;
+  field += weight;
+  color += colors[0] * weight;
+
+  color /= max(field, 0.0001);
+  float alpha = smoothstep(0.2, 1.4, field);
+  color += (hash(gl_FragCoord.xy + fract(time)) - 0.5) * 0.06;
+  gl_FragColor = vec4(color * alpha, alpha);
+}
+`;
+
+  class LavaLamp extends HTMLElement {
+    connectedCallback() {
+      const canvas = this.querySelector('canvas')!;
+      const gl = canvas.getContext('webgl', { antialias: false, depth: false });
+      if (!gl) {
+        return;
+      }
+
+      const compile = (type: number, source: string) => {
+        const shader = gl.createShader(type)!;
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        return shader;
+      };
+
+      const program = gl.createProgram()!;
+      gl.attachShader(program, compile(gl.VERTEX_SHADER, vertexShader));
+      gl.attachShader(program, compile(gl.FRAGMENT_SHADER, fragmentShader));
+      gl.bindAttribLocation(program, 0, 'position');
+      gl.linkProgram(program);
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.error(gl.getProgramInfoLog(program));
+        return;
+      }
+      gl.useProgram(program);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      gl.enableVertexAttribArray(0);
+      gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+
+      const uniform = (name: string) => gl.getUniformLocation(program, name);
+      const uniforms = { resolution: uniform('resolution'), time: uniform('time'), pointer: uniform('pointer') };
+
+      // Let the browser resolve var(--…), oklch and friends to sRGB
+      const probe = document.createElement('span');
+      this.append(probe);
+      const context = document.createElement('canvas').getContext('2d', { willReadFrequently: true })!;
+      const rgb = (JSON.parse(this.dataset.colors!) as string[]).map((value) => {
+        probe.style.color = value;
+        context.fillStyle = getComputedStyle(probe).color;
+        context.fillRect(0, 0, 1, 1);
+        const [r, g, b] = context.getImageData(0, 0, 1, 1).data;
+        return [r / 255, g / 255, b / 255];
+      });
+      probe.remove();
+
+      const count = Math.min(MAX_BLOBS, Math.max(6, rgb.length * 2));
+      const blobColors = new Float32Array(MAX_BLOBS * 3);
+      for (let i = 0; i < count; i++) {
+        blobColors.set(rgb[i % rgb.length], i * 3);
+      }
+      gl.uniform1i(uniform('count'), count);
+      gl.uniform3fv(uniform('colors'), blobColors);
+
+      // Software WebGL frames tie up the main thread, so it gets a still frame like reduced motion
+      let renderer = gl.getParameter(gl.RENDERER);
+      if (renderer === 'WebKit WebGL') {
+        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+        renderer = debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : renderer;
+      }
+      const still = matchMedia('(prefers-reduced-motion: reduce)').matches || /swiftshader|llvmpipe|software/i.test(renderer);
+
+      const speed = Number(this.dataset.speed);
+      const start = performance.now();
+      const pointer = { x: 0, y: 0, z: 0, targetX: 0, targetY: 0, target: 0 };
+      let frame = 0;
+
+      const draw = (now: number) => {
+        pointer.x += (pointer.targetX - pointer.x) * 0.04;
+        pointer.y += (pointer.targetY - pointer.y) * 0.04;
+        pointer.z += (pointer.target - pointer.z) * 0.04;
+        gl.uniform1f(uniforms.time, still ? 20 : ((now - start) / 1000) * speed);
+        gl.uniform3f(uniforms.pointer, pointer.x, pointer.y, pointer.z);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+      };
+      const loop = (now: number) => {
+        draw(now);
+        frame = requestAnimationFrame(loop);
+      };
+
+      const area = this.parentElement!;
+      area.addEventListener('pointermove', (event) => {
+        const rect = this.getBoundingClientRect();
+        pointer.targetX = (event.clientX - rect.left - rect.width / 2) / rect.height;
+        pointer.targetY = -(event.clientY - rect.top - rect.height / 2) / rect.height;
+        pointer.target = 1;
+      });
+      area.addEventListener('pointerleave', () => (pointer.target = 0));
+
+      new ResizeObserver(() => {
+        const scale = devicePixelRatio * RENDER_SCALE;
+        canvas.width = Math.ceil(canvas.clientWidth * scale);
+        canvas.height = Math.ceil(canvas.clientHeight * scale);
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.uniform2f(uniforms.resolution, canvas.width, canvas.height);
+        draw(performance.now());
+      }).observe(canvas);
+
+      new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting && !still && !frame) {
+          frame = requestAnimationFrame(loop);
+        } else if (!entry.isIntersecting) {
+          cancelAnimationFrame(frame);
+          frame = 0;
+        }
+      }).observe(canvas);
+    }
+  }
+
+  customElements.define('lava-lamp', LavaLamp);
+</script>
