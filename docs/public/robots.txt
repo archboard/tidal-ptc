@@ -11,4 +11,4 @@ User-agent: Google-Extended
 User-agent: CCBot
 Allow: /
 
-Sitemap: https://docs.tidalptc.com/sitemap-index.xml
+Sitemap: https://tidalptc.com/sitemap-index.xml

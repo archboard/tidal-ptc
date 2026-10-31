@@ -1,5 +1,5 @@
 /** Placeholders: change these in one place. */
-export const SITE_URL = 'https://docs.tidalptc.com';
+export const SITE_URL = 'https://tidalptc.com';
 export const BILLING_URL = 'https://billing.archboard.io/get-started';
 export const GITHUB_URL = 'https://github.com/archboard/tidal-ptc';
 export const DEMO_URL = 'https://demo.tidalptc.app';
