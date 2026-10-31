@@ -145,3 +145,10 @@ it('shares the reverb connection settings without the secret', function () {
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->where('reverb', ['key' => 'public-key', 'host' => 'ws.example.test', 'port' => 443, 'scheme' => 'https']));
 });
+
+it('links the sidebar to the documentation site in a new tab', function () {
+    $this->get(route('home'))
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->where('navigation', fn ($navigation) => collect($navigation)->contains(fn (array $item) => $item['url'] === 'https://tidalptc.com' && $item['target'] === '_blank' && $item['component'] === 'a'))
+            ->etc());
+});
