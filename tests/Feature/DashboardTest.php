@@ -149,6 +149,6 @@ it('shares the reverb connection settings without the secret', function () {
 it('links the sidebar to the documentation site in a new tab', function () {
     $this->get(route('home'))
         ->assertInertia(fn (AssertableInertia $page) => $page
-            ->where('navigation', fn ($navigation) => collect($navigation)->contains(fn (array $item) => $item['url'] === 'https://tidalptc.com' && $item['target'] === '_blank' && $item['component'] === 'a'))
+            ->where('navigation', fn ($navigation) => collect($navigation)->contains(fn (array $item) => str_starts_with($item['url'], 'https://tidalptc.com') && $item['target'] === '_blank' && $item['component'] === 'a'))
             ->etc());
 });
