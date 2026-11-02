@@ -35,6 +35,7 @@ class InstallFirstUserController extends Controller
         $user->assignRole(Role::DISTRICT_ADMIN);
         auth()->login($user);
         $request->session()->forget('setup_tenant_id');
+        $request->session()->put('first_sync', true);
 
         return to_route('select-school');
     }

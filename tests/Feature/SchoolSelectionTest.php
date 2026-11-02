@@ -2,6 +2,7 @@
 
 use App\Enums\UserType;
 use App\Exceptions\SisNotConfiguredException;
+use App\Jobs\SyncSchoolItem;
 use App\Jobs\SyncSchools;
 use Illuminate\Support\Facades\Bus;
 use Inertia\Testing\AssertableInertia;
@@ -76,4 +77,38 @@ it("'can update a user's school'", function () {
 
     $this->user->refresh();
     expect($this->user->school_id)->toBe($school->id);
+});
+
+it('starts the school sync and redirects to tenant settings on the first sync after onboarding', function () {
+    Bus::fake();
+    $school = $this->tenant->schools->random();
+
+    $this->withSession(['first_sync' => true])
+        ->post(route('select-school'), ['school_id' => $school->id])
+        ->assertSessionMissing('first_sync')
+        ->assertRedirect(route('settings.tenant.edit'));
+
+    Bus::assertDispatched(SyncSchoolItem::class, fn (SyncSchoolItem $job) => $job->school->is($school)
+        && $job->item === 'school'
+        && $job->user->is($this->user));
+});
+
+it('flags the first sync when schools are synced inline', function () {
+    Bus::fake();
+    $this->tenant->schools()->delete();
+
+    $this->withoutExceptionHandling();
+
+    expect(fn () => $this->get(route('select-school')))->toThrow(SisNotConfiguredException::class);
+    expect(session('first_sync'))->toBeTrue();
+});
+
+it('does not start a school sync on later school selections', function () {
+    Bus::fake();
+    $school = $this->tenant->schools->random();
+
+    $this->post(route('select-school'), ['school_id' => $school->id])
+        ->assertRedirect(route('home'));
+
+    Bus::assertNotDispatched(SyncSchoolItem::class);
 });

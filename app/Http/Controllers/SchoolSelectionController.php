@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\UserType;
 use App\Exceptions\SisNotConfiguredException;
 use App\Http\Resources\SchoolResource;
+use App\Jobs\SyncSchoolItem;
 use App\Jobs\SyncSchools;
 use App\Models\Tenant;
 use App\Models\User;
@@ -28,6 +29,7 @@ class SchoolSelectionController extends Controller
         // Plugin registration installs the tenant without running InstallationController, so the first sync can land here
         if ($schools->isEmpty() && ! $isGuardian && $tenant->schools()->doesntExist()) {
             SyncSchools::dispatchSync($tenant);
+            $request->session()->put('first_sync', true);
             $schools = $tenant->schools()->where('active', true)->get();
         }
 
@@ -35,9 +37,7 @@ class SchoolSelectionController extends Controller
         throw_if($schools->isEmpty() && ! $isGuardian, new SisNotConfiguredException('No schools configured'));
 
         if ($schools->count() === 1) {
-            $this->selectSchool($user, $schools->sole()->id);
-
-            return to_route('home');
+            return $this->selectSchool($request, $user, $schools->sole()->id);
         }
 
         return inertia('SchoolSelection', [
@@ -59,17 +59,27 @@ class SchoolSelectionController extends Controller
 
         /** @var User $user */
         $user = $request->user();
-        $this->selectSchool($user, (int) $data['school_id']);
-
         session()->flash('success', __('School selected successfully'));
 
-        return to_route('home');
+        return $this->selectSchool($request, $user, (int) $data['school_id']);
     }
 
-    protected function selectSchool(User $user, int $schoolId): void
+    /**
+     * Right after onboarding, sync the whole school and land on tenant settings to watch it run.
+     */
+    protected function selectSchool(Request $request, User $user, int $schoolId): RedirectResponse
     {
         $user->update(['school_id' => $schoolId]);
         $user->unsetRelation('school');
         $user->schools()->syncWithoutDetaching($schoolId);
+
+        if (! $request->session()->pull('first_sync')) {
+            return to_route('home');
+        }
+
+        SyncSchoolItem::start($user->school, 'school', $user);
+        session()->flash('success', __('Sync started. You will be notified when it finishes.'));
+
+        return to_route('settings.tenant.edit');
     }
 }
