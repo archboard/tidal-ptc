@@ -53,7 +53,8 @@ class SchoolSelectionController extends Controller
             'school_id' => [
                 'required',
                 Rule::exists('schools', 'id')
-                    ->where('tenant_id', $tenant->id),
+                    ->where('tenant_id', $tenant->id)
+                    ->where('active', true),
             ],
         ]);
 

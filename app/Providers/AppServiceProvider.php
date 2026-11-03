@@ -110,7 +110,7 @@ class AppServiceProvider extends ServiceProvider
         $currentSchool = function (): School {
             $user = auth()->user();
 
-            if ($user instanceof User && $school = $user->school) {
+            if ($user instanceof User && ($school = $user->school)?->active) {
                 return $school;
             }
 

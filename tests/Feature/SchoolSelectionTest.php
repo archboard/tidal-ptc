@@ -112,3 +112,21 @@ it('does not start a school sync on later school selections', function () {
 
     Bus::assertNotDispatched(SyncSchoolItem::class);
 });
+
+it('sends the user to school selection when their current school is inactive', function () {
+    setSchool();
+    $this->school->update(['active' => false]);
+
+    $this->get(route('home'))
+        ->assertRedirect(route('select-school'));
+});
+
+it('rejects selecting an inactive school', function () {
+    $school = $this->tenant->schools->first();
+    $school->update(['active' => false]);
+
+    $this->post(route('select-school'), ['school_id' => $school->id])
+        ->assertSessionHasErrors('school_id');
+
+    expect($this->user->fresh()->school_id)->not->toBe($school->id);
+});

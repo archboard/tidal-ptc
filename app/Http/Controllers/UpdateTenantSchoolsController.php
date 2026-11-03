@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tenant;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -33,6 +34,13 @@ class UpdateTenantSchoolsController extends Controller
         $tenant->schools()
             ->whereNotIn('id', $data['schools'])
             ->update(['active' => false]);
+
+        /** @var User $user */
+        $user = $request->user();
+
+        if (! in_array($user->school_id, $data['schools'])) {
+            $user->update(['school_id' => $user->adminSchools()->value('id')]);
+        }
 
         session()->flash('success', __('Schools updated successfully.'));
 
