@@ -23,16 +23,16 @@ class SisUserController extends Controller
             'search' => ['required', 'string', 'min:3'],
         ]);
 
-        $provider = $tenant->getSisProvider();
+        $sis = $tenant->sis_provider;
 
-        if (! $provider) {
+        if (! $sis) {
             throw new SisNotConfiguredException(__('SIS is not configured. Please contact your systems administrator.'));
         }
 
         try {
-            return $provider->searchForUser($data['search']);
+            return $sis->getProvider($tenant)->searchForUser($data['search']);
         } catch (GuzzleException) {
-            abort(422, $tenant->sis_provider->connectionErrorMessage());
+            abort(422, $sis->connectionErrorMessage());
         }
     }
 }

@@ -35,7 +35,7 @@ class InstallFirstUserController extends Controller
         try {
             $user->syncFromSis();
         } catch (GuzzleException) {
-            return back()->with('error', $request->tenant()->sis_provider->connectionErrorMessage());
+            return back()->with('error', $request->tenant()->sis_provider?->connectionErrorMessage());
         }
 
         BouncerFacade::allow(Role::DISTRICT_ADMIN->value)->everything();
