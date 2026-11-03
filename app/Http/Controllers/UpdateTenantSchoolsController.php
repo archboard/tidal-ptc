@@ -28,12 +28,7 @@ class UpdateTenantSchoolsController extends Controller
             'schools.max' => __('Your plan covers :max schools. Contact us to add more.'),
         ]);
 
-        $tenant->schools()
-            ->whereIn('id', $data['schools'])
-            ->update(['active' => true]);
-        $tenant->schools()
-            ->whereNotIn('id', $data['schools'])
-            ->update(['active' => false]);
+        $tenant->activateSchools($data['schools']);
 
         /** @var User $user */
         $user = $request->user();

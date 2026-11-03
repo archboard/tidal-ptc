@@ -531,5 +531,6 @@
     "Clear selection": "選択をクリア",
     "Documentation": "ドキュメント",
     "Could not connect to PowerSchool. Make sure the plugin is installed and enabled, then try again.": "PowerSchoolに接続できませんでした。プラグインがインストールされ有効になっていることを確認してから、もう一度お試しください。",
-    "Could not connect to the SIS. Check the configuration and try again.": "SISに接続できませんでした。設定を確認して、もう一度お試しください。"
+    "Could not connect to the SIS. Check the configuration and try again.": "SISに接続できませんでした。設定を確認して、もう一度お試しください。",
+    "Choose the schools your district will use": "学区で使用する学校を選択してください"
 }

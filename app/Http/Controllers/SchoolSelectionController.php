@@ -33,6 +33,13 @@ class SchoolSelectionController extends Controller
             $schools = $tenant->schools()->where('active', true)->get();
         }
 
+        $schoolLimit = $this->firstSyncSchoolLimit($request, $tenant);
+
+        // Onboarding a license that covers fewer schools than the SIS has: offer every school so the district picks which ones to use
+        if ($schoolLimit !== null) {
+            $schools = $tenant->schools()->orderBy('name')->get();
+        }
+
         // Guardians are scoped to their students' schools; an empty list means no linked students, not a missing SIS config
         throw_if($schools->isEmpty() && ! $isGuardian, new SisNotConfiguredException('No schools configured'));
 
@@ -44,25 +51,56 @@ class SchoolSelectionController extends Controller
             'schools' => SchoolResource::collection($schools),
             'title' => $title,
             'endpoint' => route('select-school'),
+            'schoolLimit' => $schoolLimit,
         ])->withViewData(compact('title'));
     }
 
     public function update(Request $request, Tenant $tenant): RedirectResponse
     {
-        $data = $request->validate([
-            'school_id' => [
-                'required',
-                Rule::exists('schools', 'id')
-                    ->where('tenant_id', $tenant->id)
-                    ->where('active', true),
-            ],
-        ]);
-
         /** @var User $user */
         $user = $request->user();
+        $schoolLimit = $this->firstSyncSchoolLimit($request, $tenant);
+
+        $data = $request->validate([
+            'schools' => $schoolLimit === null ? ['prohibited'] : ['required', 'array', "max:{$schoolLimit}"],
+            'schools.*' => [
+                'integer',
+                Rule::exists('schools', 'id')
+                    ->where('tenant_id', $tenant->id),
+            ],
+            'school_id' => [
+                'required',
+                $schoolLimit === null
+                    ? Rule::exists('schools', 'id')
+                        ->where('tenant_id', $tenant->id)
+                        ->where('active', true)
+                    : Rule::in(array_filter((array) $request->input('schools'), is_scalar(...))),
+            ],
+        ], [
+            'schools.max' => __('Your plan covers :max schools. Contact us to add more.'),
+        ]);
+
+        if ($schoolLimit !== null) {
+            $tenant->activateSchools($data['schools']);
+        }
+
         session()->flash('success', __('School selected successfully'));
 
         return $this->selectSchool($request, $user, (int) $data['school_id']);
+    }
+
+    /**
+     * The cloud school limit while onboarding still has schools to choose from, otherwise null.
+     */
+    protected function firstSyncSchoolLimit(Request $request, Tenant $tenant): ?int
+    {
+        $limit = config('app.cloud') ? $tenant->school_limit : null;
+
+        if ($limit === null || ! $request->session()->get('first_sync')) {
+            return null;
+        }
+
+        return $tenant->schools()->count() > $limit ? $limit : null;
     }
 
     /**

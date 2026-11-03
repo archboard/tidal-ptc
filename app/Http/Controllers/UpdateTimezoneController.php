@@ -33,6 +33,10 @@ class UpdateTimezoneController extends Controller
         $user = $request->user();
         $user->update($data);
 
+        if ($user->school && blank($user->school->timezone)) {
+            $user->school->update($data);
+        }
+
         return $this->flashAndBack();
     }
 }

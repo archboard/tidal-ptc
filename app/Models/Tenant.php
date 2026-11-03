@@ -191,6 +191,17 @@ final class Tenant extends TenantBase
         return $this->hasMany(School::class);
     }
 
+    /**
+     * Makes exactly the given schools active and deactivates the rest.
+     *
+     * @param  array<int, int|string>  $schoolIds
+     */
+    public function activateSchools(array $schoolIds): void
+    {
+        $this->schools()->whereIn('id', $schoolIds)->update(['active' => true]);
+        $this->schools()->whereNotIn('id', $schoolIds)->update(['active' => false]);
+    }
+
     /** @return HasMany<User, $this> */
     public function users(): HasMany
     {

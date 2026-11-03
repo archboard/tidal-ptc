@@ -130,3 +130,51 @@ it('rejects selecting an inactive school', function () {
 
     expect($this->user->fresh()->school_id)->not->toBe($school->id);
 });
+
+it('offers every school with the limit when onboarding a cloud license that covers fewer schools', function () {
+    $this->asCloud();
+    $this->tenant->update(['school_limit' => 1]);
+    $this->tenant->schools()->update(['active' => false]);
+
+    $this->withSession(['first_sync' => true])
+        ->get(route('select-school'))
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('SchoolSelection')
+            ->has('schools', $this->tenant->schools()->count())
+            ->where('schoolLimit', 1)
+        );
+});
+
+it('activates the chosen schools and selects the current school when onboarding within the limit', function () {
+    Bus::fake();
+    $this->asCloud();
+    $this->tenant->update(['school_limit' => 1]);
+    $this->tenant->schools()->update(['active' => false]);
+    [$chosen, $other] = $this->tenant->schools;
+
+    $this->withSession(['first_sync' => true])
+        ->post(route('select-school'), ['schools' => [$chosen->id], 'school_id' => $chosen->id])
+        ->assertRedirect(route('settings.tenant.edit'));
+
+    expect($chosen->fresh()->active)->toBeTrue()
+        ->and($other->fresh()->active)->toBeFalse()
+        ->and($this->user->fresh()->school_id)->toBe($chosen->id);
+});
+
+it('rejects onboarding with more schools than the limit or a current school outside the chosen ones', function () {
+    $this->asCloud();
+    $this->tenant->update(['school_limit' => 1]);
+    $this->tenant->schools()->update(['active' => false]);
+    [$chosen, $other] = $this->tenant->schools;
+
+    $this->withSession(['first_sync' => true])
+        ->post(route('select-school'), ['schools' => [$chosen->id, $other->id], 'school_id' => $chosen->id])
+        ->assertSessionHasErrors('schools');
+
+    $this->withSession(['first_sync' => true])
+        ->post(route('select-school'), ['schools' => [$chosen->id], 'school_id' => $other->id])
+        ->assertSessionHasErrors('school_id');
+
+    expect($this->tenant->schools()->where('active', true)->exists())->toBeFalse();
+});

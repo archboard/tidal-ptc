@@ -531,5 +531,6 @@
     "Clear selection": "Borrar selección",
     "Documentation": "Documentación",
     "Could not connect to PowerSchool. Make sure the plugin is installed and enabled, then try again.": "No se pudo conectar con PowerSchool. Asegúrese de que el complemento esté instalado y habilitado, y vuelva a intentarlo.",
-    "Could not connect to the SIS. Check the configuration and try again.": "No se pudo conectar con el SIS. Revise la configuración y vuelva a intentarlo."
+    "Could not connect to the SIS. Check the configuration and try again.": "No se pudo conectar con el SIS. Revise la configuración y vuelva a intentarlo.",
+    "Choose the schools your district will use": "Elija las escuelas que usará su distrito"
 }

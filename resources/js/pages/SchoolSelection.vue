@@ -23,7 +23,26 @@
           <CardPadding>
             <CardHeader>{{ title }}</CardHeader>
           </CardPadding>
-          <CardPadding>
+          <CardPadding v-if="schoolLimit !== null">
+            <FormField :error="form.errors.schools" required>
+              {{ __('Choose the schools your district will use') }}
+              <template #component>
+                <HelpText>
+                  {{ __(':active of :limit licensed schools selected', { active: form.schools.length, limit: schoolLimit }) }}
+                </HelpText>
+                <div v-for="school in schools" :key="school.id">
+                  <AppCheckbox
+                    v-model="form.schools"
+                    :value="school.id"
+                    :disabled="form.schools.length >= schoolLimit && !form.schools.includes(school.id)"
+                  >
+                    {{ school.name }}
+                  </AppCheckbox>
+                </div>
+              </template>
+            </FormField>
+          </CardPadding>
+          <CardPadding v-if="schoolOptions.length">
               <FormField :error="form.errors.school_id" required>
                 {{ __('Choose your current school') }}
                 <template #component>
@@ -57,23 +76,27 @@ import RadioGroup from '@/components/forms/RadioGroup.vue'
 import FormField from '@/components/forms/FormField.vue'
 import CardAction from '@/components/CardAction.vue'
 import AppButton from '@/components/AppButton.vue'
+import AppCheckbox from '@/components/forms/AppCheckbox.vue'
+import HelpText from '@/components/forms/HelpText.vue'
 
 const props = defineProps({
   schools: Array,
   user: Object,
   title: String,
   endpoint: String,
+  schoolLimit: { type: Number, default: null },
 })
 usePageTitle()
 const form = useForm({
   school_id: props.user.school_id,
+  ...(props.schoolLimit !== null ? { schools: [] } : {}),
 })
 const schoolOptions = computed(() => {
-  return props.schools.map((school) => {
-    return {
+  return props.schools
+    .filter(school => props.schoolLimit === null || form.schools.includes(school.id))
+    .map(school => ({
       label: school.name,
       value: school.id,
-    }
-  })
+    }))
 })
 </script>
