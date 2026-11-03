@@ -529,5 +529,7 @@
     "Reset filters": "重置筛选",
     "Clear date": "清除日期",
     "Clear selection": "清除选择",
-    "Documentation": "文档"
+    "Documentation": "文档",
+    "Could not connect to PowerSchool. Make sure the plugin is installed and enabled, then try again.": "无法连接到 PowerSchool。请确认插件已安装并启用，然后重试。",
+    "Could not connect to the SIS. Check the configuration and try again.": "无法连接到 SIS。请检查配置后重试。"
 }

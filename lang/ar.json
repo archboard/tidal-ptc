@@ -529,5 +529,7 @@
     "Reset filters": "إعادة تعيين عوامل التصفية",
     "Clear date": "مسح التاريخ",
     "Clear selection": "مسح التحديد",
-    "Documentation": "التوثيق"
+    "Documentation": "التوثيق",
+    "Could not connect to PowerSchool. Make sure the plugin is installed and enabled, then try again.": "تعذّر الاتصال بـ PowerSchool. تأكد من تثبيت الإضافة وتفعيلها، ثم حاول مرة أخرى.",
+    "Could not connect to the SIS. Check the configuration and try again.": "تعذّر الاتصال بنظام معلومات الطلاب. تحقق من الإعدادات وحاول مرة أخرى."
 }

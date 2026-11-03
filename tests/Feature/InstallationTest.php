@@ -6,9 +6,14 @@ use App\Enums\Role;
 use App\Jobs\SyncSchools;
 use App\Models\Tenant;
 use App\Models\User;
+use App\SisProviders\PowerSchoolProvider;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Uri;
@@ -199,5 +204,42 @@ class InstallationTest extends TestCase
                 ->component('InstallUser')
                 ->where('endpoint', route('install.user'))
             );
+    }
+
+    protected function failPowerSchoolCall(string $method): void
+    {
+        $provider = $this->mock(PowerSchoolProvider::class);
+        $provider->shouldReceive('configured')->andReturnTrue();
+        $provider->shouldReceive($method)
+            ->andThrow(new ClientException('Not Found', new Request('POST', '/ws/schema/query'), new Response(404)));
+    }
+
+    public function test_sis_user_search_failure_asks_to_enable_plugin()
+    {
+        Exceptions::fake();
+        $this->failPowerSchoolCall('searchForUser');
+
+        $this->asSelfHosted()
+            ->postJson('/search/sis/user', ['search' => 'jane'])
+            ->assertUnprocessable()
+            ->assertJson(['message' => 'Could not connect to PowerSchool. Make sure the plugin is installed and enabled, then try again.']);
+
+        Exceptions::assertNothingReported();
+    }
+
+    public function test_first_user_sync_failure_asks_to_enable_plugin()
+    {
+        Exceptions::fake();
+        $this->failPowerSchoolCall('syncUser');
+
+        $this->asSelfHosted()
+            ->from(route('install.user'))
+            ->post(route('install.user'), ['user' => ['sis_id' => '123']])
+            ->assertRedirect(route('install.user'))
+            ->assertSessionHas('error', 'Could not connect to PowerSchool. Make sure the plugin is installed and enabled, then try again.');
+
+        $this->assertGuest();
+        $this->assertDatabaseMissing('users', ['sis_id' => '123']);
+        Exceptions::assertNothingReported();
     }
 }

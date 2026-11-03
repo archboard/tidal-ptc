@@ -47,6 +47,17 @@ enum Sis: string
         };
     }
 
+    /**
+     * Shown when an SIS API call fails during installation, usually because the plugin isn't enabled.
+     */
+    public function connectionErrorMessage(): string
+    {
+        return match ($this) {
+            self::PS => __('Could not connect to PowerSchool. Make sure the plugin is installed and enabled, then try again.'),
+            self::CLASS_LINK => __('Could not connect to the SIS. Check the configuration and try again.'),
+        };
+    }
+
     public function getProvider(Tenant $tenant): SisProvider
     {
         return match ($this) {
