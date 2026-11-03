@@ -84,6 +84,7 @@ const props = defineProps({
   domain: String,
   sisConfig: Object,
   isCloud: Boolean,
+  channel: String,
 })
 
 const inertiaForm = useForm({
@@ -98,8 +99,8 @@ const inertiaForm = useForm({
 
 // PowerSchool registers the plugin as it's enabled, which fills in its connection details
 onMounted(() => {
-  window.Echo?.channel('install')
+  window.Echo?.channel(props.channel)
     .listen('PowerSchoolPluginRegistered', ({ sisConfig }) => Object.assign(inertiaForm.sis_config, sisConfig))
 })
-onUnmounted(() => window.Echo?.leave('install'))
+onUnmounted(() => window.Echo?.leave(props.channel))
 </script>

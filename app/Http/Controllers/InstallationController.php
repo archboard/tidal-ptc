@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PowerSchoolPluginRegistered;
 use App\Jobs\SyncSchools;
 use App\Models\Tenant;
 use Illuminate\Http\RedirectResponse;
@@ -23,6 +24,7 @@ class InstallationController extends Controller
             'domain' => $tenant->domain,
             'sisConfig' => $tenant->sis_config->toArray(),
             'isCloud' => config('app.cloud'),
+            'channel' => PowerSchoolPluginRegistered::channelName($request->host()),
         ])->withViewData(compact('title'));
     }
 

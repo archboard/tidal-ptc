@@ -30,6 +30,7 @@ function fakePowerSchool(): void
 it('stores verified credentials on the existing tenant', function () {
     Event::fake([PowerSchoolPluginRegistered::class]);
     fakePowerSchool();
+    $this->seedUser();
     $this->freezeTime();
 
     $this->postJson(route('powerschool.registration'), registrationPayload($this->tenant->domain))
@@ -69,6 +70,27 @@ it('starts a self-hosted tenant and fills its install form', function () {
     ]);
 });
 
+it("fills an existing tenant's install form until it has a user", function () {
+    Event::fake([PowerSchoolPluginRegistered::class]);
+    fakePowerSchool();
+
+    $this->postJson(route('powerschool.registration'), registrationPayload($this->tenant->domain))
+        ->assertOk();
+
+    Event::assertDispatched(PowerSchoolPluginRegistered::class, fn ($event) => $event->broadcastOn()->name === PowerSchoolPluginRegistered::channelName($this->tenant->domain)
+        && $event->broadcastWith() === ['sisConfig' => [
+            'url' => 'https://ps.example.com',
+            'client_id' => 'new-client-id',
+            'client_secret' => 'new-client-secret',
+        ]]);
+});
+
+it('broadcasts on a channel only its host knows', function () {
+    expect(PowerSchoolPluginRegistered::channelName('a.example.com'))
+        ->not->toBe(PowerSchoolPluginRegistered::channelName('b.example.com'))
+        ->not->toBe('install');
+});
+
 it('fills the install form on reload without websockets', function () {
     Event::fake([PowerSchoolPluginRegistered::class]);
     fakePowerSchool();
@@ -80,7 +102,7 @@ it('fills the install form on reload without websockets', function () {
             'url' => 'https://ps.example.com',
             'client_id' => 'new-client-id',
             'client_secret' => 'new-client-secret',
-        ]));
+        ])->where('channel', PowerSchoolPluginRegistered::channelName('new.example.com')));
 });
 
 it("doesn't create a tenant in the cloud", function () {

@@ -61,8 +61,9 @@ class PowerSchoolPluginRegistrationController extends Controller
         $tenant->sis_config = $tenant->sis_config->merge($sisConfig);
         $tenant->save();
 
-        if ($tenant->wasRecentlyCreated) {
-            PowerSchoolPluginRegistered::dispatch($sisConfig);
+        // Only an open install form is listening, and it's open until the first user exists
+        if (! $tenant->users()->exists()) {
+            PowerSchoolPluginRegistered::dispatch($request->host(), $sisConfig);
         }
 
         return $this->result(true, 'SUCCESS');
