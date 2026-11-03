@@ -78,7 +78,7 @@ class SchoolSelectionController extends Controller
             return to_route('home');
         }
 
-        SyncSchoolItem::start($user->school, 'school', $user);
+        SyncSchoolItem::start($user->school()->firstOrFail(), 'school', $user);
         session()->flash('success', __('Sync started. You will be notified when it finishes.'));
 
         return to_route('settings.tenant.edit');
