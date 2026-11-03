@@ -28,13 +28,6 @@
                 </AppSelect>
               </div>
 
-              <div class="mt-5 px-4">
-                <label for="current-locale-mobile" class="sr-only">{{ __('Language') }}</label>
-                <AppSelect v-model="currentLocale" class="bg-primary-200 dark:bg-primary-800 border-primary-300 dark:border-primary-900">
-                  <option v-for="language in languages" :key="language.value" :value="language.value">{{ language.native_name }}</option>
-                </AppSelect>
-              </div>
-
               <div class="mt-5 h-0 flex-1 overflow-y-auto">
                 <nav class="space-y-1 px-2">
                   <component
@@ -57,6 +50,13 @@
                 <p class="text-xs text-primary-700 dark:text-gray-300">{{ __('District code') }}</p>
                 <p class="font-mono text-lg font-semibold tracking-widest text-primary-900 dark:text-white">{{ tenant.code }}</p>
               </div>
+
+              <div class="mx-4 mt-4">
+                <label for="current-locale-mobile" class="block px-1 text-xs text-primary-700 dark:text-gray-300">{{ __('Language') }}</label>
+                <AppSelect id="current-locale-mobile" v-model="currentLocale" hide-null class="mt-1 bg-primary-200 dark:bg-primary-800 border-primary-300 dark:border-primary-900">
+                  <option v-for="language in languages" :key="language.value" :value="language.value">{{ language.native_name }}</option>
+                </AppSelect>
+              </div>
             </DialogPanel>
           </TransitionChild>
           <div class="w-14 shrink-0" aria-hidden="true">
@@ -78,13 +78,6 @@
           <label for="current-school" class="sr-only">{{ __('Current school') }}</label>
           <AppSelect v-model="currentSchool" class="bg-primary-200 dark:bg-primary-800 border-primary-300 dark:border-primary-900">
             <option v-for="school in adminSchools" :id="school.id" :value="school.id">{{ school.name }}</option>
-          </AppSelect>
-        </div>
-
-        <div class="mt-5 px-2">
-          <label for="current-locale" class="sr-only">{{ __('Language') }}</label>
-          <AppSelect v-model="currentLocale" class="bg-primary-200 dark:bg-primary-800 border-primary-300 dark:border-primary-900">
-            <option v-for="language in languages" :key="language.value" :value="language.value">{{ language.native_name }}</option>
           </AppSelect>
         </div>
 
@@ -127,6 +120,13 @@
           <div v-if="tenant.code" class="mx-2 mt-8 rounded-md border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-950 px-3 py-2 shadow-inner">
             <p class="text-xs text-primary-700 dark:text-gray-300">{{ __('District code') }}</p>
             <p class="font-mono text-lg font-semibold tracking-widest text-primary-900 dark:text-white">{{ tenant.code }}</p>
+          </div>
+
+          <div class="mx-2 mt-4">
+            <label for="current-locale" class="block px-1 text-xs text-primary-700 dark:text-gray-300">{{ __('Language') }}</label>
+            <AppSelect id="current-locale" v-model="currentLocale" hide-null class="mt-1 bg-primary-200 dark:bg-primary-800 border-primary-300 dark:border-primary-900">
+              <option v-for="language in languages" :key="language.value" :value="language.value">{{ language.native_name }}</option>
+            </AppSelect>
           </div>
         </div>
       </div>

@@ -10,6 +10,7 @@
 import { chromium, type Browser, type Page } from 'playwright';
 import { mkdir } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
+import sharp from 'sharp';
 
 const BASE_URL = process.env.SCREENSHOT_URL ?? 'https://tidal-ptc.test';
 const OUT = new URL('../src/assets/screenshots/', import.meta.url);
@@ -38,6 +39,12 @@ type Shot = {
 const setSsoOnly = (ssoOnly: boolean) => execFileSync('php', [
   'artisan', 'tinker', '--execute',
   `App\\Models\\Tenant::query()->update(["allow_oidc_login" => ${ssoOnly}, "allow_password_auth" => ${!ssoOnly}]);`,
+], { cwd: new URL('../../', import.meta.url) });
+
+/** Accepting the timezone prompt while browsing locally changes a demo user's timezone, which makes the prompt cover their shots. */
+const resetTimezones = () => execFileSync('php', [
+  'artisan', 'tinker', '--execute',
+  `App\\Models\\Tenant::all()->each->execute(fn () => App\\Models\\User::whereIn("email", ${JSON.stringify(Object.values(USERS).map((user) => user.email))})->update(["timezone" => "${TIMEZONE}"]));`,
 ], { cwd: new URL('../../', import.meta.url) });
 
 const openFirst = (selector: string) => async (page: Page) => {
@@ -101,6 +108,7 @@ async function logIn(browser: Browser, user: keyof typeof USERS) {
 
 const filter = process.argv[2];
 const shots = SHOTS.filter((shot) => !filter || shot.name.includes(filter));
+resetTimezones();
 const browser = await chromium.launch();
 await mkdir(OUT, { recursive: true });
 
@@ -130,7 +138,10 @@ for (const shot of shots) {
       await shot.action?.(page);
       // Let transitions and fonts settle
       await page.waitForTimeout(500);
-      await page.screenshot({ path: new URL(`${shot.name}-${colorScheme}.png`, OUT).pathname });
+      // Palette quantization (like pngquant) cuts UI screenshots to a fraction of Playwright's output
+      await sharp(await page.screenshot())
+        .png({ palette: true, quality: 90, compressionLevel: 9, effort: 10 })
+        .toFile(new URL(`${shot.name}-${colorScheme}.png`, OUT).pathname);
       console.log(`✓ ${shot.name}-${colorScheme} (${page.url()})`);
     } catch (error) {
       console.error(`✗ ${shot.name}-${colorScheme}: ${(error as Error).message}`);
