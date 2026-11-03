@@ -2,6 +2,9 @@
 
 Tidal PTC (parent-teacher conferences) is [Archboard's](https://archboard.io) first open source project. It's a web application for scheduling parent-teacher conferences: admins and teachers create time slots, and parents and guardians log in to book them.
 
+- **[Documentation](https://tidalptc.com)**
+- **[Live demo](https://demo.tidalptc.app)**
+
 [![DigitalOcean Referral Badge](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%203.svg)](https://www.digitalocean.com/?refcode=5902fc4786e5&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
 
 ## Features
