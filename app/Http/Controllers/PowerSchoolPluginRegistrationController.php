@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\PowerSchoolPluginRegistered;
 use App\Models\Tenant;
+use App\Scopes\TenantScope;
 use App\Services\PowerSchoolPluginService;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\HttpClientException;
@@ -64,7 +65,7 @@ class PowerSchoolPluginRegistrationController extends Controller
         // Only an open install form is listening, and it's open until the first user exists.
         // The credentials are saved and the form loads them on reload, so a Reverb failure can't fail registration.
         // A first install has no current tenant for TenantScope; the relation already limits this to the tenant.
-        if (! $tenant->users()->withoutTenant()->exists()) {
+        if (! $tenant->users()->withoutGlobalScope(TenantScope::class)->exists()) {
             rescue(fn () => PowerSchoolPluginRegistered::dispatch($request->host(), $sisConfig));
         }
 
