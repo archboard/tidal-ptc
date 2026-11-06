@@ -41,10 +41,15 @@ composer install
 npm install && npm run build
 cp .env.example .env
 php artisan key:generate
-php artisan migrate --seed
 ```
 
+Set `APP_URL`, your database login, and placeholder `POWERSCHOOL_ADDRESS`, `POWERSCHOOL_CLIENT_ID` and `POWERSCHOOL_CLIENT_SECRET` values in `.env`, then run `php artisan migrate --seed`. Before running tests, create a `.env.testing` that points at a separate database, because tests erase the database they use. The [contributing guide](https://tidalptc.com/contributing/#set-up-your-computer) has the exact values.
+
 Seeding creates a tenant on `APP_URL` with an admin (`admin@example.com`), a teacher, a guardian and sample time slots, all with the password `password`. Run `npm run enums` after changing a `#[PublishEnum]` enum to regenerate the JavaScript copies.
+
+## Contributing
+
+You don't need to know how to code to help. See the [contributing guide](https://tidalptc.com/contributing/) for how to report a bug, suggest a feature, fix the docs or translations, or contribute code, with or without an AI assistant.
 
 ## License
 

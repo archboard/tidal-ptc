@@ -76,6 +76,8 @@ When you enable the plugin, PowerSchool calls `/api/powerschool/registration` on
 | `INVALID_CERTIFICATE` | Tidal PTC couldn't verify PowerSchool's TLS certificate. |
 | `HOST_UNKNOWN` | Tidal PTC couldn't reach the PowerSchool server. Check DNS and firewalls between the two. |
 
+If registration succeeds but the install form doesn't fill in by itself, reload the page. The form fills in live over [real-time updates](/integrations/real-time/), so this means the app can't reach Reverb at `REVERB_HOST`. The app log records the error.
+
 See [PowerSchool](/integrations/powerschool/).
 
 ## "SIS is not configured"

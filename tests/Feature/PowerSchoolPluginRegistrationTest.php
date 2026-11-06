@@ -3,7 +3,10 @@
 use App\Events\PowerSchoolPluginRegistered;
 use App\Models\Tenant;
 use App\Services\PowerSchoolPluginService;
+use Illuminate\Broadcasting\BroadcastException;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\Http;
 
 function registrationPayload(string $host, array $overrides = []): array
@@ -83,6 +86,31 @@ it("fills an existing tenant's install form until it has a user", function () {
             'client_id' => 'new-client-id',
             'client_secret' => 'new-client-secret',
         ]]);
+});
+
+it('reports success on a first install with no current tenant', function () {
+    Event::fake([PowerSchoolPluginRegistered::class]);
+    fakePowerSchool();
+    Tenant::forgetCurrent();
+
+    $this->post('https://new.example.com/api/powerschool/registration', registrationPayload('new.example.com'))
+        ->assertOk()
+        ->assertJson(['callback_result' => '200', 'message' => 'SUCCESS']);
+
+    Event::assertDispatched(PowerSchoolPluginRegistered::class);
+});
+
+it('still reports success when the install form broadcast fails', function () {
+    Exceptions::fake();
+    fakePowerSchool();
+    Broadcast::shouldReceive('queue')->once()->andThrow(new BroadcastException('Reverb is unreachable'));
+
+    $this->post('https://new.example.com/api/powerschool/registration', registrationPayload('new.example.com'))
+        ->assertOk()
+        ->assertJson(['callback_result' => '200', 'message' => 'SUCCESS']);
+
+    expect(Tenant::getByHost('new.example.com')->sis_config->get('client_id'))->toBe('new-client-id');
+    Exceptions::assertReported(BroadcastException::class);
 });
 
 it('broadcasts on a channel only its host knows', function () {
