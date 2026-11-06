@@ -4,12 +4,12 @@ import { Icon } from '@astrojs/starlight/components';
 import LavaLamp from '../components/LavaLamp.astro';
 import Screenshot from '../components/Screenshot.astro';
 import archboard from '../assets/archboard.svg?raw';
-import { BILLING_URL, DEMO_URL, GITHUB_URL, HOSTING_TIERS, SITE_URL } from '../config';
+import { ARCHBOARD, BILLING_URL, DEMO_URL, GITHUB_URL, HOSTING_TIERS, SITE_URL, WEBSITE } from '../config';
 import { faq } from '../faq';
 
-const title = 'Tidal PTC: parent-teacher conference scheduling with PowerSchool';
+const title = 'Tidal PTC by Archboard: parent-teacher conference scheduling';
 const description =
-  'Open source parent-teacher conference scheduler. PowerSchool SSO and sync, translator requests, reminders and six languages. Self-host free or buy hosting.';
+  'Open source parent-teacher conference scheduler by Archboard, with PowerSchool SSO and sync, translator requests and reminders. Self-host free or buy hosting.';
 const canonical = `${SITE_URL}/`;
 
 const features = [
@@ -51,6 +51,7 @@ const showcase = [
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
+    WEBSITE,
     {
       '@type': 'SoftwareApplication',
       name: 'Tidal PTC',
@@ -60,7 +61,8 @@ const jsonLd = {
       url: canonical,
       license: 'https://www.gnu.org/licenses/agpl-3.0.html',
       codeRepository: GITHUB_URL,
-      publisher: { '@type': 'Organization', name: 'Archboard', url: 'https://archboard.io' },
+      author: ARCHBOARD,
+      publisher: ARCHBOARD,
       offers: [
         { '@type': 'Offer', name: 'Self-hosted', price: '0', priceCurrency: 'USD' },
         { '@type': 'Offer', name: 'Cloud', price: '400', priceCurrency: 'USD', url: BILLING_URL },
@@ -81,10 +83,12 @@ const jsonLd = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="author" content="Archboard" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Tidal PTC by Archboard" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
@@ -134,13 +138,13 @@ const jsonLd = {
       />
       <section class="mx-auto max-w-6xl px-6 pt-20 pb-16 text-center md:pt-28">
         <p class="mb-5 inline-flex items-center gap-2 rounded-full border border-primary-200 bg-primary-50 px-3 py-1 text-sm text-primary-800 dark:border-primary-800 dark:bg-primary-950 dark:text-primary-200">
-          Open source · Built for PowerSchool districts
+          Open source from Archboard · Built for PowerSchool districts
         </p>
         <h1 class="mx-auto max-w-4xl font-display text-5xl leading-[1.05] tracking-tight text-gray-950 md:text-7xl dark:text-white">
           Parent-teacher conferences, scheduled without the chaos.
         </h1>
         <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-300">
-          Tidal PTC lets schools publish conference times and families book them in a few clicks. It signs everyone in with
+          Tidal PTC by Archboard lets schools publish conference times and families book them in a few clicks. It signs everyone in with
           PowerSchool, handles translator requests and sends the reminders for you.
         </p>
         <div class="mt-9 flex flex-wrap justify-center gap-3">
@@ -221,7 +225,7 @@ const jsonLd = {
 
       <section id="pricing" class="scroll-mt-20 border-y border-gray-200 bg-white py-24 dark:border-gray-800 dark:bg-gray-900/40">
         <div class="mx-auto max-w-6xl px-6">
-          <h2 class="font-display text-4xl text-gray-950 md:text-5xl dark:text-white">Host it yourself, or let us</h2>
+          <h2 class="font-display text-4xl text-gray-950 md:text-5xl dark:text-white">Host it yourself, or let Archboard run it</h2>
           <p class="mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-300">Every option runs the same complete application. Prices are per year.</p>
           <div class="mt-12 grid gap-5 lg:grid-cols-3">
             {HOSTING_TIERS.map((tier) => (

@@ -12,8 +12,8 @@ export default defineConfig({
   trailingSlash: 'always',
   integrations: [
     starlight({
-      title: 'Tidal PTC',
-      description: 'Documentation for Tidal PTC, the open source parent-teacher conference scheduler with PowerSchool SSO and sync.',
+      title: 'Tidal PTC by Archboard',
+      description: 'Documentation for Tidal PTC by Archboard, the open source parent-teacher conference scheduler with PowerSchool SSO and sync.',
       logo: { light: './src/assets/archboard-light.svg', dark: './src/assets/archboard-dark.svg', alt: 'Archboard' },
       favicon: '/favicon.png',
       social: [{ icon: 'github', label: 'GitHub', href: GITHUB_URL }],
@@ -25,6 +25,7 @@ export default defineConfig({
         Footer: './src/components/Footer.astro',
       },
       head: [
+        { tag: 'meta', attrs: { name: 'author', content: 'Archboard' } },
         { tag: 'meta', attrs: { property: 'og:image', content: `${SITE_URL}/og.png` } },
         { tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
       ],
@@ -50,6 +51,7 @@ export default defineConfig({
         { label: 'Parent and guardian guide', items: [{ autogenerate: { directory: 'guardians' } }] },
         { label: 'Cloud customers', items: [{ autogenerate: { directory: 'cloud' } }] },
         { label: 'Reference', collapsed: true, items: [{ autogenerate: { directory: 'reference' } }] },
+        'contributing',
       ],
     }),
   ],

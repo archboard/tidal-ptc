@@ -105,3 +105,12 @@ nav.sidebar a[aria-current='page']:hover {
 .site-title img {
   height: 1.75rem;
 }
+
+/* "Tidal PTC by Archboard" doesn't fit one line beside the search and menu buttons on phones */
+@media (max-width: 30rem) {
+  .site-title span {
+    white-space: normal;
+    font-size: var(--sl-text-base);
+    line-height: 1.15;
+  }
+}

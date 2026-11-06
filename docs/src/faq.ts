@@ -1,5 +1,6 @@
 /** Shared by the landing page, the FAQ docs page and FAQPage JSON-LD. Answers are plain text. */
 export const faq = [
+  { q: 'Who makes Tidal PTC?', a: 'Tidal PTC is built and maintained by Archboard. It is Archboard\'s first open source project, and Archboard also runs its managed Cloud and Private dedicated hosting.' },
   { q: 'Is Tidal PTC really free?', a: 'Yes. Tidal PTC is open source under the AGPL-3.0 license, and you can self-host the complete application at no cost. Archboard also sells managed Cloud and Private dedicated hosting if you would rather not run it yourself.' },
   { q: 'Do we need PowerSchool?', a: 'PowerSchool is the supported student information system. The Tidal PTC plugin gives everyone single sign-on and syncs schools, sections, students, teachers and contacts, so there are no CSV imports or temporary passwords.' },
   { q: 'How do parents and guardians sign in?', a: 'Guardians sign in with their PowerSchool parent portal account through single sign-on. Districts can also allow password sign-in.' },

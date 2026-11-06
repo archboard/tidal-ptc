@@ -4,6 +4,22 @@ export const BILLING_URL = 'https://billing.archboard.io/get-started';
 export const GITHUB_URL = 'https://github.com/archboard/tidal-ptc';
 export const DEMO_URL = 'https://demo.tidalptc.app';
 
+/** schema.org nodes shared by the landing page and every docs page. */
+export const ARCHBOARD = {
+  '@type': 'Organization',
+  '@id': 'https://archboard.io/#organization',
+  name: 'Archboard',
+  url: 'https://archboard.io',
+  sameAs: ['https://github.com/archboard'],
+};
+export const WEBSITE = {
+  '@type': 'WebSite',
+  name: 'Tidal PTC',
+  alternateName: 'Tidal PTC by Archboard',
+  url: `${SITE_URL}/`,
+  publisher: ARCHBOARD,
+};
+
 /** Mirrors App\Enums\Product pricing in archboard-billing. Prices are per year, USD. */
 export const HOSTING_TIERS = [
   {

@@ -43,6 +43,9 @@ return [
             ],
             'client_options' => [
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
+                // Broadcasts can run inside a request, such as PowerSchool's registration callback
+                'connect_timeout' => 2,
+                'timeout' => 5,
             ],
         ],
 

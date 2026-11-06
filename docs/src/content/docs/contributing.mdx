@@ -1,0 +1,275 @@
+---
+title: Contributing
+description: How to report a bug, suggest a feature, fix the docs or translations, or contribute code to Tidal PTC, with or without coding experience or an AI assistant.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Tidal PTC is built for schools, so the people who run conferences know what it needs. You don't have to write code to contribute. This page shows the ways to help, how a contribution gets from idea to release, and how to work with an AI assistant. All of it happens on [GitHub](https://github.com/archboard/tidal-ptc), where a free account is all you need.
+
+## Pick how you want to help
+
+| You want to | Do this | Coding needed? |
+| --- | --- | --- |
+| Ask a question or share an idea you're still shaping | [Start a discussion](https://github.com/archboard/tidal-ptc/discussions) | No |
+| Report something that's broken | [Report a bug](#report-a-bug) | No |
+| Ask for something new | [Suggest a feature](#suggest-a-feature) | No |
+| Fix a mistake in these docs | [Edit a docs page](#edit-a-docs-page) | No |
+| Improve a translation | [Improve a translation](#improve-a-translation) | No |
+| Add a feature or fix a bug yourself | [Contribute code](#contribute-code), with an AI assistant if you like | Some, or an AI assistant |
+| Report a security problem | [Report it privately](#report-a-security-problem), not in a public issue | No |
+
+<Aside type="caution" title="GitHub is public">
+Everything you post on GitHub can be seen by anyone. Never include real student or family names, email addresses, PowerSchool credentials, or screenshots showing real people's information. Use made-up names, or crop or cover anything private.
+</Aside>
+
+## Report a bug
+
+1. **Check whether it happens on the [live demo](https://demo.tidalptc.app).** The demo resets every hour and its settings are read-only. If you can't reproduce the bug there, that's still useful to mention.
+2. **[Search the existing issues](https://github.com/archboard/tidal-ptc/issues?q=is%3Aissue).** If someone has already reported it, add a comment with anything new you've noticed.
+3. **[Open a new issue](https://github.com/archboard/tidal-ptc/issues/new)** with a short title that names the problem, and copy this outline into the description:
+
+```markdown
+**What happened**
+What you saw, including the exact wording of any error message.
+
+**What I expected**
+What you thought would happen instead.
+
+**How to make it happen**
+1. Sign in as a (guardian, teacher, school staff member or district admin)
+2. Go to ...
+3. Click ...
+
+**Where this happened**
+- Demo, Tidal PTC Cloud, Private dedicated, or self-hosted (Docker or VM)
+- Version, if self-hosted
+- Browser and device
+- Interface language, if it isn't English
+```
+
+A clear description matters more than technical detail. If you don't know an answer, leave it out.
+
+## Suggest a feature
+
+[Open an issue](https://github.com/archboard/tidal-ptc/issues/new) after [searching](https://github.com/archboard/tidal-ptc/issues?q=is%3Aissue) for an existing one. Describe the problem before the solution, because that leaves room for other ways to solve it:
+
+```markdown
+**Who this is for**
+For example: guardians, teachers, office staff or district admins.
+
+**The problem**
+What's hard or impossible today, and how you handle it now.
+
+**What would help**
+Your idea for solving it.
+
+**How much it matters**
+How often this comes up, and how many people or schools it affects.
+```
+
+If you're not sure what you want yet, [start a discussion](https://github.com/archboard/tidal-ptc/discussions) instead.
+
+## Edit a docs page
+
+You can do all of this in your browser:
+
+1. Select **Edit page** at the bottom of the docs page. It opens the page's source on GitHub.
+2. If GitHub asks, choose to fork the repository. This makes your own copy, so you can't break anything.
+3. Make your change. The pages are written in Markdown, which is mostly plain text: `**bold**` makes bold text and `[text](/some-page/)` makes a link. Leave anything you don't recognize as it is.
+4. Select **Commit changes**, describe the change in a few words, and select **Propose changes**.
+5. Select **Create pull request**. A maintainer will review it.
+
+## Improve a translation
+
+The interface is translated into Arabic, Chinese (Simplified), Japanese, Korean and Spanish. Each has a file in [`lang/`](https://github.com/archboard/tidal-ptc/tree/main/lang): `ar.json`, `zh-CN.json`, `ja.json`, `ko.json` and `es.json`.
+
+1. Open the file for your language on GitHub and select the pencil icon to edit it.
+2. Search for the text you want to improve. Each line is `"English text": "Translation"`.
+3. Change only the text on the right. The left side must stay exactly as it is, and words starting with a colon, like `:name`, must stay untranslated because the app fills them in.
+4. Propose the change the same way as in [Edit a docs page](#edit-a-docs-page), and say which wording you changed and why.
+
+To add a new language, [open an issue](https://github.com/archboard/tidal-ptc/issues/new) first, because it also needs a change to the code. See [Languages](/reference/languages/) for how languages are used.
+
+## Report a security problem
+
+Don't open a public issue. Email [support@archboard.io](mailto:support@archboard.io?subject=Security%20report) with what you found and how to reproduce it, and don't include any real student or family data.
+
+## Contribute code
+
+Pull requests are welcome from everyone, including people who rely on an AI assistant to write the code. You stay responsible for what you submit: try the change yourself and describe it honestly.
+
+### How a change gets merged
+
+1. **Find or open an issue.** Bug fixes, docs and translations can go straight to a pull request. For a new feature or a large change, open an issue and **wait for a maintainer to agree on the approach before building it**, so you don't spend time on something that can't be merged. Issues labeled [`good first issue`](https://github.com/archboard/tidal-ptc/labels/good%20first%20issue) or [`help wanted`](https://github.com/archboard/tidal-ptc/labels/help%20wanted) are good places to start.
+2. **Fork the repository and create a branch** from `main`.
+3. **Make one focused change,** with its [tests, translations and docs](#what-every-change-needs).
+4. **[Run the checks](#run-the-checks).**
+5. **Open a pull request into `main`** using the [outline below](#open-the-pull-request). Automated checks run on it; a maintainer may need to start them on your first pull request.
+6. **Respond to review.** A maintainer may ask for changes. Push them to the same branch.
+7. **Release.** Once merged, your change goes out with a release. Notable changes are listed in the [changelog](/reference/changelog/).
+
+### Set up your computer
+
+You need [Git](https://git-scm.com), PHP 8.5, [Composer](https://getcomposer.org), Node 24, PostgreSQL and Redis. The simplest route is [Laravel Herd](https://herd.laravel.com) on macOS or Windows, which includes PHP, Composer and Node and serves the app for you. PostgreSQL and Redis come with Herd Pro, or you can install them separately. The Docker files in this repository are for production, so don't use them for development.
+
+Clone your fork into Herd's folder (`~/Herd` by default), so the app is served at `tidal-ptc.test`:
+
+```sh
+cd ~/Herd
+gh repo fork archboard/tidal-ptc --clone   # or fork on GitHub and git clone your copy
+cd tidal-ptc
+herd secure tidal-ptc
+composer install
+npm install && npm run build
+cp .env.example .env
+php artisan key:generate
+```
+
+Create two empty PostgreSQL databases, `tidal_ptc` for the app and `tidal_ptc_test` for tests. Then set these values in `.env`:
+
+```ini
+APP_URL=https://tidal-ptc.test
+DB_DATABASE=tidal_ptc
+DB_USERNAME=your-postgres-username
+DB_PASSWORD=your-postgres-password
+
+# Placeholders. The login page fails without them, and you don't need a real PowerSchool.
+POWERSCHOOL_ADDRESS=https://powerschool.test
+POWERSCHOOL_CLIENT_ID=00000000-0000-0000-0000-000000000001
+POWERSCHOOL_CLIENT_SECRET=00000000-0000-0000-0000-000000000002
+```
+
+Next, give the tests their own settings file and load the sample data:
+
+```sh
+sed 's/^DB_DATABASE=.*/DB_DATABASE=tidal_ptc_test/' .env > .env.testing
+php artisan migrate --seed
+```
+
+<Aside type="danger" title="Create .env.testing before you run any test">
+Tests erase the database they run against. Without `.env.testing`, they use the database in `.env` and delete your local data. The file isn't in the repository, and Git ignores it, so every new copy needs this step.
+</Aside>
+
+Open `https://tidal-ptc.test` and sign in with the email and password form, using any of these accounts with the password `password`. The **Sign in with PowerSchool** button won't work locally.
+
+| Sign in as | Email | Choose under **Log in as** |
+| --- | --- | --- |
+| District admin | `admin@example.com` | Staff |
+| Teacher | `teacher@example.com` | Staff |
+| Guardian | `guardian@example.com` | Contact/Guardian |
+
+While you edit Vue or CSS files, keep `npm run dev` running so changes show up in the browser.
+
+<Aside title="Not using Herd?">
+The app needs its own host name served over HTTPS on the standard port, with `APP_URL` matching it. It builds every link as `https://<host>` with no port, so `php artisan serve` shows the login page but sends you to a broken address after you sign in. Any local web server set up this way will work.
+</Aside>
+
+### What every change needs
+
+| When you change | Also do this |
+| --- | --- |
+| Any code | Add or update a test for the new behavior and its important failure modes. |
+| A user-facing string wrapped in `__()` | Add its translation, keyed by the English string, to every `lang/*.json` file. |
+| Behavior, settings, permissions, integrations or install steps | Update the matching pages in `docs/src/content/docs/`, plus `README.md`, `INSTALLATION.md` or `INSTALLATION-VM.md` if they cover it. |
+| A screen shown in the docs | Regenerate its screenshots (below). |
+| A `#[PublishEnum]` enum | Run `npm run enums` to regenerate the JavaScript copies. |
+
+Don't add or upgrade dependencies without agreeing it on the issue first. Follow the code around your change, along with the project rules in [`AGENTS.md`](https://github.com/archboard/tidal-ptc/blob/main/AGENTS.md) and [`.ai/rules/`](https://github.com/archboard/tidal-ptc/tree/main/.ai/rules).
+
+To regenerate screenshots, run the commands below with `DEMO_MODE` off. The first one erases your local database and replaces it with the demo data. The optional name after `--` limits the run to matching screenshots.
+
+```sh
+php artisan migrate:fresh --seed --seeder=DemoSeeder
+cd docs && npm install && npx playwright install chromium
+npm run screenshots -- dashboard
+```
+
+### Run the checks
+
+These are the checks your pull request must pass. Make sure `.env.testing` [exists](#set-up-your-computer) first.
+
+```sh
+vendor/bin/pint --dirty                    # fix code formatting
+./vendor/bin/phpstan analyse --memory-limit=512M
+php artisan test --compact tests/Feature/YourTest.php   # the tests you changed
+php artisan test --compact tests/Feature/TranslationTest.php   # if you changed any text
+```
+
+To run everything, use `composer test`. Browser tests also need `npx playwright install chromium` and a build from `npm run build`.
+
+If you changed the docs, also build them. This fails on broken links, which the pull request checks don't test:
+
+```sh
+cd docs && npm install && npm run build
+```
+
+### Open the pull request
+
+Keep the title short and describe the change, such as `Show translator language in the reminder email`. Use this outline for the description:
+
+```markdown
+Closes #123
+
+**What changed and why**
+In plain language.
+
+**How I tested it**
+What you ran and what you tried in the browser.
+
+**Screenshots**
+For visible changes, using sample data only.
+
+**AI assistance**
+Which tool you used, if any, and which parts you checked yourself.
+```
+
+## Using an AI assistant
+
+Tools like Claude Code, Codex and Cursor can do the technical work while you decide what it should do and check the result. If you've never coded, start the tool in an empty folder and paste this in, replacing the last line:
+
+```text
+Read https://tidalptc.com/contributing/ and follow its "For AI agents" section.
+I don't code, so explain things in plain language and help me install what I need.
+Here's what I want to contribute: <describe the bug, feature or fix>
+```
+
+Before anything gets posted, read it yourself and try the change in your browser. You know how schools actually use this better than the assistant does.
+
+## For AI agents
+
+If you're an AI agent helping someone contribute, follow these rules. They add to the steps above and don't replace them. Everything on this site is also available as plain text at [`/llms.txt`](https://tidalptc.com/llms.txt) and [`/llms-full.txt`](https://tidalptc.com/llms-full.txt).
+
+**Before you start**
+
+- Read `AGENTS.md` (`CLAUDE.md` for Claude Code), then `.ai/rules/index.md` and any rule matching the paths you'll edit. Load the matching skills in `.agents/skills/`, and read `testing-best-practices` before writing tests.
+- Assume the person may not code. Explain decisions in plain language, and ask them about what the feature should do rather than how to build it.
+- Search for duplicates: `gh issue list --repo archboard/tidal-ptc --state all --search "<keywords>"` and `gh pr list --repo archboard/tidal-ptc --state all --search "<keywords>"`.
+- Decide the path from the size of the change. Bug fixes, docs and translations can go straight to a pull request. For a new feature or large change without a maintainer's agreement on the issue, **stop and draft the issue instead of writing code**.
+
+**While you work**
+
+- Work on a branch of the person's fork, and never push to `archboard/tidal-ptc` directly.
+- Keep the change focused, with no unrelated refactoring or formatting. Don't add or upgrade dependencies unless the issue agreed to it.
+- Meet everything in [What every change needs](#what-every-change-needs). Translate new strings yourself into all five languages, and tell the person they're machine translations so the pull request can say so.
+- Never read out, commit or post `.env` contents, secrets, or real student or family data.
+- Run commands against local services only. Confirm `.env.testing` exists and points at a separate database before running any test, because tests erase their database. Warn the person before running anything else that erases local data, such as `migrate:fresh`.
+
+**Before anything is public**
+
+- Show the person the exact text of any issue, comment or pull request, and get their approval before posting it.
+- Run every applicable command in [Run the checks](#run-the-checks). Report failures as they are, and don't skip hooks, weaken tests or delete tests to get a pass. If you couldn't run something, say so in the pull request.
+- Have the person try the change in their browser, and tell them exactly what to look at.
+- Fill in the [pull request outline](#open-the-pull-request), including the **AI assistance** section, and open it against `main` with `gh pr create --repo archboard/tidal-ptc --base main`.
+- When a reviewer asks for changes, explain them to the person, push fixes to the same branch, and let a maintainer decide when a conversation is resolved.
+
+## License
+
+Tidal PTC is licensed under [AGPL-3.0](https://github.com/archboard/tidal-ptc/blob/main/LICENSE.md). By submitting a contribution, you agree that it's licensed under the same terms.
+
+## Related
+
+- [Overview](/getting-started/overview/)
+- [Concepts](/getting-started/concepts/)
+- [Languages](/reference/languages/)
+- [Changelog](/reference/changelog/)
