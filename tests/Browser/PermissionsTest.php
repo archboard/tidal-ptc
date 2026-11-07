@@ -1,5 +1,6 @@
 <?php
 
+use Pest\Browser\Execution;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
 beforeEach(function () {
@@ -26,10 +27,13 @@ it('grants all school permissions and reloads the permission state', function ()
 it('revokes a single school permission', function () {
     Bouncer::scope()->onceTo($this->school->id, fn () => Bouncer::allow($this->subject)->to('edit permissions'));
 
-    visit("/users/{$this->subject->id}/permissions")
-        ->click('Edit user permissions')
-        ->waitForEvent('networkidle')
-        ->assertNoJavaScriptErrors();
+    $page = visit("/users/{$this->subject->id}/permissions")
+        ->click('Edit user permissions');
 
-    expect(Bouncer::scope()->onceTo($this->school->id, fn () => $this->subject->can('edit permissions')))->toBeFalse();
+    // ponytail: the checkbox flips before the PUT and nothing visible marks its end, so retry the check; each retry lets the in-process server run
+    Execution::instance()->waitForExpectation(
+        fn () => expect(Bouncer::scope()->onceTo($this->school->id, fn () => $this->subject->can('edit permissions')))->toBeFalse(),
+    );
+
+    $page->assertNoJavaScriptErrors();
 });

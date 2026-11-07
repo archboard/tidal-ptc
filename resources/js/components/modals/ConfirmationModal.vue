@@ -64,7 +64,8 @@ export default defineComponent({
     const modal = ref(null)
     const confirmed = () => {
       emit('confirmed', () => {
-        modal.value.close()
+        // ponytail: the caller's reload can unmount this modal before it invokes the callback
+        modal.value?.close()
       })
     }
 

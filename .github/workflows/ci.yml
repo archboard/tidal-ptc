@@ -127,7 +127,8 @@ jobs:
   deploy:
     name: Deploy
     needs: [phpstan, pint, pest]
-    # if: startsWith(github.ref, 'refs/tags/v')
+    # Pull requests run this workflow too and must never deploy
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     # `if` can't read secrets directly, so each step checks its hook through env and skips when unset (e.g. on forks)
     env:

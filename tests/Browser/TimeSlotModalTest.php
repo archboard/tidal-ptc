@@ -23,7 +23,8 @@ it('edits a time slot through the calendar modal', function () {
     openTimeSlotModal()
         ->fill('internal:role=dialog >> internal:label="Location"s', 'Room 12')
         ->click('internal:role=dialog >> internal:text="Save"s')
-        ->waitForEvent('networkidle')
+        // ponytail: the modal closes only after the PUT finishes; networkidle can return before the server handles it
+        ->assertDontSee('Edit time slot')
         ->assertNoJavaScriptErrors();
 
     expect($this->slot->fresh()->location)->toBe('Room 12');
