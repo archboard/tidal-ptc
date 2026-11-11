@@ -25,6 +25,7 @@ export const HOSTING_TIERS = [
   {
     name: 'Self-hosted',
     price: 'Free',
+    note: 'Want a hand? Archboard installs it on your server for a one-time $250.',
     blurb: 'Run Tidal PTC on your own servers. Your IT team installs, updates and backs it up.',
     features: ['The complete application, AGPL-3.0', 'Docker or VM install', 'Community support on GitHub'],
     cta: 'Read the install guide',
