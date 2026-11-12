@@ -5,6 +5,7 @@ use App\Enums\Role;
 use App\Enums\UserType;
 use App\Models\School;
 use App\Models\Section;
+use App\Models\Student;
 use App\Models\Tenant;
 use App\Models\TimeSlot;
 use App\Models\User;
@@ -101,6 +102,7 @@ it('seeds the demo district', function () {
         ->and($guardian->user_type)->toBe(UserType::guardian)
         ->and($guardian->students()->distinct()->count('school_id'))->toBe(2)
         ->and($guardian->students()->count())->toBe(3)
+        ->and(Student::query()->where('tenant_id', $tenant->id)->where(fn ($query) => $query->whereNull('student_number')->orWhereNull('grade_level'))->exists())->toBeFalse()
         ->and($teachers)->toHaveCount(16)
         ->and($teachers->map(fn (User $teacher) => $teacher->timeSlots()->count())->unique()->all())->toBe([40]);
 });
