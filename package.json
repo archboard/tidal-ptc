@@ -15,7 +15,7 @@
     "@tailwindcss/vite": "^4.3.3",
     "@vitejs/plugin-vue": "^6.0",
     "@vueuse/core": "^15.0",
-    "axios": "^1.20.0",
+    "axios": "^1.21.1",
     "cross-env": "^10.1",
     "dayjs": "^1.11.23",
     "just-clone": "^6.2.0",
@@ -35,7 +35,7 @@
     "pusher-js": "^8.6.0",
     "qs": "^6.16.0",
     "tailwindcss": "^4.3.3",
-    "vite": "^8.3.3",
+    "vite": "^8.3.8",
     "vue": "^3.5.43"
   },
   "dependencies": {
