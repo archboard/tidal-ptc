@@ -533,5 +533,11 @@
     "Could not connect to PowerSchool. Make sure the plugin is installed and enabled, then try again.": "تعذّر الاتصال بـ PowerSchool. تأكد من تثبيت الإضافة وتفعيلها، ثم حاول مرة أخرى.",
     "Could not connect to the SIS. Check the configuration and try again.": "تعذّر الاتصال بنظام معلومات الطلاب. تحقق من الإعدادات وحاول مرة أخرى.",
     "Choose the schools your district will use": "اختر المدارس التي ستستخدمها منطقتك",
-    "ClassLink sign-in failed.": "فشل تسجيل الدخول عبر ClassLink."
+    "ClassLink sign-in failed.": "فشل تسجيل الدخول عبر ClassLink.",
+    "Enable ClassLink sign-in": "تمكين تسجيل الدخول عبر ClassLink",
+    "Optional. Registers this site with the sign-in broker using your license key.": "اختياري. يسجّل هذا الموقع لدى وسيط تسجيل الدخول باستخدام مفتاح الترخيص الخاص بك.",
+    "License key": "مفتاح الترخيص",
+    "ClassLink sign-in is enabled.": "تم تمكين تسجيل الدخول عبر ClassLink.",
+    "ClassLink registration failed: :reason": "فشل تسجيل ClassLink: :reason",
+    "could not reach the auth broker": "تعذر الاتصال بوسيط المصادقة"
 }

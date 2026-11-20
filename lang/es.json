@@ -533,5 +533,11 @@
     "Could not connect to PowerSchool. Make sure the plugin is installed and enabled, then try again.": "No se pudo conectar con PowerSchool. Asegúrese de que el complemento esté instalado y habilitado, y vuelva a intentarlo.",
     "Could not connect to the SIS. Check the configuration and try again.": "No se pudo conectar con el SIS. Revise la configuración y vuelva a intentarlo.",
     "Choose the schools your district will use": "Elija las escuelas que usará su distrito",
-    "ClassLink sign-in failed.": "Error al iniciar sesión con ClassLink."
+    "ClassLink sign-in failed.": "Error al iniciar sesión con ClassLink.",
+    "Enable ClassLink sign-in": "Habilitar inicio de sesión con ClassLink",
+    "Optional. Registers this site with the sign-in broker using your license key.": "Opcional. Registra este sitio en el intermediario de inicio de sesión con su clave de licencia.",
+    "License key": "Clave de licencia",
+    "ClassLink sign-in is enabled.": "El inicio de sesión con ClassLink está habilitado.",
+    "ClassLink registration failed: :reason": "Error en el registro de ClassLink: :reason",
+    "could not reach the auth broker": "no se pudo conectar con el intermediario de autenticación"
 }

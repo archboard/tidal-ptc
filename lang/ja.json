@@ -533,5 +533,11 @@
     "Could not connect to PowerSchool. Make sure the plugin is installed and enabled, then try again.": "PowerSchoolに接続できませんでした。プラグインがインストールされ有効になっていることを確認してから、もう一度お試しください。",
     "Could not connect to the SIS. Check the configuration and try again.": "SISに接続できませんでした。設定を確認して、もう一度お試しください。",
     "Choose the schools your district will use": "学区で使用する学校を選択してください",
-    "ClassLink sign-in failed.": "ClassLink でのサインインに失敗しました。"
+    "ClassLink sign-in failed.": "ClassLink でのサインインに失敗しました。",
+    "Enable ClassLink sign-in": "ClassLinkサインインを有効にする",
+    "Optional. Registers this site with the sign-in broker using your license key.": "任意。ライセンスキーを使用して、このサイトをサインインブローカーに登録します。",
+    "License key": "ライセンスキー",
+    "ClassLink sign-in is enabled.": "ClassLinkサインインが有効になりました。",
+    "ClassLink registration failed: :reason": "ClassLinkの登録に失敗しました: :reason",
+    "could not reach the auth broker": "認証ブローカーに接続できませんでした"
 }

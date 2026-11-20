@@ -533,5 +533,11 @@
     "Could not connect to PowerSchool. Make sure the plugin is installed and enabled, then try again.": "PowerSchool에 연결할 수 없습니다. 플러그인이 설치되어 활성화되어 있는지 확인한 후 다시 시도하세요.",
     "Could not connect to the SIS. Check the configuration and try again.": "SIS에 연결할 수 없습니다. 구성을 확인하고 다시 시도하세요.",
     "Choose the schools your district will use": "학군에서 사용할 학교를 선택하세요",
-    "ClassLink sign-in failed.": "ClassLink 로그인에 실패했습니다."
+    "ClassLink sign-in failed.": "ClassLink 로그인에 실패했습니다.",
+    "Enable ClassLink sign-in": "ClassLink 로그인 사용",
+    "Optional. Registers this site with the sign-in broker using your license key.": "선택 사항. 라이선스 키를 사용하여 이 사이트를 로그인 브로커에 등록합니다.",
+    "License key": "라이선스 키",
+    "ClassLink sign-in is enabled.": "ClassLink 로그인이 활성화되었습니다.",
+    "ClassLink registration failed: :reason": "ClassLink 등록 실패: :reason",
+    "could not reach the auth broker": "인증 브로커에 연결할 수 없습니다"
 }

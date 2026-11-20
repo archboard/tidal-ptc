@@ -54,6 +54,21 @@
                 required
               />
             </div>
+            <div v-if="!isCloud" class="md:col-span-6">
+              <CheckboxField
+                v-model="inertiaForm.enable_classlink"
+                :label="__('Enable ClassLink sign-in')"
+                :help-text="__('Optional. Registers this site with the sign-in broker using your license key.')"
+              />
+            </div>
+            <div v-if="inertiaForm.enable_classlink" class="md:col-span-6">
+              <InputField
+                v-model="inertiaForm.license"
+                :error="inertiaForm.errors.license"
+                :label="__('License key')"
+                required
+              />
+            </div>
           </div>
         </CardPadding>
         <CardAction>
@@ -74,6 +89,7 @@ import CardPadding from '@/components/CardPadding.vue'
 import CardHeader from '@/components/CardHeader.vue'
 import AppButton from '@/components/AppButton.vue'
 import CardAction from '@/components/CardAction.vue'
+import CheckboxField from '@/components/forms/fields/CheckboxField.vue'
 import InputField from '@/components/forms/fields/InputField.vue'
 import Installation from '@/layouts/Installation.vue'
 import SimpleAlert from '@/components/alerts/SimpleAlert.vue'
@@ -89,6 +105,8 @@ const props = defineProps({
 
 const inertiaForm = useForm({
   name: props.name ?? '',
+  enable_classlink: false,
+  license: '',
   domain: props.domain ?? '',
   sis_config: {
     url: props.sisConfig?.url ?? '',
