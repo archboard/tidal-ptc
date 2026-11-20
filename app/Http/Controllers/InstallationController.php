@@ -6,13 +6,10 @@ use App\Events\PowerSchoolPluginRegistered;
 use App\Jobs\SyncSchools;
 use App\Models\Tenant;
 use App\Rules\ValidLicense;
-use Illuminate\Http\Client\ConnectionException;
+use App\Services\AuthBrokerRegistration;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Inertia\Response;
 
@@ -68,7 +65,7 @@ class InstallationController extends Controller
         $success = __('Installation complete. Sync has been started.');
 
         if ($enableClassLink) {
-            $error = $this->registerWithBroker($request, $tenant->license);
+            $error = app(AuthBrokerRegistration::class)->register($tenant->license, $request->getSchemeAndHttpHost());
 
             $error ? session()->flash('error', $error) : $success .= ' '.__('ClassLink sign-in is enabled.');
         }
@@ -76,32 +73,6 @@ class InstallationController extends Controller
         session()->flash('success', $success);
 
         return to_route('install.user');
-    }
-
-    /**
-     * Proves control of this origin to the auth broker; a failure never blocks the install.
-     *
-     * @return string|null The user-facing error, or null when registered.
-     */
-    protected function registerWithBroker(Request $request, string $license): ?string
-    {
-        $token = Str::random(48);
-        Cache::put('auth_broker.challenge', $token, now()->addMinutes(10));
-
-        try {
-            $response = Http::acceptJson()->timeout(15)->post(
-                config('services.auth_broker.url').'/api/apps/'.config('services.auth_broker.app').'/registrations',
-                ['license' => $license, 'origin' => $request->getSchemeAndHttpHost(), 'token' => $token],
-            );
-        } catch (ConnectionException) {
-            return __('ClassLink registration failed: :reason', ['reason' => __('could not reach the auth broker')]);
-        } finally {
-            Cache::forget('auth_broker.challenge');
-        }
-
-        return $response->successful()
-            ? null
-            : __('ClassLink registration failed: :reason', ['reason' => Str::limit(trim($response->body()), 200)]);
     }
 
     /**

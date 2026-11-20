@@ -539,5 +539,12 @@
     "License key": "许可证密钥",
     "ClassLink sign-in is enabled.": "ClassLink 登录已启用。",
     "ClassLink registration failed: :reason": "ClassLink 注册失败：:reason",
-    "could not reach the auth broker": "无法连接到身份验证代理"
+    "could not reach the auth broker": "无法连接到身份验证代理",
+    "ClassLink": "ClassLink",
+    "Connected ClassLink tenant: :id": "已连接的 ClassLink 租户：:id",
+    "Not connected": "未连接",
+    "Connect ClassLink": "连接 ClassLink",
+    "Reconnect ClassLink": "重新连接 ClassLink",
+    "Sign in with ClassLink": "使用 ClassLink 登录",
+    "Add your license key before connecting ClassLink.": "连接 ClassLink 之前请先添加许可证密钥。"
 }

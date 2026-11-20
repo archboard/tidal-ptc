@@ -36,6 +36,7 @@ class TenantSettingsController extends Controller
                 'sis_provider' => $tenant->sis_provider,
                 'allow_password_auth' => $tenant->allow_password_auth,
                 'allow_oidc_login' => $tenant->allow_oidc_login,
+                'classlink_tenant_id' => $tenant->classlink_tenant_id,
             ],
             'isCloud' => config('app.cloud'),
             'schoolLimit' => config('app.cloud') ? $tenant->school_limit : null,

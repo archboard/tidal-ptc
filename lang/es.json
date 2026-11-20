@@ -539,5 +539,12 @@
     "License key": "Clave de licencia",
     "ClassLink sign-in is enabled.": "El inicio de sesión con ClassLink está habilitado.",
     "ClassLink registration failed: :reason": "Error en el registro de ClassLink: :reason",
-    "could not reach the auth broker": "no se pudo conectar con el intermediario de autenticación"
+    "could not reach the auth broker": "no se pudo conectar con el intermediario de autenticación",
+    "ClassLink": "ClassLink",
+    "Connected ClassLink tenant: :id": "Inquilino de ClassLink conectado: :id",
+    "Not connected": "No conectado",
+    "Connect ClassLink": "Conectar ClassLink",
+    "Reconnect ClassLink": "Reconectar ClassLink",
+    "Sign in with ClassLink": "Iniciar sesión con ClassLink",
+    "Add your license key before connecting ClassLink.": "Agregue su clave de licencia antes de conectar ClassLink."
 }

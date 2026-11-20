@@ -3,6 +3,7 @@
 use App\Enums\UserType;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 
 function classLinkToken(array $claims = []): string
 {
@@ -67,6 +68,7 @@ it('forbids starting a connect without permission', function () {
 });
 
 it('lets admins start a connect', function () {
+    $this->asCloud();
     logIn();
     fullPermissions();
     $this->get(route('classlink.connect'))->assertRedirectContains('broker.test');
@@ -147,4 +149,68 @@ it('serves the cached broker challenge', function () {
 
 it('404s the challenge without a cached token', function () {
     $this->get('/.well-known/auth-broker-challenge/tidal-ptc')->assertNotFound();
+});
+
+it('tells the login page whether ClassLink is connected', function (?string $id, bool $expected) {
+    $this->tenant->update(['classlink_tenant_id' => $id]);
+
+    $this->get('/login')->assertInertia(fn ($page) => $page->where('tenant.allow_classlink_login', $expected));
+})->with([['district-1', true], [null, false]]);
+
+it('registers a self-hosted origin before connecting', function () {
+    Http::fake(['https://broker.test/api/apps/tidal-ptc/registrations' => Http::response([], 201)]);
+    $this->asSelfHosted();
+    $license = fake()->uuid();
+    $this->tenant->update(['license' => $license]);
+    logIn();
+    fullPermissions();
+
+    $this->get(route('classlink.connect'))->assertRedirectContains('broker.test/tidal-ptc/classlink/start');
+
+    Http::assertSent(fn ($request) => $request['license'] === $license
+        && $request['origin'] === request()->getSchemeAndHttpHost());
+});
+
+it('does not connect when the self-hosted registration fails', function () {
+    Http::fake(['https://broker.test/*' => Http::response('Invalid license', 422)]);
+    $this->asSelfHosted();
+    $license = fake()->uuid();
+    $this->tenant->update(['license' => $license]);
+    logIn();
+    fullPermissions();
+
+    $this->get(route('classlink.connect'))
+        ->assertRedirect(route('settings.tenant.edit'))
+        ->assertSessionHas('error', fn ($error) => str_contains($error, 'Invalid license'));
+});
+
+it('requires a license to connect on a self-hosted install', function () {
+    Http::fake();
+    $this->asSelfHosted();
+    $this->tenant->update(['license' => null]);
+    logIn();
+    fullPermissions();
+
+    $this->get(route('classlink.connect'))
+        ->assertRedirect(route('settings.tenant.edit'))
+        ->assertSessionHas('error');
+    Http::assertNothingSent();
+});
+
+it('skips registration when connecting on cloud', function () {
+    Http::fake();
+    $this->asCloud();
+    logIn();
+    fullPermissions();
+
+    $this->get(route('classlink.connect'))->assertRedirectContains('broker.test');
+    Http::assertNothingSent();
+});
+
+it('shares the connected ClassLink tenant on the settings page', function () {
+    logIn();
+    fullPermissions();
+
+    $this->get(route('settings.tenant.edit'))
+        ->assertInertia(fn ($page) => $page->where('tenant.classlink_tenant_id', 'district-1'));
 });

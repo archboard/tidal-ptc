@@ -152,6 +152,23 @@
         </CardAction>
       </CardWrapper>
 
+      <CardWrapper>
+        <CardPadding>
+          <CardHeader>{{ __('ClassLink') }}</CardHeader>
+          <HelpText>
+            {{ tenant.classlink_tenant_id ? __('Connected ClassLink tenant: :id', { id: tenant.classlink_tenant_id }) : __('Not connected') }}
+          </HelpText>
+          <SimpleAlert v-if="$page.props.errors.email" level="error" class="mt-4">
+            {{ $page.props.errors.email }}
+          </SimpleAlert>
+        </CardPadding>
+        <CardAction>
+          <AppButton component="a" href="/auth/classlink/connect" color="white">
+            {{ tenant.classlink_tenant_id ? __('Reconnect ClassLink') : __('Connect ClassLink') }}
+          </AppButton>
+        </CardAction>
+      </CardWrapper>
+
       <form @submit.prevent="saveSchools">
         <CardWrapper>
           <CardPadding>

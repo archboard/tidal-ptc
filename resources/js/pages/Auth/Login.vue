@@ -20,7 +20,13 @@
         </a>
       </span>
 
-      <BorderSeparator v-if="tenant.allow_oidc_login && tenant.allow_password_auth" class="my-6" background="bg-gray-50 dark:bg-black">
+      <span v-if="tenant.allow_classlink_login" class="rounded-md shadow-xs self-start flex w-full" :class="{ 'mt-3': tenant.allow_oidc_login }">
+        <a href="/auth/classlink/oauth" class="px-4 py-3 text-base leading-6 flex w-full border border-transparent font-medium rounded-md focus:outline-hidden ease-in-out duration-150 items-center justify-center text-white bg-[#0b6cc4] hover:bg-[#095aa4] focus:ring-3 focus:ring-[#2f8ae0] focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition">
+          {{ __('Sign in with ClassLink') }}
+        </a>
+      </span>
+
+      <BorderSeparator v-if="(tenant.allow_oidc_login || tenant.allow_classlink_login) && tenant.allow_password_auth" class="my-6" background="bg-gray-50 dark:bg-black">
         {{ __('Or continue with') }}
       </BorderSeparator>
     </div>
@@ -68,7 +74,7 @@
       </AppFieldset>
     </form>
 
-    <p v-if="!$page.props.demo && !tenant.allow_password_auth && !tenant.allow_oidc_login">
+    <p v-if="!$page.props.demo && !tenant.allow_password_auth && !tenant.allow_oidc_login && !tenant.allow_classlink_login">
       {{ __('No authentication methods are available.') }}
     </p>
   </Layout>
