@@ -51,6 +51,7 @@ export default defineConfig({
         { label: 'Parent and guardian guide', items: [{ autogenerate: { directory: 'guardians' } }] },
         { label: 'Cloud customers', items: [{ autogenerate: { directory: 'cloud' } }] },
         { label: 'Reference', collapsed: true, items: [{ autogenerate: { directory: 'reference' } }] },
+        { label: 'Legal', collapsed: true, items: [{ autogenerate: { directory: 'legal' } }] },
         'contributing',
       ],
     }),

@@ -1,0 +1,56 @@
+---
+title: Data sharing
+description: Who Tidal PTC data is shared with. Archboard does not sell or share district data; the district controls every integration.
+sidebar:
+  order: 2
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+_Effective November 20, 2026_
+
+This page explains who can receive data from a Tidal PTC site that Archboard hosts.
+
+<Aside type="note" title="The short version">
+Archboard does not sell, rent, trade or share your district's data with anyone. Data only leaves your site through integrations your district sets up and controls.
+</Aside>
+
+## What Archboard shares
+
+Nothing. Archboard does not access the data in your site (see the [privacy policy](/legal/privacy/)), and does not sell or share it with advertisers, data brokers, researchers or any other third party.
+
+## Infrastructure providers
+
+The servers, storage and backups that run your site are rented from infrastructure providers. They store the encrypted backups and the disks your site runs on, but they do not receive your data for their own use and are bound by their own security and confidentiality commitments.
+
+Cloud sites are hosted in the US East region. Private dedicated sites are hosted in the region your district chooses.
+
+## Integrations your district controls
+
+Your district decides which of these to turn on, and each one exchanges data directly between your site and a service your district has an account with:
+
+| Integration | What is exchanged | Controlled by |
+| --- | --- | --- |
+| [PowerSchool](/integrations/powerschool/) | Sign-in, and syncing schools, staff, students and contacts into Tidal PTC | Your district's PowerSchool server |
+| [ClassLink](/integrations/classlink/) | Sign-in | Your district's ClassLink account |
+| [Email](/integrations/email/) | Booking confirmations, changes and reminders sent to staff and families | The SMTP server your district enters in tenant settings |
+| Online meetings | The video call link a teacher adds to a booking | The meeting service the teacher chooses |
+
+Turning off an integration, or removing its credentials, stops data flowing through it.
+
+## Within your district
+
+Inside Tidal PTC, what each person can see is set by your district through [users and permissions](/district-admin/users-and-permissions/). For example, parents and guardians only see their own students and bookings, and staff abilities come from per-school permissions.
+
+## Legal requests
+
+If Archboard is legally compelled to disclose data, for example by a court order, we disclose only what is required and notify your district first unless the law forbids it.
+
+## If Archboard changes hands
+
+If Archboard is acquired or merges with another company, this policy continues to apply to your district's data, and your district will be notified before any change to how it is handled.
+
+## Related
+
+- [Privacy policy](/legal/privacy/)
+- [Terms of service](/legal/terms/)
