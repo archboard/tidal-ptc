@@ -4,7 +4,8 @@
   "scripts": {
     "enums": "php artisan publish:enums-to-javascript",
     "build": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "logo-image": "node scripts/logo-image.mjs"
   },
   "devDependencies": {
     "@headlessui-float/vue": "^0.15.1",
