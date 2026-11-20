@@ -38,6 +38,7 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
  * @property string|null $subscription_expires_at
  * @property string|null $license
  * @property string|null $timezone
+ * @property string|null $classlink_tenant_id
  * @property Sis|null $sis_provider
  * @property Collection<array-key, mixed> $smtp_config
  * @property CarbonImmutable|null $created_at
