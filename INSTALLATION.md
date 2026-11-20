@@ -277,6 +277,8 @@ Clone the repository into `/opt/tidal-ptc` and run the setup script there (or pa
 
 Visit `https://ptc.example.org/install`. The installer walks you through downloading the PowerSchool plugin, entering the tenant details and creating the first administrator.
 
+Optional: tick **Enable ClassLink sign-in** on the install page and enter your license key to let people sign in with ClassLink. The site must be reachable over HTTPS from the internet, and `/.well-known/auth-broker-challenge/tidal-ptc` must not be blocked or redirected by your proxy.
+
 ## 5. Day-to-day operations
 
 | Task | Command (from `/opt/tidal-ptc`) |

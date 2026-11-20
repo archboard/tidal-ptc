@@ -88,6 +88,10 @@ The PowerSchool sign-in routes show "SIS is not configured. Please contact your 
 
 The login page shows this when both password sign-in and PowerSchool sign-in are turned off for the tenant. Sign in with the **Tidal PTC** link in PowerSchool's header instead, then turn one on under **Allow password authentication** or **Allow OpenID Connect login** on the [tenant settings](/district-admin/tenant-settings/) page.
 
+## ClassLink sign-in or registration fails
+
+"ClassLink registration failed" on a self-hosted install usually means Archboard's sign-in service couldn't fetch `https://<your domain>/.well-known/auth-broker-challenge/tidal-ptc`. Make sure the site is reachable over HTTPS from the internet and that no proxy or firewall blocks or redirects that path. See [ClassLink](/integrations/classlink/#troubleshooting).
+
 ## `/install` returns 404
 
 The installer closes once the tenant is installed and has users. Manage the tenant from the [tenant settings](/district-admin/tenant-settings/) page instead.

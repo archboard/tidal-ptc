@@ -31,14 +31,14 @@ type Shot = {
   path: string;
   /** Runs after the page loads, e.g. to open a modal or follow the first row. */
   action?: (page: Page) => Promise<void>;
-  /** Swaps the tenant to PowerSchool sign-in only for this shot. DemoSeeder has password on and OIDC off. */
+  /** Swaps the tenant to PowerSchool and ClassLink sign-in only for this shot. DemoSeeder has password on and OIDC off. */
   ssoOnly?: boolean;
 };
 
 /** Needs the app's PHP CLI against the same database the target URL uses. */
 const setSsoOnly = (ssoOnly: boolean) => execFileSync('php', [
   'artisan', 'tinker', '--execute',
-  `App\\Models\\Tenant::query()->update(["allow_oidc_login" => ${ssoOnly}, "allow_password_auth" => ${!ssoOnly}]);`,
+  `App\\Models\\Tenant::query()->update(["allow_oidc_login" => ${ssoOnly}, "allow_password_auth" => ${!ssoOnly}, "classlink_tenant_id" => ${ssoOnly ? '"demo-district"' : 'null'}]);`,
 ], { cwd: new URL('../../', import.meta.url) });
 
 /** Accepting the timezone prompt while browsing locally changes a demo user's timezone, which makes the prompt cover their shots. */

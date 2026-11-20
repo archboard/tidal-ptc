@@ -137,6 +137,12 @@ For a manual VM install, set these in `/var/www/tidal-ptc/.env`:
 
 Leave `TRUSTED_PROXIES` unset on a VM: Nginx talks to PHP-FPM directly over FastCGI, so the app already sees the real client IP and HTTPS.
 
+## ClassLink sign-in
+
+| Variable | Value |
+| --- | --- |
+| `AUTH_BROKER_URL` | Optional. Defaults to Archboard's hosted sign-in service, which [ClassLink sign-in](/integrations/classlink/) uses. Only change it if Archboard tells you to. |
+
 ## Applying a change
 
 Config is cached, so a change to `.env` does nothing until you apply it.
