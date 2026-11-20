@@ -80,3 +80,9 @@ it('skips staff without a users_dcid when syncing school staff', function () {
 
     expect(User::where('school_id', $school->id)->pluck('email')->all())->toBe(['ada@example.com']);
 });
+
+it('stores and finds a school by a non-numeric sis id', function () {
+    $school = School::factory()->for(test()->tenant)->create(['sis_id' => 'a1b2-c3']);
+
+    expect(test()->tenant->getSchoolFromSisId('a1b2-c3')->is($school))->toBeTrue();
+});

@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $tenant_id
  * @property int $school_id
  * @property string $name
- * @property int $sis_id
+ * @property string $sis_id
  * @property string|null $course_number
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at

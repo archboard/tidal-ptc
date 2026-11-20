@@ -341,7 +341,7 @@ final class Tenant extends TenantBase
         return $this->sis_provider?->getProvider($this);
     }
 
-    public function getSchoolFromSisId(School|int|string $sisId): School
+    public function getSchoolFromSisId(School|string $sisId): School
     {
         if ($sisId instanceof School) {
             return $sisId;

@@ -47,7 +47,7 @@ class PowerSchoolProvider implements SisProvider
             ->sortBy('school_number')
             ->map(fn ($school) => [
                 'tenant_id' => $this->tenant->id,
-                'sis_id' => $school['id'],
+                'sis_id' => (string) $school['id'],
                 'name' => $school['name'],
                 'school_number' => $school['school_number'],
                 'low_grade' => $school['low_grade'],
@@ -117,7 +117,7 @@ class PowerSchoolProvider implements SisProvider
         $school = $this->tenant
             ->schools()
             ->updateOrCreate(
-                ['sis_id' => $sisSchool['id']],
+                ['sis_id' => (string) $sisSchool['id']],
                 [
                     'name' => $sisSchool['name'],
                     'school_number' => $sisSchool['school_number'],
@@ -274,7 +274,7 @@ class PowerSchoolProvider implements SisProvider
         while ($results = $builder->paginate()) {
             // Get courses that exist already
             $courses = $this->tenant->courses()
-                ->whereIn('sis_id', $results->collect()->pluck('course_id'))
+                ->whereIn('sis_id', $results->collect()->pluck('course_id')->map(fn ($id) => (string) $id))
                 ->pluck('id', 'sis_id');
             $staff = $school->users()
                 ->whereIn('school_user.staff_id', $results->collect()->pluck('staff_id'))
@@ -488,7 +488,7 @@ class PowerSchoolProvider implements SisProvider
 
         $studentIds = $this->tenant
             ->students()
-            ->whereIn('sis_id', $students->keys())
+            ->whereIn('sis_id', $students->keys()->map(fn ($id) => (string) $id))
             ->pluck('id', 'sis_id');
 
         $sync = $studentIds->mapWithKeys(fn ($id, $dcid) => [
@@ -533,6 +533,7 @@ class PowerSchoolProvider implements SisProvider
                 $enrollments
                     ->filter(fn (array $enrollment) => ! $enrollment['dropped'])
                     ->pluck('student_id')
+                    ->map(fn ($id) => (string) $id)
             )
             ->pluck('id');
 

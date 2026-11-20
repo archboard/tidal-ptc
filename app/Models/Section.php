@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property int $school_id
  * @property int $course_id
  * @property int $user_id
- * @property int $sis_id
+ * @property string $sis_id
  * @property string|null $section_number
  * @property string|null $expression
  * @property string|null $external_expression
