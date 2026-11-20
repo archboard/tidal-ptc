@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\ActivityEvent;
 use App\Enums\Role;
 use App\Enums\Sis;
+use App\Jobs\SyncBrokerOrigins;
 use App\SisProviders\SisProvider;
 use Carbon\CarbonImmutable;
 use Database\Factories\TenantFactory;
@@ -99,6 +100,40 @@ final class Tenant extends TenantBase
         self::creating(function (Tenant $tenant) {
             $tenant->code ??= self::generateCode();
         });
+
+        self::saved(function (Tenant $tenant) {
+            if ($tenant->wasRecentlyCreated || $tenant->wasChanged(['domain', 'custom_domain', 'license'])) {
+                $tenant->syncBrokerOrigins($tenant->getPrevious() + $tenant->getAttributes());
+            }
+        });
+
+        self::deleted(fn (Tenant $tenant) => $tenant->syncBrokerOrigins($tenant->getAttributes(), true));
+    }
+
+    /**
+     * Registers this tenant's origins with the auth broker, and unregisters any it no longer uses.
+     * Cloud only, and only once the broker is configured.
+     *
+     * @param  array<string, mixed>  $before  Attributes as they were before the save.
+     */
+    private function syncBrokerOrigins(array $before, bool $deleted = false): void
+    {
+        $broker = config('services.auth_broker');
+
+        if (! config('app.cloud') || ! $broker['url'] || ! $broker['machine_token'] || ! $this->license) {
+            return;
+        }
+
+        $origins = fn (array $attributes): array => collect([$attributes['domain'] ?? null, $attributes['custom_domain'] ?? null])
+            ->filter()
+            ->map(fn (string $host) => "https://{$host}")
+            ->values()
+            ->all();
+
+        $current = $deleted ? [] : $origins($this->getAttributes());
+
+        SyncBrokerOrigins::dispatch($this->license, $current, array_values(array_diff($origins($before), $current)))
+            ->afterCommit();
     }
 
     /**

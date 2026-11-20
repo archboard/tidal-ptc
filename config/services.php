@@ -37,7 +37,7 @@ return [
 
     // Central SSO broker (ClassLink); machine_token is set on the cloud env only
     'auth_broker' => [
-        'url' => env('AUTH_BROKER_URL'),
+        'url' => env('AUTH_BROKER_URL', 'https://broker.archboard.app'),
         'app' => 'tidal-ptc',
         // Pinned Ed25519 keys (kid => base64 public key)
         'public_keys' => [
