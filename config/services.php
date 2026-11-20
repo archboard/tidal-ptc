@@ -35,4 +35,15 @@ return [
         'url' => env('BILLING_URL'),
     ],
 
+    // Central SSO broker (ClassLink); machine_token is set on the cloud env only
+    'auth_broker' => [
+        'url' => env('AUTH_BROKER_URL'),
+        'app' => 'tidal-ptc',
+        // Pinned Ed25519 keys (kid => base64 public key)
+        'public_keys' => [
+            '2026-11' => 'Tt8TQ6cbmocZJ92DjCjocC7mKUv+T8BRVMktw8bTcgk=',
+        ],
+        'machine_token' => env('AUTH_BROKER_MACHINE_TOKEN'),
+    ],
+
 ];
