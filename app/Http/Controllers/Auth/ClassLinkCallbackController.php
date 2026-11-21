@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\Sis;
 use App\Http\Controllers\Controller;
 use App\Models\Tenant;
 use App\Models\User;
@@ -71,10 +72,15 @@ class ClassLinkCallbackController extends Controller
             return $failure;
         }
 
-        // ponytail: sis_id lookup lands with the Phase 2 string migration
-        $user = User::query()
+        $users = User::query()->where('user_type', $role);
+
+        // The sub is only a SIS id when the roster itself comes from ClassLink; elsewhere it could collide with another system's ids
+        $user = $tenant->sis_provider === Sis::CLASS_LINK && is_string($claims['sub'] ?? null)
+            ? (clone $users)->where('sis_id', $claims['sub'])->first()
+            : null;
+
+        $user ??= $users
             ->whereRaw('lower(email) = ?', [mb_strtolower($claims['email'])])
-            ->where('user_type', $role)
             ->first();
 
         if (! $user) {

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Sis;
 use App\Enums\UserType;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
@@ -82,6 +83,26 @@ it('logs in staff and guardians as the account of their user type', function (Us
 
     $this->assertAuthenticatedAs($type === UserType::staff ? $this->member : $guardian);
 })->with([UserType::staff, UserType::guardian]);
+
+it('finds the user by sis id when the tenant roster comes from ClassLink', function () {
+    $this->tenant->update(['sis_provider' => Sis::CLASS_LINK, 'sis_config' => [
+        'url' => 'https://oneroster.test/rostering', 'token_url' => 'https://oneroster.test/token', 'client_id' => 'id', 'client_secret' => 'secret',
+    ]]);
+    $this->member->update(['sis_id' => 'sourced-1', 'email' => 'other@example.com']);
+
+    classLinkCallback('login', ['sub' => 'sourced-1']);
+
+    $this->assertAuthenticatedAs($this->member);
+});
+
+it('ignores the sub on a PowerSchool tenant', function () {
+    $this->tenant->update(['sis_provider' => Sis::PS]);
+    $this->member->update(['sis_id' => 'sourced-1', 'email' => 'other@example.com']);
+
+    classLinkCallback('login', ['sub' => 'sourced-1'])->assertRedirect(route('login'));
+
+    $this->assertGuest();
+});
 
 it('rejects a failed login', function (array $claims, string $nonce) {
     classLinkCallback('login', $claims, $nonce)

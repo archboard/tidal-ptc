@@ -3,6 +3,7 @@
 namespace App\Enums;
 
 use App\Models\Tenant;
+use App\SisProviders\ClassLinkProvider;
 use App\SisProviders\PowerSchoolProvider;
 use App\SisProviders\SisProvider;
 use Illuminate\Support\Collection;
@@ -26,17 +27,13 @@ enum Sis: string
         );
     }
 
-    /**
-     * Providers that can be chosen. ClassLink is not implemented yet.
-     *
-     * @return array<int, array{label: string, value: string}>
-     */
+    /** @return array<int, array{label: string, value: string}> */
     public static function selectOptions(): array
     {
         return array_map(fn (Sis $sis) => [
             'label' => $sis->label(),
             'value' => $sis->value,
-        ], [self::PS]);
+        ], self::cases());
     }
 
     public function label(): string
@@ -65,7 +62,7 @@ enum Sis: string
             self::PS => app()->bound(PowerSchoolProvider::class)
                 ? app(PowerSchoolProvider::class)
                 : new PowerSchoolProvider($tenant),
-            self::CLASS_LINK => throw new \Exception('To be implemented'),
+            self::CLASS_LINK => new ClassLinkProvider($tenant),
         };
     }
 
@@ -76,7 +73,10 @@ enum Sis: string
             self::PS => $config->get('url') &&
                 $config->get('client_id') &&
                 $config->get('client_secret'),
-            self::CLASS_LINK => false,
+            self::CLASS_LINK => $config->get('url') &&
+                $config->get('token_url') &&
+                $config->get('client_id') &&
+                $config->get('client_secret'),
         };
     }
 }

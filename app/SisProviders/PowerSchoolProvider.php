@@ -10,6 +10,7 @@ use App\Models\Section;
 use App\Models\Student;
 use App\Models\Tenant;
 use App\Models\User;
+use App\SisProviders\Concerns\LimitsNewActiveSchools;
 use GrantHolle\PowerSchool\Api\RequestBuilder;
 use GrantHolle\PowerSchool\Api\Response;
 use Illuminate\Support\Arr;
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\DB;
 
 class PowerSchoolProvider implements SisProvider
 {
+    use LimitsNewActiveSchools;
+
     protected RequestBuilder $builder;
 
     public function __construct(protected Tenant $tenant)
@@ -65,33 +68,6 @@ class PowerSchoolProvider implements SisProvider
         );
 
         return $this;
-    }
-
-    /**
-     * In the cloud only `school_limit` schools may be active. New schools fill the open
-     * slots in school number order and the rest come in inactive. The upsert never
-     * updates `active`, so existing schools keep what the district chose.
-     *
-     * @param  array<int, array<string, mixed>>  $rows
-     * @return array<int, array<string, mixed>>
-     */
-    protected function limitNewActiveSchools(array $rows): array
-    {
-        $limit = $this->tenant->school_limit;
-
-        if (! config('app.cloud') || $limit === null) {
-            return $rows;
-        }
-
-        $existing = $this->tenant->schools()->pluck('sis_id');
-        $openSlots = max(0, $limit - $this->tenant->schools()->where('active', true)->count());
-
-        return array_map(function (array $row) use ($existing, &$openSlots) {
-            $isNew = ! $existing->contains($row['sis_id']);
-            $row['active'] = ! $isNew || $openSlots-- > 0;
-
-            return $row;
-        }, $rows);
     }
 
     /** @return array<array-key, mixed> */

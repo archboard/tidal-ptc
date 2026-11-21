@@ -23,7 +23,25 @@ trait ValidatesTenantFields
     /** @return array<int, mixed> */
     public function sisProviderRules(): array
     {
-        return ['required', Rule::enum(Sis::class)->except(Sis::CLASS_LINK)];
+        return ['required', Rule::enum(Sis::class)];
+    }
+
+    /** @return array<string, array<int, string>> */
+    public function sisConfigRules(Sis $sis): array
+    {
+        return match ($sis) {
+            Sis::PS => [
+                'sis_config.url' => ['required', 'url'],
+                'sis_config.client_id' => ['required', 'uuid'],
+                'sis_config.client_secret' => ['required', 'uuid'],
+            ],
+            Sis::CLASS_LINK => [
+                'sis_config.url' => ['required', 'url'],
+                'sis_config.token_url' => ['required', 'url'],
+                'sis_config.client_id' => ['required', 'string'],
+                'sis_config.client_secret' => ['required', 'string'],
+            ],
+        };
     }
 
     /** @return array<int, mixed> */

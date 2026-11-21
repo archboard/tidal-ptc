@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Sis;
 use App\Events\PowerSchoolPluginRegistered;
+use App\Forms\Traits\ValidatesTenantFields;
 use App\Jobs\SyncSchools;
 use App\Models\Tenant;
 use App\Rules\ValidLicense;
@@ -15,6 +17,8 @@ use Inertia\Response;
 
 class InstallationController extends Controller
 {
+    use ValidatesTenantFields;
+
     public function index(Request $request): Response
     {
         $title = __('Installation');
@@ -34,6 +38,8 @@ class InstallationController extends Controller
     {
         $tenant = $this->tenant($request);
 
+        $sis = Sis::tryFrom((string) $request->input('sis_provider')) ?? $tenant->sis_provider ?? Sis::PS;
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             // Cloud domains are set at provisioning
@@ -48,9 +54,8 @@ class InstallationController extends Controller
                 new ValidLicense,
                 Rule::unique('tenants', 'license')->ignoreModel($tenant),
             ],
-            'sis_config.url' => ['required', 'url'],
-            'sis_config.client_id' => ['required', 'uuid'],
-            'sis_config.client_secret' => ['required', 'uuid'],
+            'sis_provider' => ['sometimes', Rule::enum(Sis::class)],
+            ...$this->sisConfigRules($sis),
         ]);
 
         $enableClassLink = ! config('app.cloud') && ($data['enable_classlink'] ?? false);

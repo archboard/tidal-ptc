@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Tenant;
 use App\Models\User;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Http\Client\HttpClientException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -31,7 +32,7 @@ class SisUserController extends Controller
 
         try {
             return $sis->getProvider($tenant)->searchForUser($data['search']);
-        } catch (GuzzleException) {
+        } catch (GuzzleException|HttpClientException) {
             abort(422, $sis->connectionErrorMessage());
         }
     }

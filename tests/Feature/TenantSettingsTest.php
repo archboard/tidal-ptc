@@ -125,11 +125,13 @@ it('rejects activating more schools than the limit in the cloud', function () {
     expect($this->tenant->schools()->where('active', true)->exists())->toBeFalse();
 });
 
-it('rejects the unimplemented ClassLink provider', function () {
+it('accepts ClassLink as the SIS provider', function () {
     fullPermissions();
 
-    $this->put(route('settings.tenant.update'), ['sis_provider' => Sis::CLASS_LINK->value])
-        ->assertSessionHasErrors('sis_provider');
+    $this->put(route('settings.tenant.update'), ['name' => 'District', 'domain' => 'district.test', 'sis_provider' => Sis::CLASS_LINK->value])
+        ->assertSessionDoesntHaveErrors();
+
+    expect($this->tenant->fresh()->sis_provider)->toBe(Sis::CLASS_LINK);
 });
 
 it('can update tenant settings', function () {
