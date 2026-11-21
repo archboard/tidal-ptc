@@ -37,7 +37,7 @@ it('registers the origin with the broker when opted in', function () {
 
     Http::assertSent(fn ($request) => $request->url() === 'https://broker.test/api/apps/tidal-ptc/registrations'
         && $request['license'] === $this->license
-        && $request['origin'] === config('app.url')
+        && $request['origin'] === request()->getSchemeAndHttpHost()
         && $request['token'] === $challengeAtCall
         && strlen($challengeAtCall) === 48);
     expect(Cache::has('auth_broker.challenge'))->toBeFalse()
