@@ -44,7 +44,7 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
 /**
  * @property int $id
  * @property int $tenant_id
- * @property int|null $sis_id
+ * @property string|null $sis_id
  * @property string|null $first_name
  * @property string|null $last_name
  * @property string|null $email

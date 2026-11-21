@@ -22,7 +22,7 @@ use Spatie\Activitylog\Support\LogOptions;
 /**
  * @property int $id
  * @property int $tenant_id
- * @property int $sis_id
+ * @property string $sis_id
  * @property int|null $school_number
  * @property string $name
  * @property int|null $high_grade

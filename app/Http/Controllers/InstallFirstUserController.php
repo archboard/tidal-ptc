@@ -6,6 +6,7 @@ use App\Enums\Role;
 use App\Enums\UserType;
 use App\Models\User;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Http\Client\HttpClientException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -34,7 +35,7 @@ class InstallFirstUserController extends Controller
 
         try {
             $user->syncFromSis();
-        } catch (GuzzleException) {
+        } catch (GuzzleException|HttpClientException) {
             return back()->with('error', $request->tenant()->sis_provider?->connectionErrorMessage());
         }
 

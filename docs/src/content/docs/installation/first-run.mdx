@@ -39,13 +39,17 @@ The person setting up a new self-hosted copy. Cloud districts reach the same scr
 
    When you enable it, PowerSchool sends the plugin's client ID and secret to Tidal PTC. If the installer page is still open, the **PowerSchool URL**, **PowerSchool Client ID** and **PowerSchool Client Secret** fields fill in by themselves. If they don't, copy the client ID and secret from the plugin's page in PowerSchool and paste them in.
 
+   Using ClassLink for rosters instead? Set **SIS data provider** to **ClassLink** first. The PowerSchool alert and fields are replaced by **OneRoster base URL**, **Token URL**, **ClassLink Client ID** and **ClassLink Client Secret**. See [ClassLink](/integrations/classlink/#roster-sync).
+
 4. Fill in the remaining fields:
    - **Tenant name**: your district's name.
    - **Domain**: the hostname people use to reach Tidal PTC, for example `ptc.example.org`. Tidal PTC finds the tenant by matching the request's host against this value.
    - **PowerSchool URL**: the address of your PowerSchool server, for example `https://powerschool.example.org`.
    - **PowerSchool Client ID** and **PowerSchool Client Secret**: from the plugin. Both are UUIDs.
 
-5. Select **Install**. Tidal PTC saves the tenant, starts syncing your schools from PowerSchool in the background and shows "Installation complete. Sync has been started."
+5. Optional: tick **Enable ClassLink sign-in** and enter your **License key** to register this site for sign-in with ClassLink. The site must be reachable from the internet over HTTPS, and `/.well-known/auth-broker-challenge/tidal-ptc` must not be blocked or redirected. You can also do this later from [tenant settings](/district-admin/tenant-settings/). See [ClassLink](/integrations/classlink/#self-hosted-installs).
+
+6. Select **Install**. Tidal PTC saves the tenant, starts syncing your schools from PowerSchool in the background and shows "Installation complete. Sync has been started."
 </Steps>
 
 ## Create the first administrator
@@ -69,7 +73,7 @@ The installer only works until a district admin exists. Once you've added yourse
 - Check the schools that synced and choose which are active on the [tenant settings](/district-admin/tenant-settings/) page.
 - Set up [email](/integrations/email/) so families get confirmations and reminders.
 - Sync staff, students, courses and sections for each other school from its [school settings](/district-admin/school-settings/) page. See [PowerSchool sync](/integrations/powerschool/#sync).
-- Decide who can sign in with a password or with PowerSchool. See [PowerSchool single sign-on](/integrations/powerschool/#single-sign-on).
+- Decide who can sign in with a password, PowerSchool or [ClassLink](/integrations/classlink/). See [PowerSchool single sign-on](/integrations/powerschool/#single-sign-on).
 
 ## Related
 

@@ -314,6 +314,8 @@ echo '* * * * * cd /var/www/tidal-ptc && php artisan schedule:run >> /dev/null 2
 
 Visit `https://ptc.example.org/install`. The installer walks you through downloading the PowerSchool plugin, entering the tenant details and creating the first administrator.
 
+Optional: tick **Enable ClassLink sign-in** on the install page and enter your license key to let people sign in with ClassLink. The site must be reachable over HTTPS from the internet, and `/.well-known/auth-broker-challenge/tidal-ptc` must not be blocked or redirected by your proxy.
+
 ## 11. Day-to-day operations
 
 Run app commands as the `tidal` user: `sudo -iu tidal`, then `cd /var/www/tidal-ptc`.

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\ActivityEvent;
 use App\Enums\Role;
 use App\Enums\Sis;
+use App\Jobs\SyncBrokerOrigins;
 use App\SisProviders\SisProvider;
 use Carbon\CarbonImmutable;
 use Database\Factories\TenantFactory;
@@ -38,6 +39,7 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
  * @property string|null $subscription_expires_at
  * @property string|null $license
  * @property string|null $timezone
+ * @property string|null $classlink_tenant_id
  * @property Sis|null $sis_provider
  * @property Collection<array-key, mixed> $smtp_config
  * @property CarbonImmutable|null $created_at
@@ -81,6 +83,7 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
  * @method static Builder<static>|Tenant wherePluginDownloads($value)
  * @method static Builder<static>|Tenant whereSchoolLimit($value)
  * @method static Builder<static>|Tenant whereCode($value)
+ * @method static Builder<static>|Tenant whereClasslinkTenantId($value)
  *
  * @mixin \Eloquent
  */
@@ -98,6 +101,41 @@ final class Tenant extends TenantBase
         self::creating(function (Tenant $tenant) {
             $tenant->code ??= self::generateCode();
         });
+
+        self::saved(function (Tenant $tenant) {
+            if ($tenant->wasRecentlyCreated || $tenant->wasChanged(['domain', 'custom_domain', 'license'])) {
+                $tenant->syncBrokerOrigins($tenant->getPrevious() + $tenant->getAttributes());
+            }
+        });
+
+        self::deleted(fn (Tenant $tenant) => $tenant->syncBrokerOrigins($tenant->getAttributes(), true));
+    }
+
+    /**
+     * Registers this tenant's origins with the auth broker, and unregisters any it no longer uses.
+     * Cloud only, and only once the broker is configured.
+     *
+     * @param  array<string, mixed>  $before  Attributes as they were before the save.
+     */
+    private function syncBrokerOrigins(array $before, bool $deleted = false): void
+    {
+        $broker = config('services.auth_broker');
+        $license = $this->license;
+
+        if (! config('app.cloud') || ! $broker['url'] || ! $broker['machine_token'] || ! $license) {
+            return;
+        }
+
+        $origins = fn (array $attributes): array => collect([$attributes['domain'] ?? null, $attributes['custom_domain'] ?? null])
+            ->filter()
+            ->map(fn (string $host) => "https://{$host}")
+            ->values()
+            ->all();
+
+        $current = $deleted ? [] : $origins($this->getAttributes());
+
+        SyncBrokerOrigins::dispatch($license, $current, array_values(array_diff($origins($before), $current)))
+            ->afterCommit();
     }
 
     /**
@@ -305,7 +343,7 @@ final class Tenant extends TenantBase
         return $this->sis_provider?->getProvider($this);
     }
 
-    public function getSchoolFromSisId(School|int|string $sisId): School
+    public function getSchoolFromSisId(School|string $sisId): School
     {
         if ($sisId instanceof School) {
             return $sisId;

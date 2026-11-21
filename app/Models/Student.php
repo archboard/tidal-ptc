@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\DB;
  * @property int $id
  * @property int $tenant_id
  * @property int $school_id
- * @property int $sis_id
+ * @property string $sis_id
  * @property string|null $student_number
  * @property string|null $first_name
  * @property string|null $last_name

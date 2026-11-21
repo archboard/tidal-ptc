@@ -8,7 +8,7 @@ sidebar:
 import Screenshot from '../../../components/Screenshot.astro';
 import { Steps, Aside } from '@astrojs/starlight/components';
 
-The tenant settings page holds the settings that apply to your whole district (the tenant): its name and domain, the SIS that provides your data, which sign-in methods are allowed, the SMTP server used for email, the PowerSchool plugin download, and which schools are active. This page walks through each card on the page and what saving it changes.
+The tenant settings page holds the settings that apply to your whole district (the tenant): its name and domain, the SIS that provides your data, which sign-in methods are allowed, the SMTP server used for email, ClassLink sign-in, the PowerSchool plugin download, and which schools are active. This page walks through each card on the page and what saving it changes.
 
 ## Who this is for
 
@@ -19,7 +19,7 @@ District administrators, or anyone granted the **Edit tenant settings** permissi
 - You need the **Edit tenant settings** permission. District admins have every permission. See [Users and permissions](/district-admin/users-and-permissions/).
 - Open the page from the user menu: **Tenant settings** (the address is `/settings/tenant/edit`).
 
-<Screenshot name="settings-tenant" alt="Tenant settings page with the Tenant Settings, SMTP Settings, PowerSchool plugin and Active schools cards" />
+<Screenshot name="settings-tenant" alt="Tenant settings page with the Tenant Settings, SMTP Settings, PowerSchool plugin, ClassLink and Active schools cards" />
 
 ## Update the district details
 
@@ -29,7 +29,7 @@ The **Tenant Settings** card has these fields:
 | --- | --- |
 | **Tenant name** | Your district's name. Required. |
 | **Domain** | The domain the app is served from. Required and must be unique. On Tidal PTC Cloud this field is read-only: contact support to change it. |
-| **SIS data provider** | The student information system your data comes from: **PowerSchool SIS** is the only provider available. [ClassLink](/integrations/classlink/) is planned. |
+| **SIS data provider** | The student information system your data comes from: **PowerSchool SIS** or **ClassLink**. Choosing ClassLink shows **OneRoster base URL**, **Token URL**, **ClassLink Client ID** and **ClassLink Client Secret** fields. The saved secret is never shown; leave it blank to keep it. See [ClassLink](/integrations/classlink/#roster-sync). |
 | **Allow password authentication** | Lets users sign in with their email and password. |
 | **Allow OpenID Connect login** | Lets users sign in with OpenID Connect through the SIS. |
 
@@ -67,6 +67,10 @@ On Tidal PTC Cloud, emails go through the Cloud email service unless you check *
 
 For provider-specific advice, see [Email](/integrations/email/).
 
+## Connect ClassLink
+
+The **ClassLink** card shows "Connected ClassLink tenant: " and your ClassLink tenant ID, or "Not connected". Select **Connect ClassLink** and sign in with ClassLink as a staff account to save your district's ClassLink tenant ID. Once connected, the login page shows **Sign in with ClassLink** for staff and guardians. **Reconnect ClassLink** replaces the saved ID. See [ClassLink](/integrations/classlink/).
+
 ## Download the PowerSchool plugin
 
 On self-hosted installs, the **PowerSchool plugin** card has a **Download plugin** button. The plugin is built for your current domain, and each download has a higher version number so you can install it over the previous one in PowerSchool. The file is named `tidal-ptc-plugin.zip`.
@@ -90,4 +94,5 @@ On Tidal PTC Cloud, the card shows how many schools you have selected against yo
 - [Users and permissions](/district-admin/users-and-permissions/)
 - [Email](/integrations/email/)
 - [PowerSchool](/integrations/powerschool/)
+- [ClassLink](/integrations/classlink/)
 - [School limits](/cloud/school-limits/)

@@ -10,6 +10,7 @@ Tidal PTC (parent-teacher conferences) is [Archboard's](https://archboard.io) fi
 ## Features
 
 - **PowerSchool integration.** Install the plugin and students, teachers and contacts sync automatically, with single sign-on for everyone. No CSV exports or temporary passwords.
+- **ClassLink sign-in.** Staff and guardians can sign in with ClassLink. Roster sync is planned.
 - **Flexible time slots.** A wide range of configuration options for how slots are created, booked and managed.
 - **Translators.** Families can request a translator, and admins manage the requests.
 - **Online meetings.** Conferences can be held online as well as in person.

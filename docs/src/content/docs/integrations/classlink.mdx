@@ -1,25 +1,105 @@
 ---
 title: ClassLink
-description: ClassLink support is planned for Tidal PTC but not available yet. Until then, PowerSchool SIS is the only supported data provider.
+description: Let staff and guardians sign in to Tidal PTC with ClassLink. ClassLink can also sync your rosters as a SIS data provider.
 sidebar:
   order: 4
-  badge:
-    text: Planned
-    variant: note
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import Screenshot from '../../../components/Screenshot.astro';
+import { Steps, Aside } from '@astrojs/starlight/components';
 
-ClassLink is planned as a second way for Tidal PTC to get its people and classes, alongside [PowerSchool](/integrations/powerschool/). It is not available yet, so it doesn't appear as an option for **SIS data provider** in [Tenant settings](/district-admin/tenant-settings/).
+Tidal PTC lets staff and guardians sign in with ClassLink, alongside password and [PowerSchool](/integrations/powerschool/) sign-in. ClassLink can also be your **SIS data provider**; see [Roster sync](#roster-sync).
 
-<Aside type="tip" title="Does your district use ClassLink?">
-We'd like to hear from schools and districts that integrate with ClassLink. Knowing who needs it, and how you use it, helps us build the right support. Email us at [support@archboard.io](mailto:support@archboard.io?subject=ClassLink%20support) to get in touch.
+## Who this is for
+
+District admins and IT staff who want people to sign in with ClassLink.
+
+## How it works
+
+Tidal PTC signs people in through Archboard's sign-in service. Your district doesn't create a ClassLink application or enter any client IDs or secrets. People sign in with ClassLink, the service confirms who they are, and Tidal PTC signs them in.
+
+## Before you start
+
+- A ClassLink staff account for your district, to connect it.
+- The **edit tenant settings** permission in Tidal PTC.
+- Self-hosted installs only: see [Self-hosted installs](#self-hosted-installs) first.
+
+## Connect ClassLink
+
+<Steps>
+1. Open **Settings**, then **Tenant settings**, and find the **ClassLink** card.
+
+   <Screenshot name="settings-tenant" alt="Tenant settings page with the Tenant Settings, SMTP Settings, PowerSchool plugin, ClassLink and Active schools cards" />
+
+2. Select **Connect ClassLink** and sign in with ClassLink as a staff account.
+3. Tidal PTC saves your district's ClassLink tenant ID. The card shows "Connected ClassLink tenant: " followed by the ID.
+</Steps>
+
+To switch to a different ClassLink district, select **Reconnect ClassLink**. It replaces the saved tenant ID.
+
+## Sign in with ClassLink
+
+Once connected, the login page shows **Sign in with ClassLink**.
+
+<Screenshot name="login" alt="The Tidal PTC sign-in page with Sign in with ClassLink and Sign in with PowerSchool buttons" />
+
+- **Staff and guardians** can sign in. **Students cannot.**
+- The person must **already exist in Tidal PTC**. ClassLink sign-in doesn't create accounts.
+- Tidal PTC matches the ClassLink email address to the Tidal PTC user's email, ignoring case. ClassLink staff, teacher and admin roles match a staff account. ClassLink parent and guardian roles match a guardian account.
+- Only people from your connected ClassLink district are accepted.
+
+Sign-in with ClassLink works alongside password and PowerSchool sign-in, and doesn't depend on which **SIS data provider** you use.
+
+## Cloud and dedicated
+
+Nothing else to do. Archboard registers your domains, including custom domains, automatically.
+
+## Self-hosted installs
+
+A self-hosted install registers itself with Archboard's sign-in service. For that:
+
+- The install needs its **license key**.
+- It must be reachable from the internet over HTTPS on its public domain.
+- `https://<your domain>/.well-known/auth-broker-challenge/tidal-ptc` must be reachable and must not redirect. Registration proves you control the domain by fetching that address, so make sure no proxy or firewall blocks it.
+
+Registration happens in one of two ways:
+
+- On the install page, tick **Enable ClassLink sign-in** and enter your license key. See [First run](/installation/first-run/).
+- Each time an admin selects **Connect ClassLink**, Tidal PTC registers again using the license key saved on the tenant.
+
+If you change your domain, select **Connect ClassLink** again to register the new one.
+
+## Troubleshooting
+
+| Message | What to do |
+| --- | --- |
+| "ClassLink sign-in failed." | The person isn't a Tidal PTC user with a matching email and user type, is a student, or belongs to a different ClassLink district. Check the user's email in Tidal PTC. |
+| "Add your license key before connecting ClassLink." | Self-hosted only: the tenant has no license key saved. |
+| "ClassLink registration failed: ..." | Self-hosted only: the reason follows the colon. Check the HTTPS, domain and `.well-known` requirements above, then select **Connect ClassLink** again. |
+
+## Roster sync
+
+ClassLink can also be your **SIS data provider**. Tidal PTC then syncs schools, staff, students, classes and guardians from ClassLink's OneRoster 1.2 roster server instead of PowerSchool.
+
+You need a OneRoster application in ClassLink with API access. From it, copy the **OneRoster 1.2 base URL**, the **token URL**, and the **client ID** and **client secret**.
+
+<Steps>
+1. Choose **ClassLink** as the **SIS data provider**:
+   - Self-hosted installs: on the install page, see [First run](/installation/first-run/).
+   - Any install: **Settings**, then **Tenant settings**.
+
+2. Enter the **OneRoster base URL**, **Token URL**, **ClassLink Client ID** and **ClassLink Client Secret**.
+
+3. Select **Save** (or **Install** on the install page).
+</Steps>
+
+On Tenant settings, the saved secret is never shown. Leave **ClassLink Client Secret** blank to keep the current one.
+
+What syncs:
+
+- **Staff** sync covers **teachers** only. Administrators are not synced, so add them manually.
+- **Guardians** come from each student's agents in ClassLink.
+
+<Aside type="caution">
+Changing the SIS provider requires a resync. Existing data will likely be disrupted, become invalid or disappear.
 </Aside>
-
-## Until then
-
-PowerSchool SIS is the only supported provider. Districts that use ClassLink can't connect Tidal PTC to it yet.
-
-## Following progress
-
-To follow ClassLink support, watch the [GitHub repository](https://github.com/archboard/tidal-ptc/issues) or comment on an existing ClassLink issue.

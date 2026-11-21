@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Sis;
 use App\Events\PowerSchoolPluginRegistered;
+use App\Forms\Traits\ValidatesTenantFields;
 use App\Jobs\SyncSchools;
 use App\Models\Tenant;
+use App\Rules\ValidLicense;
+use App\Services\AuthBrokerRegistration;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -13,6 +17,8 @@ use Inertia\Response;
 
 class InstallationController extends Controller
 {
+    use ValidatesTenantFields;
+
     public function index(Request $request): Response
     {
         $title = __('Installation');
@@ -22,6 +28,8 @@ class InstallationController extends Controller
             'title' => $title,
             'name' => $tenant->name,
             'domain' => $tenant->domain,
+            'sisProvider' => ($tenant->sis_provider ?? Sis::PS)->value,
+            'sisOptions' => Sis::selectOptions(),
             'sisConfig' => $tenant->sis_config->toArray(),
             'isCloud' => config('app.cloud'),
             'channel' => PowerSchoolPluginRegistered::channelName($request->host()),
@@ -32,25 +40,44 @@ class InstallationController extends Controller
     {
         $tenant = $this->tenant($request);
 
+        $sis = Sis::tryFrom((string) $request->input('sis_provider')) ?? $tenant->sis_provider ?? Sis::PS;
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             // Cloud domains are set at provisioning
             ...(config('app.cloud') ? [] : [
                 'domain' => ['required', Rule::unique('tenants', 'domain')->ignoreModel($tenant)],
             ]),
-            'sis_config.url' => ['required', 'url'],
-            'sis_config.client_id' => ['required', 'uuid'],
-            'sis_config.client_secret' => ['required', 'uuid'],
+            'enable_classlink' => ['boolean'],
+            'license' => [
+                'exclude_unless:enable_classlink,true,1',
+                'required',
+                'uuid',
+                new ValidLicense,
+                Rule::unique('tenants', 'license')->ignoreModel($tenant),
+            ],
+            'sis_provider' => ['sometimes', Rule::enum(Sis::class)],
+            ...$this->sisConfigRules($sis),
         ]);
 
-        $tenant->fill(Arr::undot($data))
+        $enableClassLink = ! config('app.cloud') && ($data['enable_classlink'] ?? false);
+
+        $tenant->fill(Arr::undot(Arr::except($data, 'enable_classlink')))
             ->save();
         $tenant->makeCurrent();
 
         // Kick off job to sync schools
         dispatch(new SyncSchools($tenant));
 
-        session()->flash('success', __('Installation complete. Sync has been started.'));
+        $success = __('Installation complete. Sync has been started.');
+
+        if ($enableClassLink) {
+            $error = app(AuthBrokerRegistration::class)->register($data['license'], $request->getSchemeAndHttpHost());
+
+            $error ? session()->flash('error', $error) : $success .= ' '.__('ClassLink sign-in is enabled.');
+        }
+
+        session()->flash('success', $success);
 
         return to_route('install.user');
     }

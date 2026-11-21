@@ -3,12 +3,14 @@
 use App\Enums\Permission;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\AssignTranslatorController;
+use App\Http\Controllers\Auth\BrokerChallengeController;
+use App\Http\Controllers\Auth\ClassLinkCallbackController;
+use App\Http\Controllers\Auth\ClassLinkRedirectController;
 use App\Http\Controllers\Auth\PowerSchoolOidcLoginController;
 use App\Http\Controllers\Auth\PowerSchoolOpenIdLoginController;
 use App\Http\Controllers\BatchController;
 use App\Http\Controllers\BatchEventSourceController;
 use App\Http\Controllers\CheckAuthStatusController;
-use App\Http\Controllers\ClassLinkOAuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeleteBatchTimeSlotController;
@@ -112,6 +114,8 @@ Route::middleware(['self_hosted_or_setup'])
             });
     });
 
+Route::get('/.well-known/auth-broker-challenge/tidal-ptc', BrokerChallengeController::class);
+
 Route::middleware('tenant')->group(function () {
     Route::post('/demo/login/{userType}', DemoLoginController::class)
         ->middleware('guest')
@@ -128,12 +132,19 @@ Route::middleware('tenant')->group(function () {
             Route::get('/oidc', [PowerSchoolOidcLoginController::class, 'login']);
         });
 
-    // TODO: ClassLink auth
+    // ClassLink auth through the auth broker
     Route::prefix('/auth/classlink')
         ->group(function () {
-            Route::get('/oauth', [ClassLinkOAuthController::class, 'authenticate'])
+            Route::get('/oauth', ClassLinkRedirectController::class)
+                ->middleware('guest')
+                ->defaults('purpose', 'login')
                 ->name('classlink.authenticate');
-            Route::get('/redirect', [ClassLinkOAuthController::class, 'login']);
+            Route::get('/connect', ClassLinkRedirectController::class)
+                ->middleware(['auth', 'can:edit tenant settings'])
+                ->defaults('purpose', 'connect')
+                ->name('classlink.connect');
+            Route::get('/callback', ClassLinkCallbackController::class)
+                ->name('classlink.callback');
         });
 
     Route::middleware('auth')->group(function () {
