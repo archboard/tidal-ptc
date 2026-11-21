@@ -30,8 +30,10 @@ class AuthBrokerRegistration
             Cache::forget('auth_broker.challenge');
         }
 
-        return $response->successful()
-            ? null
-            : __('ClassLink registration failed: :reason', ['reason' => Str::limit(trim($response->body()), 200)]);
+        if ($response->successful()) {
+            return null;
+        }
+
+        return __('ClassLink registration failed: :reason', ['reason' => Str::limit(trim($response->body()), 200)]);
     }
 }

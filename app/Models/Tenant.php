@@ -83,6 +83,7 @@ use Spatie\Multitenancy\Models\Tenant as TenantBase;
  * @method static Builder<static>|Tenant wherePluginDownloads($value)
  * @method static Builder<static>|Tenant whereSchoolLimit($value)
  * @method static Builder<static>|Tenant whereCode($value)
+ * @method static Builder<static>|Tenant whereClasslinkTenantId($value)
  *
  * @mixin \Eloquent
  */
@@ -119,8 +120,9 @@ final class Tenant extends TenantBase
     private function syncBrokerOrigins(array $before, bool $deleted = false): void
     {
         $broker = config('services.auth_broker');
+        $license = $this->license;
 
-        if (! config('app.cloud') || ! $broker['url'] || ! $broker['machine_token'] || ! $this->license) {
+        if (! config('app.cloud') || ! $broker['url'] || ! $broker['machine_token'] || ! $license) {
             return;
         }
 
@@ -132,7 +134,7 @@ final class Tenant extends TenantBase
 
         $current = $deleted ? [] : $origins($this->getAttributes());
 
-        SyncBrokerOrigins::dispatch($this->license, $current, array_values(array_diff($origins($before), $current)))
+        SyncBrokerOrigins::dispatch($license, $current, array_values(array_diff($origins($before), $current)))
             ->afterCommit();
     }
 

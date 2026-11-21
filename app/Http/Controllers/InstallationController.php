@@ -72,7 +72,7 @@ class InstallationController extends Controller
         $success = __('Installation complete. Sync has been started.');
 
         if ($enableClassLink) {
-            $error = app(AuthBrokerRegistration::class)->register($tenant->license, $request->getSchemeAndHttpHost());
+            $error = app(AuthBrokerRegistration::class)->register($data['license'], $request->getSchemeAndHttpHost());
 
             $error ? session()->flash('error', $error) : $success .= ' '.__('ClassLink sign-in is enabled.');
         }

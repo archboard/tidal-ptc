@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Enums\Sis;
 use App\Http\Controllers\Controller;
-use App\Models\Tenant;
 use App\Models\User;
 use App\Services\BrokerAssertion;
 use Illuminate\Http\RedirectResponse;
@@ -51,7 +50,7 @@ class ClassLinkCallbackController extends Controller
             return $failure;
         }
 
-        $tenant = Tenant::current();
+        $tenant = $request->tenant();
 
         if ($isConnect) {
             if ($role !== 'staff' || ! $request->user()?->can('edit tenant settings')) {

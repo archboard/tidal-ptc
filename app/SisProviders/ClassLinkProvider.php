@@ -318,7 +318,7 @@ class ClassLinkProvider implements SisProvider
             'limit' => 10,
         ]);
 
-        return collect($response->json('users', []))
+        return $response->collect('users')
             ->reject(fn (array $user) => $this->isDeleted($user))
             ->slice(0, 10)
             ->map(fn (array $user) => new User([
@@ -376,7 +376,7 @@ class ClassLinkProvider implements SisProvider
 
     protected function classTeacherId(string $classId): ?int
     {
-        $teacher = collect($this->request("/classes/{$classId}/teachers")->json('users', []))
+        $teacher = $this->request("/classes/{$classId}/teachers")->collect('users')
             ->first(fn (array $user) => ! $this->isDeleted($user));
 
         if (! $teacher) {
@@ -407,10 +407,15 @@ class ClassLinkProvider implements SisProvider
         $sync = [];
 
         foreach (Arr::pluck($student['agents'] ?? [], 'sourcedId') as $agentId) {
+            if (! is_string($agentId)) {
+                continue;
+            }
+
             if (! array_key_exists($agentId, $guardians)) {
-                $agent = $this->request("/users/{$agentId}")->json('user');
-                $role = collect($agent['roles'] ?? [])->pluck('role')->intersect(self::GUARDIAN_ROLES)->first();
-                $guardians[$agentId] = $role && ! $this->isDeleted($agent) ? $role : null;
+                $response = $this->request("/users/{$agentId}");
+                $agent = $response->json('user');
+                $role = $response->collect('user.roles')->pluck('role')->intersect(self::GUARDIAN_ROLES)->first();
+                $guardians[$agentId] = is_string($role) && ! $this->isDeleted($agent) ? $role : null;
 
                 if ($guardians[$agentId]) {
                     User::upsert([[
@@ -434,7 +439,7 @@ class ClassLinkProvider implements SisProvider
             ->whereIn('sis_key', array_map(fn ($id) => UserType::guardian->getSisKeyFromSisId($id), array_keys($sync)))
             ->pluck('id', 'sis_id');
 
-        $student = $this->tenant->students()->find($studentId);
+        $student = $this->tenant->students()->findOrFail($studentId);
         $student->contacts()->sync(
             $ids->mapWithKeys(fn (int $id, string $sisId) => [$id => ['relationship' => $sync[$sisId]]])->all()
         );
@@ -462,7 +467,7 @@ class ClassLinkProvider implements SisProvider
         return [
             'sis_id' => $student['sourcedId'],
             'student_number' => $student['identifier'] ?? null,
-            'grade_level' => $this->intOrNull(Arr::first($student['grades'] ?? [])),
+            'grade_level' => $this->intOrNull($student['grades'][0] ?? null),
             ...$this->userAttributes($student),
         ];
     }
