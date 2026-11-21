@@ -1,6 +1,6 @@
 ---
 title: ClassLink
-description: Let staff and guardians sign in to Tidal PTC with ClassLink. ClassLink roster sync is planned; PowerSchool is the only SIS data provider today.
+description: Let staff and guardians sign in to Tidal PTC with ClassLink. ClassLink can also sync your rosters as a SIS data provider.
 sidebar:
   order: 4
 ---
@@ -8,7 +8,7 @@ sidebar:
 import Screenshot from '../../../components/Screenshot.astro';
 import { Steps, Aside } from '@astrojs/starlight/components';
 
-Tidal PTC lets staff and guardians sign in with ClassLink, alongside password and [PowerSchool](/integrations/powerschool/) sign-in. ClassLink is available for **sign-in** only. It is not yet a **SIS data provider**: your schools, people and classes still come from PowerSchool.
+Tidal PTC lets staff and guardians sign in with ClassLink, alongside password and [PowerSchool](/integrations/powerschool/) sign-in. ClassLink can also be your **SIS data provider**; see [Roster sync](#roster-sync).
 
 ## Who this is for
 
@@ -79,8 +79,27 @@ If you change your domain, select **Connect ClassLink** again to register the ne
 
 ## Roster sync
 
-ClassLink as a SIS data provider, syncing schools, staff, students and sections, is planned. Until then PowerSchool is the only provider.
+ClassLink can also be your **SIS data provider**. Tidal PTC then syncs schools, staff, students, classes and guardians from ClassLink's OneRoster 1.2 roster server instead of PowerSchool.
 
-<Aside type="tip" title="Does your district use ClassLink for rosters?">
-We'd like to hear from schools and districts that want ClassLink roster sync. Email us at [support@archboard.io](mailto:support@archboard.io?subject=ClassLink%20roster%20sync) to get in touch.
+You need a OneRoster application in ClassLink with API access. From it, copy the **OneRoster 1.2 base URL**, the **token URL**, and the **client ID** and **client secret**.
+
+<Steps>
+1. Choose **ClassLink** as the **SIS data provider**:
+   - Self-hosted installs: on the install page, see [First run](/installation/first-run/).
+   - Any install: **Settings**, then **Tenant settings**.
+
+2. Enter the **OneRoster base URL**, **Token URL**, **ClassLink Client ID** and **ClassLink Client Secret**.
+
+3. Select **Save** (or **Install** on the install page).
+</Steps>
+
+On Tenant settings, the saved secret is never shown. Leave **ClassLink Client Secret** blank to keep the current one.
+
+What syncs:
+
+- **Staff** sync covers **teachers** only. Administrators are not synced, so add them manually.
+- **Guardians** come from each student's agents in ClassLink.
+
+<Aside type="caution">
+Changing the SIS provider requires a resync. Existing data will likely be disrupted, become invalid or disappear.
 </Aside>

@@ -546,5 +546,10 @@
     "Connect ClassLink": "Conectar ClassLink",
     "Reconnect ClassLink": "Reconectar ClassLink",
     "Sign in with ClassLink": "Iniciar sesión con ClassLink",
-    "Add your license key before connecting ClassLink.": "Agregue su clave de licencia antes de conectar ClassLink."
+    "Add your license key before connecting ClassLink.": "Agregue su clave de licencia antes de conectar ClassLink.",
+    "OneRoster base URL": "URL base de OneRoster",
+    "Token URL": "URL del token",
+    "ClassLink Client ID": "ID de cliente de ClassLink",
+    "ClassLink Client Secret": "Secreto de cliente de ClassLink",
+    "Leave blank to keep the current secret.": "Déjelo en blanco para conservar el secreto actual."
 }

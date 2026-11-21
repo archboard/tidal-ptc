@@ -546,5 +546,10 @@
     "Connect ClassLink": "ربط ClassLink",
     "Reconnect ClassLink": "إعادة ربط ClassLink",
     "Sign in with ClassLink": "تسجيل الدخول باستخدام ClassLink",
-    "Add your license key before connecting ClassLink.": "أضف مفتاح الترخيص قبل ربط ClassLink."
+    "Add your license key before connecting ClassLink.": "أضف مفتاح الترخيص قبل ربط ClassLink.",
+    "OneRoster base URL": "عنوان OneRoster الأساسي",
+    "Token URL": "عنوان الرمز",
+    "ClassLink Client ID": "معرّف عميل ClassLink",
+    "ClassLink Client Secret": "سر عميل ClassLink",
+    "Leave blank to keep the current secret.": "اتركه فارغًا للاحتفاظ بالسر الحالي."
 }

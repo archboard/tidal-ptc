@@ -28,6 +28,8 @@ class InstallationController extends Controller
             'title' => $title,
             'name' => $tenant->name,
             'domain' => $tenant->domain,
+            'sisProvider' => ($tenant->sis_provider ?? Sis::PS)->value,
+            'sisOptions' => Sis::selectOptions(),
             'sisConfig' => $tenant->sis_config->toArray(),
             'isCloud' => config('app.cloud'),
             'channel' => PowerSchoolPluginRegistered::channelName($request->host()),

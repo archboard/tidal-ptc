@@ -36,6 +36,41 @@
                   required
                 />
               </div>
+              <div v-if="tenantForm.sis_provider === 'class link'" class="md:col-span-6">
+                <InputField
+                  v-model="tenantForm.sis_config.url"
+                  :error="tenantForm.errors['sis_config.url']"
+                  :label="__('OneRoster base URL')"
+                  type="url"
+                  required
+                />
+              </div>
+              <div v-if="tenantForm.sis_provider === 'class link'" class="md:col-span-6">
+                <InputField
+                  v-model="tenantForm.sis_config.token_url"
+                  :error="tenantForm.errors['sis_config.token_url']"
+                  :label="__('Token URL')"
+                  type="url"
+                  required
+                />
+              </div>
+              <div v-if="tenantForm.sis_provider === 'class link'" class="md:col-span-6">
+                <InputField
+                  v-model="tenantForm.sis_config.client_id"
+                  :error="tenantForm.errors['sis_config.client_id']"
+                  :label="__('ClassLink Client ID')"
+                  required
+                />
+              </div>
+              <div v-if="tenantForm.sis_provider === 'class link'" class="md:col-span-6">
+                <PasswordField
+                  v-model="tenantForm.sis_config.client_secret"
+                  :error="tenantForm.errors['sis_config.client_secret']"
+                  :label="__('ClassLink Client Secret')"
+                  :help-text="hasClassLinkSecret ? __('Leave blank to keep the current secret.') : undefined"
+                  :required="!hasClassLinkSecret"
+                />
+              </div>
               <div class="md:col-span-6">
                 <CheckboxField
                   v-model="tenantForm.allow_password_auth"
@@ -232,6 +267,8 @@ const props = defineProps({
   isCloud: Boolean,
   smtp: Object,
   sisOptions: Array,
+  classLinkConfig: { type: Object, default: () => ({}) },
+  hasClassLinkSecret: Boolean,
   schools: Array,
   schoolLimit: { type: Number, default: null },
   editable: Boolean,
@@ -243,6 +280,12 @@ const tenantForm = useForm({
   name: props.tenant.name,
   domain: props.tenant.domain,
   sis_provider: props.tenant.sis_provider,
+  sis_config: {
+    url: props.classLinkConfig.url ?? '',
+    token_url: props.classLinkConfig.token_url ?? '',
+    client_id: props.classLinkConfig.client_id ?? '',
+    client_secret: '',
+  },
   allow_password_auth: props.tenant.allow_password_auth,
   allow_oidc_login: props.tenant.allow_oidc_login,
 })

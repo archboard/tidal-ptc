@@ -39,6 +39,8 @@ The person setting up a new self-hosted copy. Cloud districts reach the same scr
 
    When you enable it, PowerSchool sends the plugin's client ID and secret to Tidal PTC. If the installer page is still open, the **PowerSchool URL**, **PowerSchool Client ID** and **PowerSchool Client Secret** fields fill in by themselves. If they don't, copy the client ID and secret from the plugin's page in PowerSchool and paste them in.
 
+   Using ClassLink for rosters instead? Set **SIS data provider** to **ClassLink** first. The PowerSchool alert and fields are replaced by **OneRoster base URL**, **Token URL**, **ClassLink Client ID** and **ClassLink Client Secret**. See [ClassLink](/integrations/classlink/#roster-sync).
+
 4. Fill in the remaining fields:
    - **Tenant name**: your district's name.
    - **Domain**: the hostname people use to reach Tidal PTC, for example `ptc.example.org`. Tidal PTC finds the tenant by matching the request's host against this value.

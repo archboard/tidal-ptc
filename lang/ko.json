@@ -546,5 +546,10 @@
     "Connect ClassLink": "ClassLink 연결",
     "Reconnect ClassLink": "ClassLink 다시 연결",
     "Sign in with ClassLink": "ClassLink로 로그인",
-    "Add your license key before connecting ClassLink.": "ClassLink를 연결하기 전에 라이선스 키를 추가하세요."
+    "Add your license key before connecting ClassLink.": "ClassLink를 연결하기 전에 라이선스 키를 추가하세요.",
+    "OneRoster base URL": "OneRoster 기본 URL",
+    "Token URL": "토큰 URL",
+    "ClassLink Client ID": "ClassLink 클라이언트 ID",
+    "ClassLink Client Secret": "ClassLink 클라이언트 시크릿",
+    "Leave blank to keep the current secret.": "현재 시크릿을 유지하려면 비워 두세요."
 }

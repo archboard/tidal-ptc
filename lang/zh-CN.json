@@ -546,5 +546,10 @@
     "Connect ClassLink": "连接 ClassLink",
     "Reconnect ClassLink": "重新连接 ClassLink",
     "Sign in with ClassLink": "使用 ClassLink 登录",
-    "Add your license key before connecting ClassLink.": "连接 ClassLink 之前请先添加许可证密钥。"
+    "Add your license key before connecting ClassLink.": "连接 ClassLink 之前请先添加许可证密钥。",
+    "OneRoster base URL": "OneRoster 基础 URL",
+    "Token URL": "令牌 URL",
+    "ClassLink Client ID": "ClassLink 客户端 ID",
+    "ClassLink Client Secret": "ClassLink 客户端密钥",
+    "Leave blank to keep the current secret.": "留空以保留当前密钥。"
 }

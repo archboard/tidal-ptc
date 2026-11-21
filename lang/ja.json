@@ -546,5 +546,10 @@
     "Connect ClassLink": "ClassLinkを接続",
     "Reconnect ClassLink": "ClassLinkを再接続",
     "Sign in with ClassLink": "ClassLinkでサインイン",
-    "Add your license key before connecting ClassLink.": "ClassLinkを接続する前にライセンスキーを追加してください。"
+    "Add your license key before connecting ClassLink.": "ClassLinkを接続する前にライセンスキーを追加してください。",
+    "OneRoster base URL": "OneRoster ベース URL",
+    "Token URL": "トークン URL",
+    "ClassLink Client ID": "ClassLink クライアント ID",
+    "ClassLink Client Secret": "ClassLink クライアントシークレット",
+    "Leave blank to keep the current secret.": "現在のシークレットを維持するには空欄のままにしてください。"
 }

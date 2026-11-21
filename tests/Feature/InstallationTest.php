@@ -96,6 +96,8 @@ it('shows the installation page to guests', function () {
             ->has('name')
             ->has('domain')
             ->has('sisConfig')
+            ->has('sisOptions', 2)
+            ->where('sisProvider', 'ps')
             ->component('Install')
         );
 });
